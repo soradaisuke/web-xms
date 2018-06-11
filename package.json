@@ -1,14 +1,10 @@
 {
-  "name": "web-core",
+  "name": "xms",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
-    "url": "git@git2.qingtingfm.com:zhibo/web-core.git"
+    "url": "git@git2.qingtingfm.com:zhibo/xms.git"
   },
   "author": "Yang Zheng",
   "license": "ISC"
