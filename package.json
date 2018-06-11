@@ -9,18 +9,28 @@
   "author": "Yang Zheng",
   "license": "ISC",
   "scripts": {
-    "build": "rm -rf lib && babel -d lib/ src/"
+    "build": "rm -rf lib && babel -d lib/ src/ --copy-files"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "dva": "^2.3.1",
+    "history": "^4.7.2",
+    "immutable": "^3.8.2",
+    "lodash": "^4.17.10",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.49",
     "@babel/core": "^7.0.0-beta.49",
     "@babel/plugin-proposal-class-properties": "^7.0.0-beta.49",
+    "@babel/plugin-proposal-export-default-from": "^7.0.0-beta.49",
     "@babel/plugin-syntax-dynamic-import": "^7.0.0-beta.49",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.49",
     "@babel/preset-env": "^7.0.0-beta.49",
     "@babel/preset-react": "^7.0.0-beta.49",
     "babel-eslint": "^8.2.3",
-    "babel-loader": "^8.0.0-beta.3",
+    "babel-plugin-lodash": "^3.3.4",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-compat": "^2.4.0",
@@ -28,5 +38,6 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
     "eslint-plugin-react": "^7.9.1"
-  }
+  },
+  "peerDependencies": {}
 }

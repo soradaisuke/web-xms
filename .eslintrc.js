@@ -1,5 +1,3 @@
-const resolve = require('./resolve');
-
 module.exports = {
   parser: 'babel-eslint',
   extends: ['airbnb'],
@@ -54,13 +52,6 @@ module.exports = {
     browser: true
   },
   settings: {
-    'import/resolver': {
-      webpack: {
-        config: {
-          resolve,
-        }
-      }
-    },
     polyfills: [
       'fetch',
       'promises',

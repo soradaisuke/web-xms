@@ -1,1 +1,1 @@
-export default {};
+export App from './app';
