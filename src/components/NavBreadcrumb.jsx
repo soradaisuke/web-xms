@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { includes, split, forEach, filter } from 'lodash';
 import { Breadcrumb } from 'antd';
-import Styles from './NavBreadcrumb.less';
+import './NavBreadcrumb.less';
 
 export default class NavBreadcrumb extends React.PureComponent {
   static propTypes = {
@@ -61,7 +61,7 @@ export default class NavBreadcrumb extends React.PureComponent {
 
   render() {
     return (
-      <Breadcrumb className={Styles.navBreadcrumb}>
+      <Breadcrumb className="xms-nav-breadcrumb">
         {this.renderBreadcrumbItems()}
       </Breadcrumb>
     );

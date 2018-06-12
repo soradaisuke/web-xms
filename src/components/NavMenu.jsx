@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 import { includes, split, forEach, filter, tail } from 'lodash';
-import Styles from './NavMenu.less';
+import './NavMenu.less';
 
 function MenuItem({ path, icon, title }) {
   if (includes(path, ':')) {
@@ -94,7 +94,7 @@ export default class NavMenu extends React.PureComponent {
   render() {
     return (
       <Menu
-        className={Styles.navMenu}
+        className="xms-nav-menu"
         theme="dark"
         mode="horizontal"
         selectedKeys={this.state.selectedKeys}

@@ -42,7 +42,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
 
   return (
     <ConnectedRouter history={history}>
-      <Layout className="xms-layout">
+      <Layout>
         <Header>
           <Route
             render={// eslint-disable-line react/jsx-no-bind

@@ -1,16 +1,14 @@
 @import './styles/mixins';
+@import './styles/theme';
 
-.xms-layout {
-  .xms-content {
-    padding: 0 50px;
-
-    .xms-content-loading {
-      .flex-container;
-      .flex-container-align-all-center;
-    }
+.@{xms-prefix}-content {
+  padding: 0 50px;
+  .loading {
+    .flex-container;
+    .flex-container-align-all-center;
   }
+}
 
-  .xms-footer {
-    text-align: center;
-  }
+.@{xms-prefix}-footer {
+  text-align: center;
 }
