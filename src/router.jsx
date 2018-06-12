@@ -15,31 +15,21 @@ dynamic.setDefaultLoadingComponent(() => (
   </div>
 ));
 
-function RouterConfig({ history, app }) { // eslint-disable-line react/prop-types
-  function renderRoute({
-    path, component, models, routes,
-  }) { // eslint-disable-line react/prop-types
-    const children = [];
-    if (component) {
-      let c = component;
-      if (component instanceof Promise) {
-        c = dynamic({
-          app,
-          models: () => models || [],
-          component: () => component,
-        });
-      }
-      children.push(<Route exact key={path} path={path} component={c} />);
-    }
-    if (routes && routes.length > 0) {
-      return children.concat(routes.map(route => renderRoute({
-        path: `${path}${route.path}`, component: route.component, models: routes.models, routes: route.routes,
-      })));
-    }
-
-    return children;
+function renderRoute({ path, component, routes }) { // eslint-disable-line react/prop-types
+  const children = [];
+  if (component) {
+    children.push(<Route exact key={path} path={path} component={component} />);
+  }
+  if (routes && routes.length > 0) {
+    return children.concat(routes.map(route => renderRoute({
+      path: `${path}${route.path}`, component: route.component, routes: route.routes,
+    })));
   }
 
+  return children;
+}
+
+function RouterConfig({ history, app }) { // eslint-disable-line react/prop-types
   return (
     <ConnectedRouter history={history}>
       <Layout className="xms-layout">
