@@ -17,7 +17,7 @@
     "classnames": "^2.2.6",
     "dva": "^2.3.1",
     "history": "^4.7.2",
-    "immutable": "^3.8.2",
+    "immutable": "^4.0.0-rc.9",
     "lodash": "^4.17.10",
     "prop-types": "^15.6.1",
     "query-string": "^5.1.1",
