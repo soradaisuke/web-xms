@@ -10,7 +10,7 @@ const { Header, Content, Footer } = Layout;
 const { ConnectedRouter } = routerRedux;
 
 dynamic.setDefaultLoadingComponent(() => (
-  <div className="xms-content-loading">
+  <div className="xms-layout-content-loading">
     <Spin size="large" />
   </div>
 ));
@@ -42,15 +42,15 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
 
   return (
     <ConnectedRouter history={history}>
-      <Layout>
-        <Header>
+      <Layout className="xms-layout">
+        <Header className="xms-layout-header">
           <Route
             render={// eslint-disable-line react/jsx-no-bind
               ({ location }) => <NavMenu pathname={location.pathname} routes={app.routes} />
             }
           />
         </Header>
-        <Content className="xms-content">
+        <Content className="xms-layout-content">
           <Route
             render={// eslint-disable-line react/jsx-no-bind
               ({ location }) => <NavBreadcrumb pathname={location.pathname} routes={app.routes} />
@@ -62,7 +62,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             }
           </Switch>
         </Content>
-        <Footer className="xms-footer">
+        <Footer className="xms-layout-footer">
           Footer
         </Footer>
       </Layout>
