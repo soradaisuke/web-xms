@@ -1,4 +1,4 @@
-export xms from './app';
+export default from './app';
 export request from './services/request';
 export Page from './pages/Page';
 export RecordPage from './pages/RecordPage';
