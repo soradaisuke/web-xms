@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Alert, Spin } from 'antd';
-import './BasePage.less';
+import './Page.less';
 
-class Page extends React.PureComponent {
+export default class Page extends React.PureComponent {
   static displayName = 'Page';
 
   static propTypes = {
@@ -44,5 +44,3 @@ class Page extends React.PureComponent {
     );
   }
 }
-
-export default BasePage;
