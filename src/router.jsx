@@ -4,13 +4,13 @@ import { Layout, Spin } from 'antd';
 import dynamic from 'dva/dynamic';
 import NavMenu from './components/NavMenu';
 import NavBreadcrumb from './components/NavBreadcrumb';
-import Styles from './router.less';
+import './router.less';
 
 const { Header, Content, Footer } = Layout;
 const { ConnectedRouter } = routerRedux;
 
 dynamic.setDefaultLoadingComponent(() => (
-  <div className={Styles.loading}>
+  <div className="xms-content-loading">
     <Spin size="large" />
   </div>
 ));
@@ -42,7 +42,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
 
   return (
     <ConnectedRouter history={history}>
-      <Layout className={Styles.layout}>
+      <Layout className="xms-layout">
         <Header>
           <Route
             render={// eslint-disable-line react/jsx-no-bind
@@ -50,7 +50,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             }
           />
         </Header>
-        <Content className={Styles.content}>
+        <Content className="xms-content">
           <Route
             render={// eslint-disable-line react/jsx-no-bind
               ({ location }) => <NavBreadcrumb pathname={location.pathname} routes={app.routes} />
@@ -62,7 +62,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             }
           </Switch>
         </Content>
-        <Footer className={Styles.footer}>
+        <Footer className="xms-footer">
           Footer
         </Footer>
       </Layout>
