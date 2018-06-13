@@ -1,13 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import { Link } from 'react-router-dom';
 import { routerRedux } from 'dva/router';
 import { parse } from 'query-string';
 import { Table, Pagination, Button, Popconfirm, message } from 'antd';
 import { connect } from 'dva';
 import { toInteger } from 'lodash';
-import Page from './Page';
 import generateUri from '../utils/generateUri';
+import Page from './Page';
 
 const { Column } = Table;
 
@@ -16,14 +17,19 @@ class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     changePage: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
     fetch: PropTypes.func.isRequired,
+    schema: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      title: PropTypes.string,
+      link: PropTypes.bool,
+      show: PropTypes.bool,
+    })).isRequired,
     create: PropTypes.func,
-    list: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     Modal: PropTypes.func,
     pageNum: PropTypes.number,
     pageSize: PropTypes.number,
     patch: PropTypes.func,
+    records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     renderAction: PropTypes.func,
     total: PropTypes.number,
@@ -34,7 +40,7 @@ class RecordsPage extends React.PureComponent {
     patch: null,
     remove: null,
     renderAction: null,
-    list: Immutable.List(),
+    records: Immutable.List(),
     Modal: null,
     pageNum: 1,
     pageSize: 10,
@@ -44,13 +50,13 @@ class RecordsPage extends React.PureComponent {
   state = {
     isError: false,
     isLoading: true,
-    list: Immutable.List(),
+    records: Immutable.List(),
     dataSource: [],
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.list !== nextProps.list) {
-      return { list: nextProps.list, dataSource: nextProps.list.toJS() };
+    if (prevState.records !== nextProps.records) {
+      return { records: nextProps.records, dataSource: nextProps.records.toJS() };
     }
 
     return null;
@@ -116,6 +122,39 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
+  renderSchema() {
+    return this.props.schema.map(({
+      key, title, link, show,
+    }) => {
+      if (show) {
+        if (link) {
+          return (
+            <Column
+              title={title}
+              dataIndex={key}
+              key={key}
+              render={text => ( // eslint-disable-line react/jsx-no-bind
+                <span>
+                  <Link to={`${window.location.pathname}/${text}`}>
+                    {text}
+                  </Link>
+                </span>
+              )}
+            />
+          );
+        }
+        return (
+          <Column
+            title={title}
+            dataIndex={key}
+            key={key}
+          />
+        );
+      }
+      return null;
+    });
+  }
+
   renderContent() {
     const {
       Modal, create, patch, remove, renderAction,
@@ -135,7 +174,7 @@ class RecordsPage extends React.PureComponent {
           rowKey={record => record.id} // eslint-disable-line react/jsx-no-bind
           pagination={false}
         >
-          {this.props.children}
+          {this.renderSchema()}
           {
             (patch || remove || renderAction) && (
               <Column
