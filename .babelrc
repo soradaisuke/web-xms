@@ -8,6 +8,7 @@
     "@babel/plugin-proposal-export-default-from",
     ["import", { "libraryName": "antd", "style": true }],
     "lodash",
+    "dva-hmr",
   ],
   "comments": false
 }
