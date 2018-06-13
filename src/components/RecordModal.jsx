@@ -7,7 +7,6 @@ class RecordModal extends React.PureComponent {
 
   static propTypes = {
     activator: PropTypes.node.isRequired,
-    children: PropTypes.func.isRequired,
     form: PropTypes.shape({
       validateFields: PropTypes.func.isRequired,
       getFieldDecorator: PropTypes.func.isRequired,
@@ -45,7 +44,7 @@ class RecordModal extends React.PureComponent {
   };
 
   render() {
-    const { activator, children } = this.props;
+    const { activator } = this.props;
 
     return (
       <span>
@@ -60,9 +59,7 @@ class RecordModal extends React.PureComponent {
               onOk={this.onOk}
               onCancel={this.hideModelHandler}
             >
-              <Form horizontal="true" onSubmit={this.okHandler}>
-                { children() }
-              </Form>
+              <Form horizontal="true" onSubmit={this.okHandler} />
             </Modal>
           )
         }

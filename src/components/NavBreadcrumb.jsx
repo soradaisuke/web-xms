@@ -1,9 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { matchPath } from 'react-router';
 import { Link } from 'react-router-dom';
-import { includes, split, forEach, filter } from 'lodash';
+import { forEach } from 'lodash';
 import { Breadcrumb } from 'antd';
 import './NavBreadcrumb.less';
+
+function addBreadcrumbItem(pathname, routes, items) {
+  forEach(routes, ({
+    path, component, navTitle, routes: childRoutes,
+  }) => {
+    if (path === '/' || matchPath(pathname, { path })) {
+      if (component && navTitle) {
+        items.push((
+          <Breadcrumb.Item key={path}>
+            <Link to={path}>
+              {navTitle}
+            </Link>
+          </Breadcrumb.Item>
+        ));
+      }
+
+      if (childRoutes && childRoutes.length > 0) {
+        addBreadcrumbItem(pathname, childRoutes, items);
+      }
+    }
+  });
+}
 
 export default class NavBreadcrumb extends React.PureComponent {
   static propTypes = {
@@ -13,48 +36,9 @@ export default class NavBreadcrumb extends React.PureComponent {
 
   renderBreadcrumbItems() {
     const items = [];
-    let { routes } = this.props;
+    const { routes, pathname } = this.props;
 
-    forEach(routes, (route) => {
-      if (route.path === '/') {
-        items.push((
-          <Breadcrumb.Item key={route.path}>
-            <Link to={route.path}>
-              {route.title}
-            </Link>
-          </Breadcrumb.Item>
-        ));
-        return false;
-      }
-      return true;
-    });
-
-    const { pathname } = this.props;
-    const paths = filter(split(pathname, '/'), p => p);
-    let url = '';
-
-    forEach(paths, (path) => {
-      let matched = false;
-      forEach(routes, (route) => {
-        if (route.path === `/${path}` || (path && includes(route.path, ':'))) {
-          routes = route.routes;
-          matched = true;
-          url = `${url}/${path}`;
-          if (route.component) {
-            items.push((
-              <Breadcrumb.Item key={url}>
-                <Link to={url}>
-                  {includes(route.path, ':') ? `${route.title}${path}` : route.title}
-                </Link>
-              </Breadcrumb.Item>
-            ));
-          }
-          return false;
-        }
-        return true;
-      });
-      return matched;
-    });
+    addBreadcrumbItem(pathname, routes, items);
 
     return items;
   }

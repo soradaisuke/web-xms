@@ -21,7 +21,10 @@ class RecordsPage extends React.PureComponent {
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string,
-      link: PropTypes.bool,
+      link: PropTypes.shape({
+        path: PropTypes.string,
+        key: PropTypes.string,
+      }),
       show: PropTypes.bool,
     })).isRequired,
     create: PropTypes.func,
@@ -133,9 +136,9 @@ class RecordsPage extends React.PureComponent {
               title={title}
               dataIndex={key}
               key={key}
-              render={text => ( // eslint-disable-line react/jsx-no-bind
+              render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
                 <span>
-                  <Link to={`${window.location.pathname}/${text}`}>
+                  <Link to={`${link.path || window.location.pathname}/${record[link.key || key]}`}>
                     {text}
                   </Link>
                 </span>

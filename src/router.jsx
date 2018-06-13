@@ -21,9 +21,7 @@ function renderRoute({ path, component, routes }) { // eslint-disable-line react
     children.push(<Route exact key={path} path={path} component={component} />);
   }
   if (routes && routes.length > 0) {
-    return children.concat(routes.map(route => renderRoute({
-      path: `${path}${route.path}`, component: route.component, routes: route.routes,
-    })));
+    return children.concat(routes.map(route => renderRoute(route)));
   }
 
   return children;
