@@ -17,7 +17,7 @@
     "classnames": "^2.2.6",
     "dva": "^2.3.1",
     "history": "^4.7.2",
-    "immutable": "^4.0.0-rc.9",
+    "immutable": "^3.8.2",
     "lodash": "^4.17.10",
     "prop-types": "^15.6.1",
     "query-string": "^5.1.1",
@@ -46,7 +46,8 @@
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
-    "eslint-plugin-react": "^7.9.1"
+    "eslint-plugin-react": "^7.9.1",
+    "redbox-react": "^1.6.0"
   },
   "peerDependencies": {
     "antd": "^3.6.2",
