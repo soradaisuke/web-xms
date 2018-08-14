@@ -16,13 +16,32 @@ html, body {
 
 .xms-layout {
   &-header {
+    .flex-row-container();
+    .flex-container-align-items-center();
+    .font-medium();
+
     height: 5.05rem;
-    line-height: 5.05rem;
     background: #6760FA;
+    font-size: 1.05rem;
+    color: #FFFFFF;
+    line-height: 1.05rem;
+    padding-left: 1.95rem;
+    padding-right: 3.2rem;
+
+    &:before {
+      .background-contain-center-no-repeat();
+
+      content: '';
+      width: 6.55rem;
+      height: 1.65rem;
+      background-image: url('./assets/ic-logo.png');
+      margin-right: 2.05rem;
+    }
   }
 
   &-content {
     padding: 0 50px;
+
     &-loading {
       .flex-container;
       .flex-container-align-all-center;

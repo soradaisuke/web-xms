@@ -32,11 +32,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
     <ConnectedRouter history={history}>
       <Layout className="xms-layout">
         <Header className="xms-layout-header">
-          <Route
-            render={// eslint-disable-line react/jsx-no-bind
-              ({ location }) => <NavMenu pathname={location.pathname} routes={app.routes} />
-            }
-          />
+          {app.config.name}
         </Header>
         <Content className="xms-layout-content">
           <Route
