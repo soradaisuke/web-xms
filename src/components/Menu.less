@@ -1,0 +1,55 @@
+@import '../styles/mixins';
+@import '../styles/colors';
+
+@border-width: 0.35rem;
+
+.xms-menu-item() {
+  .font-medium();
+
+  height: 3.44rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 3.44rem;
+  margin: 0.1rem 0;
+  text-align: center;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border-left: @border-width solid transparent;
+  border-right: @border-width solid transparent;
+  background: @sider-background-color;
+}
+
+.xms-menu-item-selected() {
+  color: #FFFFFF;
+  background: @menu-item-selected-background-color;
+}
+
+.ant-menu.ant-menu-dark.ant-menu-inline.xms-menu {
+  background: @sider-background-color;
+
+  .ant-menu-item.xms-menu-item {
+    .xms-menu-item();
+
+    &.ant-menu-item-selected {
+      .xms-menu-item-selected();
+
+      border-right-color: #6760FA;
+    }
+  }
+
+  .ant-menu-submenu.ant-menu-submenu-inline.xms-menu-submenu {
+    background: @submenu-background-color;
+
+    .ant-menu-submenu-title {
+      .xms-menu-item();
+    }
+
+    .ant-menu-item.xms-menu-item {
+      background: @submenu-background-color;
+
+      &.ant-menu-item-selected {
+        background: @sider-background-color;
+      }
+    }
+  }
+}

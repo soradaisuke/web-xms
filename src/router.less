@@ -1,4 +1,5 @@
 @import './styles/mixins';
+@import './styles/colors';
 
 html, body {
   width: 100%;
@@ -12,43 +13,57 @@ html, body {
   word-break: break-all;
   -webkit-overflow-scrolling: touch;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
 
-.xms-layout {
-  &-header {
-    .flex-row-container();
-    .flex-container-align-items-center();
-    .font-medium();
+  #root {
+    width: 100%;
+    height: 100%;
 
-    height: 5.05rem;
-    background: #6760FA;
-    font-size: 1.05rem;
-    color: #FFFFFF;
-    line-height: 1.05rem;
-    padding-left: 1.95rem;
-    padding-right: 3.2rem;
+    .xms-layout {
+      min-height: 100%;
 
-    &:before {
-      .background-contain-center-no-repeat();
+      &-header {
+        .flex-row-container();
+        .flex-container-align-items-center();
+        .font-medium();
 
-      content: '';
-      width: 6.55rem;
-      height: 1.65rem;
-      background-image: url('./assets/ic-logo.png');
-      margin-right: 2.05rem;
+        height: 5.05rem;
+        background: #6760FA;
+        font-size: 1.05rem;
+        color: #FFFFFF;
+        line-height: 1.05rem;
+        padding-left: 1.95rem;
+        padding-right: 3.2rem;
+
+        &:before {
+          .background-contain-center-no-repeat();
+
+          content: '';
+          width: 6.55rem;
+          height: 1.65rem;
+          background-image: url('./assets/ic-logo.png');
+          margin-right: 2.05rem;
+        }
+      }
+
+      &-sider {
+        background: @sider-background-color;
+        padding-top: 2.31rem;
+      }
+
+      &-content {
+        padding: 0 50px;
+
+        &-loading {
+          .flex-container;
+          .flex-container-align-all-center;
+        }
+      }
+
+      &-footer {
+        text-align: center;
+      }
     }
   }
-
-  &-content {
-    padding: 0 50px;
-
-    &-loading {
-      .flex-container;
-      .flex-container-align-all-center;
-    }
-  }
-
-  &-footer {
-    text-align: center;
-  }
 }
+
+

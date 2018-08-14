@@ -2,11 +2,12 @@ import React from 'react';
 import { Route, Switch, routerRedux } from 'dva/router';
 import { Layout, Spin } from 'antd';
 import dynamic from 'dva/dynamic';
-import NavMenu from './components/NavMenu';
-import NavBreadcrumb from './components/NavBreadcrumb';
+import Menu from './components/Menu';
 import './router.less';
 
-const { Header, Content, Footer } = Layout;
+const {
+  Header, Content, Footer, Sider,
+} = Layout;
 const { ConnectedRouter } = routerRedux;
 
 dynamic.setDefaultLoadingComponent(() => (
@@ -34,18 +35,18 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
         <Header className="xms-layout-header">
           {app.config.name}
         </Header>
-        <Content className="xms-layout-content">
-          <Route
-            render={// eslint-disable-line react/jsx-no-bind
-              ({ location }) => <NavBreadcrumb pathname={location.pathname} routes={app.routes} />
-            }
-          />
-          <Switch>
-            {
-              app.routes.map(route => renderRoute(route))
-            }
-          </Switch>
-        </Content>
+        <Layout>
+          <Sider className="xms-layout-sider" width="9.6rem">
+            <Menu routes={app.routes} />
+          </Sider>
+          <Content className="xms-layout-content">
+            <Switch>
+              {
+                app.routes.map(route => renderRoute(route))
+              }
+            </Switch>
+          </Content>
+        </Layout>
         <Footer className="xms-layout-footer">
           Footer
         </Footer>
