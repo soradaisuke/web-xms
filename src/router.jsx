@@ -39,17 +39,19 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
           <Sider className="xms-layout-sider" width="9.6rem">
             <Menu routes={app.routes} />
           </Sider>
-          <Content className="xms-layout-content">
-            <Switch>
-              {
-                app.routes.map(route => renderRoute(route))
-              }
-            </Switch>
-          </Content>
+          <Layout className="xms-layout-content-layout">
+            <Content className="xms-layout-content">
+              <Switch>
+                {
+                  app.routes.map(route => renderRoute(route))
+                }
+              </Switch>
+            </Content>
+            <Footer className="xms-layout-footer">
+              ©2011-2018 qingting.fm All Rights Reserved.
+            </Footer>
+          </Layout>
         </Layout>
-        <Footer className="xms-layout-footer">
-          Footer
-        </Footer>
       </Layout>
     </ConnectedRouter>
   );
