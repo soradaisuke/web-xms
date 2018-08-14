@@ -60,13 +60,12 @@ class NavMenu extends React.PureComponent {
             if (routes && routes.length > 0) {
               return (
                 <SubMenu
-                  className="xms-menu-submenu"
                   key={path}
                   title={title}
                 >
                   {
                     routes.map(({ path: subPath, title: subTitle }) => (
-                      <Menu.Item className="xms-menu-item" key={subPath}>
+                      <Menu.Item key={subPath}>
                         <Link to={subPath}>
                           {subTitle}
                         </Link>
@@ -78,7 +77,7 @@ class NavMenu extends React.PureComponent {
             }
 
             return (
-              <Menu.Item className="xms-menu-item" key={path}>
+              <Menu.Item key={path}>
                 <Link to={path}>
                   {title}
                 </Link>

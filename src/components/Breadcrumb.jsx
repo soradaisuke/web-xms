@@ -46,7 +46,7 @@ class NavBreadcrumb extends React.PureComponent {
 
   render() {
     return (
-      <Breadcrumb className="xms-breadcrumb">
+      <Breadcrumb>
         {this.renderBreadcrumbItems()}
       </Breadcrumb>
     );

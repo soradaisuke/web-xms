@@ -21,7 +21,7 @@ html, body {
     .xms-layout {
       min-height: 100%;
 
-      &-header {
+      .ant-layout-header {
         .flex-row-container();
         .flex-container-align-items-center();
         .font-medium();
@@ -45,25 +45,18 @@ html, body {
         }
       }
 
-      &-sider {
+      .ant-layout-sider.ant-layout-sider-dark {
         background: @sider-background-color;
         padding-top: 2.31rem;
       }
 
-      &-content-layout {
+      .content-layout {
         padding: 0.85rem 3.2rem 0;
-      }
 
-      &-content {
-        &-loading {
-          .flex-container;
-          .flex-container-align-all-center;
+        .ant-layout-footer {
+          padding: 3.2rem 0;
+          text-align: center;
         }
-      }
-
-      &-footer {
-        padding: 3.2rem 0;
-        text-align: center;
       }
     }
   }

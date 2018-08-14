@@ -33,23 +33,23 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
   return (
     <ConnectedRouter history={history}>
       <Layout className="xms-layout">
-        <Header className="xms-layout-header">
+        <Header>
           {app.config.name}
         </Header>
         <Layout>
-          <Sider className="xms-layout-sider" width="9.6rem">
+          <Sider width="9.6rem">
             <Menu routes={app.routes} />
           </Sider>
-          <Layout className="xms-layout-content-layout">
+          <Layout className="content-layout">
             <Breadcrumb routes={app.routes} />
-            <Content className="xms-layout-content">
+            <Content>
               <Switch>
                 {
                   app.routes.map(route => renderRoute(route))
                 }
               </Switch>
             </Content>
-            <Footer className="xms-layout-footer">
+            <Footer>
               ©2011-2018 qingting.fm All Rights Reserved.
             </Footer>
           </Layout>
