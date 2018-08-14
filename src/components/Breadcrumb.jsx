@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { matchPath } from 'react-router';
-import { Link } from 'react-router-dom';
+import { withRouter, matchPath } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { forEach } from 'lodash';
 import { Breadcrumb } from 'antd';
-import './NavBreadcrumb.less';
+import './Breadcrumb.less';
 
 function addBreadcrumbItem(pathname, routes, items) {
   forEach(routes, ({
-    path, component, navTitle, routes: childRoutes,
+    path, component, title, routes: childRoutes,
   }) => {
-    if (path === '/' || matchPath(pathname, { path })) {
-      if (component && navTitle) {
+    if (matchPath(pathname, { path })) {
+      if (component) {
         items.push((
           <Breadcrumb.Item key={path}>
-            <Link to={path}>
-              {navTitle}
-            </Link>
+            <NavLink exact to={path}>
+              {title}
+            </NavLink>
           </Breadcrumb.Item>
         ));
       }
@@ -28,26 +28,29 @@ function addBreadcrumbItem(pathname, routes, items) {
   });
 }
 
-export default class NavBreadcrumb extends React.PureComponent {
+class NavBreadcrumb extends React.PureComponent {
   static propTypes = {
-    pathname: PropTypes.string.isRequired, // eslint-disable-line react/no-unused-prop-types
+    // eslint-disable-next-line react/forbid-prop-types
+    location: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
     routes: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   };
 
   renderBreadcrumbItems() {
     const items = [];
-    const { routes, pathname } = this.props;
+    const { routes, location } = this.props;
 
-    addBreadcrumbItem(pathname, routes, items);
+    addBreadcrumbItem(location.pathname, routes, items);
 
     return items;
   }
 
   render() {
     return (
-      <Breadcrumb className="xms-nav-breadcrumb">
+      <Breadcrumb className="xms-breadcrumb">
         {this.renderBreadcrumbItems()}
       </Breadcrumb>
     );
   }
 }
+
+export default withRouter(NavBreadcrumb);

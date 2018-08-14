@@ -3,6 +3,7 @@ import { Route, Switch, routerRedux } from 'dva/router';
 import { Layout, Spin } from 'antd';
 import dynamic from 'dva/dynamic';
 import Menu from './components/Menu';
+import Breadcrumb from './components/Breadcrumb';
 import './router.less';
 
 const {
@@ -40,6 +41,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             <Menu routes={app.routes} />
           </Sider>
           <Layout className="xms-layout-content-layout">
+            <Breadcrumb routes={app.routes} />
             <Content className="xms-layout-content">
               <Switch>
                 {
