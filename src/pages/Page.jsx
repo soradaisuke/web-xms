@@ -22,7 +22,8 @@ export default class Page extends React.PureComponent {
   };
 
   renderContent() {
-    if (this.props.isError) {
+    const { isLoading, isError, children } = this.props;
+    if (isError) {
       return (
         <Alert
           showIcon
@@ -33,12 +34,14 @@ export default class Page extends React.PureComponent {
       );
     }
 
-    return <Spin className="xms-page-loading" spinning={this.props.isLoading} size="large">{this.props.children}</Spin>;
+    return <Spin className="xms-page-loading" spinning={isLoading} size="large">{children}</Spin>;
   }
 
   render() {
+    const { className } = this.props;
+
     return (
-      <div className={classNames('xms-page', this.props.className)}>
+      <div className={classNames('xms-page', className)}>
         { this.renderContent() }
       </div>
     );
