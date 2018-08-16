@@ -12,7 +12,7 @@ const {
 const { ConnectedRouter } = routerRedux;
 
 dynamic.setDefaultLoadingComponent(() => (
-  <div className="xms-layout-content-loading">
+  <div className="dynamic-loading">
     <Spin size="large" />
   </div>
 ));
