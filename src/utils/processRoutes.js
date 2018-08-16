@@ -27,11 +27,16 @@ export default function processRoutes({ app, routes }) {
     return (rs || []).map((route) => {
       valiadateRoute(route, prefix);
 
-      const { config } = route;
+      const { config, path } = route;
       let { component } = route;
 
       if (config) {
-        component = dynamicRecordsComponent({ app, config });
+        component = dynamicRecordsComponent({
+          app,
+          config: {
+            ...config, namespace: path.replace(/\//g, '@'),
+          },
+        });
       }
 
       return {

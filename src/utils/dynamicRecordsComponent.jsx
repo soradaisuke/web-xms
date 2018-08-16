@@ -10,7 +10,7 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
 function generateService({
-  path, post, put, remove, defaultFilter,
+  path, post, put, remove,
 } = {}) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
@@ -20,7 +20,7 @@ function generateService({
     fetch: async ({ page = 1, pagesize = 10, filter = {} }) => (
       request.get(path, {
         params: {
-          page, pagesize, filter: JSON.stringify({ ...defaultFilter, ...filter }),
+          page, pagesize, filter,
         },
       })
     ),
@@ -41,7 +41,7 @@ function generateService({
   return service;
 }
 
-function generateModel({ service, namespace, mutable = {} }) {
+function generateModel({ service, namespace, api: { defaultFilter = {} } = {} }) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -65,8 +65,21 @@ function generateModel({ service, namespace, mutable = {} }) {
       },
     },
     effects: {
-      * fetch({ payload: { page = 1, pagesize = 10 } }, { call, put }) {
-        const { items: records, total } = yield call(service.fetch, { page, pagesize });
+      * fetch({
+        payload: {
+          page = 1, pagesize = 10, filter = {}, params,
+        },
+      }, { call, put }) {
+        let f = filter;
+        if (isFunction(defaultFilter)) {
+          f = { ...f, ...defaultFilter(params) };
+        } else if (defaultFilter) {
+          f = { ...f, ...defaultFilter };
+        }
+
+        const { items: records, total } = yield call(service.fetch, {
+          page, pagesize, filter: JSON.stringify(f),
+        });
         yield put({
           type: 'save',
           payload: {
@@ -77,19 +90,19 @@ function generateModel({ service, namespace, mutable = {} }) {
     },
   };
 
-  if (mutable.create) {
+  if (service.create) {
     model.create = function* create({ payload: { body } }, { call }) {
       yield call(service.create, { body });
     };
   }
 
-  if (mutable.patch) {
+  if (service.patch) {
     model.patch = function* patch({ payload: { id, body } }, { call }) {
       yield call(service.patch, { id, body });
     };
   }
 
-  if (mutable.remove) {
+  if (service.remove) {
     model.remove = function* remove({ payload: { id } }, { call }) {
       yield call(service.remove, { id });
     };
@@ -149,7 +162,7 @@ function generateRecordsPage({
 
   const mapDispatchToProps = (dispatch) => {
     const props = {
-      fetch: async ({ pageNum, pageSize }) => dispatch({ type: `${namespace}/fetch`, payload: { pageNum, pageSize } }),
+      fetch: async ({ page, pagesize, params }) => dispatch({ type: `${namespace}/fetch`, payload: { page, pagesize, params } }),
     };
 
     if (mutable.create) {

@@ -120,13 +120,13 @@ class RecordsPage extends React.PureComponent {
 
   async fetch() {
     const {
-      fetch, page, pagesize, match,
+      fetch, page, pagesize, match: { params },
     } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
-      await fetch({ page, pagesize, match });
+      await fetch({ page, pagesize, params });
       this.setState({
         isError: false,
         isLoading: false,
