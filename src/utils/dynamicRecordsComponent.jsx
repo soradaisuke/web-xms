@@ -10,15 +10,19 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
 function generateService({
-  path, post, put, remove,
+  path, post, put, remove, defaultFilter,
 } = {}) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
   }
 
   const service = {
-    fetch: async ({ page = 1, pagesize = 10 }) => (
-      request.get(path, { params: { page, pagesize } })
+    fetch: async ({ page = 1, pagesize = 10, filter = {} }) => (
+      request.get(path, {
+        params: {
+          page, pagesize, filter: JSON.stringify({ ...defaultFilter, ...filter }),
+        },
+      })
     ),
   };
 

@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { routerRedux } from 'dva/router';
 import { parse } from 'query-string';
-import { Table, Pagination, Button, Popconfirm, message } from 'antd';
+import {
+  Table, Pagination, Button, Popconfirm, message,
+} from 'antd';
 import { connect } from 'dva';
 import { toInteger } from 'lodash';
 import generateUri from '../utils/generateUri';
@@ -18,6 +21,7 @@ class RecordsPage extends React.PureComponent {
   static propTypes = {
     changePage: PropTypes.func.isRequired,
     fetch: PropTypes.func.isRequired,
+    match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string,
@@ -29,8 +33,8 @@ class RecordsPage extends React.PureComponent {
     })).isRequired,
     create: PropTypes.func,
     Modal: PropTypes.func,
-    pageNum: PropTypes.number,
-    pageSize: PropTypes.number,
+    page: PropTypes.number,
+    pagesize: PropTypes.number,
     patch: PropTypes.func,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
@@ -45,8 +49,8 @@ class RecordsPage extends React.PureComponent {
     renderAction: null,
     records: Immutable.List(),
     Modal: null,
-    pageNum: 1,
-    pageSize: 10,
+    page: 1,
+    pagesize: 10,
     total: 0,
   };
 
@@ -70,21 +74,24 @@ class RecordsPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.pageSize !== this.props.pageSize || prevProps.pageNum !== this.props.pageNum) {
+    const { pagesize, page } = this.props;
+    if (prevProps.pagesize !== pagesize || prevProps.page !== page) {
       this.fetch();
     }
   }
 
-  onChangePage = (pageNum) => {
-    this.props.changePage({ pageNum, pageSize: this.props.pageSize });
+  onChangePage = (page) => {
+    const { changePage, pagesize } = this.props;
+    changePage({ page, pagesize });
   }
 
   onConfirmRemove = async (record) => {
+    const { remove, fetch } = this.props;
     const hide = message.loading('正在删除……', 0);
     try {
-      await this.props.remove(record.id);
+      await remove(record.id);
       hide();
-      await this.props.fetch();
+      await fetch();
     } catch (e) {
       hide();
       message.error(e.message);
@@ -92,15 +99,16 @@ class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (id, body) => {
+    const { patch, create, fetch } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
       if (id) {
-        await this.props.patch({ id, body });
+        await patch({ id, body });
       } else {
-        await this.props.create({ body });
+        await create({ body });
       }
       hide();
-      await this.props.fetch();
+      await fetch();
     } catch (e) {
       hide();
       message.error(e.message);
@@ -108,11 +116,14 @@ class RecordsPage extends React.PureComponent {
   }
 
   async fetch() {
+    const {
+      fetch, page, pagesize, match,
+    } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
-      await this.props.fetch({ pageNum: this.props.pageNum, pageSize: this.props.pageSize });
+      await fetch({ page, pagesize, match });
       this.setState({
         isError: false,
         isLoading: false,
@@ -126,7 +137,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderSchema() {
-    return this.props.schema.map(({
+    const { schema } = this.props;
+
+    return schema.map(({
       key, title, link, show,
     }) => {
       if (show) {
@@ -159,8 +172,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderContent() {
+    const { isLoading, dataSource } = this.state;
     const {
-      Modal, create, patch, remove, renderAction,
+      Modal, create, patch, remove, renderAction, total, page, pagesize,
     } = this.props;
     return (
       <React.Fragment>
@@ -172,8 +186,8 @@ class RecordsPage extends React.PureComponent {
           )
         }
         <Table
-          loading={this.state.isLoading}
-          dataSource={this.state.dataSource}
+          loading={isLoading}
+          dataSource={dataSource}
           rowKey={record => record.id} // eslint-disable-line react/jsx-no-bind
           pagination={false}
         >
@@ -211,9 +225,9 @@ class RecordsPage extends React.PureComponent {
         </Table>
         <Pagination
           className="ant-table-pagination"
-          total={this.props.total}
-          current={this.props.pageNum}
-          pageSize={this.props.pageSize}
+          total={total}
+          current={page}
+          pagesize={pagesize}
           onChange={this.onChangePage}
         />
       </React.Fragment>
@@ -221,8 +235,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   render() {
+    const { isError } = this.state;
     return (
-      <Page isError={this.state.isError}>
+      <Page isError={isError}>
         {this.renderContent()}
       </Page>
     );
@@ -232,20 +247,20 @@ class RecordsPage extends React.PureComponent {
 const mapStateToProps = (state) => {
   const queries = parse(state.routing.location.search);
   const props = {};
-  if (queries.pageNum) {
-    props.pageNum = toInteger(queries.pageNum);
+  if (queries.page) {
+    props.page = toInteger(queries.page);
   }
-  if (queries.pageSize) {
-    props.pageSize = toInteger(queries.pageSize);
+  if (queries.pagesize) {
+    props.pagesize = toInteger(queries.pagesize);
   }
   return props;
 };
 
 const mapDispatchToProps = dispatch => ({
-  async changePage({ pageNum, pageSize }) {
-    const uri = generateUri(window.location.href, { pageNum, pageSize });
+  async changePage({ page, pagesize }) {
+    const uri = generateUri(window.location.href, { page, pagesize });
     return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RecordsPage);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RecordsPage));
