@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { upperFirst } from 'lodash';
+import { upperFirst, isFunction } from 'lodash';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
@@ -164,28 +164,31 @@ function generateRecordsPage({
   return connect(mapStateToProps, mapDispatchToProps)(Page);
 }
 
-export default function dynamicRecords({ app, config: resolveConfig }) {
+function generateDynamicRecordsComponent({ app, config }) {
+  const service = generateService(config);
+  const model = generateModel({ ...config, service });
+  const Modal = generateModal(config);
+  return dynamic({
+    app,
+    models: () => [Promise.resolve(model)],
+    component: () => Promise.resolve(generateRecordsPage({ ...config, Modal })),
+  });
+}
+
+export default function dynamicRecordsComponent({ app, config }) {
   if (!app) {
     throw new Error('dynamicRecords: app is required');
   }
-  if (!resolveConfig) {
-    throw new Error('dynamicRecords: resolveConfig is required');
+  if (!config) {
+    throw new Error('dynamicRecords: config is required');
   }
 
-  return dynamic({
-    app,
-    resolve: () => (
-      resolveConfig().then((c) => {
-        const config = c.default || c;
-        const service = generateService(config);
-        const model = generateModel({ ...config, service });
-        const Modal = generateModal(config);
-        return dynamic({
-          app,
-          models: () => [Promise.resolve(model)],
-          component: () => Promise.resolve(generateRecordsPage({ ...config, Modal })),
-        });
-      })
-    ),
-  });
+  if (isFunction(config)) {
+    return dynamic({
+      app,
+      resolve: () => config().then(c => generateDynamicRecordsComponent({ app, config: c.default || c })),
+    });
+  }
+
+  return generateDynamicRecordsComponent({ app, config });
 }
