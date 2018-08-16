@@ -151,7 +151,7 @@ class RecordsPage extends React.PureComponent {
               key={key}
               render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
                 <span>
-                  <Link to={`${link.path || window.location.pathname}/${record[link.key || key]}`}>
+                  <Link to={`${link.path || window.location.pathname}/${record[link.key || 'id']}`}>
                     {text}
                   </Link>
                 </span>
