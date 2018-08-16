@@ -46,7 +46,7 @@ class NavMenu extends React.PureComponent {
 
   render() {
     const { selectedKeys, openKeys } = selector(this.props);
-
+    const { routes } = this.props;
     return (
       <Menu
         className="xms-menu"
@@ -56,24 +56,27 @@ class NavMenu extends React.PureComponent {
         defaultOpenKeys={openKeys}
       >
         {
-          this.props.routes.map(({ path, title, routes }) => {
-            if (routes && routes.length > 0) {
-              return (
-                <SubMenu
-                  key={path}
-                  title={title}
-                >
-                  {
-                    routes.map(({ path: subPath, title: subTitle }) => (
-                      <Menu.Item key={subPath}>
-                        <Link to={subPath}>
-                          {subTitle}
-                        </Link>
-                      </Menu.Item>
-                    ))
-                  }
-                </SubMenu>
-              );
+          routes.filter(({ title }) => !!title).map(({ path, title, routes: childRoutes }) => {
+            if (childRoutes && childRoutes.length > 0) {
+              const subMenus = childRoutes.filter(({ childTitle }) => !!childTitle)
+                .map(({ path: subPath, title: childTitle }) => (
+                  <Menu.Item key={subPath}>
+                    <Link to={subPath}>
+                      {childTitle}
+                    </Link>
+                  </Menu.Item>
+                ));
+
+              if (subMenus.length > 0) {
+                return (
+                  <SubMenu
+                    key={path}
+                    title={title}
+                  >
+                    {subMenus}
+                  </SubMenu>
+                );
+              }
             }
 
             return (

@@ -25,10 +25,13 @@ class RecordsPage extends React.PureComponent {
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string,
-      link: PropTypes.shape({
-        path: PropTypes.string,
-        key: PropTypes.string,
-      }),
+      link: PropTypes.oneOfType([
+        PropTypes.shape({
+          path: PropTypes.string,
+          key: PropTypes.string,
+        }),
+        PropTypes.bool,
+      ]),
       show: PropTypes.bool,
     })).isRequired,
     create: PropTypes.func,
