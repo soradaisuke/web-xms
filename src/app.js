@@ -13,8 +13,11 @@ export default function xms(config = {}) {
   });
 
   app.config = merge(defaultConfig, config);
-  const { routes, api: { host } } = config;
-  request.setHost(host);
+  const { routes, api: { host } = {} } = config;
+  if (host) {
+    request.setHost(host);
+  }
+
   app.routes = processRoutes({ app, routes });
   app.router(router);
 
