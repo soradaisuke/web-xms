@@ -5,6 +5,11 @@ import generateUri from '../utils/generateUri';
 
 let commonParams = {};
 let authParams = {};
+let { host } = window.location;
+
+function setHost(h) {
+  host = h;
+}
 
 function setCommonParams(params) {
   commonParams = params;
@@ -14,7 +19,7 @@ function setAuthParams(params) {
   authParams = params;
 }
 
-async function generateRequest(url, options = {}) {
+async function generateRequest(path, options = {}) {
   const newOptions = { ...options };
   newOptions.headers = newOptions.headers || {};
   if (options.method && includes(['POST', 'PUT', 'PATCH'], options.method) !== -1 && isPlainObject(newOptions.body)) {
@@ -30,7 +35,7 @@ async function generateRequest(url, options = {}) {
     ...(options.withAuth ? authParams : {}),
   };
 
-  const uri = generateUri(url, params);
+  const uri = generateUri(`//${host}${path}`, params);
 
   try {
     let response = await fetch(uri.href, newOptions);
@@ -112,10 +117,6 @@ async function get(url, options = {}) {
   return generateRequest(url, { ...options, method: 'GET' });
 }
 
-async function patch(url, options = {}) {
-  return generateRequest(url, { ...options, method: 'PATCH' });
-}
-
 async function post(url, options = {}) {
   return generateRequest(url, { ...options, method: 'POST' });
 }
@@ -129,11 +130,11 @@ async function remove(url, options = {}) {
 }
 
 export default {
+  setHost,
   setAuthParams,
   setCommonParams,
   get,
   post,
   put,
-  patch,
   remove,
 };

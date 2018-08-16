@@ -9,27 +9,29 @@ import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
-function generateService({ apiPath, mutable = {} }) {
-  if (!apiPath) {
-    throw new Error('dynamicRecords generateService: apiPath is required');
+function generateService({
+  path, post, put, remove,
+} = {}) {
+  if (!path) {
+    throw new Error('dynamicRecordsComponent generateService: path is required');
   }
 
   const service = {
-    fetch: async ({ pageNum = 1, pageSize = 20 }) => (
-      request.get(apiPath, { params: { pageNum, pageSize } })
+    fetch: async ({ page = 1, pagesize = 10 }) => (
+      request.get(path, { params: { page, pagesize } })
     ),
   };
 
-  if (mutable.create) {
-    service.create = async ({ body }) => request.post(`${apiPath}`, { body });
+  if (post) {
+    service.create = async ({ body }) => request.post(`${path}`, { body });
   }
 
-  if (mutable.patch) {
-    service.patch = async ({ id, body }) => request.patch(`${apiPath}/${id}`, { body });
+  if (put) {
+    service.patch = async ({ id, body }) => request.patch(`${path}/${id}`, { body });
   }
 
-  if (mutable.remove) {
-    service.remove = async ({ id }) => request.remove(`${apiPath}/${id}`);
+  if (remove) {
+    service.remove = async ({ id }) => request.remove(`${path}/${id}`);
   }
 
   return service;
@@ -165,7 +167,7 @@ function generateRecordsPage({
 }
 
 function generateDynamicRecordsComponent({ app, config }) {
-  const service = generateService(config);
+  const service = generateService(config.api);
   const model = generateModel({ ...config, service });
   const Modal = generateModal(config);
   return dynamic({
@@ -186,7 +188,9 @@ export default function dynamicRecordsComponent({ app, config }) {
   if (isFunction(config)) {
     return dynamic({
       app,
-      resolve: () => config().then(c => generateDynamicRecordsComponent({ app, config: c.default || c })),
+      resolve: () => config().then(c => (
+        generateDynamicRecordsComponent({ app, config: c.default || c })
+      )),
     });
   }
 
