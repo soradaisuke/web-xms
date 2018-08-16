@@ -45,28 +45,28 @@ function generateModel({ service, namespace, mutable = {} }) {
     namespace,
     state: Immutable.fromJS({
       records: [],
-      total: null,
-      pageNum: null,
-      pageSize: null,
+      total: 0,
+      page: 0,
+      pagesize: 0,
     }),
     reducers: {
       save(state, {
         payload: {
-          records, total, pageNum, pageSize,
+          records, total, page, pagesize,
         },
       }) {
         return state.merge(Immutable.fromJS({
-          records, total, pageNum, pageSize,
+          records, total, page, pagesize,
         }));
       },
     },
     effects: {
-      * fetch({ payload: { pageNum = 1, pageSize = 20 } }, { call, put }) {
-        const { rooms, total } = yield call(service.fetch, { pageNum, pageSize });
+      * fetch({ payload: { page = 1, pagesize = 10 } }, { call, put }) {
+        const { items: records, total } = yield call(service.fetch, { page, pagesize });
         yield put({
           type: 'save',
           payload: {
-            pageNum, pageSize, total, records: rooms,
+            page, pagesize, total, records,
           },
         });
       },
