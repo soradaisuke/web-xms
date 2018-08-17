@@ -10,7 +10,7 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
 function generateService({
-  path, create, put, remove,
+  path, create, edit, remove,
 } = {}) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
@@ -27,15 +27,15 @@ function generateService({
   };
 
   if (create) {
-    service.create = async ({ body }) => request.post(`${path}`, { body });
+    service.create = async body => request.post(`${path}`, { body });
   }
 
-  if (put) {
-    service.patch = async ({ id, body }) => request.patch(`${path}/${id}`, { body });
+  if (edit) {
+    service.edit = async body => request.put(`${path}/${body.id}`, { body });
   }
 
   if (remove) {
-    service.remove = async ({ id }) => request.remove(`${path}/${id}`);
+    service.remove = async id => request.remove(`${path}/${id}`);
   }
 
   return service;
@@ -92,19 +92,19 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
 
   if (service.create) {
     model.effects.create = function* create({ payload: { body } }, { call }) {
-      yield call(service.create, { body });
+      yield call(service.create, body);
     };
   }
 
-  if (service.patch) {
-    model.patch = function* patch({ payload: { id, body } }, { call }) {
-      yield call(service.patch, { id, body });
+  if (service.edit) {
+    model.effects.edit = function* edit({ payload: { body } }, { call }) {
+      yield call(service.edit, body);
     };
   }
 
   if (service.remove) {
-    model.remove = function* remove({ payload: { id } }, { call }) {
-      yield call(service.remove, { id });
+    model.effects.remove = function* remove({ payload: { id } }, { call }) {
+      yield call(service.remove, id);
     };
   }
 
@@ -143,7 +143,7 @@ function generateModal({ namespace, schema, api: { create, edit } }) {
 }
 
 function generateRecordsPage({
-  namespace, schema, api: { create }, Modal,
+  namespace, schema, api: { create, edit, remove }, Modal,
 }) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -166,18 +166,16 @@ function generateRecordsPage({
     };
 
     if (create) {
-      props.create = async ({ body }) => {
-        dispatch({ type: `${namespace}/create`, payload: { body } });
-      }
+      props.create = async body => dispatch({ type: `${namespace}/create`, payload: { body } });
     }
 
-    // if (mutable.patch) {
-    //   props.patch = async ({ id, body }) => dispatch({ type: `${namespace}/patch`, payload: { id, body } });
-    // }
+    if (edit) {
+      props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { body } });
+    }
 
-    // if (mutable.remove) {
-    //   props.remove = async ({ id }) => dispatch({ type: `${namespace}/remove`, payload: { id } });
-    // }
+    if (remove) {
+      props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
+    }
 
     return props;
   };

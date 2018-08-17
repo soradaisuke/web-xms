@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Input } from 'antd';
-import RecordFormItem from './RecordFormItem';
 
 const FormItem = Form.Item;
 
@@ -37,7 +36,7 @@ class RecordModal extends React.PureComponent {
 
     form.validateFields((err, values) => {
       if (!err) {
-        onOk(record.id, values);
+        onOk({ ...record, ...values });
         this.hideModelHandler();
       }
     });
@@ -64,13 +63,14 @@ class RecordModal extends React.PureComponent {
   }
 
   renderFormItem({ key, type, title }) {
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, record } = this.props;
 
     let children;
 
     switch (type) {
       case 'text':
         children = getFieldDecorator(key, {
+          initialValue: this.isEdit() ? record[key] : '',
           rules: [{ required: true, message: `${title}不能为空`, whitespace: true }],
         })(<Input />);
         break;

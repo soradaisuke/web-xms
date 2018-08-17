@@ -44,7 +44,7 @@ class RecordsPage extends React.PureComponent {
     Modal: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
-    patch: PropTypes.func,
+    edit: PropTypes.func,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     renderAction: PropTypes.func,
@@ -53,7 +53,7 @@ class RecordsPage extends React.PureComponent {
 
   static defaultProps = {
     create: null,
-    patch: null,
+    edit: null,
     remove: null,
     renderAction: null,
     records: Immutable.List(),
@@ -131,26 +131,26 @@ class RecordsPage extends React.PureComponent {
   }
 
   onConfirmRemove = async (record) => {
-    const { remove, fetch } = this.props;
+    const { remove } = this.props;
     const hide = message.loading('正在删除……', 0);
     try {
       await remove(record.id);
       hide();
-      await fetch();
+      await this.fetch();
     } catch (e) {
       hide();
       message.error(e.message);
     }
   }
 
-  editRecord = async (id, body) => {
-    const { patch, create } = this.props;
+  editRecord = async (body) => {
+    const { edit, create } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
-      if (id) {
-        await patch({ id, body });
+      if (body.id) {
+        await edit(body);
       } else {
-        await create({ body });
+        await create(body);
       }
       hide();
       await this.fetch();
@@ -190,7 +190,7 @@ class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, create, patch, remove, renderAction, total, page, pagesize, schema,
+      Modal, create, edit, remove, renderAction, total, page, pagesize, schema,
     } = this.props;
     return (
       <React.Fragment>
@@ -209,16 +209,16 @@ class RecordsPage extends React.PureComponent {
         >
           {this.renderSchema()}
           {
-            (patch || remove || renderAction) && (
+            (edit || remove || renderAction) && (
               <Column
                 title="操作"
                 key="action"
                 render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
                   <span>
                     {
-                      Modal && patch && (
+                      Modal && edit && (
                         <Modal record={record} onOk={this.editRecord}>
-                          <Button type="primary">编辑</Button>
+                          <Button className="action-button" type="primary">编辑</Button>
                         </Modal>
                       )
                     }
@@ -229,7 +229,7 @@ class RecordsPage extends React.PureComponent {
                           // eslint-disable-next-line react/jsx-no-bind
                           onConfirm={() => this.onConfirmRemove(record)}
                         >
-                          <Button type="primary">删除</Button>
+                          <Button className="action-button" type="primary">删除</Button>
                         </Popconfirm>
                       )
                     }
@@ -272,11 +272,11 @@ const mapStateToProps = (state) => {
   return props;
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDiseditToProps = disedit => ({
   async changePage({ page, pagesize }) {
     const uri = generateUri(window.location.href, { page, pagesize });
-    return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
+    return disedit(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
   },
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RecordsPage));
+export default withRouter(connect(mapStateToProps, mapDiseditToProps)(RecordsPage));
