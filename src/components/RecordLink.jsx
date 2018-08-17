@@ -54,7 +54,7 @@ export default class RecordLink extends React.PureComponent {
     const { children, link, record } = this.props;
 
     if (link.type === 'external') {
-      return <a href={getTextFromTemplate(link.template, record)} target="_blank">{children}</a>;
+      return <a href={getTextFromTemplate(link.template, record)} rel="noopener noreferrer" target="_blank">{children}</a>;
     }
 
     return (
