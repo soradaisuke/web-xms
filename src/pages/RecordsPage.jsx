@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import { routerRedux } from 'dva/router';
 import { parse } from 'query-string';
 import {
@@ -10,6 +9,7 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import { toInteger } from 'lodash';
+import RecordLink from '../components/RecordLink';
 import generateUri from '../utils/generateUri';
 import Page from './Page';
 
@@ -154,9 +154,9 @@ class RecordsPage extends React.PureComponent {
               key={key}
               render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
                 <span>
-                  <Link to={`${link.path || window.location.pathname}/${record[link.key || 'id']}`}>
+                  <RecordLink link={link} record={record}>
                     {text}
-                  </Link>
+                  </RecordLink>
                 </span>
               )}
             />
