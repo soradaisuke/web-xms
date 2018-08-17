@@ -2,27 +2,39 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, matchPath } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import { forEach } from 'lodash';
+import { forEach, isFunction, isString } from 'lodash';
 import { Breadcrumb } from 'antd';
 import './Breadcrumb.less';
 
-function addBreadcrumbItem(pathname, routes, items) {
+function addBreadcrumbItem({
+  pathname, routes, items, params,
+}) {
   forEach(routes, ({
-    path, component, title, routes: childRoutes,
+    path, component, title, breadcrumb, routes: childRoutes,
   }) => {
     if (matchPath(pathname, { path })) {
       if (component) {
+        let breadcrumbTitle;
+
+        if (isFunction(breadcrumb)) {
+          breadcrumbTitle = breadcrumb(params);
+        } else if (isString(breadcrumb)) {
+          breadcrumbTitle = breadcrumb;
+        }
+
         items.push((
           <Breadcrumb.Item key={path}>
             <NavLink exact to={path}>
-              {title}
+              {breadcrumbTitle || title}
             </NavLink>
           </Breadcrumb.Item>
         ));
       }
 
       if (childRoutes && childRoutes.length > 0) {
-        addBreadcrumbItem(pathname, childRoutes, items);
+        addBreadcrumbItem({
+          pathname, routes: childRoutes, items, params,
+        });
       }
     }
   });
@@ -32,14 +44,17 @@ class NavBreadcrumb extends React.PureComponent {
   static propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     location: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
+    match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     routes: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
   };
 
   renderBreadcrumbItems() {
     const items = [];
-    const { routes, location } = this.props;
+    const { routes, match: { params }, location: { pathname } } = this.props;
 
-    addBreadcrumbItem(location.pathname, routes, items);
+    addBreadcrumbItem({
+      pathname, routes, items, params,
+    });
 
     return items;
   }

@@ -17,13 +17,29 @@ dynamic.setDefaultLoadingComponent(() => (
   </div>
 ));
 
-function renderRoute({ path, component, routes }) { // eslint-disable-line react/prop-types
+function renderRoute({
+  app, path, component: Component, routes,
+}) {
   const children = [];
-  if (component) {
-    children.push(<Route exact key={path} path={path} component={component} />);
+  if (Component) {
+    children.push((
+      <Route
+        exact
+        key={path}
+        path={path}
+        render={() => (
+          <React.Fragment>
+            <Breadcrumb routes={app.routes} />
+            <Content>
+              <Component />
+            </Content>
+          </React.Fragment>
+        )}
+      />
+    ));
   }
   if (routes && routes.length > 0) {
-    return children.concat(routes.map(route => renderRoute(route)));
+    return children.concat(routes.map(route => renderRoute({ ...route, app })));
   }
 
   return children;
@@ -41,14 +57,11 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             <Menu routes={app.routes} />
           </Sider>
           <Layout className="content-layout">
-            <Breadcrumb routes={app.routes} />
-            <Content>
-              <Switch>
-                {
-                  app.routes.map(route => renderRoute(route))
-                }
-              </Switch>
-            </Content>
+            <Switch>
+              {
+                app.routes.map(route => renderRoute({ ...route, app }))
+              }
+            </Switch>
             <Footer>
               ©2011-2018 qingting.fm All Rights Reserved.
             </Footer>
