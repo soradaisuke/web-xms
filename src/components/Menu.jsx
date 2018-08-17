@@ -5,7 +5,6 @@ import { withRouter, matchPath } from 'react-router';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
-import './Menu.less';
 
 const { SubMenu } = Menu;
 
@@ -49,7 +48,6 @@ class NavMenu extends React.PureComponent {
     const { routes } = this.props;
     return (
       <Menu
-        className="xms-menu"
         theme="dark"
         mode="inline"
         selectedKeys={selectedKeys}
