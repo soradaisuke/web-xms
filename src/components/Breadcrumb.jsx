@@ -4,7 +4,6 @@ import { withRouter, matchPath } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { forEach, isFunction, isString } from 'lodash';
 import { Breadcrumb } from 'antd';
-import './Breadcrumb.less';
 
 function addBreadcrumbItem({
   pathname, routes, items, params,

@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Alert, Spin } from 'antd';
-import './Page.less';
 
 export default class Page extends React.PureComponent {
   static displayName = 'Page';

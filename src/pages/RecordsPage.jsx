@@ -122,7 +122,6 @@ class RecordsPage extends React.PureComponent {
     const {
       fetch, page, pagesize, match: { params },
     } = this.props;
-    console.log(this.props.match)
     this.setState({
       isLoading: true,
     });

@@ -26,13 +26,8 @@ html, body {
         .flex-container-align-items-center();
         .font-medium();
 
-        height: 5.05rem;
         background: #6760FA;
-        font-size: 1.05rem;
         color: #FFFFFF;
-        line-height: 1.05rem;
-        padding-left: 1.95rem;
-        padding-right: 3.2rem;
 
         &:before {
           .background-contain-center-no-repeat();
@@ -41,25 +36,30 @@ html, body {
           width: 6.55rem;
           height: 1.65rem;
           background-image: url('./assets/ic-logo.png');
-          margin-right: 2.05rem;
+          margin-right: 1.4rem;
         }
       }
 
-      .ant-layout-sider.ant-layout-sider-dark {
-        background: @sider-background-color;
-        padding-top: 2.31rem;
-      }
-
       .content-layout {
-        padding: 0.85rem 3.2rem 0;
+        padding: 0 1.2rem;
 
         .dynamic-loading {
           .flex-row-container();
           .flex-container-align-all-center();
         }
 
+        .ant-breadcrumb {
+          margin: 0.8rem 0;
+        }
+
+        .ant-layout-content {
+          padding: 1.2rem;
+          background: #FFFFFF;
+          box-shadow: 0rem 0.1rem 0.8rem 0rem rgba(212,215,218,0.51);
+          border-radius: 0.45rem;
+        }
+
         .ant-layout-footer {
-          padding: 3.2rem 0;
           text-align: center;
         }
       }
