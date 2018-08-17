@@ -12,6 +12,7 @@ import { toInteger } from 'lodash';
 import RecordLink from '../components/RecordLink';
 import generateUri from '../utils/generateUri';
 import Page from './Page';
+import './RecordsPage.less';
 
 const { Column } = Table;
 
@@ -24,7 +25,7 @@ class RecordsPage extends React.PureComponent {
     match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
-      title: PropTypes.string,
+      title: PropTypes.string.isRequired,
       link: PropTypes.oneOfType([
         PropTypes.shape({
           path: PropTypes.string,
@@ -32,7 +33,12 @@ class RecordsPage extends React.PureComponent {
         }),
         PropTypes.bool,
       ]),
-      show: PropTypes.bool,
+      visibility: PropTypes.oneOfType([
+        PropTypes.shape({
+          tabel: PropTypes.bool,
+        }),
+        PropTypes.bool,
+      ]),
     })).isRequired,
     create: PropTypes.func,
     Modal: PropTypes.func,
@@ -56,6 +62,42 @@ class RecordsPage extends React.PureComponent {
     pagesize: 10,
     total: 0,
   };
+
+  static renderColumn({
+    visibility, link, title, key,
+  }) {
+    if (!visibility) {
+      return null;
+    }
+
+    if (visibility === true || visibility.tabel) {
+      if (link) {
+        return (
+          <Column
+            title={title}
+            dataIndex={key}
+            key={key}
+            render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
+              <span>
+                <RecordLink link={link} record={record}>
+                  {text}
+                </RecordLink>
+              </span>
+            )}
+          />
+        );
+      }
+      return (
+        <Column
+          title={title}
+          dataIndex={key}
+          key={key}
+        />
+      );
+    }
+
+    return null;
+  }
 
   state = {
     isError: false,
@@ -102,7 +144,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (id, body) => {
-    const { patch, create, fetch } = this.props;
+    const { patch, create } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
       if (id) {
@@ -111,7 +153,7 @@ class RecordsPage extends React.PureComponent {
         await create({ body });
       }
       hide();
-      await fetch();
+      await this.fetch();
     } catch (e) {
       hide();
       message.error(e.message);
@@ -142,49 +184,20 @@ class RecordsPage extends React.PureComponent {
   renderSchema() {
     const { schema } = this.props;
 
-    return schema.map(({
-      key, title, link, show,
-    }) => {
-      if (show) {
-        if (link) {
-          return (
-            <Column
-              title={title}
-              dataIndex={key}
-              key={key}
-              render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
-                <span>
-                  <RecordLink link={link} record={record}>
-                    {text}
-                  </RecordLink>
-                </span>
-              )}
-            />
-          );
-        }
-        return (
-          <Column
-            title={title}
-            dataIndex={key}
-            key={key}
-          />
-        );
-      }
-      return null;
-    });
+    return schema.map(definition => RecordsPage.renderColumn({ ...definition }));
   }
 
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, create, patch, remove, renderAction, total, page, pagesize,
+      Modal, create, patch, remove, renderAction, total, page, pagesize, schema,
     } = this.props;
     return (
       <React.Fragment>
         {
           Modal && create && (
-            <Modal record={{}} onOk={this.editRecord}>
-              <Button type="primary">添加</Button>
+            <Modal schema={schema} record={{}} onOk={this.editRecord}>
+              <Button className="add-button" type="primary">添加</Button>
             </Modal>
           )
         }

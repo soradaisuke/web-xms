@@ -10,7 +10,7 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
 function generateService({
-  path, post, put, remove,
+  path, create, put, remove,
 } = {}) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
@@ -26,7 +26,7 @@ function generateService({
     ),
   };
 
-  if (post) {
+  if (create) {
     service.create = async ({ body }) => request.post(`${path}`, { body });
   }
 
@@ -91,7 +91,7 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
   };
 
   if (service.create) {
-    model.create = function* create({ payload: { body } }, { call }) {
+    model.effects.create = function* create({ payload: { body } }, { call }) {
       yield call(service.create, { body });
     };
   }
@@ -111,8 +111,8 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
   return model;
 }
 
-function generateModal({ namespace, schema, mutable = {} }) {
-  if (!mutable.create || !mutable.patch) {
+function generateModal({ namespace, schema, api: { create, edit } }) {
+  if (!create && !edit) {
     return null;
   }
 
@@ -143,7 +143,7 @@ function generateModal({ namespace, schema, mutable = {} }) {
 }
 
 function generateRecordsPage({
-  namespace, schema, mutable = {}, Modal,
+  namespace, schema, api: { create }, Modal,
 }) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -165,17 +165,19 @@ function generateRecordsPage({
       fetch: async ({ page, pagesize, params }) => dispatch({ type: `${namespace}/fetch`, payload: { page, pagesize, params } }),
     };
 
-    if (mutable.create) {
-      props.create = async ({ body }) => dispatch({ type: `${namespace}/create`, payload: { body } });
+    if (create) {
+      props.create = async ({ body }) => {
+        dispatch({ type: `${namespace}/create`, payload: { body } });
+      }
     }
 
-    if (mutable.patch) {
-      props.patch = async ({ id, body }) => dispatch({ type: `${namespace}/patch`, payload: { id, body } });
-    }
+    // if (mutable.patch) {
+    //   props.patch = async ({ id, body }) => dispatch({ type: `${namespace}/patch`, payload: { id, body } });
+    // }
 
-    if (mutable.remove) {
-      props.remove = async ({ id }) => dispatch({ type: `${namespace}/remove`, payload: { id } });
-    }
+    // if (mutable.remove) {
+    //   props.remove = async ({ id }) => dispatch({ type: `${namespace}/remove`, payload: { id } });
+    // }
 
     return props;
   };

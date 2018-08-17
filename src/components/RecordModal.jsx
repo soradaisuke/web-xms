@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form } from 'antd';
+import { Modal, Form, Input } from 'antd';
+import RecordFormItem from './RecordFormItem';
+
+const FormItem = Form.Item;
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -12,6 +15,16 @@ class RecordModal extends React.PureComponent {
       getFieldDecorator: PropTypes.func.isRequired,
     }).isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    schema: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      visibility: PropTypes.oneOfType([
+        PropTypes.shape({
+          create: PropTypes.bool,
+          edit: PropTypes.bool,
+        }),
+        PropTypes.bool,
+      ]),
+    })).isRequired,
     onOk: PropTypes.func.isRequired,
   };
 
@@ -20,9 +33,11 @@ class RecordModal extends React.PureComponent {
   };
 
   onOk = () => {
-    this.props.form.validateFields((err, values) => {
+    const { form, record, onOk } = this.props;
+
+    form.validateFields((err, values) => {
       if (!err) {
-        this.props.onOk(this.props.record.id, values);
+        onOk(record.id, values);
         this.hideModelHandler();
       }
     });
@@ -43,23 +58,65 @@ class RecordModal extends React.PureComponent {
     });
   };
 
+  isEdit() {
+    const { record: { id } } = this.props;
+    return !!id;
+  }
+
+  renderFormItem({ key, type, title }) {
+    const { form: { getFieldDecorator } } = this.props;
+
+    let children;
+
+    switch (type) {
+      case 'text':
+        children = getFieldDecorator(key, {
+          rules: [{ required: true, message: `${title}不能为空`, whitespace: true }],
+        })(<Input />);
+        break;
+      default:
+        break;
+    }
+
+    if (children) {
+      return (
+        <FormItem
+          key={key}
+          label={title}
+        >
+          {children}
+        </FormItem>
+      );
+    }
+
+    return null;
+  }
+
   render() {
-    const { activator } = this.props;
+    const { activator, schema } = this.props;
+    const { visible } = this.state;
 
     return (
       <span>
-        <span role="button" onClick={this.showModelHandler}>
+        <span role="button" tabIndex={0} onClick={this.showModelHandler} onKeyPress={this.showModelHandler}>
           { activator }
         </span>
         {
-          this.state.visible && (
+          visible && (
             <Modal
-              title={this.props.record.id ? '编辑' : '添加'}
-              visible={this.state.visible}
+              title={this.isEdit() ? '编辑' : '添加'}
+              visible={visible}
               onOk={this.onOk}
               onCancel={this.hideModelHandler}
             >
-              <Form horizontal="true" onSubmit={this.okHandler} />
+              <Form onSubmit={this.okHandler}>
+                {
+                  schema.filter(({ visibility }) => (
+                    visibility && (visibility === true || (this.isEdit() && visibility.edit)
+                      || (!this.isEdit() && visibility.create))
+                  )).map(definition => this.renderFormItem({ ...definition }))
+                }
+              </Form>
             </Modal>
           )
         }
