@@ -9,21 +9,13 @@ import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
-function generateService({
-  path, create, edit, remove,
-} = {}) {
+function generateService({ api: { path }, action: { create, edit, remove } = {} }) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
   }
 
   const service = {
-    fetch: async ({ page = 1, pagesize = 10, filter = {} }) => (
-      request.get(path, {
-        params: {
-          page, pagesize, filter,
-        },
-      })
-    ),
+    fetch: async params => request.get(path, { params }),
   };
 
   if (create) {
@@ -41,7 +33,9 @@ function generateService({
   return service;
 }
 
-function generateModel({ service, namespace, api: { defaultFilter = {} } = {} }) {
+function generateModel({
+  namespace, api: { defaultFilter = {}, defaultOrder } = {}, action: { create, edit, remove },
+}, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -78,7 +72,7 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
         }
 
         const { items: records, total } = yield call(service.fetch, {
-          page, pagesize, filter: JSON.stringify(f),
+          page, pagesize, filter: JSON.stringify(f), order: defaultOrder,
         });
         yield put({
           type: 'save',
@@ -90,20 +84,20 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
     },
   };
 
-  if (service.create) {
-    model.effects.create = function* create({ payload: { body } }, { call }) {
+  if (create) {
+    model.effects.create = function* modelCreate({ payload: { body } }, { call }) {
       yield call(service.create, body);
     };
   }
 
-  if (service.edit) {
-    model.effects.edit = function* edit({ payload: { body } }, { call }) {
+  if (edit) {
+    model.effects.edit = function* modelEdit({ payload: { body } }, { call }) {
       yield call(service.edit, body);
     };
   }
 
-  if (service.remove) {
-    model.effects.remove = function* remove({ payload: { id } }, { call }) {
+  if (remove) {
+    model.effects.remove = function* modelRemove({ payload: { id } }, { call }) {
       yield call(service.remove, id);
     };
   }
@@ -111,7 +105,7 @@ function generateModel({ service, namespace, api: { defaultFilter = {} } = {} })
   return model;
 }
 
-function generateModal({ namespace, schema, api: { create, edit } }) {
+function generateModal({ namespace, schema, action: { create, edit } }) {
   if (!create && !edit) {
     return null;
   }
@@ -143,8 +137,10 @@ function generateModal({ namespace, schema, api: { create, edit } }) {
 }
 
 function generateRecordsPage({
-  namespace, schema, api: { create, edit, remove }, Modal,
-}) {
+  namespace, schema, action: {
+    create, edit, remove, order,
+  },
+}, Modal) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -177,6 +173,10 @@ function generateRecordsPage({
       props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
     }
 
+    if (order) {
+      props.order = props.edit;
+    }
+
     return props;
   };
 
@@ -184,13 +184,13 @@ function generateRecordsPage({
 }
 
 function generateDynamicRecordsComponent({ app, config }) {
-  const service = generateService(config.api);
-  const model = generateModel({ ...config, service });
+  const service = generateService(config);
+  const model = generateModel(config, service);
   const Modal = generateModal(config);
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage({ ...config, Modal })),
+    component: () => Promise.resolve(generateRecordsPage(config, Modal)),
   });
 }
 

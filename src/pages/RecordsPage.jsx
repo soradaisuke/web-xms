@@ -42,6 +42,7 @@ class RecordsPage extends React.PureComponent {
     })).isRequired,
     create: PropTypes.func,
     Modal: PropTypes.func,
+    order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
     edit: PropTypes.func,
@@ -58,6 +59,7 @@ class RecordsPage extends React.PureComponent {
     renderAction: null,
     records: Immutable.List(),
     Modal: null,
+    order: null,
     page: 1,
     pagesize: 10,
     total: 0,
@@ -143,6 +145,10 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
+  onOrderChange = (body, diff) => {
+    this.editRecord({ ...body, pos: body.pos + diff });
+  }
+
   editRecord = async (body) => {
     const { edit, create } = this.props;
     const hide = message.loading('正在保存……', 0);
@@ -190,7 +196,7 @@ class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, create, edit, remove, renderAction, total, page, pagesize, schema,
+      Modal, create, edit, remove, order, renderAction, total, page, pagesize, schema,
     } = this.props;
     return (
       <React.Fragment>
@@ -231,6 +237,28 @@ class RecordsPage extends React.PureComponent {
                         >
                           <Button className="action-button" type="primary">删除</Button>
                         </Popconfirm>
+                      )
+                    }
+                    {
+                      order && (
+                        <React.Fragment>
+                          <Button
+                            className="action-button"
+                            type="primary"
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={() => this.onOrderChange(record, -1)}
+                          >
+                            上移
+                          </Button>
+                          <Button
+                            className="action-button"
+                            type="primary"
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onClick={() => this.onOrderChange(record, 1)}
+                          >
+                            下移
+                          </Button>
+                        </React.Fragment>
                       )
                     }
                   </span>
