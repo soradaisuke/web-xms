@@ -2,6 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+function getTextFromTemplate(template, record) {
+  if (!template || !record) {
+    return template;
+  }
+
+  let result = template;
+  const match = result.match(/\{(\w+)\}/g);
+  if (match) {
+    match.forEach((pattern) => {
+      const key = pattern.substring(1, pattern.length - 1);
+      result = result.replace(pattern, record[key] || '');
+    });
+  }
+
+  return result;
+}
+
 export default class RecordLink extends React.PureComponent {
   static displayName = 'RecordLink';
 
@@ -11,8 +28,8 @@ export default class RecordLink extends React.PureComponent {
     link: PropTypes.oneOfType([
       PropTypes.bool,
       PropTypes.shape({
-        absolute: PropTypes.string,
-        relative: PropTypes.string,
+        url: PropTypes.string,
+        type: PropTypes.oneOf(['relative', 'absolute', 'external']),
       }),
     ]).isRequired,
   };
@@ -20,31 +37,26 @@ export default class RecordLink extends React.PureComponent {
   getLink() {
     const { link, record } = this.props;
 
-    let relative = record.id;
-    let absolute = window.location.pathname;
-
     if (link === true) {
-      return `${absolute}/${relative}`;
+      return `${window.location.pathname}/${record.id}`;
     }
 
-    absolute = link.absolute || absolute;
-
-    if (link.relative) {
-      relative = link.relative; // eslint-disable-line prefer-destructuring
-      const match = relative.match(/\{(\w+)\}/g);
-      if (match) {
-        match.forEach((pattern) => {
-          const key = pattern.substring(1, pattern.length - 1);
-          relative = relative.replace(pattern, record[key] || '');
-        });
-      }
+    switch (link.type) {
+      case 'absolute':
+        return getTextFromTemplate(link.template, record);
+      case 'relative':
+      default:
+        return `${window.location.pathname}/${getTextFromTemplate(link.template, record)}`;
     }
-
-    return `${absolute}${relative}`;
   }
 
   render() {
-    const { children } = this.props;
+    const { children, link, record } = this.props;
+
+    if (link.type === 'external') {
+      return <a href={getTextFromTemplate(link.template, record)} target="_blank">{children}</a>;
+    }
+
     return (
       <Link to={this.getLink()}>
         {children}
