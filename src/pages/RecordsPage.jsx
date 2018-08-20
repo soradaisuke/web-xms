@@ -33,12 +33,9 @@ class RecordsPage extends React.PureComponent {
         }),
         PropTypes.bool,
       ]),
-      visibility: PropTypes.oneOfType([
-        PropTypes.shape({
-          tabel: PropTypes.bool,
-        }),
-        PropTypes.bool,
-      ]),
+      visibility: PropTypes.shape({
+        tabel: PropTypes.bool,
+      }),
     })).isRequired,
     create: PropTypes.func,
     Modal: PropTypes.func,
@@ -68,11 +65,7 @@ class RecordsPage extends React.PureComponent {
   static renderColumn({
     visibility, link, title, key,
   }) {
-    if (!visibility) {
-      return null;
-    }
-
-    if (visibility === true || visibility.tabel) {
+    if (visibility.tabel) {
       if (link) {
         return (
           <Column

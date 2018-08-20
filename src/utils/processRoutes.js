@@ -1,5 +1,6 @@
 import { startsWith } from 'lodash';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
+import processConfig from './processConfig';
 
 function valiadateRoute({
   path, component, config, routes,
@@ -33,9 +34,7 @@ export default function processRoutes({ app, routes }) {
       if (config) {
         component = dynamicRecordsComponent({
           app,
-          config: {
-            ...config, namespace: path.replace(/\//g, '@'),
-          },
+          config: processConfig({ config, path }),
         });
       }
 

@@ -16,13 +16,10 @@ class RecordModal extends React.PureComponent {
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
-      visibility: PropTypes.oneOfType([
-        PropTypes.shape({
-          create: PropTypes.bool,
-          edit: PropTypes.bool,
-        }),
-        PropTypes.bool,
-      ]),
+      visibility: PropTypes.shape({
+        create: PropTypes.bool,
+        edit: PropTypes.bool,
+      }),
     })).isRequired,
     onOk: PropTypes.func.isRequired,
   };
@@ -112,8 +109,7 @@ class RecordModal extends React.PureComponent {
               <Form onSubmit={this.okHandler}>
                 {
                   schema.filter(({ visibility }) => (
-                    visibility && (visibility === true || (this.isEdit() && visibility.edit)
-                      || (!this.isEdit() && visibility.create))
+                    (this.isEdit() && visibility.edit) || (!this.isEdit() && visibility.create)
                   )).map(definition => this.renderFormItem({ ...definition }))
                 }
               </Form>
