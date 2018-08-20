@@ -217,7 +217,12 @@ class RecordsPage extends React.PureComponent {
                     {
                       Modal && edit && (
                         <Modal record={record} onOk={this.editRecord}>
-                          <Button className="action-button" type="primary">编辑</Button>
+                          <Button
+                            className="action-button"
+                            type="primary"
+                            shape="circle"
+                            icon="edit"
+                          />
                         </Modal>
                       )
                     }
@@ -228,7 +233,12 @@ class RecordsPage extends React.PureComponent {
                           // eslint-disable-next-line react/jsx-no-bind
                           onConfirm={() => this.onConfirmRemove(record)}
                         >
-                          <Button className="action-button" type="primary">删除</Button>
+                          <Button
+                            className="action-button"
+                            type="danger"
+                            shape="circle"
+                            icon="delete"
+                          />
                         </Popconfirm>
                       )
                     }
@@ -237,20 +247,18 @@ class RecordsPage extends React.PureComponent {
                         <React.Fragment>
                           <Button
                             className="action-button"
-                            type="primary"
+                            shape="circle"
+                            icon="up"
                             // eslint-disable-next-line react/jsx-no-bind
                             onClick={() => this.onOrderChange(record, -1)}
-                          >
-                            上移
-                          </Button>
+                          />
                           <Button
                             className="action-button"
-                            type="primary"
+                            shape="circle"
+                            icon="down"
                             // eslint-disable-next-line react/jsx-no-bind
                             onClick={() => this.onOrderChange(record, 1)}
-                          >
-                            下移
-                          </Button>
+                          />
                         </React.Fragment>
                       )
                     }
