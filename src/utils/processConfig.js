@@ -1,7 +1,8 @@
-import { startsWith, isPlainObject } from 'lodash';
+import { isPlainObject } from 'lodash';
 
 export default function processConfig({ config, path }) {
-  let { action, schema } = config;
+  let { action } = config;
+  const { schema } = config;
 
   if (action === 'all' || action === true) {
     action = {
@@ -21,7 +22,7 @@ export default function processConfig({ config, path }) {
     action,
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
-      let { visibility } = definition;
+      let { visibility, sort } = definition;
 
       if (visibility === 'all' || visibility === true) {
         visibility = {
@@ -42,6 +43,10 @@ export default function processConfig({ config, path }) {
 
       if (!isPlainObject(visibility)) {
         visibility = {};
+      }
+
+      if (sort === true) {
+        sort = { asc: true, desc: true };
       }
 
       return { ...definition, visibility };

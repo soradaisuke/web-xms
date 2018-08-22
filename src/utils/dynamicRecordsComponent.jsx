@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { upperFirst, isFunction } from 'lodash';
+import { upperFirst, isFunction, forEach } from 'lodash';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
@@ -34,11 +34,17 @@ function generateService({ api: { path }, action: { create, edit, remove } = {} 
 }
 
 function generateModel({
-  namespace, api: { defaultFilter = {}, defaultOrder } = {}, action: { create, edit, remove },
+  namespace, api: { defaultFilter = {} } = {}, action: { create, edit, remove }, schema,
 }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
+  let defaultSort;
+  forEach(schema, (definition) => {
+    if (definition.sort && definition.sort.default) {
+      defaultSort = { key: definition.key, order: definition.sort.default };
+    }
+  });
   const model = {
     namespace,
     state: Immutable.fromJS({
@@ -46,6 +52,7 @@ function generateModel({
       total: 0,
       page: 0,
       pagesize: 0,
+      sort: defaultSort,
     }),
     reducers: {
       save(state, {
@@ -57,13 +64,16 @@ function generateModel({
           records, total, page, pagesize,
         }));
       },
+      saveSort(state, { payload: { key, order } }) {
+        return state.set('sort', Immutable.fromJS({ key, order }));
+      },
     },
     effects: {
       * fetch({
         payload: {
           page = 1, pagesize = 10, filter = {}, params,
         },
-      }, { call, put }) {
+      }, { call, put, select }) {
         let f = filter;
         if (isFunction(defaultFilter)) {
           f = { ...f, ...defaultFilter(params) };
@@ -71,8 +81,12 @@ function generateModel({
           f = { ...f, ...defaultFilter };
         }
 
+        const { sort } = yield select(state => ({
+          sort: state[namespace].get('sort'),
+        }));
+
         const { items: records, total } = yield call(service.fetch, {
-          page, pagesize, filter: JSON.stringify(f), order: defaultOrder,
+          page, pagesize, filter: JSON.stringify(f), order: sort ? `${sort.get('key')} ${sort.get('order')}` : null,
         });
         yield put({
           type: 'save',
@@ -80,6 +94,27 @@ function generateModel({
             page, pagesize, total, records,
           },
         });
+      },
+      * changeSort({ payload: { key, order } }, { put }) {
+        let canSort = false;
+        let title;
+        forEach(schema, (definition) => {
+          if (definition.key === key) {
+            const { sort, title: t } = definition;
+            canSort = sort && sort[order];
+            title = t;
+
+            return true;
+          }
+
+          return false;
+        });
+
+        if (canSort) {
+          yield put({ type: 'saveSort', payload: { key, order } });
+        } else {
+          throw new Error(`${title}不支持${order === 'asc' ? '升序' : '降序'}排序`);
+        }
       },
     },
   };
@@ -138,7 +173,7 @@ function generateModal({ namespace, schema, action: { create, edit } }) {
 
 function generateRecordsPage({
   namespace, schema, action: {
-    create, edit, remove, order,
+    create, edit, remove, order: orderAction,
   },
 }, Modal) {
   class Page extends React.PureComponent {
@@ -153,12 +188,14 @@ function generateRecordsPage({
 
   const mapStateToProps = state => ({
     records: state[namespace].get('records'),
+    sort: state[namespace].get('sort').toJS(),
     total: state[namespace].get('total'),
   });
 
   const mapDispatchToProps = (dispatch) => {
     const props = {
       fetch: async ({ page, pagesize, params }) => dispatch({ type: `${namespace}/fetch`, payload: { page, pagesize, params } }),
+      changeSort: async ({ key, order }) => dispatch({ type: `${namespace}/changeSort`, payload: { key, order } }),
     };
 
     if (create) {
@@ -173,7 +210,7 @@ function generateRecordsPage({
       props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
     }
 
-    if (order) {
+    if (orderAction) {
       props.order = props.edit;
     }
 

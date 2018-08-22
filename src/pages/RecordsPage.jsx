@@ -37,6 +37,7 @@ class RecordsPage extends React.PureComponent {
         tabel: PropTypes.bool,
       }),
     })).isRequired,
+    changeSort: PropTypes.func,
     create: PropTypes.func,
     Modal: PropTypes.func,
     order: PropTypes.func,
@@ -46,11 +47,16 @@ class RecordsPage extends React.PureComponent {
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     renderAction: PropTypes.func,
+    sort: PropTypes.shape({
+      key: PropTypes.string,
+      order: PropTypes.oneOf(['asc', 'desc']),
+    }),
     total: PropTypes.number,
   };
 
   static defaultProps = {
     create: null,
+    changeSort: null,
     edit: null,
     remove: null,
     renderAction: null,
@@ -59,40 +65,9 @@ class RecordsPage extends React.PureComponent {
     order: null,
     page: 1,
     pagesize: 10,
+    sort: null,
     total: 0,
   };
-
-  static renderColumn({
-    visibility, link, title, key,
-  }) {
-    if (visibility.tabel) {
-      if (link) {
-        return (
-          <Column
-            title={title}
-            dataIndex={key}
-            key={key}
-            render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
-              <span>
-                <RecordLink link={link} record={record}>
-                  {text}
-                </RecordLink>
-              </span>
-            )}
-          />
-        );
-      }
-      return (
-        <Column
-          title={title}
-          dataIndex={key}
-          key={key}
-        />
-      );
-    }
-
-    return null;
-  }
 
   state = {
     isError: false,
@@ -142,6 +117,14 @@ class RecordsPage extends React.PureComponent {
     this.editRecord({ ...body, pos: body.pos + diff });
   }
 
+  onChange = async (pagination, filters, sorter) => {
+    const { changeSort } = this.props;
+    if (changeSort && sorter && sorter.columnKey && sorter.order) {
+      await changeSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') });
+      await this.fetch();
+    }
+  }
+
   editRecord = async (body) => {
     const { edit, create } = this.props;
     const hide = message.loading('正在保存……', 0);
@@ -180,10 +163,36 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
+  renderColumn({
+    visibility, link, title, key, sort,
+  }) {
+    const { sort: currentSort } = this.props;
+    if (visibility.tabel) {
+      return (
+        <Column
+          title={title}
+          dataIndex={key}
+          key={key}
+          sorter={!!sort}
+          sortOrder={currentSort && currentSort.key === key ? `${currentSort.order}end` : false}
+          render={link ? (text, record) => ( // eslint-disable-line react/jsx-no-bind
+            <span>
+              <RecordLink link={link} record={record}>
+                {text}
+              </RecordLink>
+            </span>
+          ) : null}
+        />
+      );
+    }
+
+    return null;
+  }
+
   renderSchema() {
     const { schema } = this.props;
 
-    return schema.map(definition => RecordsPage.renderColumn({ ...definition }));
+    return schema.map(definition => this.renderColumn({ ...definition }));
   }
 
   renderContent() {
@@ -205,6 +214,7 @@ class RecordsPage extends React.PureComponent {
           dataSource={dataSource}
           rowKey={record => record.id} // eslint-disable-line react/jsx-no-bind
           pagination={false}
+          onChange={this.onChange}
         >
           {this.renderSchema()}
           {
