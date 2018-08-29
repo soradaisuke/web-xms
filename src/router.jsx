@@ -4,6 +4,7 @@ import { filter } from 'lodash';
 import { Layout, Spin } from 'antd';
 import dynamic from 'dva/dynamic';
 import Menu from './components/Menu';
+import User from './components/User';
 import Breadcrumb from './components/Breadcrumb';
 import './router.less';
 
@@ -54,6 +55,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
       <Layout className="xms-layout">
         <Header>
           {app.config.name}
+          <User />
         </Header>
         <Layout>
           <Sider width="9.6rem">

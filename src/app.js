@@ -4,6 +4,7 @@ import { merge } from 'lodash';
 import { message } from 'antd';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
+import generateUserModel from './utils/generateUserModel';
 import defaultConfig from './defaultConfig';
 import router from './router';
 
@@ -17,13 +18,15 @@ export default function xms(config = {}) {
   });
 
   app.config = merge(defaultConfig, config);
-  const { routes, api: { host } = {} } = config;
+  const { routes, api: { host, login } = {} } = config;
   if (host) {
     request.setHost(host);
   }
 
   app.routes = processRoutes({ app, routes });
   app.router(router);
+
+  app.model(generateUserModel(login));
 
   return app;
 }
