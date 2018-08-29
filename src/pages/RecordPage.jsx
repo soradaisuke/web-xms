@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'antd';
 import Page from './Page';
 
 export default class RecordPage extends React.PureComponent {
@@ -9,11 +8,13 @@ export default class RecordPage extends React.PureComponent {
   static propTypes = {
     fetch: PropTypes.func.isRequired,
     recordId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-    children: PropTypes.node,
+    routes: PropTypes.arrayOf(PropTypes.shape({
+      component: PropTypes.bode,
+    })),
   };
 
   static defaultProps = {
-    children: null,
+    routes: [],
   };
 
   state = {
@@ -52,15 +53,22 @@ export default class RecordPage extends React.PureComponent {
     }
   }
 
+  renderRoutes() {
+    const { routes } = this.props;
+    if (routes && routes.length === 1) {
+      const Component = routes[0].component;
+      return <Component />;
+    }
+
+    return null;
+  }
+
   render() {
     const { isLoading, isError } = this.state;
-    const { children } = this.props;
 
     return (
       <Page isLoading={isLoading} isError={isError}>
-        <Form horizontal="true" onSubmit={this.okHandler}>
-          { children }
-        </Form>
+        {this.renderRoutes()}
       </Page>
     );
   }

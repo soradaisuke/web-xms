@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch, routerRedux } from 'dva/router';
+import { filter } from 'lodash';
 import { Layout, Spin } from 'antd';
 import dynamic from 'dva/dynamic';
 import Menu from './components/Menu';
@@ -22,6 +23,8 @@ function renderRoute({
 }) {
   const children = [];
   if (Component) {
+    const inlineRoutes = routes ? filter(routes, ({ inline }) => inline) : [];
+
     children.push((
       <Route
         exact
@@ -31,7 +34,7 @@ function renderRoute({
           <React.Fragment>
             <Breadcrumb routes={app.routes} />
             <Content>
-              <Component />
+              <Component routes={inlineRoutes} />
             </Content>
           </React.Fragment>
         )}
