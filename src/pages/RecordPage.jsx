@@ -26,17 +26,20 @@ export default class RecordPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.recordId !== this.props.recordId) {
+    const { recordId } = this.props;
+    if (prevProps.recordId !== recordId) {
       this.fetch();
     }
   }
 
   async fetch() {
+    const { recordId, fetch } = this.props;
+
     this.setState({
       isLoading: true,
     });
     try {
-      await this.props.fetch({ id: this.props.recordId });
+      await fetch({ id: recordId });
       this.setState({
         isError: false,
         isLoading: false,
@@ -50,10 +53,13 @@ export default class RecordPage extends React.PureComponent {
   }
 
   render() {
+    const { isLoading, isError } = this.state;
+    const { children } = this.props;
+
     return (
-      <Page isLoading={this.state.isLoading} isError={this.state.isError}>
+      <Page isLoading={isLoading} isError={isError}>
         <Form horizontal="true" onSubmit={this.okHandler}>
-          { this.props.children }
+          { children }
         </Form>
       </Page>
     );

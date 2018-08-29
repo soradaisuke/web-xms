@@ -2,14 +2,11 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { connect } from 'dva';
-import { upperFirst, isFunction, forEach } from 'lodash';
+import { upperFirst, isFunction } from 'lodash';
 import request from '../services/request';
-import RecordsPage from '../pages/RecordsPage';
 import RecordPage from '../pages/RecordPage';
-import RecordModal from '../components/RecordModal';
 
 function generateService({ api: { path } }) {
   if (!path) {
@@ -17,7 +14,7 @@ function generateService({ api: { path } }) {
   }
 
   return {
-    fetch: async ({ id }) => request.get(`${path}/${id}`)
+    fetch: async ({ id }) => request.get(`${path}/${id}`),
   };
 }
 
@@ -59,7 +56,7 @@ function generateRecordPage({ namespace }) {
     recordId: props.match.params.id,
   });
 
-  const mapDispatchToProps = (dispatch) => ({
+  const mapDispatchToProps = dispatch => ({
     fetch: async ({ id }) => dispatch({ type: `${namespace}/fetch`, payload: { id } }),
   });
 
