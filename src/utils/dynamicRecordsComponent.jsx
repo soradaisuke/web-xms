@@ -233,10 +233,10 @@ function generateDynamicRecordsComponent({ app, config }) {
 
 export default function dynamicRecordsComponent({ app, config }) {
   if (!app) {
-    throw new Error('dynamicRecords: app is required');
+    throw new Error('dynamicRecordsComponent: app is required');
   }
   if (!config) {
-    throw new Error('dynamicRecords: config is required');
+    throw new Error('dynamicRecordsComponent: config is required');
   }
 
   if (isFunction(config)) {
