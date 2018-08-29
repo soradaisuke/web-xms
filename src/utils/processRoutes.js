@@ -1,6 +1,8 @@
 import { startsWith } from 'lodash';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
-import processConfig from './processConfig';
+import dynamicRecordComponent from './dynamicRecordComponent';
+import processGroupConfig from './processGroupConfig';
+import processSingleConfig from './processSingleConfig';
 
 function valiadateRoute({
   path, component, config, routes,
@@ -32,10 +34,18 @@ export default function processRoutes({ app, routes }) {
       let { component } = route;
 
       if (config) {
-        component = dynamicRecordsComponent({
-          app,
-          config: processConfig({ config, path }),
-        });
+        const { type } = config;
+        if (type === 'group') {
+          component = dynamicRecordsComponent({
+            app,
+            config: processGroupConfig({ config, path }),
+          });
+        } else if (type === 'single') {
+          component = dynamicRecordComponent({
+            app,
+            config: processSingleConfig({ config, path }),
+          });
+        }
       }
 
       return {

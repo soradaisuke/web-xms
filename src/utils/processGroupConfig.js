@@ -1,6 +1,6 @@
 import { isPlainObject } from 'lodash';
 
-export default function processConfig({ config, path }) {
+export default function processGroupConfig({ config, path }) {
   let { action } = config;
   const { schema } = config;
 
