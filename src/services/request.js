@@ -3,20 +3,10 @@ import { stringify } from 'query-string';
 import fetch from 'dva/fetch';
 import generateUri from '../utils/generateUri';
 
-let commonParams = {};
-let authParams = {};
 let { host } = window.location;
 
 function setHost(h) {
   host = h;
-}
-
-function setCommonParams(params) {
-  commonParams = params;
-}
-
-function setAuthParams(params) {
-  authParams = params;
 }
 
 async function generateRequest(path, options = {}) {
@@ -27,15 +17,9 @@ async function generateRequest(path, options = {}) {
     newOptions.body = JSON.stringify(newOptions.body);
   }
   newOptions.headers.Accept = 'application/json, text/plain, */*';
-  newOptions.credentials = options.withAuth || options.withCredentials ? 'include' : 'omit';
+  newOptions.credentials = 'include';
 
-  const params = {
-    ...(options && options.params ? options.params : {}),
-    ...commonParams,
-    ...(options.withAuth ? authParams : {}),
-  };
-
-  const uri = generateUri(`//${host}${path}`, params);
+  const uri = generateUri(`//${host}${path}`, options.params ? options.params : {});
 
   try {
     let response = await fetch(uri.href, newOptions);
@@ -131,8 +115,6 @@ async function remove(url, options = {}) {
 
 export default {
   setHost,
-  setAuthParams,
-  setCommonParams,
   get,
   post,
   put,

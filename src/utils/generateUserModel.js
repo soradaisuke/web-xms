@@ -8,7 +8,7 @@ function generateService(login) {
   }
 
   return {
-    login: async () => request.post(login, { withCredentials: true }),
+    login: async () => request.post(login),
   };
 }
 
