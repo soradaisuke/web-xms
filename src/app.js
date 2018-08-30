@@ -22,11 +22,18 @@ export default function xms(config = {}) {
   if (host) {
     request.setHost(host);
   }
-
-  app.routes = processRoutes({ app, routes });
-  app.router(router);
-
-  app.model(generateUserModel(login));
+  try {
+    if (login) {
+      if (window.location.host.indexOf('qingtingfm.com') === -1) {
+        throw new Error('host must be *.qingtingfm.com');
+      }
+      app.model(generateUserModel(login));
+    }
+    app.routes = processRoutes({ app, routes });
+    app.router(router);
+  } catch (err) {
+    message.error(err.message);
+  }
 
   return app;
 }
