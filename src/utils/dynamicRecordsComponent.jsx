@@ -9,7 +9,7 @@ import { parse } from 'query-string';
 import {
   upperFirst, isFunction, forEach, toInteger,
 } from 'lodash';
-import generateUri from '../utils/generateUri';
+import generateUri from './generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
@@ -45,17 +45,24 @@ function generateModel({
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
   let defaultSort;
+  const searchFileds = [];
   forEach(schema, (definition) => {
     if (definition.sort && definition.sort.default) {
       defaultSort = `${definition.key} ${definition.sort.default}`;
     }
+    if (definition.search) {
+      searchFileds.push({ key: definition.key, title: definition.title });
+    }
   });
+
   const model = {
     namespace,
     state: Immutable.fromJS({
       records: [],
       total: 0,
       defaultSort,
+      canSearch: searchFileds.length > 0,
+      searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     }),
     reducers: {
       save(state, { payload: { records, total } }) {
@@ -65,7 +72,7 @@ function generateModel({
     effects: {
       * fetch({
         payload: {
-          page, pagesize, sort, filter = {}, params,
+          page, pagesize, sort, search, filter = {}, params,
         },
       }, { call, put }) {
         let f = filter;
@@ -75,15 +82,20 @@ function generateModel({
           f = { ...f, ...defaultFilter };
         }
 
+        if (search) {
+          f = {
+            ...f,
+            ...searchFileds.reduce((acc, field) => {
+              acc[field.key] = `%${search}%`;
+              return acc;
+            }, {}),
+          };
+        }
+
         const { items: records, total } = yield call(service.fetch, {
           page, pagesize, filter: JSON.stringify(f), order: sort,
         });
-        yield put({
-          type: 'save',
-          payload: {
-            page, pagesize, total, sort, records,
-          },
-        });
+        yield put({ type: 'save', payload: { total, records } });
       },
     },
   };
@@ -157,27 +169,28 @@ function generateRecordsPage({
 
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
-    const page = queries.page ? toInteger(queries.page) : 1;
-    const pagesize = queries.pagesize ? toInteger(queries.pagesize) : 10;
-    const sort = queries.sort || state[namespace].get('defaultSort');
 
     return {
-      page,
-      pagesize,
-      sort,
+      canSearch: state[namespace].get('canSearch'),
+      searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
+      page: queries.page ? toInteger(queries.page) : 1,
+      pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
+      sort: queries.sort || state[namespace].get('defaultSort'),
+      search: queries.search,
       records: state[namespace].get('records'),
       total: state[namespace].get('total'),
+      searchFileds: state[namespace].get('searchFileds'),
     };
   };
 
   const mapDispatchToProps = (dispatch) => {
     const props = {
       fetch: async ({
-        page, pagesize, sort, params,
+        page, pagesize, sort, search, params,
       }) => dispatch({
         type: `${namespace}/fetch`,
         payload: {
-          page, pagesize, sort, params,
+          page, pagesize, sort, search, params,
         },
       }),
       async changePage({ page, pagesize }) {
@@ -186,6 +199,10 @@ function generateRecordsPage({
       },
       async changeSort({ key, order }) {
         const uri = generateUri(window.location.href, { sort: `${key} ${order}` });
+        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
+      },
+      async changeSearch({ search }) {
+        const uri = generateUri(window.location.href, { search });
         return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
       },
     };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { withRouter } from 'react-router';
 import {
-  Table, Pagination, Button, Popconfirm, message,
+  Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import { forEach, split, startsWith } from 'lodash';
 import RecordLink from '../components/RecordLink';
@@ -11,12 +11,15 @@ import Page from './Page';
 import './RecordsPage.less';
 
 const { Column } = Table;
+const { Search } = Input;
 
 class RecordsPage extends React.PureComponent {
   static displayName = 'RecordsPage';
 
   static propTypes = {
+    canSearch: PropTypes.bool.isRequired,
     changePage: PropTypes.func.isRequired,
+    changeSearch: PropTypes.func.isRequired,
     changeSort: PropTypes.func.isRequired,
     fetch: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -43,6 +46,8 @@ class RecordsPage extends React.PureComponent {
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     renderAction: PropTypes.func,
+    search: PropTypes.string,
+    searchPlaceHolder: PropTypes.string,
     sort: PropTypes.string,
     total: PropTypes.number,
   };
@@ -57,6 +62,8 @@ class RecordsPage extends React.PureComponent {
     order: null,
     page: 1,
     pagesize: 10,
+    search: '',
+    searchPlaceHolder: '',
     sort: null,
     total: 0,
   };
@@ -81,8 +88,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { pagesize, page, sort } = this.props;
-    if (prevProps.pagesize !== pagesize || prevProps.page !== page || prevProps.sort !== sort) {
+    const { pagesize, page, sort, search } = this.props;
+    if (prevProps.pagesize !== pagesize || prevProps.page !== page
+      || prevProps.sort !== sort || prevProps.search !== search) {
       this.fetch();
     }
   }
@@ -90,6 +98,11 @@ class RecordsPage extends React.PureComponent {
   onChangePage = (page) => {
     const { changePage, pagesize } = this.props;
     changePage({ page, pagesize });
+  }
+
+  onSearch = (search) => {
+    const { changeSearch } = this.props;
+    changeSearch({ search });
   }
 
   onConfirmRemove = async (record) => {
@@ -158,14 +171,14 @@ class RecordsPage extends React.PureComponent {
 
   async fetch() {
     const {
-      fetch, page, pagesize, sort, match: { params },
+      fetch, page, pagesize, sort, search, match: { params },
     } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
       await fetch({
-        page, pagesize, sort, params,
+        page, pagesize, sort, search, params,
       });
       this.setState({
         isError: false,
@@ -177,6 +190,16 @@ class RecordsPage extends React.PureComponent {
         isLoading: false,
       });
     }
+  }
+
+  hasAddButton() {
+    const { Modal, create } = this.props;
+    return Modal && create;
+  }
+
+  hasHeader() {
+    const { canSearch } = this.props;
+    return this.hasAddButton() || canSearch;
   }
 
   renderColumn({
@@ -214,15 +237,33 @@ class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, create, edit, remove, order, renderAction, total, page, pagesize, schema,
+      Modal, edit, remove, order, renderAction, total, page, pagesize,
+      schema, search, searchPlaceHolder, canSearch,
     } = this.props;
     return (
       <React.Fragment>
         {
-          Modal && create && (
-            <Modal schema={schema} record={{}} onOk={this.editRecord}>
-              <Button className="add-button" type="primary">添加</Button>
-            </Modal>
+          this.hasHeader() && (
+            <div className="xms-records-page-content-header">
+              {
+                this.hasAddButton() && (
+                  <Modal schema={schema} record={{}} onOk={this.editRecord}>
+                    <Button className="add-button" type="primary">添加</Button>
+                  </Modal>
+                )
+              }
+              {
+                canSearch && (
+                  <Search
+                    defaultValue={search}
+                    placeholder={searchPlaceHolder}
+                    onSearch={this.onSearch}
+                    style={{ width: 200 }}
+                    enterButton
+                  />
+                )
+              }
+            </div>
           )
         }
         <Table
