@@ -137,4 +137,6 @@ app.start('#root');
         * default
             * type：'asc'/'desc'  
             * value：该属性作为该列表的默认排序  
-
+* search
+    * type：bool
+    * value：是否支持用该属性模糊搜索
