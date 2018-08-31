@@ -88,7 +88,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { pagesize, page, sort, search } = this.props;
+    const {
+      pagesize, page, sort, search,
+    } = this.props;
     if (prevProps.pagesize !== pagesize || prevProps.page !== page
       || prevProps.sort !== sort || prevProps.search !== search) {
       this.fetch();
