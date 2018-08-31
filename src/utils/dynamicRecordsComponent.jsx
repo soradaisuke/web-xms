@@ -3,8 +3,13 @@ import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
-import { upperFirst, isFunction, forEach } from 'lodash';
+import { parse } from 'query-string';
+import {
+  upperFirst, isFunction, forEach, toInteger,
+} from 'lodash';
+import generateUri from '../utils/generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
@@ -42,7 +47,7 @@ function generateModel({
   let defaultSort;
   forEach(schema, (definition) => {
     if (definition.sort && definition.sort.default) {
-      defaultSort = { key: definition.key, order: definition.sort.default };
+      defaultSort = `${definition.key} ${definition.sort.default}`;
     }
   });
   const model = {
@@ -50,30 +55,19 @@ function generateModel({
     state: Immutable.fromJS({
       records: [],
       total: 0,
-      page: 0,
-      pagesize: 0,
-      sort: defaultSort,
+      defaultSort,
     }),
     reducers: {
-      save(state, {
-        payload: {
-          records, total, page, pagesize,
-        },
-      }) {
-        return state.merge(Immutable.fromJS({
-          records, total, page, pagesize,
-        }));
-      },
-      saveSort(state, { payload: { key, order } }) {
-        return state.set('sort', Immutable.fromJS({ key, order }));
+      save(state, { payload: { records, total } }) {
+        return state.merge(Immutable.fromJS({ records, total }));
       },
     },
     effects: {
       * fetch({
         payload: {
-          page = 1, pagesize = 10, filter = {}, params,
+          page, pagesize, sort, filter = {}, params,
         },
-      }, { call, put, select }) {
+      }, { call, put }) {
         let f = filter;
         if (isFunction(defaultFilter)) {
           f = { ...f, ...defaultFilter(params) };
@@ -81,40 +75,15 @@ function generateModel({
           f = { ...f, ...defaultFilter };
         }
 
-        const { sort } = yield select(state => ({
-          sort: state[namespace].get('sort'),
-        }));
-
         const { items: records, total } = yield call(service.fetch, {
-          page, pagesize, filter: JSON.stringify(f), order: sort ? `${sort.get('key')} ${sort.get('order')}` : null,
+          page, pagesize, filter: JSON.stringify(f), order: sort,
         });
         yield put({
           type: 'save',
           payload: {
-            page, pagesize, total, records,
+            page, pagesize, total, sort, records,
           },
         });
-      },
-      * changeSort({ payload: { key, order } }, { put }) {
-        let canSort = false;
-        let title;
-        forEach(schema, (definition) => {
-          if (definition.key === key) {
-            const { sort, title: t } = definition;
-            canSort = sort && sort[order];
-            title = t;
-
-            return true;
-          }
-
-          return false;
-        });
-
-        if (canSort) {
-          yield put({ type: 'saveSort', payload: { key, order } });
-        } else {
-          throw new Error(`${title}不支持${order === 'asc' ? '升序' : '降序'}排序`);
-        }
       },
     },
   };
@@ -186,16 +155,39 @@ function generateRecordsPage({
     }
   }
 
-  const mapStateToProps = state => ({
-    records: state[namespace].get('records'),
-    sort: state[namespace].get('sort').toJS(),
-    total: state[namespace].get('total'),
-  });
+  const mapStateToProps = (state) => {
+    const queries = parse(window.location.search);
+    const page = queries.page ? toInteger(queries.page) : 1;
+    const pagesize = queries.pagesize ? toInteger(queries.pagesize) : 10;
+    const sort = queries.sort || state[namespace].get('defaultSort');
+
+    return {
+      page,
+      pagesize,
+      sort,
+      records: state[namespace].get('records'),
+      total: state[namespace].get('total'),
+    };
+  };
 
   const mapDispatchToProps = (dispatch) => {
     const props = {
-      fetch: async ({ page, pagesize, params }) => dispatch({ type: `${namespace}/fetch`, payload: { page, pagesize, params } }),
-      changeSort: async ({ key, order }) => dispatch({ type: `${namespace}/changeSort`, payload: { key, order } }),
+      fetch: async ({
+        page, pagesize, sort, params,
+      }) => dispatch({
+        type: `${namespace}/fetch`,
+        payload: {
+          page, pagesize, sort, params,
+        },
+      }),
+      async changePage({ page, pagesize }) {
+        const uri = generateUri(window.location.href, { page, pagesize });
+        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
+      },
+      async changeSort({ key, order }) {
+        const uri = generateUri(window.location.href, { sort: `${key} ${order}` });
+        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
+      },
     };
 
     if (create) {

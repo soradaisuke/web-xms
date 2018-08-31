@@ -2,15 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { withRouter } from 'react-router';
-import { routerRedux } from 'dva/router';
-import { parse } from 'query-string';
 import {
   Table, Pagination, Button, Popconfirm, message,
 } from 'antd';
-import { connect } from 'dva';
-import { toInteger } from 'lodash';
+import { forEach, split, startsWith } from 'lodash';
 import RecordLink from '../components/RecordLink';
-import generateUri from '../utils/generateUri';
 import Page from './Page';
 import './RecordsPage.less';
 
@@ -21,6 +17,7 @@ class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     changePage: PropTypes.func.isRequired,
+    changeSort: PropTypes.func.isRequired,
     fetch: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
@@ -37,7 +34,6 @@ class RecordsPage extends React.PureComponent {
         tabel: PropTypes.bool,
       }),
     })).isRequired,
-    changeSort: PropTypes.func,
     create: PropTypes.func,
     Modal: PropTypes.func,
     order: PropTypes.func,
@@ -47,16 +43,12 @@ class RecordsPage extends React.PureComponent {
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     renderAction: PropTypes.func,
-    sort: PropTypes.shape({
-      key: PropTypes.string,
-      order: PropTypes.oneOf(['asc', 'desc']),
-    }),
+    sort: PropTypes.string,
     total: PropTypes.number,
   };
 
   static defaultProps = {
     create: null,
-    changeSort: null,
     edit: null,
     remove: null,
     renderAction: null,
@@ -89,8 +81,8 @@ class RecordsPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { pagesize, page } = this.props;
-    if (prevProps.pagesize !== pagesize || prevProps.page !== page) {
+    const { pagesize, page, sort } = this.props;
+    if (prevProps.pagesize !== pagesize || prevProps.page !== page || prevProps.sort !== sort) {
       this.fetch();
     }
   }
@@ -118,10 +110,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   onChange = async (pagination, filters, sorter) => {
-    const { changeSort } = this.props;
-    if (changeSort && sorter && sorter.columnKey && sorter.order) {
-      await changeSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') });
-      await this.fetch();
+    if (sorter && sorter.columnKey && sorter.order && this.checkSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') })) {
+      const { changeSort } = this.props;
+      changeSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') });
     }
   }
 
@@ -142,15 +133,40 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
+  checkSort({ key, order }) {
+    const { schema } = this.props;
+    let canSort = false;
+    let title;
+    forEach(schema, (definition) => {
+      if (definition.key === key) {
+        const { sort, title: t } = definition;
+        canSort = sort && sort[order];
+        title = t;
+
+        return true;
+      }
+
+      return false;
+    });
+
+    if (!canSort) {
+      message.error(`${title}不支持${order === 'asc' ? '升序' : '降序'}排序`);
+    }
+
+    return canSort;
+  }
+
   async fetch() {
     const {
-      fetch, page, pagesize, match: { params },
+      fetch, page, pagesize, sort, match: { params },
     } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
-      await fetch({ page, pagesize, params });
+      await fetch({
+        page, pagesize, sort, params,
+      });
       this.setState({
         isError: false,
         isLoading: false,
@@ -174,7 +190,7 @@ class RecordsPage extends React.PureComponent {
           dataIndex={key}
           key={key}
           sorter={!!sort}
-          sortOrder={currentSort && currentSort.key === key ? `${currentSort.order}end` : false}
+          sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={link ? (text, record) => ( // eslint-disable-line react/jsx-no-bind
             <span>
               <RecordLink link={link} record={record}>
@@ -299,23 +315,4 @@ class RecordsPage extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  const queries = parse(state.routing.location.search);
-  const props = {};
-  if (queries.page) {
-    props.page = toInteger(queries.page);
-  }
-  if (queries.pagesize) {
-    props.pagesize = toInteger(queries.pagesize);
-  }
-  return props;
-};
-
-const mapDiseditToProps = disedit => ({
-  async changePage({ page, pagesize }) {
-    const uri = generateUri(window.location.href, { page, pagesize });
-    return disedit(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
-  },
-});
-
-export default withRouter(connect(mapStateToProps, mapDiseditToProps)(RecordsPage));
+export default withRouter(RecordsPage);
