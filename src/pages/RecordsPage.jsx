@@ -68,6 +68,10 @@ class RecordsPage extends React.PureComponent {
     total: 0,
   };
 
+  static showTotal(total, range) {
+    return `${range[0]}-${range[1]}，共${total}个`;
+  }
+
   state = {
     isError: false,
     isLoading: true,
@@ -97,8 +101,8 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
-  onChangePage = (page) => {
-    const { changePage, pagesize } = this.props;
+  onChangePage = (page, pagesize) => {
+    const { changePage } = this.props;
     changePage({ page, pagesize });
   }
 
@@ -338,11 +342,15 @@ class RecordsPage extends React.PureComponent {
           }
         </Table>
         <Pagination
+          showQuickJumper
+          showSizeChanger
+          showTotal={RecordsPage.showTotal}
           className="ant-table-pagination"
           total={total}
           current={page}
           pagesize={pagesize}
           onChange={this.onChangePage}
+          onShowSizeChange={this.onChangePage}
         />
       </React.Fragment>
     );

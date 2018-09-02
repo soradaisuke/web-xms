@@ -1,11 +1,13 @@
 import React from 'react';
 import { Route, Switch, routerRedux } from 'dva/router';
 import { filter } from 'lodash';
-import { Layout, Spin } from 'antd';
+import { Layout, Spin, LocaleProvider } from 'antd';
 import dynamic from 'dva/dynamic';
+import zhCN from 'antd/lib/locale-provider/zh_CN';
 import Menu from './components/Menu';
 import User from './components/User';
 import Breadcrumb from './components/Breadcrumb';
+import 'moment/locale/zh-cn';
 import './router.less';
 
 const {
@@ -51,29 +53,31 @@ function renderRoute({
 
 function RouterConfig({ history, app }) { // eslint-disable-line react/prop-types
   return (
-    <ConnectedRouter history={history}>
-      <Layout className="xms-layout">
-        <Header>
-          {app.config.name}
-          <User />
-        </Header>
-        <Layout>
-          <Sider width="9.6rem">
-            <Menu routes={app.routes} />
-          </Sider>
-          <Layout className="content-layout">
-            <Switch>
-              {
-                app.routes.map(route => renderRoute({ ...route, app }))
-              }
-            </Switch>
-            <Footer>
-              ©2011-2018 qingting.fm All Rights Reserved.
-            </Footer>
+    <LocaleProvider locale={zhCN}>
+      <ConnectedRouter history={history}>
+        <Layout className="xms-layout">
+          <Header>
+            {app.config.name}
+            <User />
+          </Header>
+          <Layout>
+            <Sider width="9.6rem">
+              <Menu routes={app.routes} />
+            </Sider>
+            <Layout className="content-layout">
+              <Switch>
+                {
+                  app.routes.map(route => renderRoute({ ...route, app }))
+                }
+              </Switch>
+              <Footer>
+                ©2011-2018 qingting.fm All Rights Reserved.
+              </Footer>
+            </Layout>
           </Layout>
         </Layout>
-      </Layout>
-    </ConnectedRouter>
+      </ConnectedRouter>
+    </LocaleProvider>
   );
 }
 
