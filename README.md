@@ -96,6 +96,7 @@ app.start('#root');
 * type
     * type：'number'/'string'/'datetime' 
     * value：数据源中对应的数据格式
+    
     ```javascript
     import { DateType } from 'xms';
     
