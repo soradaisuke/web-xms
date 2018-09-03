@@ -42,9 +42,8 @@ app.start('#root');
     * type：string
     * value：页面标题，用于显示在Menu和Breadcrumb上
 * breadcrumb
-    * type：string/function
+    * type：string/function(matchParams)
     * value：用于Breadcrumb上的标题
-        * function (params)：react-router的match.params
 * component
     * type：react node
     * value：页面组件
@@ -66,7 +65,7 @@ app.start('#root');
             * value：页面数据api路径，需符合restful标准
         * defaultFilter
             * type：object/function(matchParams)
-            * value：默认filter
+            * value：默认filter, 后台API应该统一用query里的filter（json string）来筛选数据
 * actions
     * type：array[string]
     * value:
