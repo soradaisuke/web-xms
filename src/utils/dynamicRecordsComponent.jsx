@@ -7,14 +7,14 @@ import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
 import { parse } from 'query-string';
 import {
-  upperFirst, isFunction, forEach, toInteger,
+  upperFirst, isFunction, forEach, toInteger, find,
 } from 'lodash';
 import generateUri from './generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
 
-function generateService({ api: { path }, action: { create, edit, remove } = {} }) {
+function generateService({ api: { path }, actions }) {
   if (!path) {
     throw new Error('dynamicRecordsComponent generateService: path is required');
   }
@@ -23,23 +23,23 @@ function generateService({ api: { path }, action: { create, edit, remove } = {} 
     fetch: async params => request.get(path, { params }),
   };
 
-  if (create) {
-    service.create = async body => request.post(`${path}`, { body });
-  }
-
-  if (edit) {
-    service.edit = async body => request.put(`${path}/${body.id}`, { body });
-  }
-
-  if (remove) {
-    service.remove = async id => request.remove(`${path}/${id}`);
-  }
+  forEach(actions, (action) => {
+    if (action === 'create') {
+      service.create = async body => request.post(`${path}`, { body });
+    } else if (action === 'edit') {
+      service.edit = async body => request.put(`${path}/${body.id}`, { body });
+    } else if (action === 'remove') {
+      service.remove = async id => request.remove(`${path}/${id}`);
+    } else if (action === 'order') {
+      service.order = async body => request.put(`${path}/${body.id}`, { body });
+    }
+  });
 
   return service;
 }
 
 function generateModel({
-  namespace, api: { defaultFilter = {} } = {}, action: { create, edit, remove }, schema,
+  namespace, api: { defaultFilter = {} } = {}, actions, schema,
 }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
@@ -48,7 +48,7 @@ function generateModel({
   const searchFileds = [];
   forEach(schema, (definition) => {
     if (definition.sort && definition.defaultSort) {
-      defaultSort = `${definition.key} ${definition.sort.default}`;
+      defaultSort = `${definition.key} ${definition.defaultSort}`;
     }
     if (definition.search) {
       searchFileds.push({ key: definition.key, title: definition.title });
@@ -100,29 +100,31 @@ function generateModel({
     },
   };
 
-  if (create) {
-    model.effects.create = function* modelCreate({ payload: { body } }, { call }) {
-      yield call(service.create, body);
-    };
-  }
-
-  if (edit) {
-    model.effects.edit = function* modelEdit({ payload: { body } }, { call }) {
-      yield call(service.edit, body);
-    };
-  }
-
-  if (remove) {
-    model.effects.remove = function* modelRemove({ payload: { id } }, { call }) {
-      yield call(service.remove, id);
-    };
-  }
+  forEach(actions, (action) => {
+    if (action === 'create') {
+      model.effects.create = function* modelCreate({ payload: { body } }, { call }) {
+        yield call(service.create, body);
+      };
+    } else if (action === 'edit') {
+      model.effects.edit = function* modelEdit({ payload: { body } }, { call }) {
+        yield call(service.edit, body);
+      };
+    } else if (action === 'remove') {
+      model.effects.remove = function* modelRemove({ payload: { id } }, { call }) {
+        yield call(service.remove, id);
+      };
+    } else if (action === 'order') {
+      model.effects.order = function* modelOrder({ payload: { body } }, { call }) {
+        yield call(service.order, body);
+      };
+    }
+  });
 
   return model;
 }
 
-function generateModal({ namespace, schema, action: { create, edit } }) {
-  if (!create && !edit) {
+function generateModal({ namespace, schema, actions }) {
+  if (!find(actions, action => action === 'create') && !find(actions, action => action === 'edit')) {
     return null;
   }
 
@@ -152,17 +154,13 @@ function generateModal({ namespace, schema, action: { create, edit } }) {
   return Modal;
 }
 
-function generateRecordsPage({
-  namespace, schema, action: {
-    create, edit, remove, order: orderAction,
-  },
-}, Modal) {
+function generateRecordsPage({ namespace, schema, actions }, Modal) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
     render() {
       return (
-        <RecordsPage Modal={Modal} {...this.props} schema={schema} />
+        <RecordsPage Modal={Modal} {...this.props} schema={schema} actions={actions} />
       );
     }
   }
@@ -207,21 +205,17 @@ function generateRecordsPage({
       },
     };
 
-    if (create) {
-      props.create = async body => dispatch({ type: `${namespace}/create`, payload: { body } });
-    }
-
-    if (edit) {
-      props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { body } });
-    }
-
-    if (remove) {
-      props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
-    }
-
-    if (orderAction) {
-      props.order = props.edit;
-    }
+    forEach(actions, (action) => {
+      if (action === 'create') {
+        props.create = async body => dispatch({ type: `${namespace}/create`, payload: { body } });
+      } else if (action === 'edit') {
+        props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { body } });
+      } else if (action === 'remove') {
+        props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
+      } else if (action === 'order') {
+        props.order = async body => dispatch({ type: `${namespace}/order`, payload: { body } });
+      }
+    });
 
     return props;
   };

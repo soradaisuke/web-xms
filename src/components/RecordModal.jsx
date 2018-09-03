@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Input } from 'antd';
+import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
+const { STRING } = DataType;
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -65,7 +67,7 @@ class RecordModal extends React.PureComponent {
     let children;
 
     switch (type) {
-      case 'text':
+      case STRING:
         children = getFieldDecorator(key, {
           initialValue: this.isEdit() ? record[key] : '',
           rules: [{ required: true, message: `${title}不能为空`, whitespace: true }],

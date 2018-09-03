@@ -48,7 +48,6 @@ class RecordsPage extends React.PureComponent {
     edit: PropTypes.func,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
-    renderAction: PropTypes.func,
     search: PropTypes.string,
     searchPlaceHolder: PropTypes.string,
     sort: PropTypes.string,
@@ -59,7 +58,6 @@ class RecordsPage extends React.PureComponent {
     create: null,
     edit: null,
     remove: null,
-    renderAction: null,
     records: Immutable.List(),
     Modal: null,
     order: null,
@@ -165,10 +163,10 @@ class RecordsPage extends React.PureComponent {
         canSort = sort && sort[order];
         title = t;
 
-        return true;
+        return false;
       }
 
-      return false;
+      return true;
     });
 
     if (!canSort) {
@@ -257,7 +255,7 @@ class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, edit, remove, order, renderAction, total, page, pagesize,
+      Modal, edit, remove, order, total, page, pagesize,
       schema, search, searchPlaceHolder, canSearch,
     } = this.props;
     return (
@@ -295,7 +293,7 @@ class RecordsPage extends React.PureComponent {
         >
           {this.renderSchema()}
           {
-            (edit || remove || renderAction) && (
+            (edit || remove) && (
               <Column
                 title="操作"
                 key="action"

@@ -1,25 +1,26 @@
-import { isPlainObject } from 'lodash';
+import {
+  isPlainObject, isArray, map, flatten,
+} from 'lodash';
 
 export default function processGroupConfig({ config, path }) {
-  let { action } = config;
+  let { actions } = config;
   const { schema } = config;
 
-  if (action === 'all' || action === true) {
-    action = {
-      create: true,
-      edit: true,
-      remove: true,
-      order: true,
-    };
+  if (!isArray(actions)) {
+    throw new Error(`action of path ${path} must be array`);
   }
 
-  if (!isPlainObject(action)) {
-    action = {};
-  }
+  actions = flatten(map(actions, (action) => {
+    if (action === 'default') {
+      return ['create', 'edit', 'remove'];
+    }
+
+    return action;
+  }));
 
   return {
     ...config,
-    action,
+    actions,
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
       let { visibility, sort } = definition;
@@ -53,7 +54,7 @@ export default function processGroupConfig({ config, path }) {
         sort = { asdesc: true };
       }
 
-      return { ...definition, visibility };
+      return { ...definition, visibility, sort };
     }),
   };
 }
