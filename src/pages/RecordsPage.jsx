@@ -6,6 +6,8 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import { forEach, split, startsWith } from 'lodash';
+import moment from 'moment';
+import { DATETIME } from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import Page from './Page';
 import './RecordsPage.less';
@@ -209,10 +211,27 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort,
+    visibility, link, title, key, sort, type,
   }) {
     const { sort: currentSort } = this.props;
     if (visibility.tabel) {
+      let render = null;
+
+      if (link) {
+        render = (value, record) => (
+          <span>
+            <RecordLink link={link} record={record}>
+              {value}
+            </RecordLink>
+          </span>
+        );
+      } else if (type === DATETIME) {
+        render = value => (
+          <span>
+            {moment(value).format('YYYY-MM-DD HH:mm:ss')}
+          </span>
+        );
+      }
       return (
         <Column
           title={title}
@@ -220,13 +239,7 @@ class RecordsPage extends React.PureComponent {
           key={key}
           sorter={!!sort}
           sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
-          render={link ? (text, record) => ( // eslint-disable-line react/jsx-no-bind
-            <span>
-              <RecordLink link={link} record={record}>
-                {text}
-              </RecordLink>
-            </span>
-          ) : null}
+          render={render} // eslint-disable-line react/jsx-no-bind
         />
       );
     }
