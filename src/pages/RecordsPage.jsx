@@ -7,11 +7,12 @@ import {
 } from 'antd';
 import { forEach, split, startsWith } from 'lodash';
 import moment from 'moment';
-import { DATETIME } from '../constants/DataType';
+import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import Page from './Page';
 import './RecordsPage.less';
 
+const { DATETIME } = DataType;
 const { Column } = Table;
 const { Search } = Input;
 

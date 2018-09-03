@@ -1,3 +1,8 @@
-export const NUMBER = 'number';
-export const STRING = 'string';
-export const DATETIME = 'datetime';
+const NUMBER = 'number';
+const STRING = 'string';
+const DATETIME = 'datetime';
+export default {
+  NUMBER,
+  STRING,
+  DATETIME,
+};
