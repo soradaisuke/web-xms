@@ -141,3 +141,12 @@ app.start('#root');
 * search
     * type：bool
     * value：是否支持用该属性模糊搜索
+
+#API要求
+* 遵循RESTFUL规范
+* 列表返回结果应该包含items和total
+* query
+    * page：页码
+    * pagesize：分页大小
+    * filter：筛选条件，decode后值为object，里面每个key/value代表要筛选的条件；支持用%模糊搜索；支持or，其值为obejct，代表满足其中任何一组key/value均可
+    * order：排序条件，`${key} ${order}`的形式，其中order取值为asc、desc
