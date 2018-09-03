@@ -133,7 +133,7 @@ app.start('#root');
             * type：string
             * value：链接的path，如果需要用到model中的数据，请用‘{key}’的表示
 * sort
-    * type：obejct
+    * type：obejct/bool/string
     * value：配置排序
         * asc
             * type：bool  
@@ -141,9 +141,13 @@ app.start('#root');
         * desc：
             * type：bool  
             * value：该属性支持降序排序 
-        * default
-            * type：'asc'/'desc'  
-            * value：该属性作为该列表的默认排序  
+    *  shortcut
+        * true：asc，desc均为true
+        * asc：仅asc为true
+        * desc：仅desc为true
+* defaultSort
+    * type：'asc'/'desc'  
+    * value：该属性作为该列表的默认排序  
 * search
     * type：bool
     * value：是否支持用该属性模糊搜索
