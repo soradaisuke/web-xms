@@ -96,11 +96,12 @@ app.start('#root');
 * type
     * type：'number'/'string'/'datetime' 
     * value：数据源中对应的数据格式
-```javascript
-import { DateType } from 'xms';
+    ```javascript
+    import { DateType } from 'xms';
+    
+    const { NUMBER, STRING,DATETIME } = DataType;
+    ```
 
-const { NUMBER, STRING,DATETIME } = DataType;
-```
 * title
     * type：string
     * value：表格或创建/编辑窗口的数据名称
