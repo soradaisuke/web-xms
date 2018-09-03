@@ -65,7 +65,7 @@ app.start('#root');
             * type：string
             * value：页面数据api路径，需符合restful标准
         * defaultFilter
-            * type：object/function(record)
+            * type：object/function(matchParams)
             * value：默认filter
 * actions
     * type：array[string]
