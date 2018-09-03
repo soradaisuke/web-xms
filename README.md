@@ -67,24 +67,15 @@ app.start('#root');
         * defaultFilter
             * type：object
             * value：默认filter
-* action
-    * type：object/bool/'all'/
+* actions
+    * type：array[string]
     * value:
-        * create
-            * type：bool
-            * value：是否支持创建
-        * edit
-            * type：bool
-            * value：是否支持编辑
-        * remove
-            * type：bool
-            * value：是否支持删除
-        * order
-            * type：bool
-            * value：是否支持排序
-    *  shortcut
-        * true：create，edit，remove，order均为true
-        * all：create，edit，remove，order均为true
+        * create: 创建
+        * edit: 编辑
+        * remove: 删除
+        * order: 排序
+    *  shorthand
+        * default：create，edit，remove
 * schema
     * type：definition array 
     * value：数据结构，见[definition](#difinition)
@@ -118,7 +109,7 @@ app.start('#root');
         * create
             * type：bool
             * value：该数据是否显示在创建窗口中
-    *  shortcut
+    *  shorthand
         * true：tabel，create，edit均为true
         * all：tabel，create，edit均为true
         * tabel：tabel为true
@@ -141,7 +132,7 @@ app.start('#root');
         * desc：
             * type：bool  
             * value：该属性支持降序排序 
-    *  shortcut
+    *  shorthand
         * true：asc，desc均为true
         * asc：仅asc为true
         * desc：仅desc为true
