@@ -47,7 +47,7 @@ function generateModel({
   let defaultSort;
   const searchFileds = [];
   forEach(schema, (definition) => {
-    if (definition.sort && definition.sort.default) {
+    if (definition.sort && definition.defaultSort) {
       defaultSort = `${definition.key} ${definition.sort.default}`;
     }
     if (definition.search) {

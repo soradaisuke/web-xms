@@ -47,6 +47,10 @@ export default function processGroupConfig({ config, path }) {
 
       if (sort === true) {
         sort = { asc: true, desc: true };
+      } else if (sort === 'asc') {
+        sort = { asc: true };
+      } else if (sort === 'desc') {
+        sort = { asdesc: true };
       }
 
       return { ...definition, visibility };
