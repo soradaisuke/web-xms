@@ -7,12 +7,13 @@ import {
 } from 'antd';
 import { forEach, split, startsWith } from 'lodash';
 import moment from 'moment';
+import Img from '../components/Img';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import Page from './Page';
 import './RecordsPage.less';
 
-const { DATETIME } = DataType;
+const { DATETIME, IMAGE } = DataType;
 const { Column } = Table;
 const { Search } = Input;
 
@@ -219,7 +220,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort, type,
+    visibility, link, title, key, sort, type, imageSize,
   }) {
     const { sort: currentSort } = this.props;
     if (visibility.tabel) {
@@ -238,6 +239,10 @@ class RecordsPage extends React.PureComponent {
           <span>
             {moment(value).format('YYYY-MM-DD HH:mm:ss')}
           </span>
+        );
+      } else if (type === IMAGE) {
+        render = value => (
+          <Img useImg src={value} format={`/both/${imageSize || '375x375'}`} />
         );
       }
       return (
