@@ -44,6 +44,9 @@ app.start('#root');
 * breadcrumb
     * type：string/function(matchParams)
     * value：用于Breadcrumb上的标题
+* inline
+    * type: bool
+    * value：true的话该页面数据会展示在父页面上
 * component
     * type：react node
     * value：页面组件
