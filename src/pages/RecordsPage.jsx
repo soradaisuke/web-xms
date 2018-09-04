@@ -125,8 +125,17 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
-  onOrderChange = (body, diff) => {
-    this.editRecord({ ...body, pos: body.pos + diff });
+  onOrderChange = async (body, diff) => {
+    const { order } = this.props;
+    const hide = message.loading('正在保存……', 0);
+    try {
+      await order(body, diff);
+      hide();
+      await this.fetch();
+    } catch (e) {
+      hide();
+      message.error(e.message);
+    }
   }
 
   onChange = async (pagination, filters, sorter) => {

@@ -1,13 +1,26 @@
 import {
-  isPlainObject, isArray, map, flatten,
+  isPlainObject, isArray, map, flatten, filter,
 } from 'lodash';
+import DataType from '../constants/DataType';
+
+const { ORDER } = DataType;
 
 export default function processGroupConfig({ config, path }) {
   let { actions } = config;
   const { schema } = config;
 
   if (!isArray(actions)) {
-    throw new Error(`action of path ${path} must be array`);
+    throw new Error(`${path}: actions必须是数组`);
+  }
+
+  const orderFields = filter(schema, definition => definition.type === ORDER);
+  if (orderFields.length > 1) {
+    throw new Error(`${path}: type = ORDER的属性最多有一个`);
+  }
+
+  const hasOrderField = orderFields.length === 1;
+  if (hasOrderField && filter(schema, definition => !!definition.sort).length > 0) {
+    throw new Error(`${path}: 存在type = ORDER的属性，默认为该属性升序排序，不支持配置其他sort属性`);
   }
 
   actions = flatten(map(actions, (action) => {
@@ -23,7 +36,8 @@ export default function processGroupConfig({ config, path }) {
     actions,
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
-      let { visibility, sort } = definition;
+      let { visibility, sort, defaultSort } = definition;
+      const { type } = definition;
 
       if (visibility === 'all' || visibility === true) {
         visibility = {
@@ -46,15 +60,20 @@ export default function processGroupConfig({ config, path }) {
         visibility = {};
       }
 
-      if (sort === true) {
+      if (type === ORDER) {
+        sort = { asc: true };
+        defaultSort = 'asc';
+      } else if (sort === true) {
         sort = { asc: true, desc: true };
       } else if (sort === 'asc') {
         sort = { asc: true };
       } else if (sort === 'desc') {
-        sort = { asdesc: true };
+        sort = { desc: true };
       }
 
-      return { ...definition, visibility, sort };
+      return {
+        ...definition, visibility, sort, defaultSort,
+      };
     }),
   };
 }

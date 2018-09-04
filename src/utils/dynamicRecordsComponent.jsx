@@ -13,6 +13,9 @@ import generateUri from './generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordModal from '../components/RecordModal';
+import DataType from '../constants/DataType';
+
+const { ORDER } = DataType;
 
 function generateService({ api: { path }, actions }) {
   if (!path) {
@@ -45,6 +48,7 @@ function generateModel({
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
   let defaultSort;
+  let orderField;
   const searchFileds = [];
   forEach(schema, (definition) => {
     if (definition.sort && definition.defaultSort) {
@@ -52,6 +56,9 @@ function generateModel({
     }
     if (definition.search) {
       searchFileds.push({ key: definition.key, title: definition.title });
+    }
+    if (definition.type === ORDER) {
+      orderField = definition.key;
     }
   });
 
@@ -114,8 +121,8 @@ function generateModel({
         yield call(service.remove, id);
       };
     } else if (action === 'order') {
-      model.effects.order = function* modelOrder({ payload: { body } }, { call }) {
-        yield call(service.order, body);
+      model.effects.order = function* modelOrder({ payload: { body, diff } }, { call }) {
+        yield call(service.order, { ...body, [orderField]: body[orderField] + diff });
       };
     }
   });
@@ -213,7 +220,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
       } else if (action === 'remove') {
         props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { id } });
       } else if (action === 'order') {
-        props.order = async body => dispatch({ type: `${namespace}/order`, payload: { body } });
+        props.order = async (body, diff) => dispatch({ type: `${namespace}/order`, payload: { body, diff } });
       }
     });
 
