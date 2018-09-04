@@ -105,9 +105,9 @@ app.start('#root');
     * type：string
     * value：表格或创建/编辑窗口的数据名称
 * visibility
-    * type：object/bool/'all'/'tabel'/'modal'
+    * type：object/bool/'all'/'table'/'modal'
     * value：
-        * tabel
+        * table
             * type：bool
             * value：该数据是否显示在表格中
         * edit
@@ -117,9 +117,9 @@ app.start('#root');
             * type：bool
             * value：该数据是否显示在创建窗口中
     *  shorthand
-        * true：tabel，create，edit均为true
-        * all：tabel，create，edit均为true
-        * tabel：tabel为true
+        * true：table，create，edit均为true
+        * all：table，create，edit均为true
+        * table：table为true
         * modal：create，edit为true    
 * link
     * type：object
