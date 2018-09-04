@@ -6,10 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  forEach,
-  split,
-  startsWith,
-  isFunction,
+  forEach, split, startsWith, isFunction, find, mapValues, isNaN,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
@@ -27,9 +24,6 @@ class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     canSearch: PropTypes.bool.isRequired,
-    changePage: PropTypes.func.isRequired,
-    changeSearch: PropTypes.func.isRequired,
-    changeSort: PropTypes.func.isRequired,
     fetch: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
@@ -46,12 +40,14 @@ class RecordsPage extends React.PureComponent {
         table: PropTypes.bool,
       }),
     })).isRequired,
+    updatePage: PropTypes.func.isRequired,
     create: PropTypes.func,
     Modal: PropTypes.func,
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
     edit: PropTypes.func,
+    filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     search: PropTypes.string,
@@ -63,6 +59,7 @@ class RecordsPage extends React.PureComponent {
   static defaultProps = {
     create: null,
     edit: null,
+    filter: {},
     remove: null,
     records: Immutable.List(),
     Modal: null,
@@ -100,35 +97,51 @@ class RecordsPage extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const {
-      pagesize, page, sort, search,
+      pagesize, page, sort, search, filter,
     } = this.props;
     if (prevProps.pagesize !== pagesize || prevProps.page !== page
-      || prevProps.sort !== sort || prevProps.search !== search) {
+      || prevProps.sort !== sort || prevProps.search !== search
+      || prevProps.filter !== filter) {
       this.fetch();
     }
   }
 
   onChangePage = (page, pagesize) => {
-    const { changePage } = this.props;
-    changePage({ page, pagesize });
+    const {
+      updatePage, sort, filter, search,
+    } = this.props;
+    updatePage({
+      page, pagesize, sort, filter, search,
+    });
   }
 
   onSearch = (search) => {
-    const { changeSearch } = this.props;
-    changeSearch({ search });
+    const {
+      updatePage, page, pagesize, sort, filter,
+    } = this.props;
+    updatePage({
+      page, pagesize, sort, filter, search,
+    });
   }
 
-  onConfirmRemove = async (record) => {
-    const { remove } = this.props;
-    const hide = message.loading('正在删除……', 0);
-    try {
-      await remove(record.id);
-      hide();
-      await this.fetch();
-    } catch (e) {
-      hide();
-      message.error(e.message);
+  onChange = async (pagination, filters, sorter) => {
+    let { sort } = this.props;
+    const {
+      page, pagesize, search, updatePage,
+    } = this.props;
+    if (sorter && sorter.columnKey && sorter.order && this.checkSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') })) {
+      sort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     }
+    updatePage({
+      page,
+      pagesize,
+      sort,
+      search,
+      filter: mapValues(filters, (value) => {
+        const number = parseInt(value, 10);
+        return isNaN(number) ? value : number;
+      }),
+    });
   }
 
   onOrderChange = async (body, diff) => {
@@ -144,10 +157,16 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
-  onChange = async (pagination, filters, sorter) => {
-    if (sorter && sorter.columnKey && sorter.order && this.checkSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') })) {
-      const { changeSort } = this.props;
-      changeSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') });
+  onConfirmRemove = async (record) => {
+    const { remove } = this.props;
+    const hide = message.loading('正在删除……', 0);
+    try {
+      await remove(record.id);
+      hide();
+      await this.fetch();
+    } catch (e) {
+      hide();
+      message.error(e.message);
     }
   }
 
@@ -193,14 +212,14 @@ class RecordsPage extends React.PureComponent {
 
   async fetch() {
     const {
-      fetch, page, pagesize, sort, search, match: { params },
+      fetch, page, pagesize, sort, search, filter, match: { params },
     } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
       await fetch({
-        page, pagesize, sort, search, params,
+        page, pagesize, sort, search, filter, params,
       });
       this.setState({
         isError: false,
@@ -226,10 +245,18 @@ class RecordsPage extends React.PureComponent {
 
   renderColumn({
     visibility, link, title, key, sort,
-    type, imageSize, renderValue,
+    type, imageSize, renderValue, filters,
   }) {
     const { sort: currentSort } = this.props;
-    const renderValueFunc = isFunction(renderValue) ? renderValue : v => v;
+    let renderValueFunc = v => v;
+    if (isFunction(renderValue)) {
+      renderValueFunc = renderValue;
+    } else if (filters) {
+      renderValueFunc = (v) => {
+        const filter = find(filters, f => f.value === v);
+        return filter ? filter.text : v;
+      };
+    }
     if (visibility.table) {
       let render = v => v;
 
@@ -257,6 +284,8 @@ class RecordsPage extends React.PureComponent {
           title={title}
           dataIndex={key}
           key={key}
+          filterMultiple={false}
+          filters={filters}
           sorter={!!sort}
           sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={

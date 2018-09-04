@@ -3,7 +3,7 @@ import {
 } from 'lodash';
 import DataType from '../constants/DataType';
 
-const { ORDER } = DataType;
+const { ORDER, ENUM } = DataType;
 
 export default function processGroupConfig({ config, path }) {
   let { actions } = config;
@@ -37,7 +37,11 @@ export default function processGroupConfig({ config, path }) {
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
       let { visibility, sort, defaultSort } = definition;
-      const { type } = definition;
+      const { type, filters } = definition;
+
+      if (type === ENUM && !filters) {
+        throw new Error(`${path}: ENUM类型必须设置filters`);
+      }
 
       if (visibility === 'all' || visibility === true) {
         visibility = {

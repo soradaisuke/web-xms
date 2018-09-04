@@ -5,6 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
+import { createSelector } from 'reselect';
 import { parse } from 'query-string';
 import {
   upperFirst, isFunction, isPlainObject, forEach, toInteger, find,
@@ -179,10 +180,23 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
     }
   }
 
+  const filterSelector = createSelector(
+    [
+      queries => queries.filter,
+    ],
+    (filter) => {
+      try {
+        return JSON.parse(filter);
+      } catch (e) {
+        return {};
+      }
+    },
+  );
+
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
-
     return {
+      filter: filterSelector(queries),
       canSearch: state[namespace].get('canSearch'),
       searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
       page: queries.page ? toInteger(queries.page) : 1,
@@ -198,23 +212,19 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
   const mapDispatchToProps = (dispatch) => {
     const props = {
       fetch: async ({
-        page, pagesize, sort, search, params,
+        page, pagesize, sort, search, filter, params,
       }) => dispatch({
         type: `${namespace}/fetch`,
         payload: {
-          page, pagesize, sort, search, params,
+          page, pagesize, sort, search, filter, params,
         },
       }),
-      async changePage({ page, pagesize }) {
-        const uri = generateUri(window.location.href, { page, pagesize });
-        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
-      },
-      async changeSort({ key, order }) {
-        const uri = generateUri(window.location.href, { sort: `${key} ${order}` });
-        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
-      },
-      async changeSearch({ search }) {
-        const uri = generateUri(window.location.href, { search });
+      async updatePage({
+        page, pagesize, sort, search, filter = {},
+      }) {
+        const uri = generateUri(window.location.href, {
+          page, pagesize, search, sort, filter: JSON.stringify(filter),
+        });
         return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
       },
     };
