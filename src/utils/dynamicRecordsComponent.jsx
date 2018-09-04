@@ -94,7 +94,7 @@ function generateModel({
           f = {
             ...f,
             ...searchFileds.reduce((acc, field) => {
-              acc[field.key] = `%${search}%`;
+              acc[field.key] = search;
               return acc;
             }, {}),
           };
