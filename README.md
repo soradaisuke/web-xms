@@ -68,7 +68,7 @@ app.start('#root');
             * value：页面数据api路径，需符合restful标准
         * defaultFilter
             * type：object/function(matchParams)
-            * value：默认filter, 后台API应该统一用query里的filter（json string）来筛选数据
+            * value：默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据
 * actions
     * type：array[string]
     * value:
@@ -87,13 +87,14 @@ app.start('#root');
     * type：string
     * value：数据源中对应的key
 * type
-    * type：'number'/'string'/'datetime'/'order'/'image' 
+    * type：'number'/'string'/'datetime'/'order'/'image'/'enum' 
     * value：数据源中对应的数据格式
         * number：以数字格式显示数据
         * string：以文本格式显示数据
         * datetime：以时间格式显示数据
         * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
         * image：以图片格式显示数据
+        * enum：该属性可以用来筛选，必须和filters搭配使用
     
     ```javascript
     import { DateType } from 'xms';
@@ -156,6 +157,11 @@ app.start('#root');
 * renderValue：
     * type：function(record)
     * value：自定义函数，获取展示值
+* filters
+    * type：array of object
+    * value：
+        * text：value所对应的显示文字
+        * value：后台数据所对应的值 
 
 #API要求
 * 遵循RESTFUL规范
