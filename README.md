@@ -21,7 +21,7 @@ app.start('#root');
     * required
     * value：见[api](#api)
 * routes
-    * type：array
+    * type：array[object]
     * value：route数组，见[route](#route)
 
 # api
@@ -56,7 +56,7 @@ app.start('#root');
 
 # config
 * type
-    * type：'single'/'group'
+    * type：string
     * value：
         * single：单个数据页面
         * group：列表数据页面
@@ -77,9 +77,9 @@ app.start('#root');
         * remove: 删除
         * order: 排序
     *  shorthand
-        * default：create，edit，remove
+        * 'default'：create，edit，remove
 * schema
-    * type：definition array 
+    * type：array[object] 
     * value：数据结构，见[definition](#difinition)
 
 # definition
@@ -87,7 +87,7 @@ app.start('#root');
     * type：string
     * value：数据源中对应的key
 * type
-    * type：'number'/'string'/'datetime'/'order'/'image'/'enum' 
+    * type：string
     * value：数据源中对应的数据格式
         * number：以数字格式显示数据
         * string：以文本格式显示数据
@@ -106,7 +106,7 @@ app.start('#root');
     * type：string
     * value：表格或创建/编辑窗口的数据名称
 * visibility
-    * type：object/bool/'all'/'table'/'modal'
+    * type：object
     * value：
         * table
             * type：bool
@@ -119,20 +119,23 @@ app.start('#root');
             * value：该数据是否显示在创建窗口中
     *  shorthand
         * true：table，create，edit均为true
-        * all：table，create，edit均为true
-        * table：table为true
-        * modal：create，edit为true    
+        * 'all'：table，create，edit均为true
+        * 'table'：table为true
+        * 'modal'：create，edit为true    
 * link
     * type：object
     * value：用于配置链接
         * type 
-            * type：'external'/'absolute'/'relative'
-            * value：external为外站链接，relative会在当前页面path下扩展，absolute会在当前host下扩展
+            * type：strng
+            * value：
+                * external：外站链接
+                * relative：在当前页面path下扩展
+                * absolute：会在当前host下扩展
         * template
             * type：string
             * value：链接的path，如果需要用到model中的数据，请用‘{key}’的表示
 * sort
-    * type：obejct/bool/string
+    * type：obejct
     * value：配置排序
         * asc
             * type：bool  
@@ -142,8 +145,8 @@ app.start('#root');
             * value：该属性支持降序排序 
     *  shorthand
         * true：asc，desc均为true
-        * asc：仅asc为true
-        * desc：仅desc为true
+        * 'asc'：仅asc为true
+        * 'desc'：仅desc为true
 * defaultSort
     * type：'asc'/'desc'  
     * value：该属性作为该列表的默认排序  
@@ -158,10 +161,14 @@ app.start('#root');
     * type：function(record)
     * value：自定义函数，获取展示值
 * filters
-    * type：array of object
+    * type：array[object]
     * value：
-        * text：value所对应的显示文字
-        * value：后台数据所对应的值 
+        * text
+            * type：string/number 
+            * value：所对应的显示文字
+        * value
+            * type：string/number
+            * value：后台数据所对应的值 
 
 #API要求
 * 遵循RESTFUL规范
