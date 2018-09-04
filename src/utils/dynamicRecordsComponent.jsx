@@ -7,7 +7,7 @@ import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
 import { parse } from 'query-string';
 import {
-  upperFirst, isFunction, forEach, toInteger, find,
+  upperFirst, isFunction, isPlainObject, forEach, toInteger, find,
 } from 'lodash';
 import generateUri from './generateUri';
 import request from '../services/request';
@@ -85,7 +85,7 @@ function generateModel({
         let f = filter;
         if (isFunction(defaultFilter)) {
           f = { ...f, ...defaultFilter(params) };
-        } else if (defaultFilter) {
+        } else if (isPlainObject(defaultFilter)) {
           f = { ...f, ...defaultFilter };
         }
 
@@ -109,8 +109,15 @@ function generateModel({
 
   forEach(actions, (action) => {
     if (action === 'create') {
-      model.effects.create = function* modelCreate({ payload: { body } }, { call }) {
-        yield call(service.create, body);
+      model.effects.create = function* modelCreate({ payload: { body, params } }, { call }) {
+        let newBody = body;
+        if (isFunction(defaultFilter)) {
+          newBody = { ...newBody, ...defaultFilter(params) };
+        } else if (isPlainObject(defaultFilter)) {
+          newBody = { ...newBody, ...defaultFilter };
+        }
+
+        yield call(service.create, newBody);
       };
     } else if (action === 'edit') {
       model.effects.edit = function* modelEdit({ payload: { body } }, { call }) {
@@ -214,7 +221,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
 
     forEach(actions, (action) => {
       if (action === 'create') {
-        props.create = async body => dispatch({ type: `${namespace}/create`, payload: { body } });
+        props.create = async (body, params) => dispatch({ type: `${namespace}/create`, payload: { body, params } });
       } else if (action === 'edit') {
         props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { body } });
       } else if (action === 'remove') {

@@ -152,13 +152,13 @@ class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (body) => {
-    const { edit, create } = this.props;
+    const { edit, create, match: { params } } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
       if (body.id) {
         await edit(body);
       } else {
-        await create(body);
+        await create(body, params);
       }
       hide();
       await this.fetch();
