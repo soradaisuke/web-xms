@@ -43,7 +43,7 @@ class RecordsPage extends React.PureComponent {
         PropTypes.bool,
       ]),
       visibility: PropTypes.shape({
-        tabel: PropTypes.bool,
+        table: PropTypes.bool,
       }),
     })).isRequired,
     create: PropTypes.func,
@@ -230,7 +230,7 @@ class RecordsPage extends React.PureComponent {
   }) {
     const { sort: currentSort } = this.props;
     const renderValueFunc = isFunction(renderValue) ? renderValue : v => v;
-    if (visibility.tabel) {
+    if (visibility.table) {
       let render = v => v;
 
       if (link) {

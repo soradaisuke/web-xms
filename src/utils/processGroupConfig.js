@@ -43,11 +43,11 @@ export default function processGroupConfig({ config, path }) {
         visibility = {
           create: true,
           edit: true,
-          tabel: true,
+          table: true,
         };
-      } else if (visibility === 'tabel') {
+      } else if (visibility === 'table') {
         visibility = {
-          tabel: true,
+          table: true,
         };
       } else if (visibility === 'modal') {
         visibility = {
