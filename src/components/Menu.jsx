@@ -56,7 +56,7 @@ class NavMenu extends React.PureComponent {
         {
           routes.filter(({ title }) => !!title).map(({ path, title, routes: childRoutes }) => {
             if (childRoutes && childRoutes.length > 0) {
-              const subMenus = childRoutes.filter(({ childTitle }) => !!childTitle)
+              const subMenus = childRoutes.filter(({ title: childTitle }) => !!childTitle)
                 .map(({ path: subPath, title: childTitle }) => (
                   <Menu.Item key={subPath}>
                     <Link to={subPath}>
