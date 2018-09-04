@@ -6,7 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  forEach, split, startsWith, isFunction, find, mapValues, isNaN,
+  forEach, split, startsWith, isFunction, find, mapValues, isNaN, has,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
@@ -138,7 +138,7 @@ class RecordsPage extends React.PureComponent {
       sort,
       search,
       filter: mapValues(filters, (value) => {
-        const number = parseInt(value, 10);
+        const number = parseInt(value[0], 10);
         return isNaN(number) ? value : number;
       }),
     });
@@ -247,14 +247,15 @@ class RecordsPage extends React.PureComponent {
     visibility, link, title, key, sort,
     type, imageSize, renderValue, filters,
   }) {
-    const { sort: currentSort } = this.props;
+    const { sort: currentSort, filter } = this.props;
+    const filteredValue = has(filter, key) ? String(filter[key]) : '';
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
     } else if (filters) {
       renderValueFunc = (v) => {
-        const filter = find(filters, f => f.value === v);
-        return filter ? filter.text : v;
+        const filtered = find(filters, f => f.value === v);
+        return filtered ? filtered.text : v;
       };
     }
     if (visibility.table) {
@@ -279,13 +280,20 @@ class RecordsPage extends React.PureComponent {
           <Img useImg src={value} format={`/both/${imageSize || '100x100'}`} />
         );
       }
+
+      const filterProps = filters && filters.length > 0 ? {
+        filtered: !!filteredValue,
+        filteredValue: filteredValue ? [filteredValue] : [],
+        filterMultiple: false,
+        filters,
+      } : {};
+
       return (
         <Column
+          {...filterProps}
           title={title}
           dataIndex={key}
           key={key}
-          filterMultiple={false}
-          filters={filters}
           sorter={!!sort}
           sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={
