@@ -87,8 +87,12 @@ app.start('#root');
     * type：string
     * value：数据源中对应的key
 * type
-    * type：'number'/'string'/'datetime' 
+    * type：'number'/'string'/'datetime'/'order' 
     * value：数据源中对应的数据格式
+        * number：以数字格式显示数据
+        * string：以文本格式显示数据
+        * datetime：以时间格式显示数据
+        * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
     
     ```javascript
     import { DateType } from 'xms';
