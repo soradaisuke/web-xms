@@ -5,7 +5,12 @@ import { withRouter } from 'react-router';
 import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
-import { forEach, split, startsWith } from 'lodash';
+import {
+  forEach,
+  split,
+  startsWith,
+  isFunction,
+} from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
 import DataType from '../constants/DataType';
@@ -220,11 +225,13 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort, type, imageSize,
+    visibility, link, title, key, sort,
+    type, imageSize, renderValue,
   }) {
     const { sort: currentSort } = this.props;
+    const renderValueFunc = isFunction(renderValue) ? renderValue : v => v;
     if (visibility.tabel) {
-      let render = null;
+      let render = v => v;
 
       if (link) {
         render = (value, record) => (
@@ -242,7 +249,7 @@ class RecordsPage extends React.PureComponent {
         );
       } else if (type === IMAGE) {
         render = value => (
-          <Img useImg src={value} format={`/both/${imageSize || '375x375'}`} />
+          <Img useImg src={value} format={`/both/${imageSize || '100x100'}`} />
         );
       }
       return (
@@ -252,7 +259,9 @@ class RecordsPage extends React.PureComponent {
           key={key}
           sorter={!!sort}
           sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
-          render={render} // eslint-disable-line react/jsx-no-bind
+          render={
+            (value, record) => render(renderValueFunc(value), record)
+          }
         />
       );
     }
