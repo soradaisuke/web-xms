@@ -98,7 +98,9 @@ request.remove(path);
     *  object：自定义操作
         * title：操作名称
             * type：string 
-        * handler：操作函数，会传入该列的数据。一般使用request，见顶部
+        * handler：操作函数，会传入该行的数据。一般使用request，见顶部
+            * type：function(record) 
+        * enable：是否为该行数据启动该操作
             * type：function(record) 
 * schema
     * type：array[object] 
