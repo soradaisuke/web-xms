@@ -183,7 +183,7 @@ function generateModal({ namespace, schema, actions }) {
   return Modal;
 }
 
-function generateRecordsPage({ namespace, actions }, Modal) {
+function generateRecordsPage({ namespace, actions }, modal, component) {
   const customActions = actions.filter(action => isPlainObject(action));
 
   class Page extends React.PureComponent {
@@ -191,7 +191,12 @@ function generateRecordsPage({ namespace, actions }, Modal) {
 
     render() {
       return (
-        <RecordsPage Modal={Modal} {...this.props} customActions={customActions} />
+        <RecordsPage
+          {...this.props}
+          component={component}
+          modal={modal}
+          customActions={customActions}
+        />
       );
     }
   }
@@ -271,18 +276,18 @@ function generateRecordsPage({ namespace, actions }, Modal) {
   return connect(mapStateToProps, mapDispatchToProps)(Page);
 }
 
-function generateDynamicRecordsComponent({ app, config }) {
+function generateDynamicRecordsComponent({ app, config, component }) {
   const service = generateService(config);
   const model = generateModel(config, service, app);
-  const Modal = generateModal(config);
+  const modal = generateModal(config);
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage(config, Modal)),
+    component: () => Promise.resolve(generateRecordsPage(config, modal, component)),
   });
 }
 
-export default function dynamicRecordsComponent({ app, config }) {
+export default function dynamicRecordsComponent({ app, config, component }) {
   if (!app) {
     throw new Error('dynamicRecordsComponent: app is required');
   }
@@ -294,10 +299,10 @@ export default function dynamicRecordsComponent({ app, config }) {
     return dynamic({
       app,
       resolve: () => config().then(c => (
-        generateDynamicRecordsComponent({ app, config: c.default || c })
+        generateDynamicRecordsComponent({ app, config: c.default || c, component })
       )),
     });
   }
 
-  return generateDynamicRecordsComponent({ app, config });
+  return generateDynamicRecordsComponent({ app, config, component });
 }

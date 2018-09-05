@@ -35,6 +35,7 @@ export default function processRoutes({ app, routes }) {
         if (type === 'group') {
           component = dynamicRecordsComponent({
             app,
+            component,
             config: processGroupConfig({ config, path }),
           });
         } else if (type === 'single') {

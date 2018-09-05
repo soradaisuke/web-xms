@@ -42,8 +42,9 @@ class RecordsPage extends React.PureComponent {
     })).isRequired,
     updatePage: PropTypes.func.isRequired,
     create: PropTypes.func,
+    component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     customActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    Modal: PropTypes.func,
+    modal: PropTypes.func,
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
@@ -59,12 +60,13 @@ class RecordsPage extends React.PureComponent {
 
   static defaultProps = {
     create: null,
+    component: null,
     customActions: [],
     edit: null,
     filter: {},
     remove: null,
     records: Immutable.List(),
-    Modal: null,
+    modal: null,
     order: null,
     page: 1,
     pagesize: 10,
@@ -250,8 +252,8 @@ class RecordsPage extends React.PureComponent {
   }
 
   hasAddButton() {
-    const { Modal, create } = this.props;
-    return Modal && create;
+    const { modal, create } = this.props;
+    return modal && create;
   }
 
   hasHeader() {
@@ -330,7 +332,7 @@ class RecordsPage extends React.PureComponent {
 
   renderActions() {
     const {
-      Modal, edit, remove, order, customActions,
+      modal: Modal, edit, remove, order, customActions,
     } = this.props;
     return (edit || remove || customActions.length > 0) ? (
       <Column
@@ -416,7 +418,7 @@ class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, total, page, pagesize,
+      modal: Modal, total, page, pagesize,
       schema, search, searchPlaceHolder, canSearch,
     } = this.props;
     return (
@@ -472,8 +474,11 @@ class RecordsPage extends React.PureComponent {
 
   render() {
     const { isError } = this.state;
+    const { component: Component } = this.props;
+
     return (
       <Page isError={isError}>
+        {Component ? <Component /> : null}
         {this.renderContent()}
       </Page>
     );
