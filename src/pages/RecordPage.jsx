@@ -8,12 +8,14 @@ export default class RecordPage extends React.PureComponent {
   static propTypes = {
     fetch: PropTypes.func.isRequired,
     recordId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     routes: PropTypes.arrayOf(PropTypes.shape({
       component: PropTypes.bode,
     })),
   };
 
   static defaultProps = {
+    component: null,
     routes: [],
   };
 
@@ -64,10 +66,12 @@ export default class RecordPage extends React.PureComponent {
   }
 
   render() {
+    const { component: Component } = this.props;
     const { isLoading, isError } = this.state;
 
     return (
       <Page isLoading={isLoading} isError={isError}>
+        {Component ? <Component /> : null}
         {this.renderRoutes()}
       </Page>
     );

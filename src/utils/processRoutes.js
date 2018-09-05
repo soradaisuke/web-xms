@@ -16,9 +16,6 @@ function valiadateRoute({
   if (!component && !config && (!routes || routes.length === 0)) {
     throw new Error(`valiadateRoute: path ${path} must have component or config or routes`);
   }
-  if (component && config) {
-    throw new Error(`valiadateRoute: path ${path} must have only component or config`);
-  }
 }
 
 export default function processRoutes({ app, routes }) {
@@ -43,6 +40,7 @@ export default function processRoutes({ app, routes }) {
         } else if (type === 'single') {
           component = dynamicRecordComponent({
             app,
+            component,
             config: processSingleConfig({ config, path }),
           });
         }

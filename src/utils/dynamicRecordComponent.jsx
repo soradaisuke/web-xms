@@ -40,13 +40,13 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({ namespace }) {
+function generateRecordPage({ namespace }, component) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
     render() {
       return (
-        <RecordPage {...this.props} />
+        <RecordPage {...this.props} component={component} />
       );
     }
   }
@@ -63,18 +63,18 @@ function generateRecordPage({ namespace }) {
   return withRouter(connect(mapStateToProps, mapDispatchToProps)(Page));
 }
 
-function generateDynamicRecordComponent({ app, config }) {
+function generateDynamicRecordComponent({ app, config, component }) {
   const service = generateService(config);
   const model = generateModel(config, service);
 
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordPage(config)),
+    component: () => Promise.resolve(generateRecordPage(config, component)),
   });
 }
 
-export default function dynamicRecordComponent({ app, config }) {
+export default function dynamicRecordComponent({ app, config, component }) {
   if (!app) {
     throw new Error('dynamicRecordComponent: app is required');
   }
@@ -86,10 +86,10 @@ export default function dynamicRecordComponent({ app, config }) {
     return dynamic({
       app,
       resolve: () => config().then(c => (
-        generateDynamicRecordComponent({ app, config: c.default || c })
+        generateDynamicRecordComponent({ app, config: c.default || c, component })
       )),
     });
   }
 
-  return generateDynamicRecordComponent({ app, config });
+  return generateDynamicRecordComponent({ app, config, component });
 }
