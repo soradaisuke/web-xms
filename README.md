@@ -102,6 +102,7 @@ request.remove(path);
             * type：function(record) 
         * enable：是否为该行数据启动该操作
             * type：function(record) 
+        * type：按钮类型，参数同antd的Button，有primary、default、danger、dashed。 
 * schema
     * type：array[object] 
     * value：数据结构，见[definition](#difinition)
