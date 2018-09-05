@@ -387,17 +387,25 @@ class RecordsPage extends React.PureComponent {
               )
             }
             {
-              customActions.map(({ title, handler }) => (
-                <Button
-                  key={title}
-                  type="primary"
-                  className="action-button"
-                  // eslint-disable-next-line react/jsx-no-bind
-                  onClick={() => this.onCustomAction(record, handler)}
-                >
-                  {title}
-                </Button>
-              ))
+              customActions.map(({
+                title, type, handler, enable,
+              }) => {
+                if (isFunction(enable) && !enable(record)) {
+                  return null;
+                }
+
+                return (
+                  <Button
+                    key={title}
+                    type={type}
+                    className="action-button"
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={() => this.onCustomAction(record, handler)}
+                  >
+                    {title}
+                  </Button>
+                );
+              })
             }
           </span>
         )}
