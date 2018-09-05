@@ -177,7 +177,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
 
     render() {
       return (
-        <RecordsPage Modal={Modal} {...this.props} schema={schema} actions={actions} />
+        <RecordsPage Modal={Modal} {...this.props} schema={schema} customActions={customActions} />
       );
     }
   }
@@ -198,7 +198,6 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
     return {
-      customActions,
       filter: filterSelector(queries),
       canSearch: state[namespace].get('canSearch'),
       searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
