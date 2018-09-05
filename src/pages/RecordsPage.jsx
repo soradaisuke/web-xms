@@ -6,7 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  forEach, split, startsWith, isFunction, find, mapValues, isNaN, has,
+  forEach, split, startsWith, isFunction, find, mapValues, isNaN, has, isArray,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
@@ -268,7 +268,7 @@ class RecordsPage extends React.PureComponent {
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
-    } else if (filters) {
+    } else if (isArray(filters)) {
       renderValueFunc = (v) => {
         const filtered = find(filters, f => f.value === v);
         return filtered ? filtered.text : v;
@@ -297,7 +297,7 @@ class RecordsPage extends React.PureComponent {
         );
       }
 
-      const filterProps = filters && filters.length > 0 ? {
+      const filterProps = isArray(filters) && filters.length > 0 ? {
         filtered: !!filteredValue,
         filteredValue: filteredValue ? [filteredValue] : [],
         filterMultiple: false,

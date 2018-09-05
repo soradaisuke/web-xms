@@ -44,14 +44,14 @@ function generateService({ api: { path }, actions }) {
 
 function generateModel({
   namespace, api: { defaultFilter = {} } = {}, actions, schema,
-}, service) {
+}, service, app) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
   let defaultSort;
   let orderField;
   const searchFileds = [];
-  forEach(schema, (definition) => {
+  forEach(schema, (definition, index) => {
     if (definition.sort && definition.defaultSort) {
       defaultSort = `${definition.key} ${definition.defaultSort}`;
     }
@@ -61,11 +61,22 @@ function generateModel({
     if (definition.type === ORDER) {
       orderField = definition.key;
     }
+    if (isFunction(definition.filters)) {
+      definition.filters().then(filters => (
+        app._store.dispatch({ // eslint-disable-line no-underscore-dangle
+          type: `${namespace}/saveFilters`,
+          payload: {
+            filters, index,
+          },
+        })
+      ));
+    }
   });
 
   const model = {
     namespace,
     state: Immutable.fromJS({
+      schema,
       records: [],
       total: 0,
       defaultSort,
@@ -75,6 +86,9 @@ function generateModel({
     reducers: {
       save(state, { payload: { records, total } }) {
         return state.merge(Immutable.fromJS({ records, total }));
+      },
+      saveFilters(state, { payload: { filters, index } }) {
+        return state.set('schema', state.get('schema').setIn([index, 'filters'], filters));
       },
     },
     effects: {
@@ -169,7 +183,7 @@ function generateModal({ namespace, schema, actions }) {
   return Modal;
 }
 
-function generateRecordsPage({ namespace, schema, actions }, Modal) {
+function generateRecordsPage({ namespace, actions }, Modal) {
   const customActions = actions.filter(action => isPlainObject(action));
 
   class Page extends React.PureComponent {
@@ -177,7 +191,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
 
     render() {
       return (
-        <RecordsPage Modal={Modal} {...this.props} schema={schema} customActions={customActions} />
+        <RecordsPage Modal={Modal} {...this.props} customActions={customActions} />
       );
     }
   }
@@ -195,10 +209,18 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
     },
   );
 
+  const schemaSelector = createSelector(
+    [
+      state => state[namespace].get('schema'),
+    ],
+    schema => schema.toJS(),
+  );
+
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
     return {
       filter: filterSelector(queries),
+      schema: schemaSelector(state),
       canSearch: state[namespace].get('canSearch'),
       searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
       page: queries.page ? toInteger(queries.page) : 1,
@@ -251,7 +273,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
 
 function generateDynamicRecordsComponent({ app, config }) {
   const service = generateService(config);
-  const model = generateModel(config, service);
+  const model = generateModel(config, service, app);
   const Modal = generateModal(config);
   return dynamic({
     app,
