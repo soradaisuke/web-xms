@@ -42,6 +42,7 @@ class RecordsPage extends React.PureComponent {
     })).isRequired,
     updatePage: PropTypes.func.isRequired,
     create: PropTypes.func,
+    customActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     Modal: PropTypes.func,
     order: PropTypes.func,
     page: PropTypes.number,
@@ -58,6 +59,7 @@ class RecordsPage extends React.PureComponent {
 
   static defaultProps = {
     create: null,
+    customActions: [],
     edit: null,
     filter: {},
     remove: null,
@@ -167,6 +169,20 @@ class RecordsPage extends React.PureComponent {
     } catch (e) {
       hide();
       message.error(e.message);
+    }
+  }
+
+  onCustomAction = async (record, handler) => {
+    if (isFunction(handler)) {
+      const hide = message.loading('正在保存……', 0);
+      try {
+        await handler(record);
+        hide();
+        await this.fetch();
+      } catch (e) {
+        hide();
+        message.error(e.message);
+      }
     }
   }
 
@@ -312,10 +328,87 @@ class RecordsPage extends React.PureComponent {
     return schema.map(definition => this.renderColumn({ ...definition }));
   }
 
+  renderActions() {
+    const {
+      Modal, edit, remove, order, customActions,
+    } = this.props;
+    return (edit || remove || customActions.length > 0) ? (
+      <Column
+        title="操作"
+        key="action"
+        render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
+          <span>
+            {
+              Modal && edit && (
+                <Modal record={record} onOk={this.editRecord}>
+                  <Button
+                    className="action-button"
+                    type="primary"
+                    shape="circle"
+                    icon="edit"
+                  />
+                </Modal>
+              )
+            }
+            {
+              remove && (
+                <Popconfirm
+                  title="确认删除？"
+                  // eslint-disable-next-line react/jsx-no-bind
+                  onConfirm={() => this.onConfirmRemove(record)}
+                >
+                  <Button
+                    className="action-button"
+                    type="danger"
+                    shape="circle"
+                    icon="delete"
+                  />
+                </Popconfirm>
+              )
+            }
+            {
+              order && (
+                <React.Fragment>
+                  <Button
+                    className="action-button"
+                    shape="circle"
+                    icon="up"
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={() => this.onOrderChange(record, -1)}
+                  />
+                  <Button
+                    className="action-button"
+                    shape="circle"
+                    icon="down"
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={() => this.onOrderChange(record, 1)}
+                  />
+                </React.Fragment>
+              )
+            }
+            {
+              customActions.map(({ title, handler }) => (
+                <Button
+                  key={title}
+                  type="primary"
+                  className="action-button"
+                  // eslint-disable-next-line react/jsx-no-bind
+                  onClick={() => this.onCustomAction(record, handler)}
+                >
+                  {title}
+                </Button>
+              ))
+            }
+          </span>
+        )}
+      />
+    ) : null;
+  }
+
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      Modal, edit, remove, order, total, page, pagesize,
+      Modal, total, page, pagesize,
       schema, search, searchPlaceHolder, canSearch,
     } = this.props;
     return (
@@ -352,66 +445,7 @@ class RecordsPage extends React.PureComponent {
           onChange={this.onChange}
         >
           {this.renderSchema()}
-          {
-            (edit || remove) && (
-              <Column
-                title="操作"
-                key="action"
-                render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
-                  <span>
-                    {
-                      Modal && edit && (
-                        <Modal record={record} onOk={this.editRecord}>
-                          <Button
-                            className="action-button"
-                            type="primary"
-                            shape="circle"
-                            icon="edit"
-                          />
-                        </Modal>
-                      )
-                    }
-                    {
-                      remove && (
-                        <Popconfirm
-                          title="确认删除？"
-                          // eslint-disable-next-line react/jsx-no-bind
-                          onConfirm={() => this.onConfirmRemove(record)}
-                        >
-                          <Button
-                            className="action-button"
-                            type="danger"
-                            shape="circle"
-                            icon="delete"
-                          />
-                        </Popconfirm>
-                      )
-                    }
-                    {
-                      order && (
-                        <React.Fragment>
-                          <Button
-                            className="action-button"
-                            shape="circle"
-                            icon="up"
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onClick={() => this.onOrderChange(record, -1)}
-                          />
-                          <Button
-                            className="action-button"
-                            shape="circle"
-                            icon="down"
-                            // eslint-disable-next-line react/jsx-no-bind
-                            onClick={() => this.onOrderChange(record, 1)}
-                          />
-                        </React.Fragment>
-                      )
-                    }
-                  </span>
-                )}
-              />
-            )
-          }
+          {this.renderActions()}
         </Table>
         <Pagination
           showQuickJumper

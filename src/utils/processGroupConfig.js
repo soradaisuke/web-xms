@@ -6,7 +6,7 @@ import DataType from '../constants/DataType';
 const { ORDER, ENUM } = DataType;
 
 export default function processGroupConfig({ config, path }) {
-  let { actions } = config;
+  let { actions = [] } = config;
   const { schema } = config;
 
   if (!isArray(actions)) {

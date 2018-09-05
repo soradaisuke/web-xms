@@ -170,6 +170,8 @@ function generateModal({ namespace, schema, actions }) {
 }
 
 function generateRecordsPage({ namespace, schema, actions }, Modal) {
+  const customActions = actions.filter(action => isPlainObject(action));
+
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -196,6 +198,7 @@ function generateRecordsPage({ namespace, schema, actions }, Modal) {
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
     return {
+      customActions,
       filter: filterSelector(queries),
       canSearch: state[namespace].get('canSearch'),
       searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
