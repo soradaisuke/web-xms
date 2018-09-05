@@ -178,15 +178,13 @@ request.remove(path);
 * renderValue：
     * type：function(record)
     * value：自定义函数，获取展示值
-* filters
-    * type：array[object]
-    * value：
-        * text
+* filters：该属性的所有过滤信息，格式与antd的Table的filters相同
+    * array[object]
+        * text：所对应的显示文字
             * type：string/number 
-            * value：所对应的显示文字
-        * value
+        * value：后台数据所对应的值 
             * type：string/number
-            * value：后台数据所对应的值 
+    * function：动态获取过滤信息，返回的格式必须是上述的array[object] 
 
 #API要求
 * 遵循RESTFUL规范
