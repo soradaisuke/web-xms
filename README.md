@@ -11,6 +11,24 @@ const app = xms(config);
 app.start('#root');
 ```
 
+```javascript
+import { DateType } from 'xms';
+
+const { NUMBER, STRING,DATETIME } = DataType;
+```
+
+```javascript
+import { request } from 'xms';
+
+request.get(path, { params });
+
+request.post(path, { body });
+
+request.put(path, { body });
+
+request.remove(path);
+```
+
 # Config
 * name
     * type：string
@@ -69,15 +87,19 @@ app.start('#root');
         * defaultFilter
             * type：object/function(matchParams)
             * value：默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据
-* actions
-    * type：array[string]
-    * value:
+* actions：该页面支持的所有操作
+    * type：array[string/object]
+    * string：预设的操作
         * create: 创建
         * edit: 编辑
         * remove: 删除
-        * order: 排序
-    *  shorthand
-        * 'default'：create，edit，remove
+        * order: 调整顺序
+        * default：创建 + 编辑 + 删除
+    *  object：自定义操作
+        * title：操作名称
+            * type：string 
+        * handler：操作函数，会传入该列的数据。一般使用request，见顶部
+            * type：function(record) 
 * schema
     * type：array[object] 
     * value：数据结构，见[definition](#difinition)
@@ -95,13 +117,6 @@ app.start('#root');
         * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
         * image：以图片格式显示数据
         * enum：该属性可以用来筛选，必须和filters搭配使用
-    
-    ```javascript
-    import { DateType } from 'xms';
-    
-    const { NUMBER, STRING,DATETIME } = DataType;
-    ```
-
 * title
     * type：string
     * value：表格或创建/编辑窗口的数据名称
