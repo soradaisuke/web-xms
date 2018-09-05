@@ -65,12 +65,11 @@ request.remove(path);
 * inline
     * type: bool
     * value：true的话该页面数据会展示在父页面上
-* component
-    * type：react node
-    * value：页面组件
+* component: 页面组件
+    * type：react node/function
 * config
     * type：object
-    * value：根据config自动生成页面组件，会忽略component的值，具体见[config](#config)
+    * value：根据config自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，具体见[config](#config)
 
 # config
 * type
