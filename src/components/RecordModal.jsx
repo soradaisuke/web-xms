@@ -4,7 +4,7 @@ import { Modal, Form, Input } from 'antd';
 import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
-const { STRING } = DataType;
+const { STRING, NUMBER } = DataType;
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -67,6 +67,7 @@ class RecordModal extends React.PureComponent {
     let children;
 
     switch (type) {
+      case NUMBER:
       case STRING:
         children = getFieldDecorator(key, {
           initialValue: this.isEdit() ? record[key] : '',

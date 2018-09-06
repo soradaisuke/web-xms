@@ -192,9 +192,9 @@ class RecordsPage extends React.PureComponent {
     const { edit, create, match: { params } } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
-      if (body.id) {
+      if (body.id && edit) {
         await edit(body);
-      } else {
+      } else if (create) {
         await create(body, params);
       }
       hide();
