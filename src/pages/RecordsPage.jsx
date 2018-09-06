@@ -157,7 +157,6 @@ class RecordsPage extends React.PureComponent {
       await this.fetch();
     } catch (e) {
       hide();
-      message.error(e.message);
     }
   }
 
@@ -170,7 +169,6 @@ class RecordsPage extends React.PureComponent {
       await this.fetch();
     } catch (e) {
       hide();
-      message.error(e.message);
     }
   }
 
@@ -183,7 +181,6 @@ class RecordsPage extends React.PureComponent {
         await this.fetch();
       } catch (e) {
         hide();
-        message.error(e.message);
       }
     }
   }
@@ -201,7 +198,6 @@ class RecordsPage extends React.PureComponent {
       await this.fetch();
     } catch (e) {
       hide();
-      message.error(e.message);
     }
   }
 
