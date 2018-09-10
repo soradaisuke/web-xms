@@ -34,5 +34,10 @@ export default function xms(config = {}) {
     message.error(err.message);
   }
 
+  const appStart = app.start;
+  app.start = function start() {
+    appStart('#root');
+  };
+
   return app;
 }
