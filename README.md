@@ -8,7 +8,7 @@ $ npm install git+https://git2.qingtingfm.com/zhibo/xms.git --save
 import xms from 'xms';
 
 const app = xms(config);
-app.start('#root');
+app.start();
 ```
 
 ```javascript
