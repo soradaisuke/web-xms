@@ -198,6 +198,7 @@ class RecordsPage extends React.PureComponent {
       await this.fetch();
     } catch (e) {
       hide();
+      throw e;
     }
   }
 

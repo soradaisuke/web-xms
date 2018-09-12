@@ -33,9 +33,9 @@ class RecordModal extends React.PureComponent {
   onOk = () => {
     const { form, record, onOk } = this.props;
 
-    form.validateFields((err, values) => {
+    form.validateFields(async (err, values) => {
       if (!err) {
-        onOk({ ...record, ...values });
+        await onOk({ ...record, ...values });
         this.hideModelHandler();
       }
     });
