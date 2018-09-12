@@ -14,7 +14,7 @@ app.start();
 ```javascript
 import { DateType } from 'xms';
 
-const { NUMBER, STRING,DATETIME } = DataType;
+const { NUMBER, STRING, DATETIME, ENUM, URL } = DataType;
 ```
 
 ```javascript
@@ -119,6 +119,7 @@ request.remove(path);
         * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
         * image：以图片格式显示数据
         * enum：该属性可以用来筛选，必须和filters搭配使用
+        * url: 网页链接
 * title
     * type：string
     * value：表格或创建/编辑窗口的数据名称
