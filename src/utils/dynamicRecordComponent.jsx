@@ -40,7 +40,7 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({ namespace }, component) {
+function generateRecordPage({ namespace, api: { idKey } }, component) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -53,7 +53,7 @@ function generateRecordPage({ namespace }, component) {
 
   const mapStateToProps = (state, props) => ({
     record: state[namespace],
-    recordId: props.match.params.id,
+    recordId: props.match.params[idKey] || props.match.params.id,
   });
 
   const mapDispatchToProps = dispatch => ({

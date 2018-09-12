@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import { withRouter } from 'react-router';
 import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
@@ -19,13 +18,12 @@ const { DATETIME, IMAGE } = DataType;
 const { Column } = Table;
 const { Search } = Input;
 
-class RecordsPage extends React.PureComponent {
+export default class RecordsPage extends React.PureComponent {
   static displayName = 'RecordsPage';
 
   static propTypes = {
     canSearch: PropTypes.bool.isRequired,
     fetch: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
@@ -186,13 +184,13 @@ class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (body) => {
-    const { edit, create, match: { params } } = this.props;
+    const { edit, create } = this.props;
     const hide = message.loading('正在保存……', 0);
     try {
       if (body.id && edit) {
         await edit(body);
       } else if (create) {
-        await create(body, params);
+        await create(body);
       }
       hide();
       await this.fetch();
@@ -227,14 +225,14 @@ class RecordsPage extends React.PureComponent {
 
   async fetch() {
     const {
-      fetch, page, pagesize, sort, search, filter, match: { params },
+      fetch, page, pagesize, sort, search, filter,
     } = this.props;
     this.setState({
       isLoading: true,
     });
     try {
       await fetch({
-        page, pagesize, sort, search, filter, params,
+        page, pagesize, sort, search, filter,
       });
       this.setState({
         isError: false,
@@ -481,5 +479,3 @@ class RecordsPage extends React.PureComponent {
     );
   }
 }
-
-export default withRouter(RecordsPage);
