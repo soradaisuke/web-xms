@@ -66,8 +66,16 @@ request.remove(path);
     * 类型: bool
     * 值：true的话该页面数据会展示在父页面上
 * component
-    * 类型：react node/function
+    * 类型：function/object
     * 值: 页面组件
+        * function: 如() => <Component />
+        * object: 动态引入组件，类似dva的dynamic
+            * models
+                * 类型：function
+                * 值：dva的model，用import动态引入，返回值是数组，如 () => [import(model)]
+            * component
+                * 类型：function
+                * 值： 组件，用import动态引入，() => import(component) 
 * config
     * 类型：object
     * 值：根据config自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，具体见[config](#config)
