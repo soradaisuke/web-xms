@@ -4,17 +4,13 @@ import Immutable from 'immutable';
 import React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'dva';
-import { upperFirst, isFunction } from 'lodash';
+import { upperFirst, isFunction, isString } from 'lodash';
 import request from '../services/request';
 import RecordPage from '../pages/RecordPage';
 
-function generateService({ api: { path } }) {
-  if (!path) {
-    throw new Error('dynamicRecordComponent generateService: path is required');
-  }
-
+function generateService() {
   return {
-    fetch: async ({ id }) => request.get(`${path}/${id}`),
+    fetch: async ({ id }) => request.get(id),
   };
 }
 
@@ -40,7 +36,7 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({ namespace, api: { idKey } }, component) {
+function generateRecordPage({ namespace, api: { path } }, component) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -51,10 +47,21 @@ function generateRecordPage({ namespace, api: { idKey } }, component) {
     }
   }
 
-  const mapStateToProps = (state, props) => ({
-    record: state[namespace],
-    recordId: props.match.params[idKey] || props.match.params.id,
-  });
+  const mapStateToProps = (state, props) => {
+    const { match: { params: matchParams } } = props;
+
+    let apiPath = '';
+    if (isFunction(path)) {
+      apiPath = path(matchParams);
+    } else if (isString(path)) {
+      apiPath = path;
+    }
+
+    return {
+      record: state[namespace],
+      recordId: apiPath,
+    };
+  };
 
   const mapDispatchToProps = dispatch => ({
     fetch: async ({ id }) => dispatch({ type: `${namespace}/fetch`, payload: { id } }),
