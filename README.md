@@ -31,63 +31,64 @@ request.remove(path);
 
 # Config
 * name
-    * type：string
-    * required
-    * value：项目中文名称，显示在Header里
+    * 类型：string
+    * 必填
+    * 值：项目中文名称，显示在Header里
 * api
-    * type：object
-    * required
-    * value：见[api](#api)
+    * 类型：object
+    * 必填
+    * 值：见[api](#api)
 * routes
-    * type：array[object]
-    * value：route数组，见[route](#route)
+    * 类型：array[object]
+    * 值：route数组，见[route](#route)
 
 # api
 * host
-    * type：string
-    * required
-    * value：api域名
+    * 类型：string
+    * 必填
+    * 值：api域名
 * login
-    * type：string
-    * value：登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com
+    * 类型：string
+    * 值：登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com
 
 # route
 * path
-    * type：string
-    * required
-    * value：页面路径
+    * 类型：string
+    * 必填
+    * 值：页面路径，同(react-router)[https://reacttraining.com/react-router/web/example/route-config]
 * title
-    * type：string
-    * value：页面标题，用于显示在Menu和Breadcrumb上
+    * 类型：string
+    * 值：页面标题，用于显示在Menu和Breadcrumb上
 * breadcrumb
-    * type：string/function(matchParams)
-    * value：用于Breadcrumb上的标题
+    * 类型：string/function(matchParams)
+    * 值：用于该route在Breadcrumb上显示的标题
 * inline
-    * type: bool
-    * value：true的话该页面数据会展示在父页面上
-* component: 页面组件
-    * type：react node/function
+    * 类型: bool
+    * 值：true的话该页面数据会展示在父页面上
+* component
+    * 类型：react node/function
+    * 值: 页面组件
 * config
-    * type：object
-    * value：根据config自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，具体见[config](#config)
+    * 类型：object
+    * 值：根据config自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，具体见[config](#config)
 
 # config
 * type
-    * type：string
-    * value：
+    * 类型：string
+    * 值：
         * single：单个数据页面
         * group：列表数据页面
 * api
-    * type：object
-    * value：
+    * 类型：object
+    * 值：页面api相关配置
         * path
-            * type：string
-            * value：页面数据api路径，需符合restful标准
+            * 类型：string/function(matchParams)
+            * 值：页面数据api路径（不包括id），需符合restful标准，如果需要页面path计算，可用函数。
         * defaultFilter
-            * type：object/function(matchParams)
-            * value：默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据
+            * 类型：object/function(matchParams)
+            * 值：默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据
 * actions：该页面支持的所有操作
-    * type：array[string/object]
+    * 类型：array[string/object]
     * string：预设的操作
         * create: 创建
         * edit: 编辑
@@ -95,24 +96,29 @@ request.remove(path);
         * order: 调整顺序
         * default：创建 + 编辑 + 删除
     *  object：自定义操作
-        * title：操作名称
-            * type：string 
-        * handler：操作函数，会传入该行的数据。一般使用request，见顶部
-            * type：function(record) 
-        * enable：是否为该行数据启动该操作
-            * type：function(record) 
-        * type：按钮类型，参数同antd的Button，有primary、default、danger、dashed。 
+        * title
+            * 类型：string 
+            * 值：操作名称
+        * handler
+            * 类型：function(record) 
+            * 值：操作函数，会传入该行的数据。一般使用request，见顶部
+        * enable
+            * 类型：function(record) 
+            * 值：是否为该行数据启动该操作
+        * type：
+            * 类型：string    
+            * 值：按钮类型，参数同antd的Button，有primary、default、danger、dashed。 
 * schema
-    * type：array[object] 
-    * value：数据结构，见[definition](#difinition)
+    * 类型：array[object] 
+    * 值：数据结构，见[definition](#difinition)
 
 # definition
 * key
-    * type：string
-    * value：数据源中对应的key
+    * 类型：string
+    * 值：数据源中对应的key
 * type
-    * type：string
-    * value：数据源中对应的数据格式
+    * 类型：string
+    * 值：数据源中对应的数据格式
         * number：以数字格式显示数据
         * string：以文本格式显示数据
         * datetime：以时间格式显示数据
@@ -121,11 +127,11 @@ request.remove(path);
         * enum：该属性可以用来筛选，必须和filters搭配使用
         * url: 网页链接
 * title
-    * type：string
-    * value：表格或创建/编辑窗口的数据名称
+    * 类型：string
+    * 值：表格或创建/编辑窗口的数据名称
 * visibility
-    * type：object
-    * value：
+    * 类型：object
+    * 值：
         * table
             * type：bool
             * value：该数据是否显示在表格中
@@ -135,55 +141,58 @@ request.remove(path);
         * create
             * type：bool
             * value：该数据是否显示在创建窗口中
-    *  shorthand
+    * 简化写法
         * true：table，create，edit均为true
         * 'all'：table，create，edit均为true
         * 'table'：table为true
         * 'modal'：create，edit为true    
 * link
-    * type：object
-    * value：用于配置链接
+    * 类型：object
+    * 值：用于配置链接
         * type 
-            * type：strng
-            * value：
+            * 类型：strng
+            * 值：
                 * external：外站链接
                 * relative：在当前页面path下扩展
                 * absolute：会在当前host下扩展
         * template
-            * type：string
-            * value：链接的path，如果需要用到model中的数据，请用‘{key}’的表示
+            * 类型：string
+            * 值：链接的path，如果需要用到model中的数据，请用‘{key}’的表示
 * sort
-    * type：obejct
-    * value：配置排序
+    * 类型：obejct
+    * 值：配置排序
         * asc
-            * type：bool  
-            * value：该属性支持升序排序
+            * 类型：bool  
+            * 值：该属性支持升序排序
         * desc：
-            * type：bool  
-            * value：该属性支持降序排序 
-    *  shorthand
+            * 类型：bool  
+            * 值：该属性支持降序排序 
+    *  简化写法
         * true：asc，desc均为true
         * 'asc'：仅asc为true
         * 'desc'：仅desc为true
 * defaultSort
-    * type：'asc'/'desc'  
-    * value：该属性作为该列表的默认排序  
+    * 类型：'asc'/'desc'  
+    * 值：该属性作为该列表的默认排序  
 * search
-    * type：bool
-    * value：是否支持用该属性模糊搜索
+    * 类型：bool
+    * 值：是否支持用该属性模糊搜索
 * imageSize:
-    * type：string
-    * default value：'100x100'
-    * value：`${width}x${height}`
+    * 类型：string
+    * 默认值：'100x100'
+    * 值：`${width}x${height}`
 * renderValue：
-    * type：function(record)
-    * value：自定义函数，获取展示值
+    * 类型：function(record)
+    * 值：自定义函数，获取展示值
 * filters：该属性的所有过滤信息，格式与antd的Table的filters相同
-    * array[object]
-        * text：所对应的显示文字
-            * type：string/number 
-        * value：后台数据所对应的值 
-            * type：string/number
+    * 类型：array[object]/function
+    * object
+        * text
+            * 类型：string/number 
+            * 值：所对应的显示文字
+        * value
+            * 类型：string/number
+            * 值：后台数据所对应的值 
     * function：动态获取过滤信息，返回的格式必须是上述的array[object] 
 
 #API要求
