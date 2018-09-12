@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import classNames from 'classnames';
 import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
@@ -304,6 +305,7 @@ export default class RecordsPage extends React.PureComponent {
       return (
         <Column
           {...filterProps}
+          className={classNames(sort)}
           title={title}
           dataIndex={key}
           key={key}
