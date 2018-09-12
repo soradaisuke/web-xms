@@ -1,4 +1,5 @@
-import { startsWith } from 'lodash';
+import { startsWith, isPlainObject } from 'lodash';
+import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
 import processGroupConfig from './processGroupConfig';
@@ -29,6 +30,13 @@ export default function processRoutes({ app, routes }) {
 
       const { config, path } = route;
       let { component } = route;
+
+      if (isPlainObject(component)) {
+        component = dynamic({
+          ...component,
+          app,
+        });
+      }
 
       if (config) {
         const { type } = config;

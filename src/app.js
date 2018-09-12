@@ -24,7 +24,7 @@ export default function xms(config = {}) {
   try {
     if (login) {
       if (window.location.host.indexOf('qingtingfm.com') === -1) {
-        throw new Error('host must be *.qingtingfm.com');
+        throw new Error('域名必须是*.qingtingfm.com');
       }
       app.model(generateUserModel(login));
     }
