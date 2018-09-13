@@ -12,6 +12,7 @@ import moment from 'moment';
 import Img from '../components/Img';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
+import RecordModal from '../components/RecordModal';
 import Page from './Page';
 import './RecordsPage.less';
 
@@ -43,7 +44,6 @@ export default class RecordsPage extends React.PureComponent {
     create: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     customActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    modal: PropTypes.func,
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
@@ -65,7 +65,6 @@ export default class RecordsPage extends React.PureComponent {
     filter: {},
     remove: null,
     records: Immutable.List(),
-    modal: null,
     order: null,
     page: 1,
     pagesize: 10,
@@ -248,8 +247,8 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   hasAddButton() {
-    const { modal, create } = this.props;
-    return modal && create;
+    const { create } = this.props;
+    return !!create;
   }
 
   hasHeader() {
@@ -329,7 +328,7 @@ export default class RecordsPage extends React.PureComponent {
 
   renderActions() {
     const {
-      modal: Modal, edit, remove, order, customActions,
+      edit, remove, order, customActions, schema,
     } = this.props;
     return (edit || remove || customActions.length > 0) ? (
       <Column
@@ -338,15 +337,15 @@ export default class RecordsPage extends React.PureComponent {
         render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
           <span>
             {
-              Modal && edit && (
-                <Modal record={record} onOk={this.editRecord}>
+              edit && (
+                <RecordModal schema={schema} record={record} onOk={this.editRecord}>
                   <Button
                     className="action-button"
                     type="primary"
                     shape="circle"
                     icon="edit"
                   />
-                </Modal>
+                </RecordModal>
               )
             }
             {
@@ -415,7 +414,7 @@ export default class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource } = this.state;
     const {
-      modal: Modal, total, page, pagesize,
+      total, page, pagesize,
       schema, search, searchPlaceHolder, canSearch,
     } = this.props;
     return (
@@ -425,9 +424,9 @@ export default class RecordsPage extends React.PureComponent {
             <div className="xms-records-page-content-header">
               {
                 this.hasAddButton() && (
-                  <Modal schema={schema} record={{}} onOk={this.editRecord}>
+                  <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
                     <Button className="add-button" type="primary">添加</Button>
-                  </Modal>
+                  </RecordModal>
                 )
               }
               {

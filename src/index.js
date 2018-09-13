@@ -4,3 +4,4 @@ export dynamic from 'dva/dynamic';
 export Page from './pages/Page';
 export DataType from './constants/DataType';
 export Img from './components/Img';
+export ActivatorModal from './components/ActivatorModal';

@@ -2,19 +2,17 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { routerRedux } from 'dva/router';
 import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
 import {
-  upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, find,
+  upperFirst, isFunction, isPlainObject, isString, forEach, toInteger,
 } from 'lodash';
 import generateUri from './generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
-import RecordModal from '../components/RecordModal';
 import DataType from '../constants/DataType';
 
 const { ORDER } = DataType;
@@ -137,40 +135,9 @@ function generateModel({ namespace, actions, schema }, service, app) {
   return model;
 }
 
-function generateModal({ namespace, schema, actions }) {
-  if (!find(actions, action => action === 'create') && !find(actions, action => action === 'edit')) {
-    return null;
-  }
-
-  class Modal extends React.PureComponent {
-    static displayName = `${upperFirst(namespace)}Modal`;
-
-    static propTypes = {
-      children: PropTypes.node.isRequired,
-      record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-      onOk: PropTypes.func.isRequired,
-    };
-
-    render() {
-      const { children, onOk, record } = this.props;
-
-      return (
-        <RecordModal
-          activator={children}
-          record={record}
-          schema={schema}
-          onOk={onOk}
-        />
-      );
-    }
-  }
-
-  return Modal;
-}
-
 function generateRecordsPage({
   namespace, actions, api: { path, defaultFilter },
-}, modal, component) {
+}, component) {
   const customActions = actions.filter(action => isPlainObject(action));
 
   class Page extends React.PureComponent {
@@ -181,7 +148,6 @@ function generateRecordsPage({
         <RecordsPage
           {...this.props}
           component={component}
-          modal={modal}
           customActions={customActions}
         />
       );
@@ -282,11 +248,10 @@ function generateRecordsPage({
 function generateDynamicRecordsComponent({ app, config, component }) {
   const service = generateService(config);
   const model = generateModel(config, service, app);
-  const modal = generateModal(config);
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage(config, modal, component)),
+    component: () => Promise.resolve(generateRecordsPage(config, component)),
   });
 }
 

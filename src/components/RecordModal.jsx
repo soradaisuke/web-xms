@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input } from 'antd';
+import { Form, Input } from 'antd';
+import ActivatorModal from './ActivatorModal';
 import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
@@ -10,7 +11,7 @@ class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
 
   static propTypes = {
-    activator: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
     form: PropTypes.shape({
       validateFields: PropTypes.func.isRequired,
       getFieldDecorator: PropTypes.func.isRequired,
@@ -26,33 +27,16 @@ class RecordModal extends React.PureComponent {
     onOk: PropTypes.func.isRequired,
   };
 
-  state = {
-    visible: false,
-  };
-
-  onOk = () => {
+  onOk = async () => {
     const { form, record, onOk } = this.props;
 
-    form.validateFields(async (err, values) => {
-      if (!err) {
-        await onOk({ ...record, ...values });
-        this.hideModelHandler();
-      }
-    });
-  };
-
-  showModelHandler = (e) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    this.setState({
-      visible: true,
-    });
-  };
-
-  hideModelHandler = () => {
-    this.setState({
-      visible: false,
+    await new Promise((resolve) => {
+      form.validateFields(async (err, values) => {
+        if (!err) {
+          await onOk({ ...record, ...values });
+        }
+        resolve();
+      });
     });
   };
 
@@ -96,33 +80,22 @@ class RecordModal extends React.PureComponent {
   }
 
   render() {
-    const { activator, schema } = this.props;
-    const { visible } = this.state;
+    const { children, schema } = this.props;
 
     return (
-      <span>
-        <span role="button" tabIndex={0} onClick={this.showModelHandler} onKeyPress={this.showModelHandler}>
-          { activator }
-        </span>
-        {
-          visible && (
-            <Modal
-              title={this.isEdit() ? '编辑' : '添加'}
-              visible={visible}
-              onOk={this.onOk}
-              onCancel={this.hideModelHandler}
-            >
-              <Form onSubmit={this.okHandler}>
-                {
-                  schema.filter(({ visibility }) => (
-                    (this.isEdit() && visibility.edit) || (!this.isEdit() && visibility.create)
-                  )).map(definition => this.renderFormItem({ ...definition }))
-                }
-              </Form>
-            </Modal>
-          )
-        }
-      </span>
+      <ActivatorModal
+        activator={children}
+        title={this.isEdit() ? '编辑' : '添加'}
+        onOk={this.onOk}
+      >
+        <Form onSubmit={this.okHandler}>
+          {
+            schema.filter(({ visibility }) => (
+              (this.isEdit() && visibility.edit) || (!this.isEdit() && visibility.create)
+            )).map(definition => this.renderFormItem({ ...definition }))
+          }
+        </Form>
+      </ActivatorModal>
     );
   }
 }
