@@ -171,10 +171,11 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   onCustomAction = async (record, handler) => {
+    const { match: { params: matchParams } } = this.props;
     if (isFunction(handler)) {
       const hide = message.loading('正在保存……', 0);
       try {
-        await handler(record);
+        await handler(record, matchParams);
         hide();
         await this.fetch();
       } catch (e) {
