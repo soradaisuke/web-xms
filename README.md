@@ -30,17 +30,11 @@ request.remove(path);
 ```
 
 # Config
-* name
-    * 类型：string
-    * 必填
-    * 值：项目中文名称，显示在Header里
-* api
-    * 类型：object
-    * 必填
-    * 值：见[api](#api)
-* routes
-    * 类型：array[object]
-    * 值：route数组，见[route](#route)
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| name | 项目中文名称，显示在顶部 | string | '' |
+| api | api配置，见[api](#api) | object | {} |
+| routes | 路由配置，见[route](#route) | object[] | [] |
 
 # api
 * host
