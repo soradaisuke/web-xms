@@ -113,9 +113,12 @@ request.remove(path);
         * enable
             * 类型：function(record) 
             * 值：是否为该行数据启动该操作
-        * type：
+        * type
             * 类型：string    
             * 值：按钮类型，参数同antd的Button，有primary、default、danger、dashed。 
+        * render
+            * 类型：function(record, matchParams)
+            * 值：自定义渲染组件，会忽略title、type和handler的值。另外注意返回的组件需要设置key
 * schema
     * 类型：array[object] 
     * 值：数据结构，见[definition](#difinition)
