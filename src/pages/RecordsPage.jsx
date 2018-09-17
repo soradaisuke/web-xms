@@ -329,7 +329,7 @@ export default class RecordsPage extends React.PureComponent {
 
   renderActions() {
     const {
-      edit, remove, order, customActions, schema,
+      edit, remove, order, customActions, schema, match: { params: matchParams },
     } = this.props;
     return (edit || remove || customActions.length > 0) ? (
       <Column
@@ -387,10 +387,14 @@ export default class RecordsPage extends React.PureComponent {
             }
             {
               customActions.map(({
-                title, type, handler, enable,
+                title, type, handler, enable, render,
               }) => {
                 if (isFunction(enable) && !enable(record)) {
                   return null;
+                }
+
+                if (isFunction(render)) {
+                  return render(record, matchParams);
                 }
 
                 return (
