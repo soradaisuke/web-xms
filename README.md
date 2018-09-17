@@ -135,7 +135,7 @@ request.remove(path);
         * datetime：以时间格式显示数据
         * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
         * image：以图片格式显示数据
-        * enum：该属性可以用来筛选，必须和filters搭配使用
+        * enum：该属性为枚举类型，必须和filters搭配使用
         * url: 网页链接
 * title
     * 类型：string
@@ -204,7 +204,10 @@ request.remove(path);
         * value
             * 类型：string/number
             * 值：后台数据所对应的值 
-    * function：动态获取过滤信息，返回的格式必须是上述的array[object] 
+    * function：动态获取过滤信息，返回的格式必须是上述的array[object]
+* canFilter
+    * 类型：bool
+    * 值：是否可以用该属性筛选数据
 
 #API要求
 * 遵循RESTFUL规范
