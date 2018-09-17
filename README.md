@@ -119,6 +119,9 @@ request.remove(path);
         * render
             * 类型：function(record, matchParams)
             * 值：自定义渲染组件，会忽略title、type和handler的值。另外注意返回的组件需要设置key
+        * rowSelection
+            * 类型：bool
+            * 值：该操作是否支持多行批量执行
 * schema
     * 类型：array[object] 
     * 值：数据结构，见[definition](#difinition)
