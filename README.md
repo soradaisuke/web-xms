@@ -37,13 +37,10 @@ request.remove(path);
 | routes | 路由配置，见[route](#route) | object[] | [] |
 
 # api
-* host
-    * 类型：string
-    * 必填
-    * 值：api域名
-* login
-    * 类型：string
-    * 值：登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| host | api服务器域名 | string | '' |
+| login | 登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com | string | '' |
 
 # route
 * path
