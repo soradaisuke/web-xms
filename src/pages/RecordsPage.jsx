@@ -284,11 +284,14 @@ export default class RecordsPage extends React.PureComponent {
           </span>
         );
       } else if (type === DATETIME) {
-        render = value => (
-          <span>
-            {moment(value).format('YYYY-MM-DD HH:mm:ss')}
-          </span>
-        );
+        render = (value) => {
+          const datetime = moment(value);
+          return (
+            <span>
+              {datetime.isValid() ? datetime.format('YYYY-MM-DD HH:mm:ss') : ''}
+            </span>
+          );
+        };
       } else if (type === IMAGE) {
         render = value => (
           <Img useImg src={value} format={`/both/${imageSize || '100x100'}`} />
