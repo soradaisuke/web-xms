@@ -29,28 +29,28 @@ request.put(path, { body });
 request.remove(path);
 ```
 
-# Config
+# App配置
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| name | 项目中文名称，显示在顶部 | string | '' |
-| api | api配置，见[api](#api) | object | {} |
+| name | 项目中文名称，显示在顶部 | string | - |
+| api | api配置，见[api](#app_api) | object | - |
 | routes | 路由配置，见[route](#route) | object[] | [] |
 
-# api
+# App api
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| host | api服务器域名 | string | '' |
-| login | 登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com | string | '' |
+| host | api服务器域名 | string | - |
+| login | 登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com | string | - |
 
 # route
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| path | 页面路径，同[react-router](https://reacttraining.com/react-router/web/example/route-config) | string | '' |
-| title | 页面导航菜单标题，为空则该页面不显示在导航菜单上 | string | '' |
-| breadcrumb | 页面面包屑标题 | string|Function(matchParams) | '' |
+| path | 页面路径，同[react-router](https://reacttraining.com/react-router/web/example/route-config) | string | - |
+| title | 页面导航菜单标题，为空则该页面不显示在导航菜单上 | string | - |
+| breadcrumb | 页面面包屑标题 | string/Function(matchParams) | - |
 | inline | 该页面数据会内嵌展示在父页面上 | bool | false |
-| component | 页面组件，object配置见[component](#component) | object|React.ReactNode | - |
-| config | 页面配置，会根据其自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，见[config](#config) | object | {} |
+| component | 页面组件，object配置见[component](#component) | object/React.ReactNode | - |
+| config | 页面配置，会根据其自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，见[config](#config) | object | - |
 
 # component
 | 参数 | 说明 | 类型 | 默认值 |
@@ -59,136 +59,69 @@ request.remove(path);
 | component | 动态引入React.ReactNode | Function() -> import() | - |
 
 # config
-* type
-    * 类型：string
-    * 值：
-        * single：单个数据页面
-        * group：列表数据页面
-* api
-    * 类型：object
-    * 值：页面api相关配置
-        * path
-            * 类型：string/function(matchParams)
-            * 值：页面数据api路径（不包括id），需符合restful标准，如果需要页面path计算，可用函数。
-        * defaultFilter
-            * 类型：object/function(matchParams)
-            * 值：默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据
-* actions：该页面支持的所有操作
-    * 类型：array[string/object]
-    * string：预设的操作
-        * create: 创建
-        * edit: 编辑
-        * remove: 删除
-        * order: 调整顺序
-        * default：创建 + 编辑 + 删除
-    *  object：自定义操作
-        * title
-            * 类型：string 
-            * 值：操作名称
-        * handler
-            * 类型：function(record) 
-            * 值：操作函数，会传入该行的数据。一般使用request，见顶部
-        * enable
-            * 类型：function(record) 
-            * 值：是否为该行数据启动该操作
-        * type
-            * 类型：string    
-            * 值：按钮类型，参数同antd的Button，有primary、default、danger、dashed。 
-        * render
-            * 类型：function(record, matchParams)
-            * 值：自定义渲染组件，会忽略title、type和handler的值。另外注意返回的组件需要设置key
-        * rowSelection
-            * 类型：bool
-            * 值：该操作是否支持多行批量执行
-* schema
-    * 类型：array[object] 
-    * 值：数据结构，见[definition](#difinition)
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| type | 页面类型<br />single：单个数据页面<br />group：列表数据页面 | string(single, group) | - |
+| api | 页面api配置，见[api](#route_api) | string(single, group) | - |
+| actions | 该页面支持的所有操作，create: 创建，edit: 编辑，remove: 删除，order: 调整顺序，default：创建 + 编辑 + 删除。object见[action](#action) | (string/object)[] | [] |
+| schema | 数据结构，见[schema](#schema) | object[] | [] |
 
-# definition
-* key
-    * 类型：string
-    * 值：数据源中对应的key
-* type
-    * 类型：string
-    * 值：数据源中对应的数据格式
-        * number：以数字格式显示数据
-        * string：以文本格式显示数据
-        * datetime：以时间格式显示数据
-        * order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息
-        * image：以图片格式显示数据
-        * enum：该属性为枚举类型，必须和filters搭配使用
-        * url: 网页链接
-* title
-    * 类型：string
-    * 值：表格或创建/编辑窗口的数据名称
-* visibility
-    * 类型：object
-    * 值：
-        * table
-            * type：bool
-            * value：该数据是否显示在表格中
-        * edit
-            * type：bool
-            * value：该数据是否显示在编辑窗口中
-        * create
-            * type：bool
-            * value：该数据是否显示在创建窗口中
-    * 简化写法
-        * true：table，create，edit均为true
-        * 'all'：table，create，edit均为true
-        * 'table'：table为true
-        * 'modal'：create，edit为true    
-* link
-    * 类型：object
-    * 值：用于配置链接
-        * type 
-            * 类型：strng
-            * 值：
-                * external：外站链接
-                * relative：在当前页面path下扩展
-                * absolute：会在当前host下扩展
-        * template
-            * 类型：string
-            * 值：链接的path，如果需要用到model中的数据，请用‘{key}’的表示
-* sort
-    * 类型：obejct
-    * 值：配置排序
-        * asc
-            * 类型：bool  
-            * 值：该属性支持升序排序
-        * desc：
-            * 类型：bool  
-            * 值：该属性支持降序排序 
-    *  简化写法
-        * true：asc，desc均为true
-        * 'asc'：仅asc为true
-        * 'desc'：仅desc为true
-* defaultSort
-    * 类型：'asc'/'desc'  
-    * 值：该属性作为该列表的默认排序  
-* search
-    * 类型：bool
-    * 值：是否支持用该属性模糊搜索
-* imageSize:
-    * 类型：string
-    * 默认值：'100x100'
-    * 值：`${width}x${height}`
-* renderValue：
-    * 类型：function(record)
-    * 值：自定义函数，获取展示值
-* filters：该属性的所有过滤信息，格式与antd的Table的filters相同
-    * 类型：array[object]/function
-    * object
-        * text
-            * 类型：string/number 
-            * 值：所对应的显示文字
-        * value
-            * 类型：string/number
-            * 值：后台数据所对应的值 
-    * function：动态获取过滤信息，返回的格式必须是上述的array[object]
-* canFilter
-    * 类型：bool
-    * 值：是否可以用该属性筛选数据
+# route api
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| path | 页面数据api路径（不包括id），需符合restful标准 | string/Function(matchParams) | - |
+| defaultFilter | 默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据 | object/Function(matchParams) | - |
+
+# action
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| title | 操作名称 | string | - |
+| handler | 操作函数 | Function(record, matchParams) | - |
+| enable | 是否为该行数据启用该操作 | Function(record, matchParams) | - |
+| type | 按钮类型，参数同antd的Button，有primary、default、danger、dashed | string | - |
+| render | 自定义渲染组件，会忽略title、type和handler的值。另外注意返回的组件需要设置key | Function(record, matchParams) | - |
+| rowSelection | 该操作是否支持多行批量执行 | bool | false |
+
+# schema
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| key | 数据源中对应的key | string | - |
+| type | 数据源中对应的数据格式<br />number：以数字格式显示数据<br />string：以文本格式显示数据<br />datetime：以时间格式显示数据<br />order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息<br />image：以图片格式显示数据<br />enum：该属性为枚举类型，必须和filters搭配使用<br />url: 网页链接 | string(number, string, datetime, order, image, enum, url) | - |
+| title | 表格或创建/编辑窗口的数据名称 | string | - |
+| visibility | 数据可视性<br />true or all：表格、创建和修改时均可见<br />table：仅在表格中可见<br />edit：仅在编辑时可见<br />modal：仅在创建和编辑时可见<br />object配置见[visibility](#visibility) | bool/string(all, table, modal)/object | - |
+| link | 链接配置，见[link](#link) | object | - |
+| sort | 排序配置<br />true：支持升序和降序排序<br />asc：支持升序排序<br />desc：支持降序排序<br />object配置见[sort](#sort) | bool/string(asc, desc)/object | - |
+| defaultSort | 该属性作为该列表的默认排序及默认排序类型 | string(asc, desc) | - |
+| search | 是否支持用该属性模糊搜索 | bool | false |
+| imageSize | 图片大小，{width}x{height} | string | 100x100 |
+| renderValue | 自定义函数，获取展示值 | Function(record) | - |
+| filters | 该属性的所有过滤信息，支持函数动态获取，返回格式也需要是object[]，见[filters](#filters) | object[]/Function() | [] |
+| canFilter | 是否可以用该属性筛选数据 | bool | false |
+
+# visibility
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| table | 该数据是否显示在表格中 | bool | false |
+| edit | 该数据是否显示在编辑窗口中 | bool | false |
+| create | 该数据是否显示在创建窗口中 | bool | false |
+
+# link
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| type | 链接类型<br />external：外站链接<br />relative：在当前页面path下扩展<br />absolute：会在当前host下扩展 | string(external, relative, absolute) | - |
+| template | 链接的path，如果需要用到model中的数据，请用‘{key}’的表示 | string | - |
+
+# sort
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| asc | 该属性支持升序排序 | bool | false |
+| desc | 该属性支持降序排序 | bool | false |
+
+# filters
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| text | 所对应的显示文字 | string/number | - |
+| value | 后台数据所对应的值  | string/number | - |
 
 #API要求
 * 遵循RESTFUL规范
