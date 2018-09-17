@@ -6,7 +6,8 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  forEach, split, startsWith, isFunction, find, mapValues, isNaN, has, isArray,
+  forEach, split, startsWith, isFunction, isArray, find,
+  map, mapValues, has, isNaN, filter as arrayFilter,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
@@ -83,6 +84,8 @@ export default class RecordsPage extends React.PureComponent {
     isLoading: true,
     records: Immutable.List(),
     dataSource: [],
+    selectedRowKeys: [],
+    selectedRows: [],
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -106,6 +109,10 @@ export default class RecordsPage extends React.PureComponent {
       || prevProps.filter !== filter) {
       this.fetch();
     }
+  }
+
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({ selectedRowKeys, selectedRows });
   }
 
   onChangePage = (page, pagesize) => {
@@ -180,6 +187,24 @@ export default class RecordsPage extends React.PureComponent {
         await this.fetch();
       } catch (e) {
         hide();
+        message.error(e.message);
+      }
+    }
+  }
+
+  onCustomRowAction = async (handler) => {
+    const { match: { params: matchParams } } = this.props;
+    const { selectedRows } = this.state;
+    if (isFunction(handler)) {
+      const hide = message.loading('正在保存……', 0);
+      try {
+        await Promise.all(map(selectedRows, record => handler(record, matchParams)));
+        hide();
+        this.setState({ selectedRowKeys: [], selectedRows: [] });
+        await this.fetch();
+      } catch (e) {
+        hide();
+        message.error(e.message);
       }
     }
   }
@@ -415,11 +440,19 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderContent() {
-    const { isLoading, dataSource } = this.state;
+    const { isLoading, dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize,
+      total, page, pagesize, customActions,
       schema, search, searchPlaceHolder, canSearch,
     } = this.props;
+
+    const rowActions = customActions ? arrayFilter(customActions, ({ rowSelection }) => (
+      rowSelection
+    )) : [];
+    const rowSelection = rowActions.length > 0 ? { selectedRowKeys, onChange: this.onSelectChange }
+      : null;
+    const hasSelected = selectedRowKeys.length > 0;
+
     return (
       <React.Fragment>
         {
@@ -446,10 +479,30 @@ export default class RecordsPage extends React.PureComponent {
             </div>
           )
         }
+        {
+          rowActions.length > 0 && (
+            <div className="xms-records-page-content-header">
+              {
+                rowActions.map(({ title, type, handler }) => (
+                  <Button
+                    key="title"
+                    type={type}
+                    disabled={!hasSelected}
+                    // eslint-disable-next-line react/jsx-no-bind
+                    onClick={() => this.onCustomRowAction(handler)}
+                  >
+                    {title}
+                  </Button>
+                ))
+              }
+            </div>
+          )
+        }
         <Table
           loading={isLoading}
           dataSource={dataSource}
-          rowKey={record => record.id} // eslint-disable-line react/jsx-no-bind
+          rowKey="id"
+          rowSelection={rowSelection}
           pagination={false}
           onChange={this.onChange}
         >
