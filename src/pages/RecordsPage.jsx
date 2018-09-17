@@ -336,12 +336,11 @@ export default class RecordsPage extends React.PureComponent {
         title="操作"
         key="action"
         render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
-          <span>
+          <span className="actions">
             {
               edit && (
                 <RecordModal schema={schema} record={record} onOk={this.editRecord}>
                   <Button
-                    className="action-button"
                     type="primary"
                     shape="circle"
                     icon="edit"
@@ -357,7 +356,6 @@ export default class RecordsPage extends React.PureComponent {
                   onConfirm={() => this.onConfirmRemove(record)}
                 >
                   <Button
-                    className="action-button"
                     type="danger"
                     shape="circle"
                     icon="delete"
@@ -369,14 +367,12 @@ export default class RecordsPage extends React.PureComponent {
               order && (
                 <React.Fragment>
                   <Button
-                    className="action-button"
                     shape="circle"
                     icon="up"
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => this.onOrderChange(record, -1)}
                   />
                   <Button
-                    className="action-button"
                     shape="circle"
                     icon="down"
                     // eslint-disable-next-line react/jsx-no-bind
@@ -401,7 +397,6 @@ export default class RecordsPage extends React.PureComponent {
                   <Button
                     key={title}
                     type={type}
-                    className="action-button"
                     // eslint-disable-next-line react/jsx-no-bind
                     onClick={() => this.onCustomAction(record, handler)}
                   >
