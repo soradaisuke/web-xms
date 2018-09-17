@@ -259,7 +259,7 @@ export default class RecordsPage extends React.PureComponent {
 
   renderColumn({
     visibility, link, title, key, sort,
-    type, imageSize, renderValue, filters,
+    type, imageSize, renderValue, filters, canFilter,
   }) {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = has(filter, key) ? String(filter[key]) : '';
@@ -295,7 +295,7 @@ export default class RecordsPage extends React.PureComponent {
         );
       }
 
-      const filterProps = isArray(filters) && filters.length > 0 ? {
+      const filterProps = canFilter && isArray(filters) && filters.length > 0 ? {
         filtered: !!filteredValue,
         filteredValue: filteredValue ? [filteredValue] : [],
         filterMultiple: false,
