@@ -36,7 +36,7 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({ namespace, api: { path } }, component) {
+function generateRecordPage({ namespace, api: { path } } = {}, component) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
