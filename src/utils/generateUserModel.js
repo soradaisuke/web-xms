@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import { parse } from 'query-string';
 import request from '../services/request';
 import generateUri from './generateUri';
 
@@ -29,8 +30,13 @@ export default function generateUserModel(login) {
           const user = yield call(service.login);
           yield put({ type: 'save', payload: { user } });
         } catch (e) {
-          const loginUrl = generateUri('//entry.qingtingfm.com/v1/sso/login.html', { return_url: window.location.href });
-          window.location.replace(loginUrl);
+          const queries = parse(window.location.search);
+          if (!queries && queries.auth !== '1') {
+            const loginUrl = generateUri('//entry.qingtingfm.com/v1/sso/login.html', { return_url: generateUri(window.location.href, { auth: 1 }) });
+            window.location.replace(loginUrl);
+          } else {
+            throw e;
+          }
         }
       },
     },
