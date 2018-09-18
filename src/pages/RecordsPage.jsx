@@ -138,7 +138,7 @@ export default class RecordsPage extends React.PureComponent {
     const {
       page, pagesize, search, updatePage,
     } = this.props;
-    if (sorter && sorter.columnKey && sorter.order && this.checkSort({ key: sorter.columnKey, order: sorter.order.replace('end', '') })) {
+    if (sorter && sorter.columnKey && sorter.order) {
       sort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     }
     updatePage({
@@ -226,29 +226,6 @@ export default class RecordsPage extends React.PureComponent {
       hide();
       throw e;
     }
-  }
-
-  checkSort({ key, order }) {
-    const { schema } = this.props;
-    let canSort = false;
-    let title;
-    forEach(schema, (definition) => {
-      if (definition.key === key) {
-        const { sort, title: t } = definition;
-        canSort = sort && sort[order];
-        title = t;
-
-        return false;
-      }
-
-      return true;
-    });
-
-    if (!canSort) {
-      message.error(`${title}不支持${order === 'asc' ? '升序' : '降序'}排序`);
-    }
-
-    return canSort;
   }
 
   async fetch() {
