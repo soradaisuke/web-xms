@@ -192,13 +192,15 @@ export default class RecordsPage extends React.PureComponent {
     }
   }
 
-  onCustomRowAction = async (handler) => {
+  onCustomRowAction = async (handler, enable) => {
     const { match: { params: matchParams } } = this.props;
     const { selectedRows } = this.state;
     if (isFunction(handler)) {
       const hide = message.loading('正在保存……', 0);
       try {
-        await Promise.all(map(selectedRows, record => handler(record, matchParams)));
+        await Promise.all(map(selectedRows, record => (
+          !isFunction(enable) || enable(record) ? handler(record, matchParams) : null
+        )));
         hide();
         this.setState({ selectedRowKeys: [], selectedRows: [] });
         await this.fetch();
@@ -483,13 +485,15 @@ export default class RecordsPage extends React.PureComponent {
           rowActions.length > 0 && (
             <div className="xms-records-page-content-header">
               {
-                rowActions.map(({ title, type, handler }) => (
+                rowActions.map(({
+                  title, type, handler, enable,
+                }) => (
                   <Button
                     key="title"
                     type={type}
                     disabled={!hasSelected}
                     // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => this.onCustomRowAction(handler)}
+                    onClick={() => this.onCustomRowAction(handler, enable)}
                   >
                     {title}
                   </Button>
