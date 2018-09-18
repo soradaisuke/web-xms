@@ -90,16 +90,17 @@ function generateModel({ namespace, actions, schema }, service, app) {
           path, page, pagesize, sort, search, filter = {},
         },
       }, { call, put }) {
-        let f = filter;
+        const f = filter;
 
         if (search) {
-          f = {
-            ...f,
-            ...searchFileds.reduce((acc, field) => {
+          if (searchFileds.length === 0) {
+            f.searchFileds[0] = search;
+          } else {
+            f.or = searchFileds.reduce((acc, field) => {
               acc[field.key] = search;
               return acc;
-            }, {}),
-          };
+            }, {});
+          }
         }
 
         const { items: records, total } = yield call(service.fetch, {

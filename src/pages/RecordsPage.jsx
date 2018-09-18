@@ -6,7 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  forEach, split, startsWith, isFunction, isArray, find,
+  split, startsWith, isFunction, isArray, find,
   map, mapValues, has, isNaN, filter as arrayFilter,
 } from 'lodash';
 import moment from 'moment';
