@@ -6,8 +6,8 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find,
-  map, mapValues, has, isNaN, filter as arrayFilter,
+  split, startsWith, isFunction, isArray, find, reduce,
+  map, has, isNaN, filter as arrayFilter,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
@@ -146,10 +146,13 @@ export default class RecordsPage extends React.PureComponent {
       pagesize,
       sort,
       search,
-      filter: mapValues(filters, (value) => {
-        const number = parseInt(value[0], 10);
-        return isNaN(number) ? value : number;
-      }),
+      filter: reduce(filters, (acc, value, key) => {
+        if (value && key && value.length > 0) {
+          const number = parseInt(value[0], 10);
+          acc[key] = isNaN(number) ? value[0] : number;
+        }
+        return acc;
+      }, {}),
     });
   }
 
