@@ -397,7 +397,7 @@ export default class RecordsPage extends React.PureComponent {
                 }
 
                 if (isFunction(render)) {
-                  return render(record, matchParams);
+                  return render(record, matchParams, this.fetch);
                 }
 
                 return (
