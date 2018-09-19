@@ -31,7 +31,7 @@ export default function generateUserModel(login) {
           yield put({ type: 'save', payload: { user } });
         } catch (e) {
           const queries = parse(window.location.search);
-          if (!queries && queries.auth !== '1') {
+          if (!queries || queries.auth !== '1') {
             const loginUrl = generateUri('//entry.qingtingfm.com/v1/sso/login.html', { return_url: generateUri(window.location.href, { auth: 1 }) });
             window.location.replace(loginUrl);
           } else {
