@@ -79,7 +79,7 @@ request.remove(path);
 | handler | 操作函数 | Function(record, matchParams) | - |
 | enable | 是否为该行数据启用该操作 | Function(record, matchParams) | - |
 | type | 按钮类型，参数同antd的Button，有primary、default、danger、dashed | string | - |
-| render | 自定义渲染组件，会忽略title、type和handler的值。另外注意返回的组件需要设置key | Function(record, matchParams) | - |
+| render | 自定义渲染组件，会忽略title、type和handler的值<br />返回的组件需要设置key<br/ >如果需要在某个操作后刷新数据，请执行refresh() | Function(record, matchParams, refresh) | - |
 | rowSelection | 该操作是否支持多行批量执行 | bool | false |
 
 # schema
