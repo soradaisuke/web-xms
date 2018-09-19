@@ -228,7 +228,7 @@ export default class RecordsPage extends React.PureComponent {
     }
   }
 
-  async fetch() {
+  fetch = async () => {
     const {
       fetch, page, pagesize, sort, search, filter,
     } = this.props;
