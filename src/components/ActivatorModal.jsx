@@ -9,13 +9,13 @@ export default class ActivatorModal extends React.PureComponent {
     activator: PropTypes.node.isRequired,
     onCancel: PropTypes.func,
     onOk: PropTypes.func,
-    onVisible: PropTypes.func,
+    onVisibleChange: PropTypes.func,
   };
 
   static defaultProps = {
     onCancel: null,
     onOk: null,
-    onVisible: null,
+    onVisibleChange: null,
   };
 
 
@@ -31,9 +31,9 @@ export default class ActivatorModal extends React.PureComponent {
       visible: true,
     });
 
-    const { onVisible } = this.props;
-    if (onVisible) {
-      onVisible(true);
+    const { onVisibleChange } = this.props;
+    if (onVisibleChange) {
+      onVisibleChange(true);
     }
   };
 
@@ -41,9 +41,9 @@ export default class ActivatorModal extends React.PureComponent {
     this.setState({
       visible: false,
     });
-    const { onVisible } = this.props;
-    if (onVisible) {
-      onVisible(false);
+    const { onVisibleChange } = this.props;
+    if (onVisibleChange) {
+      onVisibleChange(false);
     }
   };
 

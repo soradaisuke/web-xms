@@ -80,7 +80,7 @@ const MyPage = dynamic({
 | activator | 激活组件 | ReactNode | - |
 | onCancel | 点击取消时的回调 | Function | - |
 | onOk | 点击确定时的回调 | Function | - |
-| onVisible | Modal的visible变化时的回调 | Function | - |
+| onVisibleChange | Modal的visible变化时的回调 | Function | - |
 
 # App配置
 | 参数 | 说明 | 类型 | 默认值 |
