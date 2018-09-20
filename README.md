@@ -1,9 +1,12 @@
-# Install
+# 安装
 ```bash
 $ npm install git+https://git2.qingtingfm.com/zhibo/xms.git --save
 ```
 
-# How to use
+# API
+## xms
+主app
+
 ```javascript
 import xms from 'xms';
 
@@ -11,11 +14,16 @@ const app = xms(config);
 app.start();
 ```
 
+## DateType
+数据类型定义
+
 ```javascript
 import { DateType } from 'xms';
 
-const { NUMBER, STRING, DATETIME, ENUM, URL } = DataType;
+const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL } = DataType;
 ```
+## request
+网络请求
 
 ```javascript
 import { request } from 'xms';
@@ -28,6 +36,51 @@ request.put(path, { body });
 
 request.remove(path);
 ```
+
+## dynamic
+动态引入React组件
+
+```javascript
+import { dynamic } from 'xms';
+
+const MyPage = dynamic({
+  app,
+  models: () => [
+    import('models/my'),
+  ],
+  component: () => import('routes/MyPage'),
+});
+
+```
+
+## Page
+基础页面React组件
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| className | 类名 | string | - |
+| isError | 是否显示错误页面 | bool | false |
+| isLoading | 是否显示加载页面 | bool | false |
+
+## Img
+图片React组件
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| src | 图片地址 | string | - |
+| format | 图片UpYun参数 | string | - |
+| lazyLoad | 是否懒加载 | bool | true |
+| useImg | 是否使用img tag | bool | false |
+
+## ActivatorModal
+由点击某个组件激活的Modal
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| activator | 激活组件 | ReactNode | - |
+| onCancel | 点击取消时的回调 | Function | - |
+| onOk | 点击确定时的回调 | Function | - |
+| onVisible | Modal的visible变化时的回调 | Function | - |
 
 # App配置
 | 参数 | 说明 | 类型 | 默认值 |
