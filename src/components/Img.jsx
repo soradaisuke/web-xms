@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 import formatImageUrl from '../utils/formatImageUrl';
+import classNames from 'classnames';
 import './Img.less';
 
 export default class Img extends React.PureComponent {
@@ -13,6 +14,7 @@ export default class Img extends React.PureComponent {
     format: PropTypes.string, // eslint-disable-line react/no-unused-prop-types
     lazyLoad: PropTypes.bool,
     useImg: PropTypes.bool,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
@@ -20,6 +22,7 @@ export default class Img extends React.PureComponent {
     format: '',
     lazyLoad: true,
     useImg: false,
+    className: '',
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -39,13 +42,13 @@ export default class Img extends React.PureComponent {
 
   render() {
     const { src, loaded } = this.state;
-    const { children, useImg, lazyLoad } = this.props;
+    const { children, useImg, lazyLoad, className } = this.props;
 
     if (useImg) {
       return (
         <img
           src={src}
-          className="record-image"
+          className={classNames("record-image", className)}
           alt=""
         />
       );
@@ -74,6 +77,7 @@ export default class Img extends React.PureComponent {
       <div
         key={src}
         style={style}
+        className={className}
       >
         { imgNode }
         { children }
