@@ -14,6 +14,7 @@ import Img from '../components/Img';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
+import makeCancelable from '../utils/makeCancelable';
 import Page from './Page';
 import './RecordsPage.less';
 
@@ -86,7 +87,9 @@ export default class RecordsPage extends React.PureComponent {
     dataSource: [],
     selectedRowKeys: [],
     selectedRows: [],
-  }
+  };
+
+  activePromise = null;
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.records !== nextProps.records) {
@@ -108,6 +111,13 @@ export default class RecordsPage extends React.PureComponent {
       || prevProps.sort !== sort || prevProps.search !== search
       || prevProps.filter !== filter) {
       this.fetch();
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.activePromise) {
+      this.activePromise.cancel();
+      this.activePromise = null;
     }
   }
 
@@ -158,77 +168,57 @@ export default class RecordsPage extends React.PureComponent {
 
   onOrderChange = async (body, diff) => {
     const { order } = this.props;
-    const hide = message.loading('正在保存……', 0);
-    try {
-      await order(body, diff);
-      hide();
-      await this.fetch();
-    } catch (e) {
-      hide();
-    }
+    await this.updateRecord({ promise: order(body, diff) });
   }
 
   onConfirmRemove = async (record) => {
     const { remove } = this.props;
-    const hide = message.loading('正在删除……', 0);
-    try {
-      await remove(record.id);
-      hide();
-      await this.fetch();
-    } catch (e) {
-      hide();
-    }
+    await this.updateRecord({ promise: remove(record.id), loadingMessage: '正在删除……' });
   }
 
   onCustomAction = async (record, handler) => {
-    const { match: { params: matchParams } } = this.props;
     if (isFunction(handler)) {
-      const hide = message.loading('正在保存……', 0);
-      try {
-        await handler(record, matchParams);
-        hide();
-        await this.fetch();
-      } catch (e) {
-        hide();
-        message.error(e.message);
-      }
+      const { match: { params: matchParams } } = this.props;
+      await this.updateRecord({ promise: handler(record, matchParams) });
     }
   }
 
   onCustomRowAction = async (handler, enable) => {
-    const { match: { params: matchParams } } = this.props;
-    const { selectedRows } = this.state;
     if (isFunction(handler)) {
-      const hide = message.loading('正在保存……', 0);
-      try {
-        await Promise.all(map(selectedRows, record => (
+      const { match: { params: matchParams } } = this.props;
+      const { selectedRows } = this.state;
+      await this.updateRecord({
+        promise: Promise.all(map(selectedRows, record => (
           !isFunction(enable) || enable(record) ? handler(record, matchParams) : null
-        )));
-        hide();
-        this.setState({ selectedRowKeys: [], selectedRows: [] });
-        await this.fetch();
-      } catch (e) {
-        hide();
-        message.error(e.message);
-      }
+        ))),
+      });
+      this.setState({ selectedRowKeys: [], selectedRows: [] });
     }
   }
 
-  editRecord = async (body) => {
-    const { edit, create } = this.props;
-    const hide = message.loading('正在保存……', 0);
+  updateRecord = async ({ promise, loadingMessage = '正在保存……', throwError = false }) => {
+    const hide = message.loading(loadingMessage, 0);
     try {
-      if (body.id && edit) {
-        await edit(body);
-      } else if (create) {
-        await create(body);
-      }
+      this.activePromise = makeCancelable(promise);
+      await this.activePromise;
       hide();
       await this.fetch();
     } catch (e) {
       hide();
-      throw e;
+      if (throwError) {
+        this.activePromise = null;
+        throw e;
+      }
     }
+    this.activePromise = null;
+  }
+
+  editRecord = async (body) => {
+    const { edit, create } = this.props;
+    await this.updateRecord({
+      promise: body.id && edit ? edit(body) : create(body),
+      throwError: true,
+    });
   }
 
   fetch = async () => {
@@ -239,9 +229,10 @@ export default class RecordsPage extends React.PureComponent {
       isLoading: true,
     });
     try {
-      await fetch({
+      this.activePromise = makeCancelable(fetch({
         page, pagesize, sort, search, filter,
-      });
+      }));
+      await this.activePromise;
       this.setState({
         isError: false,
         isLoading: false,
@@ -252,6 +243,7 @@ export default class RecordsPage extends React.PureComponent {
         isLoading: false,
       });
     }
+    this.activePromise = null;
   }
 
   hasAddButton() {
