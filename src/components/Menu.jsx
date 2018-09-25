@@ -5,8 +5,11 @@ import { withRouter, matchPath } from 'react-router';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
+import { filter } from 'lodash/fp';
 
 const { SubMenu } = Menu;
+
+const validMenues = filter(({ title }) => !!title);
 
 const selector = createSelector(
   [
@@ -18,10 +21,11 @@ const selector = createSelector(
     const openKeys = [];
     forEach(routes, (route) => {
       if (matchPath(pathname, { path: route.path })) {
-        if (route.routes && route.routes.length > 0) {
+        const subMenues = validMenues(route.routes);
+        if (subMenues.length > 0) {
           openKeys.push(route.path);
 
-          forEach(route.routes, (childRoute) => {
+          forEach(subMenues, (childRoute) => {
             if (matchPath(pathname, { path: childRoute.path })) {
               selectedKeys.push(childRoute.path);
             }
@@ -54,27 +58,25 @@ class NavMenu extends React.PureComponent {
         defaultOpenKeys={openKeys}
       >
         {
-          routes.filter(({ title }) => !!title).map(({ path, title, routes: childRoutes }) => {
-            if (childRoutes && childRoutes.length > 0) {
-              const subMenus = childRoutes.filter(({ title: childTitle }) => !!childTitle)
-                .map(({ path: subPath, title: childTitle }) => (
-                  <Menu.Item key={subPath}>
-                    <Link to={subPath}>
-                      {childTitle}
-                    </Link>
-                  </Menu.Item>
-                ));
+          validMenues(routes).map(({ path, title, routes: childRoutes }) => {
+            const subMenus = validMenues(childRoutes)
+              .map(({ path: subPath, title: childTitle }) => (
+                <Menu.Item key={subPath}>
+                  <Link to={subPath}>
+                    {childTitle}
+                  </Link>
+                </Menu.Item>
+              ));
 
-              if (subMenus.length > 0) {
-                return (
-                  <SubMenu
-                    key={path}
-                    title={title}
-                  >
-                    {subMenus}
-                  </SubMenu>
-                );
-              }
+            if (subMenus.length > 0) {
+              return (
+                <SubMenu
+                  key={path}
+                  title={title}
+                >
+                  {subMenus}
+                </SubMenu>
+              );
             }
 
             return (
