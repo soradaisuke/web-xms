@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
-import formatImageUrl from '../utils/formatImageUrl';
 import classNames from 'classnames';
+import formatImageUrl from '../utils/formatImageUrl';
 import './Img.less';
 
 export default class Img extends React.PureComponent {
@@ -42,13 +42,15 @@ export default class Img extends React.PureComponent {
 
   render() {
     const { src, loaded } = this.state;
-    const { children, useImg, lazyLoad, className } = this.props;
+    const {
+      children, useImg, lazyLoad, className,
+    } = this.props;
 
     if (useImg) {
       return (
         <img
           src={src}
-          className={classNames("record-image", className)}
+          className={classNames('record-image', className)}
           alt=""
         />
       );
