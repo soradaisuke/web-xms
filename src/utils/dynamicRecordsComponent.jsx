@@ -93,13 +93,13 @@ function generateModel({ namespace, actions, schema }, service, app) {
         const f = filter;
 
         if (search) {
-          if (searchFileds.length === 0) {
-            f.searchFileds[0] = search;
+          if (searchFileds.length === 1) {
+            f[searchFileds[0].key] = search;
           } else {
-            f.or = searchFileds.reduce((acc, field) => {
-              acc[field.key] = search;
+            f.$or = searchFileds.reduce((acc, field) => {
+              acc.push({ [field.key]: search });
               return acc;
-            }, {});
+            }, []);
           }
         }
 
