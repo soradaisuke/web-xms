@@ -73,10 +73,10 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             <Layout className="content-layout">
               <Switch>
                 {
-                  !homeRoute && firstAvaliableNonHomeRoute ? <Redirect from="/" to={firstAvaliableNonHomeRoute.path} /> : null
+                  map(routes, route => renderRoute(route))
                 }
                 {
-                  map(routes, route => renderRoute(route))
+                  !homeRoute && firstAvaliableNonHomeRoute ? <Redirect from="/" to={firstAvaliableNonHomeRoute.path} /> : null
                 }
               </Switch>
               <Footer>
