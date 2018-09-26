@@ -1,6 +1,8 @@
 import React from 'react';
-import { Route, Switch, routerRedux } from 'dva/router';
-import { filter } from 'lodash';
+import {
+  Route, Switch, routerRedux, Redirect,
+} from 'dva/router';
+import { filter, find, map } from 'lodash';
 import { Layout, Spin, LocaleProvider } from 'antd';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -21,53 +23,60 @@ dynamic.setDefaultLoadingComponent(() => (
   </div>
 ));
 
-function renderRoute({
-  app, path, component: Component, routes,
-}) {
-  const children = [];
-  if (Component) {
-    const inlineRoutes = routes ? filter(routes, ({ inline }) => inline) : [];
-
-    children.push((
-      <Route
-        exact
-        key={path}
-        path={path}
-        render={() => (
-          <React.Fragment>
-            <Breadcrumb routes={app.routes} />
-            <Content>
-              <Component routes={inlineRoutes} />
-            </Content>
-          </React.Fragment>
-        )}
-      />
-    ));
-  }
-  if (routes && routes.length > 0) {
-    return children.concat(routes.map(route => renderRoute({ ...route, app })));
-  }
-
-  return children;
-}
-
 function RouterConfig({ history, app }) { // eslint-disable-line react/prop-types
+  const { routes, config: { name } } = app;
+
+  function renderRoute({ path, routes: subRoutes, component: Component }) {
+    const children = [];
+    if (Component) {
+      const inlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => inline) : [];
+
+      children.push((
+        <Route
+          exact
+          key={path}
+          path={path}
+          render={() => (
+            <React.Fragment>
+              <Breadcrumb routes={routes} />
+              <Content>
+                <Component routes={inlineRoutes} />
+              </Content>
+            </React.Fragment>
+          )}
+        />
+      ));
+    }
+    const nonInlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => !inline) : [];
+    if (nonInlineRoutes && nonInlineRoutes.length > 0) {
+      return children.concat(nonInlineRoutes.map(route => renderRoute(route)));
+    }
+
+    return children;
+  }
+
+  const homeRoute = find(routes, ({ path }) => path === '/');
+  const firstAvaliableNonHomeRoute = find(routes, ({ path, component }) => path !== '/' && !!component);
+
   return (
     <LocaleProvider locale={zhCN}>
       <ConnectedRouter history={history}>
         <Layout className="xms-layout">
           <Header>
-            {app.config.name}
+            {name}
             <User />
           </Header>
           <Layout>
             <Sider width="9.6rem">
-              <Menu routes={app.routes} />
+              <Menu routes={routes} />
             </Sider>
             <Layout className="content-layout">
               <Switch>
                 {
-                  app.routes.map(route => renderRoute({ ...route, app }))
+                  !homeRoute && firstAvaliableNonHomeRoute ? <Redirect from="/" to={firstAvaliableNonHomeRoute.path} /> : null
+                }
+                {
+                  map(routes, route => renderRoute(route))
                 }
               </Switch>
               <Footer>
