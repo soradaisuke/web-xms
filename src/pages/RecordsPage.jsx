@@ -165,6 +165,7 @@ export default class RecordsPage extends React.PureComponent {
             break;
         }
       }
+      return acc;
     }, {});
     updatePage({
       page, pagesize, sort, search, filter,
@@ -262,11 +263,12 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort,
+    visibility, link, title, key, sort, filterKey,
     type, imageSize, renderValue, filters, canFilter,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = has(filter, key) ? String(filter[key]) : '';
+    const filteredValue = (has(filter, key) ? String(filter[key]) : '')
+      || (has(filter, filterKey) ? String(filter[filterKey]) : '');
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
