@@ -17,7 +17,7 @@ import DataType from '../constants/DataType';
 
 const { ORDER } = DataType;
 
-function generateService({ actions }) {
+function generateService({ actions, primaryKey }) {
   const service = {
     fetch: async ({ path, ...params }) => request.get(path, { params }),
   };
@@ -26,11 +26,11 @@ function generateService({ actions }) {
     if (action === 'create') {
       service.create = async ({ path, body }) => request.post(`${path}`, { body });
     } else if (action === 'edit') {
-      service.edit = async ({ path, body }) => request.put(`${path}/${body.id}`, { body });
+      service.edit = async ({ path, body }) => request.put(`${path}/${body[primaryKey]}`, { body });
     } else if (action === 'remove') {
-      service.remove = async ({ path, id }) => request.remove(`${path}/${id}`);
+      service.remove = async ({ path, body }) => request.remove(`${path}/${body[primaryKey]}`);
     } else if (action === 'order') {
-      service.order = async ({ path, body }) => request.put(`${path}/${body.id}`, { body });
+      service.order = async ({ path, body }) => request.put(`${path}/${body[primaryKey]}`, { body });
     }
   });
 
@@ -70,9 +70,9 @@ function generateModel({ namespace, actions, schema }, service, app) {
     namespace,
     state: Immutable.fromJS({
       schema,
+      defaultSort,
       records: [],
       total: 0,
-      defaultSort,
       canSearch: searchFileds.length > 0,
       searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     }),
@@ -121,8 +121,8 @@ function generateModel({ namespace, actions, schema }, service, app) {
         yield call(service.edit, { path, body });
       };
     } else if (action === 'remove') {
-      model.effects.remove = function* modelRemove({ payload: { path, id } }, { call }) {
-        yield call(service.remove, { path, id });
+      model.effects.remove = function* modelRemove({ payload: { path, body } }, { call }) {
+        yield call(service.remove, { path, body });
       };
     } else if (action === 'order') {
       model.effects.order = function* modelOrder({ payload: { path, body, diff } }, { call }) {
@@ -137,7 +137,7 @@ function generateModel({ namespace, actions, schema }, service, app) {
 }
 
 function generateRecordsPage({
-  namespace, actions, api: { path, defaultFilter },
+  namespace, actions, api: { path, defaultFilter }, primaryKey,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
 
@@ -149,6 +149,7 @@ function generateRecordsPage({
         <RecordsPage
           {...this.props}
           component={component}
+          primaryKey={primaryKey}
           customActions={customActions}
         />
       );
@@ -178,17 +179,17 @@ function generateRecordsPage({
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
     return {
-      filter: filterSelector(queries),
-      schema: schemaSelector(state),
       canSearch: state[namespace].get('canSearch'),
-      searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
+      filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
-      sort: queries.sort || state[namespace].get('defaultSort'),
-      search: queries.search,
       records: state[namespace].get('records'),
-      total: state[namespace].get('total'),
+      schema: schemaSelector(state),
+      search: queries.search,
       searchFileds: state[namespace].get('searchFileds'),
+      searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
+      sort: queries.sort || state[namespace].get('defaultSort'),
+      total: state[namespace].get('total'),
     };
   };
 
@@ -234,7 +235,7 @@ function generateRecordsPage({
       } else if (action === 'edit') {
         props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { path: apiPath, body } });
       } else if (action === 'remove') {
-        props.remove = async id => dispatch({ type: `${namespace}/remove`, payload: { path: apiPath, id } });
+        props.remove = async body => dispatch({ type: `${namespace}/remove`, payload: { path: apiPath, body } });
       } else if (action === 'order') {
         props.order = async (body, diff) => dispatch({ type: `${namespace}/order`, payload: { path: apiPath, body, diff } });
       }

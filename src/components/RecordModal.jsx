@@ -41,13 +41,12 @@ class RecordModal extends React.PureComponent {
   };
 
   isEdit() {
-    const { record: { id } } = this.props;
-    return !!id;
+    const { record } = this.props;
+    return record && Object.keys(record).length > 0;
   }
 
   renderFormItem({ key, type, title }) {
     const { form: { getFieldDecorator }, record } = this.props;
-
     let children;
 
     switch (type) {

@@ -1,5 +1,5 @@
 import {
-  isPlainObject, isArray, map, flatten, filter,
+  isPlainObject, isArray, map, flatten, filter, forEach,
 } from 'lodash';
 import DataType from '../constants/DataType';
 
@@ -11,6 +11,17 @@ export default function processGroupConfig({ config, path }) {
 
   if (!isArray(actions)) {
     throw new Error(`${path}: actions必须是数组`);
+  }
+
+  let primaryKey = 'id';
+  forEach(schema, (definition) => {
+    if (definition.primaryKey) {
+      primaryKey = definition.key;
+    }
+  });
+
+  if (!primaryKey) {
+    throw new Error(`${path}: 必须指定primary key`);
   }
 
   const orderFields = filter(schema, definition => definition.type === ORDER);
@@ -34,6 +45,7 @@ export default function processGroupConfig({ config, path }) {
   return {
     ...config,
     actions,
+    primaryKey,
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
       let { visibility, sort, defaultSort } = definition;

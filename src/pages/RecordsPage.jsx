@@ -30,15 +30,17 @@ export default class RecordsPage extends React.PureComponent {
     fetch: PropTypes.func.isRequired,
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
+      title: PropTypes.string,
       link: PropTypes.oneOfType([
-        PropTypes.shape({
-          path: PropTypes.string,
-          key: PropTypes.string,
-        }),
         PropTypes.bool,
+        PropTypes.shape({
+          url: PropTypes.string,
+          type: PropTypes.oneOf(['relative', 'absolute', 'external']),
+        }),
       ]),
       visibility: PropTypes.shape({
+        create: PropTypes.bool,
+        edit: PropTypes.bool,
         table: PropTypes.bool,
       }),
     })).isRequired,
@@ -51,6 +53,7 @@ export default class RecordsPage extends React.PureComponent {
     pagesize: PropTypes.number,
     edit: PropTypes.func,
     filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    primaryKey: PropTypes.string,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
     search: PropTypes.string,
@@ -65,6 +68,7 @@ export default class RecordsPage extends React.PureComponent {
     customActions: [],
     edit: null,
     filter: {},
+    primaryKey: 'id',
     remove: null,
     records: Immutable.List(),
     order: null,
@@ -173,7 +177,7 @@ export default class RecordsPage extends React.PureComponent {
 
   onConfirmRemove = async (record) => {
     const { remove } = this.props;
-    await this.updateRecord({ promise: remove(record.id), loadingMessage: '正在删除……' });
+    await this.updateRecord({ promise: remove(record), loadingMessage: '正在删除……' });
   }
 
   onCustomAction = async (record, handler) => {
@@ -214,9 +218,9 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (body) => {
-    const { edit, create } = this.props;
+    const { edit, create, primaryKey } = this.props;
     await this.updateRecord({
-      promise: body.id && edit ? edit(body) : create(body),
+      promise: body[primaryKey] && edit ? edit(body) : create(body),
       throwError: true,
     });
   }
@@ -418,6 +422,7 @@ export default class RecordsPage extends React.PureComponent {
     const {
       total, page, pagesize, customActions,
       schema, search, searchPlaceHolder, canSearch,
+      primaryKey,
     } = this.props;
 
     const rowActions = customActions ? arrayFilter(customActions, ({ rowSelection }) => (
@@ -477,7 +482,7 @@ export default class RecordsPage extends React.PureComponent {
         <Table
           loading={isLoading}
           dataSource={dataSource}
-          rowKey="id"
+          rowKey={primaryKey}
           rowSelection={rowSelection}
           pagination={false}
           onChange={this.onChange}

@@ -150,6 +150,7 @@ const MyPage = dynamic({
 | renderValue | 自定义函数，获取展示值 | Function(record) | - |
 | filters | 该属性的所有过滤信息，支持函数动态获取，返回格式也需要是object[]，见[filters](#filters) | object[]/Function() | [] |
 | canFilter | 是否可以用该属性筛选数据 | bool | false |
+| primaryKey | 该属性是否为主键 | bool | flase |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |
