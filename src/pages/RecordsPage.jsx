@@ -18,7 +18,7 @@ import makeCancelable from '../utils/makeCancelable';
 import Page from './Page';
 import './RecordsPage.less';
 
-const { DATETIME, IMAGE } = DataType;
+const { DATETIME, IMAGE, NUMBER } = DataType;
 const { Column } = Table;
 const { Search } = Input;
 
@@ -145,6 +145,7 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   onChange = async (pagination, filters, sorter) => {
+    const { schema } = this.props;
     let { sort } = this.props;
     const {
       page, pagesize, search, updatePage,
@@ -152,18 +153,21 @@ export default class RecordsPage extends React.PureComponent {
     if (sorter && sorter.columnKey && sorter.order) {
       sort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     }
-    updatePage({
-      page,
-      pagesize,
-      sort,
-      search,
-      filter: reduce(filters, (acc, value, key) => {
-        if (value && key && value.length > 0) {
-          const number = parseInt(value[0], 10);
-          acc[key] = isNaN(number) ? value[0] : number;
+    const filter = reduce(schema, (acc, { key, type, filterKey }) => {
+      const value = filters[key];
+      if (value && value.length > 0) {
+        switch (type) {
+          case NUMBER:
+            acc[filterKey || key] = parseInt(value[0], 10);
+            break;
+          default:
+            acc[filterKey || key] = String(value[0]);
+            break;
         }
-        return acc;
-      }, {}),
+      }
+    }, {});
+    updatePage({
+      page, pagesize, sort, search, filter,
     });
   }
 
