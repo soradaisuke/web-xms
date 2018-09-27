@@ -14,9 +14,25 @@ export default function processGroupConfig({ config, path }) {
   }
 
   let primaryKey = 'id';
+  let orderKey;
+  let defaultSort;
+  const searchFileds = [];
+
   forEach(schema, (definition) => {
     if (definition.primaryKey) {
       primaryKey = definition.key;
+    }
+    if (definition.type === ORDER) {
+      if (orderKey) {
+        throw new Error(`${path}: type = ORDER的属性最多有一个`);
+      }
+      orderKey = definition.key;
+    }
+    if (definition.search) {
+      searchFileds.push({ key: definition.key, title: definition.title });
+    }
+    if (definition.sort && definition.defaultSort) {
+      defaultSort = `${definition.key} ${definition.defaultSort}`;
     }
   });
 
@@ -24,13 +40,7 @@ export default function processGroupConfig({ config, path }) {
     throw new Error(`${path}: 必须指定primary key`);
   }
 
-  const orderFields = filter(schema, definition => definition.type === ORDER);
-  if (orderFields.length > 1) {
-    throw new Error(`${path}: type = ORDER的属性最多有一个`);
-  }
-
-  const hasOrderField = orderFields.length === 1;
-  if (hasOrderField && filter(schema, definition => !!definition.sort).length > 0) {
+  if (orderKey && filter(schema, definition => !!definition.sort).length > 0) {
     throw new Error(`${path}: 存在type = ORDER的属性，默认为该属性升序排序，不支持配置其他sort属性`);
   }
 
@@ -46,9 +56,13 @@ export default function processGroupConfig({ config, path }) {
     ...config,
     actions,
     primaryKey,
+    orderKey,
+    searchFileds,
+    defaultSort,
+    searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
-      let { visibility, sort, defaultSort } = definition;
+      let { visibility, sort, defaultSort: ds } = definition;
       const { type, filters } = definition;
 
       if (type === ENUM && !filters) {
@@ -78,7 +92,7 @@ export default function processGroupConfig({ config, path }) {
 
       if (type === ORDER) {
         sort = { asc: true };
-        defaultSort = 'asc';
+        ds = 'asc';
       } else if (sort === true) {
         sort = { asc: true, desc: true };
       } else if (sort === 'asc') {
@@ -88,7 +102,7 @@ export default function processGroupConfig({ config, path }) {
       }
 
       return {
-        ...definition, visibility, sort, defaultSort,
+        ...definition, visibility, sort, defaultSort: ds,
       };
     }),
   };

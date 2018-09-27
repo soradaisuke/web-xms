@@ -13,9 +13,6 @@ import {
 import generateUri from './generateUri';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
-import DataType from '../constants/DataType';
-
-const { ORDER } = DataType;
 
 function generateService({ actions, primaryKey }) {
   const service = {
@@ -37,23 +34,13 @@ function generateService({ actions, primaryKey }) {
   return service;
 }
 
-function generateModel({ namespace, actions, schema }, service, app) {
+function generateModel({
+  namespace, actions, schema, orderKey, searchFileds,
+}, service, app) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
-  let defaultSort;
-  let orderField;
-  const searchFileds = [];
   forEach(schema, (definition, index) => {
-    if (definition.sort && definition.defaultSort) {
-      defaultSort = `${definition.key} ${definition.defaultSort}`;
-    }
-    if (definition.search) {
-      searchFileds.push({ key: definition.key, title: definition.title });
-    }
-    if (definition.type === ORDER) {
-      orderField = definition.key;
-    }
     if (isFunction(definition.filters)) {
       definition.filters().then(filters => (
         app._store.dispatch({ // eslint-disable-line no-underscore-dangle
@@ -70,11 +57,8 @@ function generateModel({ namespace, actions, schema }, service, app) {
     namespace,
     state: Immutable.fromJS({
       schema,
-      defaultSort,
       records: [],
       total: 0,
-      canSearch: searchFileds.length > 0,
-      searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     }),
     reducers: {
       save(state, { payload: { records, total } }) {
@@ -127,7 +111,7 @@ function generateModel({ namespace, actions, schema }, service, app) {
     } else if (action === 'order') {
       model.effects.order = function* modelOrder({ payload: { path, body, diff } }, { call }) {
         yield call(service.order, {
-          path, body: { ...body, [orderField]: body[orderField] + diff },
+          path, body: { ...body, [orderKey]: body[orderKey] + diff },
         });
       };
     }
@@ -137,7 +121,8 @@ function generateModel({ namespace, actions, schema }, service, app) {
 }
 
 function generateRecordsPage({
-  namespace, actions, api: { path, defaultFilter }, primaryKey,
+  namespace, actions, api: { path, defaultFilter },
+  primaryKey, searchFileds, searchPlaceHolder, defaultSort,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
 
@@ -151,6 +136,8 @@ function generateRecordsPage({
           component={component}
           primaryKey={primaryKey}
           customActions={customActions}
+          canSearch={searchFileds.length > 0}
+          searchPlaceHolder={searchPlaceHolder}
         />
       );
     }
@@ -179,16 +166,14 @@ function generateRecordsPage({
   const mapStateToProps = (state) => {
     const queries = parse(window.location.search);
     return {
-      canSearch: state[namespace].get('canSearch'),
       filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
       schema: schemaSelector(state),
       search: queries.search,
-      searchFileds: state[namespace].get('searchFileds'),
       searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
-      sort: queries.sort || state[namespace].get('defaultSort'),
+      sort: queries.sort || defaultSort,
       total: state[namespace].get('total'),
     };
   };
