@@ -31,13 +31,10 @@ export default class RecordsPage extends React.PureComponent {
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
       title: PropTypes.string,
-      link: PropTypes.oneOfType([
-        PropTypes.bool,
-        PropTypes.shape({
-          url: PropTypes.string,
-          type: PropTypes.oneOf(['relative', 'absolute', 'external']),
-        }),
-      ]),
+      link: PropTypes.shape({
+        url: PropTypes.string,
+        type: PropTypes.oneOf(['relative', 'absolute', 'external']),
+      }),
       visibility: PropTypes.shape({
         create: PropTypes.bool,
         edit: PropTypes.bool,

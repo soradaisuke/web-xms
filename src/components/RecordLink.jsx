@@ -1,23 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-
-function getTextFromTemplate(template, record) {
-  if (!template || !record) {
-    return template;
-  }
-
-  let result = template;
-  const match = result.match(/\{(\w+)\}/g);
-  if (match) {
-    match.forEach((pattern) => {
-      const key = pattern.substring(1, pattern.length - 1);
-      result = result.replace(pattern, record[key] || '');
-    });
-  }
-
-  return result;
-}
+import { isFunction } from 'lodash';
 
 export default class RecordLink extends React.PureComponent {
   static displayName = 'RecordLink';
@@ -25,14 +9,21 @@ export default class RecordLink extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node.isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    link: PropTypes.oneOfType([
-      PropTypes.bool,
-      PropTypes.shape({
-        url: PropTypes.string,
-        type: PropTypes.oneOf(['relative', 'absolute', 'external']),
-      }),
-    ]).isRequired,
+    link: PropTypes.shape({
+      url: PropTypes.string,
+      type: PropTypes.oneOf(['relative', 'absolute', 'external']),
+    }).isRequired,
   };
+
+  getUrl() {
+    const { link: { url }, record } = this.props;
+
+    if (isFunction(url)) {
+      return url(record);
+    }
+
+    return url;
+  }
 
   getLink() {
     const { link, record } = this.props;
@@ -43,18 +34,18 @@ export default class RecordLink extends React.PureComponent {
 
     switch (link.type) {
       case 'absolute':
-        return getTextFromTemplate(link.template, record);
+        return this.getUrl();
       case 'relative':
       default:
-        return `${window.location.pathname}/${getTextFromTemplate(link.template, record)}`;
+        return `${window.location.pathname}/${this.getUrl()}`;
     }
   }
 
   render() {
-    const { children, link, record } = this.props;
+    const { children, link } = this.props;
 
     if (link.type === 'external') {
-      return <a href={getTextFromTemplate(link.template, record)} rel="noopener noreferrer" target="_blank">{children}</a>;
+      return <a href={this.getUrl()} rel="noopener noreferrer" target="_blank">{children}</a>;
     }
 
     return (

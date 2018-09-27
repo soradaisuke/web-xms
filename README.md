@@ -163,7 +163,7 @@ const MyPage = dynamic({
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
 | type | 链接类型<br />external：外站链接<br />relative：在当前页面path下扩展<br />absolute：会在当前host下扩展 | string(external, relative, absolute) | - |
-| template | 链接的path，如果需要用到model中的数据，请用‘{key}’的表示 | string | - |
+| url | 链接的url | string/Function(record) | - |
 
 # sort
 | 参数 | 说明 | 类型 | 默认值 |
