@@ -36,22 +36,10 @@ function generateService({ actions, primaryKey }) {
 
 function generateModel({
   namespace, actions, schema, orderKey, searchFileds,
-}, service, app) {
+}, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
-  forEach(schema, (definition, index) => {
-    if (isFunction(definition.filters)) {
-      definition.filters().then(filters => (
-        app._store.dispatch({ // eslint-disable-line no-underscore-dangle
-          type: `${namespace}/saveFilters`,
-          payload: {
-            filters, index,
-          },
-        })
-      ));
-    }
-  });
 
   const model = {
     namespace,
@@ -74,6 +62,11 @@ function generateModel({
           path, page, pagesize, sort, search, filter = {},
         },
       }, { call, put }) {
+        for (let i = 0; i < schema.length; i += 1) {
+          if (isFunction(schema[i].filters)) {
+            yield put({ type: 'getFilters', payload: { index: i, filtersFunc: schema[i].filters } });
+          }
+        }
         const f = filter;
 
         if (search) {
@@ -91,6 +84,10 @@ function generateModel({
           path, page, pagesize, filter: JSON.stringify(f), order: sort,
         });
         yield put({ type: 'save', payload: { total, records } });
+      },
+      * getFilters({ payload: { index, filtersFunc } }, { call, put }) {
+        const filters = yield call(filtersFunc);
+        yield put({ type: 'saveFilters', payload: { index, filters } });
       },
     },
   };
@@ -234,7 +231,7 @@ function generateRecordsPage({
 
 function generateDynamicRecordsComponent({ app, config, component }) {
   const service = generateService(config);
-  const model = generateModel(config, service, app);
+  const model = generateModel(config, service);
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
