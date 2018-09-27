@@ -6,8 +6,6 @@ export default class RecordPage extends React.PureComponent {
   static displayName = 'RecordPage';
 
   static propTypes = {
-    fetch: PropTypes.func.isRequired,
-    recordId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     routes: PropTypes.arrayOf(PropTypes.shape({
       component: PropTypes.bode,
@@ -35,33 +33,6 @@ export default class RecordPage extends React.PureComponent {
 
     if (!component) {
       this.fetch();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { recordId, component } = this.props;
-    if (!component && prevProps.recordId !== recordId) {
-      this.fetch();
-    }
-  }
-
-  async fetch() {
-    const { recordId, fetch } = this.props;
-
-    this.setState({
-      isLoading: true,
-    });
-    try {
-      await fetch({ id: recordId });
-      this.setState({
-        isError: false,
-        isLoading: false,
-      });
-    } catch (error) {
-      this.setState({
-        isError: true,
-        isLoading: false,
-      });
     }
   }
 
