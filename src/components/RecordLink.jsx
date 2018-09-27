@@ -10,7 +10,7 @@ export default class RecordLink extends React.PureComponent {
     children: PropTypes.node.isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     link: PropTypes.shape({
-      url: PropTypes.string,
+      url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
       type: PropTypes.oneOf(['relative', 'absolute', 'external']),
     }).isRequired,
   };

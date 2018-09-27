@@ -32,7 +32,7 @@ export default class RecordsPage extends React.PureComponent {
       key: PropTypes.string.isRequired,
       title: PropTypes.string,
       link: PropTypes.shape({
-        url: PropTypes.string,
+        url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
         type: PropTypes.oneOf(['relative', 'absolute', 'external']),
       }),
       visibility: PropTypes.shape({
