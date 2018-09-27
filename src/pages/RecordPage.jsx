@@ -17,6 +17,11 @@ export default class RecordPage extends React.PureComponent {
     routes: [],
   };
 
+  state = {
+    isLoading: false,
+    isError: false,
+  };
+
   renderRoutes() {
     const { routes } = this.props;
     if (routes && routes.length === 1) {
