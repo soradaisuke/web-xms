@@ -62,31 +62,32 @@ function generateModel({
           path, page, pagesize, sort, search, filter = {},
         },
       }, { call, put }) {
-        for (let i = 0; i < schema.length; i += 1) {
-          if (isFunction(schema[i].filters)) {
-            yield put({ type: 'getFilters', payload: { index: i, filtersFunc: schema[i].filters } });
-          }
-        }
-        const f = filter;
+        const currentFiler = filter;
 
         if (search) {
           if (searchFileds.length === 1) {
-            f[searchFileds[0].key] = search;
+            currentFiler[searchFileds[0].key] = search;
           } else {
-            f.$or = searchFileds.reduce((acc, field) => {
+            currentFiler.$or = searchFileds.reduce((acc, field) => {
               acc.push({ [field.key]: search });
               return acc;
             }, []);
           }
         }
 
+        for (let i = 0; i < schema.length; i += 1) {
+          if (isFunction(schema[i].filters)) {
+            yield put({ type: 'getFilters', payload: { index: i, filtersFunc: schema[i].filters, currentFiler } });
+          }
+        }
+
         const { items: records, total } = yield call(service.fetch, {
-          path, page, pagesize, filter: JSON.stringify(f), order: sort,
+          path, page, pagesize, filter: JSON.stringify(currentFiler), order: sort,
         });
         yield put({ type: 'save', payload: { total, records } });
       },
-      * getFilters({ payload: { index, filtersFunc } }, { call, put }) {
-        const filters = yield call(filtersFunc);
+      * getFilters({ payload: { index, filtersFunc, currentFiler } }, { call, put }) {
+        const filters = yield call(filtersFunc, currentFiler);
         yield put({ type: 'saveFilters', payload: { index, filters } });
       },
     },
