@@ -27,6 +27,7 @@ export default function processGroupConfig({ config, path }) {
         throw new Error(`${path}: type = ORDER的属性最多有一个`);
       }
       orderKey = definition.key;
+      defaultSort = `${definition.key} asc`;
     }
     if (definition.search) {
       searchFileds.push({ key: definition.key, title: definition.title });
