@@ -15,6 +15,7 @@ class RecordModal extends React.PureComponent {
     form: PropTypes.shape({
       validateFields: PropTypes.func.isRequired,
       getFieldDecorator: PropTypes.func.isRequired,
+      resetFields: PropTypes.func.isRequired,
     }).isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(PropTypes.shape({
@@ -39,6 +40,13 @@ class RecordModal extends React.PureComponent {
       });
     });
   };
+
+  onVisibleChange = (visibility) => {
+    const { form } = this.props;
+    if (visibility) {
+      form.resetFields();
+    }
+  }
 
   isEdit() {
     const { record } = this.props;
@@ -86,6 +94,7 @@ class RecordModal extends React.PureComponent {
         activator={children}
         title={this.isEdit() ? '编辑' : '添加'}
         onOk={this.onOk}
+        onVisibleChange={this.onVisibleChange}
       >
         <Form onSubmit={this.okHandler}>
           {

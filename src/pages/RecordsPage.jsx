@@ -7,7 +7,7 @@ import {
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce,
-  map, has, isNaN, filter as arrayFilter,
+  map, has, filter as arrayFilter,
 } from 'lodash';
 import moment from 'moment';
 import Img from '../components/Img';
