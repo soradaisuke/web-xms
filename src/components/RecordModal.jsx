@@ -31,12 +31,14 @@ class RecordModal extends React.PureComponent {
   onOk = async () => {
     const { form, record, onOk } = this.props;
 
-    await new Promise((resolve) => {
+    await new Promise((resolve, reject) => {
       form.validateFields(async (err, values) => {
         if (!err) {
           await onOk({ ...record, ...values });
+          resolve();
+        } else {
+          reject();
         }
-        resolve();
       });
     });
   };
