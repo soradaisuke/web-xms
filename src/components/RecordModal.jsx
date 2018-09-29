@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Form, Input, InputNumber } from 'antd';
 import ActivatorModal from './ActivatorModal';
 import DataType from '../constants/DataType';
 
@@ -56,7 +56,6 @@ class RecordModal extends React.PureComponent {
   renderFormItem({ key, type, title }) {
     const { form: { getFieldDecorator }, record } = this.props;
     let children;
-
     switch (type) {
       case NUMBER:
       case STRING:
@@ -66,7 +65,7 @@ class RecordModal extends React.PureComponent {
           rules: [{
             required: true, message: `${title}不能为空`, whitespace: true, type,
           }],
-        })(<Input />);
+        })(type === NUMBER ? <InputNumber /> : <Input />);
         break;
       default:
         break;
