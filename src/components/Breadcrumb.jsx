@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter, matchPath } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import {
-  forEach, isFunction, isString, split, take, join,
+  forEach, isFunction, isString, split, take, join, replace,
 } from 'lodash';
 import { Breadcrumb } from 'antd';
 
@@ -23,10 +23,11 @@ function addBreadcrumbItem({
           breadcrumbTitle = breadcrumb;
         }
 
+
         items.push((
           <Breadcrumb.Item key={path}>
             <NavLink exact to={join(take(split(pathname, '/'), split(path, '/').length), '/')}>
-              {breadcrumbTitle || title}
+              {replace(breadcrumbTitle, '{percent}', '%') || title}
             </NavLink>
           </Breadcrumb.Item>
         ));

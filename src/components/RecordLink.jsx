@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isFunction } from 'lodash';
+import { isFunction, replace } from 'lodash';
 
 export default class RecordLink extends React.PureComponent {
   static displayName = 'RecordLink';
@@ -19,10 +19,10 @@ export default class RecordLink extends React.PureComponent {
     const { link: { url }, record } = this.props;
 
     if (isFunction(url)) {
-      return url(record);
+      return replace(url(record), '%', '{percent}');
     }
 
-    return url;
+    return replace(url, '%', '{percent}');
   }
 
   getLink() {
