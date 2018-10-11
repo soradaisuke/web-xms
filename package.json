@@ -55,5 +55,6 @@
   "peerDependencies": {
     "antd": "^3.9.1",
     "react": "^16.4.0"
-  }
+  },
+  "sideEffects": false
 }
