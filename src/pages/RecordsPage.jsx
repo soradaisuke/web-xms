@@ -10,11 +10,11 @@ import {
   map, has, filter as arrayFilter,
 } from 'lodash';
 import moment from 'moment';
+import { makeCancelablePromise } from 'web-core';
 import Img from '../components/Img';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
-import makeCancelable from '../utils/makeCancelable';
 import Page from './Page';
 import './RecordsPage.less';
 
@@ -205,7 +205,7 @@ export default class RecordsPage extends React.PureComponent {
   updateRecord = async ({ promise, loadingMessage = '正在保存……', throwError = false }) => {
     const hide = message.loading(loadingMessage, 0);
     try {
-      this.activePromise = makeCancelable(promise);
+      this.activePromise = makeCancelablePromise(promise);
       await this.activePromise;
       hide();
       await this.fetch();
@@ -235,7 +235,7 @@ export default class RecordsPage extends React.PureComponent {
       isLoading: true,
     });
     try {
-      this.activePromise = makeCancelable(fetch({
+      this.activePromise = makeCancelablePromise(fetch({
         page, pagesize, sort, search, filter,
       }));
       await this.activePromise;
