@@ -9,6 +9,7 @@ export default class Page extends React.PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
+    errorMessage: PropTypes.string,
     isError: PropTypes.bool,
     isLoading: PropTypes.bool,
   };
@@ -16,17 +17,20 @@ export default class Page extends React.PureComponent {
   static defaultProps = {
     children: null,
     className: '',
+    errorMessage: '',
     isError: false,
     isLoading: false,
   };
 
   renderContent() {
-    const { isLoading, isError, children } = this.props;
+    const {
+      isLoading, isError, errorMessage, children,
+    } = this.props;
     if (isError) {
       return (
         <Alert
           showIcon
-          description="This is an error message about copywriting."
+          description={errorMessage || '发生错误，请检查网络后重试'}
           message="错误"
           type="error"
         />

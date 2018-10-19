@@ -82,6 +82,7 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   state = {
+    errorMessage: '',
     isError: false,
     isLoading: true,
     records: Immutable.List(),
@@ -245,6 +246,7 @@ export default class RecordsPage extends React.PureComponent {
       });
     } catch (error) {
       this.setState({
+        errorMessage: error.message,
         isError: true,
         isLoading: false,
       });
@@ -509,11 +511,11 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   render() {
-    const { isError } = this.state;
+    const { isError, errorMessage } = this.state;
     const { component: Component } = this.props;
 
     return (
-      <Page isError={isError}>
+      <Page isError={isError} errorMessage={errorMessage}>
         {Component ? <Component /> : null}
         {this.renderContent()}
       </Page>
