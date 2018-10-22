@@ -177,6 +177,7 @@ const MyPage = dynamic({
 | :---- | :---- | :---- | :---- |
 | text | 所对应的显示文字 | string/number | - |
 | value | 后台数据所对应的值  | string/number | - |
+| default | 默认筛选项  | bool | false |
 
 #API要求
 * 遵循RESTFUL规范
