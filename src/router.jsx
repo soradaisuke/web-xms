@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Route, Switch, routerRedux, Redirect,
+  Route, Switch, Router, Redirect,
 } from 'dva/router';
 import { filter, find, map } from 'lodash';
 import { Layout, Spin, LocaleProvider } from 'antd';
@@ -15,7 +15,6 @@ import './router.less';
 const {
   Header, Content, Footer, Sider,
 } = Layout;
-const { ConnectedRouter } = routerRedux;
 
 dynamic.setDefaultLoadingComponent(() => (
   <div className="dynamic-loading">
@@ -60,7 +59,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
 
   return (
     <LocaleProvider locale={zhCN}>
-      <ConnectedRouter history={history}>
+      <Router history={history}>
         <Layout className="xms-layout">
           <Header>
             {name}
@@ -85,7 +84,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             </Layout>
           </Layout>
         </Layout>
-      </ConnectedRouter>
+      </Router>
     </LocaleProvider>
   );
 }
