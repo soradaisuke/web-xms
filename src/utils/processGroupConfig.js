@@ -17,6 +17,7 @@ export default function processGroupConfig({ config, path }) {
   let orderKey;
   let defaultSort;
   const searchFileds = [];
+  let defaultFilter;
 
   forEach(schema, (definition) => {
     if (definition.primaryKey) {
@@ -34,6 +35,14 @@ export default function processGroupConfig({ config, path }) {
     }
     if (definition.sort && definition.defaultSort) {
       defaultSort = `${definition.key} ${definition.defaultSort}`;
+    }
+    if (isArray(definition.filters)) {
+      forEach(definition.filters, ({ value, default: d }) => {
+        if (d) {
+          defaultFilter = defaultFilter || {};
+          defaultFilter[definition.key] = value;
+        }
+      });
     }
   });
 
@@ -60,6 +69,7 @@ export default function processGroupConfig({ config, path }) {
     orderKey,
     searchFileds,
     defaultSort,
+    defaultFilter,
     searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {

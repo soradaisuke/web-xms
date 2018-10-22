@@ -2,8 +2,7 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import { withRouter } from 'react-router';
-import { routerRedux } from 'dva/router';
+import { withRouter } from 'dva/router';
 import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
@@ -120,7 +119,7 @@ function generateModel({
 
 function generateRecordsPage({
   namespace, actions, api: { path, defaultFilter },
-  primaryKey, searchFileds, searchPlaceHolder, defaultSort,
+  primaryKey, searchFileds, searchPlaceHolder, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
 
@@ -161,8 +160,8 @@ function generateRecordsPage({
     schema => schema.toJS(),
   );
 
-  const mapStateToProps = (state) => {
-    const queries = parse(window.location.search);
+  const mapStateToProps = (state, props) => {
+    const queries = parse(props.location.search);
     return {
       filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
@@ -177,7 +176,16 @@ function generateRecordsPage({
   };
 
   const mapDispatchToProps = (dispatch, ownProps) => {
-    const { match: { params: matchParams } } = ownProps;
+    const { match: { params: matchParams }, history, location } = ownProps;
+
+    const queries = parse(location.search);
+
+    if (defaultFilterQuery && (!queries || Object.keys(queries).length === 0)) {
+      const uri = generateUri(window.location.href, {
+        filter: JSON.stringify(defaultFilterQuery),
+      });
+      history.push(uri.href.substring(uri.origin.length, uri.href.length));
+    }
 
     let apiDefaultFilter = {};
     if (isFunction(defaultFilter)) {
@@ -202,13 +210,13 @@ function generateRecordsPage({
           page, pagesize, sort, search, filter: { ...filter, ...apiDefaultFilter }, path: apiPath,
         },
       }),
-      async updatePage({
+      updatePage: async ({
         page, pagesize, sort, search, filter = {},
-      }) {
+      }) => {
         const uri = generateUri(window.location.href, {
           page, pagesize, search, sort, filter: JSON.stringify(filter),
         });
-        return dispatch(routerRedux.push(uri.href.substring(uri.origin.length, uri.href.length)));
+        history.push(uri.href.substring(uri.origin.length, uri.href.length));
       },
     };
 
