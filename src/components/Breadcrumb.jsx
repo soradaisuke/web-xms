@@ -27,7 +27,7 @@ function addBreadcrumbItem({
         items.push((
           <Breadcrumb.Item key={path}>
             <NavLink exact to={join(take(split(pathname, '/'), split(path, '/').length), '/')}>
-              {replace(breadcrumbTitle, '{percent}', '%') || title}
+              {replace(replace(breadcrumbTitle, '{percent}', '%'), '{slash}', '/') || title}
             </NavLink>
           </Breadcrumb.Item>
         ));

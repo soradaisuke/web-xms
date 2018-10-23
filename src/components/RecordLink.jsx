@@ -19,10 +19,10 @@ export default class RecordLink extends React.PureComponent {
     const { link: { url }, record } = this.props;
 
     if (isFunction(url)) {
-      return replace(url(record), '%', '{percent}');
+      return replace(replace(url(record), '%', '{percent}'), '/', '{slash}');
     }
 
-    return replace(url, '%', '{percent}');
+    return replace(replace(url, '%', '{percent}'), '/', '{slash}');
   }
 
   getLink() {
