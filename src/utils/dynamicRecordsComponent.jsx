@@ -9,7 +9,7 @@ import { parse } from 'query-string';
 import {
   upperFirst, isFunction, isPlainObject, isString, forEach, toInteger,
 } from 'lodash';
-import generateUri from './generateUri';
+import { generateUri } from 'web-core';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 

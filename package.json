@@ -18,18 +18,20 @@
     "dva": "^2.3.1",
     "history": "^4.7.2",
     "immutable": "^3.8.2",
+    "js-cookie": "^2.2.0",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "query-string": "^5.1.1",
     "react": "^16.4.0",
+    "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#56ed4ccc",
     "react-dom": "^16.4.0",
     "react-lazyload": "^2.3.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "reselect": "^3.0.1",
     "url-parse": "^1.4.1",
-    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#77fb081"
+    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#7308b068"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",

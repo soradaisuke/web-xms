@@ -1,6 +1,6 @@
 import { includes, isPlainObject } from 'lodash';
 import fetch from 'dva/fetch';
-import generateUri from '../utils/generateUri';
+import { generateUri } from 'web-core';
 
 let { host } = window.location;
 

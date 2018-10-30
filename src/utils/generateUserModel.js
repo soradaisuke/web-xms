@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
+import { generateUri } from 'web-core';
 import request from '../services/request';
-import generateUri from './generateUri';
 
 function generateService(login) {
   if (!login) {
