@@ -133,7 +133,8 @@ const MyPage = dynamic({
 | enable | 是否为该行数据启用该操作 | Function(record, matchParams) | - |
 | type | 按钮类型，参数同antd的Button，有primary、default、danger、dashed | string | - |
 | render | 自定义渲染组件，会忽略title、type和handler的值<br />返回的组件需要设置key<br/ >如果需要在某个操作后刷新数据，请执行refresh() | Function(record, matchParams, refresh) | - |
-| rowSelection | 该操作是否支持多行批量执行 | bool | false |
+| multiple | 该操作是否支持多行批量执行 | bool | false |
+| global | 该操作是否是全局操作 | bool | false |
 
 # schema
 | 参数 | 说明 | 类型 | 默认值 |

@@ -122,6 +122,9 @@ function generateRecordsPage({
   primaryKey, searchFileds, searchPlaceHolder, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
+  const customGlobalActions = customActions.filter(({ global }) => global);
+  const customMultipleActions = customActions.filter(({ multiple }) => multiple);
+  const customRowActions = customActions.filter(({ global }) => !global);
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -132,7 +135,9 @@ function generateRecordsPage({
           {...this.props}
           component={component}
           primaryKey={primaryKey}
-          customActions={customActions}
+          customGlobalActions={customGlobalActions}
+          customMultipleActions={customMultipleActions}
+          customRowActions={customRowActions}
           canSearch={searchFileds.length > 0}
           searchPlaceHolder={searchPlaceHolder}
         />

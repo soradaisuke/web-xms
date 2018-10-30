@@ -6,8 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce,
-  map, has, filter as arrayFilter,
+  split, startsWith, isFunction, isArray, find, reduce, map, has,
 } from 'lodash';
 import moment from 'moment';
 import { makeCancelablePromise } from 'web-core';
@@ -44,7 +43,9 @@ export default class RecordsPage extends React.PureComponent {
     updatePage: PropTypes.func.isRequired,
     create: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-    customActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    customGlobalActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
@@ -62,7 +63,9 @@ export default class RecordsPage extends React.PureComponent {
   static defaultProps = {
     create: null,
     component: null,
-    customActions: [],
+    customGlobalActions: [],
+    customMultipleActions: [],
+    customRowActions: [],
     edit: null,
     filter: {},
     primaryKey: 'id',
@@ -183,14 +186,14 @@ export default class RecordsPage extends React.PureComponent {
     await this.updateRecord({ promise: remove(record), loadingMessage: '正在删除……' });
   }
 
-  onCustomAction = async (record, handler) => {
+  onCustomRowAction = async (record, handler) => {
     if (isFunction(handler)) {
       const { match: { params: matchParams } } = this.props;
       await this.updateRecord({ promise: handler(record, matchParams) });
     }
   }
 
-  onCustomRowAction = async (handler, enable) => {
+  onCustomMultipleAction = async (handler, enable) => {
     if (isFunction(handler)) {
       const { match: { params: matchParams } } = this.props;
       const { selectedRows } = this.state;
@@ -200,6 +203,13 @@ export default class RecordsPage extends React.PureComponent {
         ))),
       });
       this.setState({ selectedRowKeys: [], selectedRows: [] });
+    }
+  }
+
+  onCustomGlobalAction = async (handler) => {
+    if (isFunction(handler)) {
+      const { match: { params: matchParams } } = this.props;
+      await this.updateRecord({ promise: handler(matchParams) });
     }
   }
 
@@ -257,11 +267,6 @@ export default class RecordsPage extends React.PureComponent {
   hasAddButton() {
     const { create } = this.props;
     return !!create;
-  }
-
-  hasHeader() {
-    const { canSearch } = this.props;
-    return this.hasAddButton() || canSearch;
   }
 
   renderColumn({
@@ -338,11 +343,81 @@ export default class RecordsPage extends React.PureComponent {
     return schema.map(definition => this.renderColumn({ ...definition }));
   }
 
-  renderActions() {
+  renderCustomRowActions(record) {
+    const { customRowActions, match: { params: matchParams } } = this.props;
+
+    return customRowActions.map(({
+      title, type, handler, enable, render,
+    }) => {
+      if (isFunction(enable) && !enable(record)) {
+        return null;
+      }
+
+      if (isFunction(render)) {
+        return render(record, matchParams, this.fetch);
+      }
+
+      return (
+        <Button
+          key={title}
+          type={type}
+          // eslint-disable-next-line react/jsx-no-bind
+          onClick={() => this.onCustomRowAction(record, handler)}
+        >
+          {title}
+        </Button>
+      );
+    });
+  }
+
+  renderCustomMultipleActions() {
+    const { selectedRowKeys } = this.state;
+    const hasSelected = selectedRowKeys.length > 0;
+    const { customMultipleActions } = this.props;
+
+    return customMultipleActions.map(({
+      title, type, handler, enable,
+    }) => (
+      <Button
+        key="title"
+        type={type}
+        disabled={!hasSelected}
+        // eslint-disable-next-line react/jsx-no-bind
+        onClick={() => this.onCustomMultipleAction(handler, enable)}
+      >
+        {title}
+      </Button>
+    ));
+  }
+
+  renderCustomGlobalActions() {
+    const { customGlobalActions, match: { params: matchParams } } = this.props;
+
+    return customGlobalActions.map(({
+      title, type, handler, render,
+    }) => {
+      if (isFunction(render)) {
+        return render(matchParams, this.fetch);
+      }
+
+      return (
+        <Button
+          key={title}
+          type={type}
+          // eslint-disable-next-line react/jsx-no-bind
+          onClick={() => this.onCustomGlobalAction(handler)}
+        >
+          {title}
+        </Button>
+      );
+    });
+  }
+
+  renderRowActions() {
     const {
-      edit, remove, order, customActions, schema, match: { params: matchParams },
+      edit, remove, order, customRowActions, schema,
     } = this.props;
-    return (edit || remove || customActions.length > 0) ? (
+    return (edit || remove || customRowActions.length > 0) ? (
       <Column
         title="操作"
         key="action"
@@ -392,30 +467,7 @@ export default class RecordsPage extends React.PureComponent {
                 </React.Fragment>
               )
             }
-            {
-              customActions.map(({
-                title, type, handler, enable, render,
-              }) => {
-                if (isFunction(enable) && !enable(record)) {
-                  return null;
-                }
-
-                if (isFunction(render)) {
-                  return render(record, matchParams, this.fetch);
-                }
-
-                return (
-                  <Button
-                    key={title}
-                    type={type}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => this.onCustomAction(record, handler)}
-                  >
-                    {title}
-                  </Button>
-                );
-              })
-            }
+            {this.renderCustomRowActions(record)}
           </span>
         )}
       />
@@ -425,62 +477,46 @@ export default class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, customActions,
+      total, page, pagesize, primaryKey,
       schema, search, searchPlaceHolder, canSearch,
-      primaryKey,
+      customMultipleActions, customGlobalActions,
     } = this.props;
 
-    const rowActions = customActions ? arrayFilter(customActions, ({ rowSelection }) => (
-      rowSelection
-    )) : [];
-    const rowSelection = rowActions.length > 0 ? { selectedRowKeys, onChange: this.onSelectChange }
-      : null;
-    const hasSelected = selectedRowKeys.length > 0;
+    const rowSelection = customMultipleActions.length > 0 ? {
+      selectedRowKeys, onChange: this.onSelectChange,
+    } : null;
+    const hasHeader = this.hasAddButton() || canSearch
+      || customMultipleActions.length > 0 || customGlobalActions.length > 0;
 
     return (
       <React.Fragment>
         {
-          this.hasHeader() && (
+          hasHeader && (
             <div className="xms-records-page-content-header">
-              {
-                this.hasAddButton() && (
-                  <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
-                    <Button className="add-button" type="primary">添加</Button>
-                  </RecordModal>
-                )
-              }
-              {
-                canSearch && (
-                  <Search
-                    defaultValue={search}
-                    placeholder={searchPlaceHolder}
-                    onSearch={this.onSearch}
-                    style={{ width: 200 }}
-                    enterButton
-                  />
-                )
-              }
-            </div>
-          )
-        }
-        {
-          rowActions.length > 0 && (
-            <div className="xms-records-page-content-header">
-              {
-                rowActions.map(({
-                  title, type, handler, enable,
-                }) => (
-                  <Button
-                    key="title"
-                    type={type}
-                    disabled={!hasSelected}
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => this.onCustomRowAction(handler, enable)}
-                  >
-                    {title}
-                  </Button>
-                ))
-              }
+              <div className="xms-records-page-content-header-buttons">
+                {
+                  this.hasAddButton() && (
+                    <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
+                      <Button className="add-button" type="primary">添加</Button>
+                    </RecordModal>
+                  )
+                }
+                {this.renderCustomGlobalActions()}
+                {this.renderCustomMultipleActions()}
+              </div>
+              <div className="xms-records-page-content-header-searchs">
+                {
+                  canSearch && (
+                    <Search
+                      defaultValue={search}
+                      placeholder={searchPlaceHolder}
+                      onSearch={this.onSearch}
+                      style={{ width: 200 }}
+                      enterButton
+                    />
+                  )
+                }
+              </div>
             </div>
           )
         }
@@ -493,7 +529,7 @@ export default class RecordsPage extends React.PureComponent {
           onChange={this.onChange}
         >
           {this.renderSchema()}
-          {this.renderActions()}
+          {this.renderRowActions()}
         </Table>
         <Pagination
           showQuickJumper
