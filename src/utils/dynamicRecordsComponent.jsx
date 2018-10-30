@@ -34,7 +34,7 @@ function generateService({ actions, primaryKey }) {
 }
 
 function generateModel({
-  namespace, actions, schema, orderKey, searchFileds,
+  namespace, actions, schema, orderKey,
 }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
@@ -58,21 +58,10 @@ function generateModel({
     effects: {
       * fetch({
         payload: {
-          path, page, pagesize, sort, search, filter = {},
+          path, page, pagesize, sort, search = {}, filter = {},
         },
       }, { call, put }) {
-        const currentFiler = filter;
-
-        if (search) {
-          if (searchFileds.length === 1) {
-            currentFiler[searchFileds[0].key] = search;
-          } else {
-            currentFiler.$or = searchFileds.reduce((acc, field) => {
-              acc.push({ [field.key]: search });
-              return acc;
-            }, []);
-          }
-        }
+        const currentFiler = { ...filter, ...search };
 
         for (let i = 0; i < schema.length; i += 1) {
           if (isFunction(schema[i].filters)) {
@@ -119,7 +108,7 @@ function generateModel({
 
 function generateRecordsPage({
   namespace, actions, api: { path, defaultFilter },
-  primaryKey, searchFileds, searchPlaceHolder, defaultSort, defaultFilter: defaultFilterQuery,
+  primaryKey, searchFileds, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
   const customGlobalActions = customActions.filter(({ global }) => global);
@@ -138,8 +127,7 @@ function generateRecordsPage({
           customGlobalActions={customGlobalActions}
           customMultipleActions={customMultipleActions}
           customRowActions={customRowActions}
-          canSearch={searchFileds.length > 0}
-          searchPlaceHolder={searchPlaceHolder}
+          searchFileds={searchFileds}
         />
       );
     }
@@ -152,6 +140,19 @@ function generateRecordsPage({
     (filter) => {
       try {
         return JSON.parse(filter);
+      } catch (e) {
+        return {};
+      }
+    },
+  );
+
+  const searchSelector = createSelector(
+    [
+      queries => queries.search,
+    ],
+    (search) => {
+      try {
+        return JSON.parse(search);
       } catch (e) {
         return {};
       }
@@ -173,8 +174,7 @@ function generateRecordsPage({
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
       schema: schemaSelector(state),
-      search: queries.search,
-      searchPlaceHolder: state[namespace].get('searchPlaceHolder'),
+      search: searchSelector(queries),
       sort: queries.sort || defaultSort,
       total: state[namespace].get('total'),
     };
@@ -219,7 +219,7 @@ function generateRecordsPage({
         page, pagesize, sort, search, filter = {},
       }) => {
         const uri = generateUri(window.location.href, {
-          page, pagesize, search, sort, filter: JSON.stringify(filter),
+          page, pagesize, sort, filter: JSON.stringify(filter), search: JSON.stringify(search),
         });
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
       },

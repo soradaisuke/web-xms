@@ -31,7 +31,7 @@ export default function processGroupConfig({ config, path }) {
       defaultSort = `${definition.key} asc`;
     }
     if (definition.search) {
-      searchFileds.push({ key: definition.key, title: definition.title });
+      searchFileds.push(definition);
     }
     if (definition.sort && definition.defaultSort) {
       defaultSort = `${definition.key} ${definition.defaultSort}`;
@@ -70,7 +70,6 @@ export default function processGroupConfig({ config, path }) {
     searchFileds,
     defaultSort,
     defaultFilter,
-    searchPlaceHolder: searchFileds.map(filed => filed.title).join('、'),
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: schema.map((definition) => {
       let { visibility, sort, defaultSort: ds } = definition;

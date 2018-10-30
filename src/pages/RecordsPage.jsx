@@ -25,7 +25,6 @@ export default class RecordsPage extends React.PureComponent {
   static displayName = 'RecordsPage';
 
   static propTypes = {
-    canSearch: PropTypes.bool.isRequired,
     fetch: PropTypes.func.isRequired,
     schema: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string.isRequired,
@@ -54,8 +53,8 @@ export default class RecordsPage extends React.PureComponent {
     primaryKey: PropTypes.string,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
-    search: PropTypes.string,
-    searchPlaceHolder: PropTypes.string,
+    search: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+    searchFileds: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
   };
@@ -75,7 +74,7 @@ export default class RecordsPage extends React.PureComponent {
     page: 1,
     pagesize: 10,
     search: '',
-    searchPlaceHolder: '',
+    searchFileds: [],
     sort: null,
     total: 0,
   };
@@ -92,6 +91,7 @@ export default class RecordsPage extends React.PureComponent {
     dataSource: [],
     selectedRowKeys: [],
     selectedRows: [],
+    inputSearch: {},
   };
 
   activePromise = null;
@@ -139,12 +139,23 @@ export default class RecordsPage extends React.PureComponent {
     });
   }
 
-  onSearch = (search) => {
+  onSearch = ({ type, key }, value) => {
     const {
       updatePage, page, pagesize, sort, filter,
     } = this.props;
+
+    let searchValue;
+    switch (type) {
+      case NUMBER:
+        searchValue = parseInt(value, 10);
+        break;
+      default:
+        searchValue = String(value);
+        break;
+    }
+
     updatePage({
-      page, pagesize, sort, filter, search,
+      page, pagesize, sort, filter, search: { [key]: searchValue },
     });
   }
 
@@ -474,18 +485,34 @@ export default class RecordsPage extends React.PureComponent {
     ) : null;
   }
 
+  renderSearchs() {
+    const { inputSearch } = this.state;
+    const { searchFileds, search } = this.props;
+    return searchFileds.map(definition => (
+      <Search
+        key={definition.key}
+        defaultValue={search[definition.key]}
+        placeholder={definition.title}
+        value={inputSearch[definition.key]}
+        onSearch={value => this.onSearch(definition, value)}
+        onChange={e => this.setState({ inputSearch: { [definition.key]: e.target.value } })}
+        style={{ width: 150 }}
+        enterButton
+      />
+    ));
+  }
+
   renderContent() {
     const { isLoading, dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey,
-      schema, search, searchPlaceHolder, canSearch,
+      total, page, pagesize, primaryKey, schema, searchFileds,
       customMultipleActions, customGlobalActions,
     } = this.props;
 
     const rowSelection = customMultipleActions.length > 0 ? {
       selectedRowKeys, onChange: this.onSelectChange,
     } : null;
-    const hasHeader = this.hasAddButton() || canSearch
+    const hasHeader = this.hasAddButton() || searchFileds.length > 0
       || customMultipleActions.length > 0 || customGlobalActions.length > 0;
 
     return (
@@ -505,17 +532,7 @@ export default class RecordsPage extends React.PureComponent {
                 {this.renderCustomMultipleActions()}
               </div>
               <div className="xms-records-page-content-header-searchs">
-                {
-                  canSearch && (
-                    <Search
-                      defaultValue={search}
-                      placeholder={searchPlaceHolder}
-                      onSearch={this.onSearch}
-                      style={{ width: 200 }}
-                      enterButton
-                    />
-                  )
-                }
+                {this.renderSearchs()}
               </div>
             </div>
           )
