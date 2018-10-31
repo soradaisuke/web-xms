@@ -13,7 +13,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "antd": "^3.9.1",
+    "antd": "^3.10.3",
     "classnames": "^2.2.6",
     "dva": "^2.3.1",
     "history": "^4.7.2",
@@ -23,9 +23,9 @@
     "moment": "^2.22.2",
     "prop-types": "^15.6.1",
     "query-string": "^5.1.1",
-    "react": "^16.4.0",
+    "react": "^16.6.0",
     "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#56ed4ccc",
-    "react-dom": "^16.4.0",
+    "react-dom": "^16.6.0",
     "react-lazyload": "^2.3.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
@@ -56,7 +56,7 @@
     "redbox-react": "^1.6.0"
   },
   "peerDependencies": {
-    "antd": "^3.9.1",
-    "react": "^16.4.0"
+    "antd": "^3.10.3",
+    "react": "^16.6.0"
   }
 }
