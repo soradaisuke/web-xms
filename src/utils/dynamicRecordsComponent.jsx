@@ -175,7 +175,7 @@ function generateRecordsPage({
       records: state[namespace].get('records'),
       schema: schemaSelector(state),
       search: searchSelector(queries),
-      sort: queries.sort || defaultSort,
+      sort: queries.sort,
       total: state[namespace].get('total'),
     };
   };
@@ -185,9 +185,10 @@ function generateRecordsPage({
 
     const queries = parse(location.search);
 
-    if (defaultFilterQuery && (!queries || Object.keys(queries).length === 0)) {
+    if ((defaultSort || defaultFilterQuery) && (!queries || Object.keys(queries).length === 0)) {
       const uri = generateUri(window.location.href, {
         filter: JSON.stringify(defaultFilterQuery),
+        sort: defaultSort,
       });
       history.push(uri.href.substring(uri.origin.length, uri.href.length));
     }

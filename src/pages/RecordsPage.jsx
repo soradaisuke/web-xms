@@ -167,6 +167,8 @@ export default class RecordsPage extends React.PureComponent {
     } = this.props;
     if (sorter && sorter.columnKey && sorter.order) {
       sort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+    } else {
+      sort = '';
     }
     const filter = reduce(schema, (acc, { key, type, filterKey }) => {
       const value = filters[key];
