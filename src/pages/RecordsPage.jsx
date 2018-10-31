@@ -390,7 +390,7 @@ export default class RecordsPage extends React.PureComponent {
       title, type, handler, enable,
     }) => (
       <Button
-        key="title"
+        key={title}
         type={type}
         disabled={!hasSelected}
         // eslint-disable-next-line react/jsx-no-bind
