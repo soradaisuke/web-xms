@@ -68,10 +68,15 @@ async function remove(url, options = {}) {
   return generateRequest(url, { ...options, method: 'DELETE' });
 }
 
+async function patch(url, options = {}) {
+  return generateRequest(url, { ...options, method: 'PATCH' });
+}
+
 export default {
   setHost,
   get,
   post,
   put,
   remove,
+  patch,
 };
