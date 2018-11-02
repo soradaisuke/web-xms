@@ -56,11 +56,14 @@ function generateModel({
       },
     },
     effects: {
-      * fetch({
-        payload: {
-          path, page, pagesize, sort, search = {}, filter = {},
+      fetch: [function* fetch(
+        {
+          payload: {
+            path, page, pagesize, sort, search = {}, filter = {},
+          },
         },
-      }, { call, put }) {
+        { call, put },
+      ) {
         const currentFiler = { ...filter, ...search };
 
         for (let i = 0; i < schema.length; i += 1) {
@@ -73,7 +76,7 @@ function generateModel({
           path, page, pagesize, filter: JSON.stringify(currentFiler), order: sort,
         });
         yield put({ type: 'save', payload: { total, records } });
-      },
+      }, { type: 'takeLatest' }],
       * getFilters({ payload: { index, filtersFunc, currentFiler } }, { call, put }) {
         const filters = yield call(filtersFunc, currentFiler);
         yield put({ type: 'saveFilters', payload: { index, filters } });
@@ -183,16 +186,6 @@ function generateRecordsPage({
   const mapDispatchToProps = (dispatch, ownProps) => {
     const { match: { params: matchParams }, history, location } = ownProps;
 
-    const queries = parse(location.search);
-
-    if ((defaultSort || defaultFilterQuery) && (!queries || Object.keys(queries).length === 0)) {
-      const uri = generateUri(window.location.href, {
-        filter: JSON.stringify(defaultFilterQuery),
-        sort: defaultSort,
-      });
-      history.push(uri.href.substring(uri.origin.length, uri.href.length));
-    }
-
     let apiDefaultFilter = {};
     if (isFunction(defaultFilter)) {
       apiDefaultFilter = defaultFilter(matchParams);
@@ -210,12 +203,27 @@ function generateRecordsPage({
     const props = {
       fetch: async ({
         page, pagesize, sort, search, filter = {},
-      }) => dispatch({
-        type: `${namespace}/fetch`,
-        payload: {
-          page, pagesize, sort, search, filter: { ...filter, ...apiDefaultFilter }, path: apiPath,
-        },
-      }),
+      }) => {
+        const queries = parse(location.search);
+
+        if ((defaultSort || defaultFilterQuery)
+          && (!queries || Object.keys(queries).length === 0)) {
+          const uri = generateUri(window.location.href, {
+            filter: JSON.stringify(defaultFilterQuery),
+            sort: defaultSort,
+          });
+          history.push(uri.href.substring(uri.origin.length, uri.href.length));
+
+          return Promise.resolve();
+        }
+
+        return dispatch({
+          type: `${namespace}/fetch`,
+          payload: {
+            page, pagesize, sort, search, filter: { ...filter, ...apiDefaultFilter }, path: apiPath,
+          },
+        });
+      },
       updatePage: async ({
         page, pagesize, sort, search, filter = {},
       }) => {
