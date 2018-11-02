@@ -212,7 +212,7 @@ function generateRecordsPage({
             filter: JSON.stringify(defaultFilterQuery),
             sort: defaultSort,
           });
-          history.push(uri.href.substring(uri.origin.length, uri.href.length));
+          history.replace(uri.href.substring(uri.origin.length, uri.href.length));
 
           return Promise.resolve();
         }
