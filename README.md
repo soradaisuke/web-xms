@@ -153,6 +153,7 @@ const MyPage = dynamic({
 | canFilter | 是否可以用该属性筛选数据 | bool | false |
 | filterKey | 如果该属性作为filter时的key值数据源内的不同，设置该属性 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
+| width | 列宽度 | string/number | '' |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |

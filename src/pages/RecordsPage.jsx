@@ -284,7 +284,7 @@ export default class RecordsPage extends React.PureComponent {
 
   renderColumn({
     visibility, link, title, key, sort, filterKey,
-    type, imageSize, renderValue, filters, canFilter,
+    type, imageSize, renderValue, filters, canFilter, width,
   }) {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = (has(filter, key) ? String(filter[key]) : '')
@@ -339,6 +339,7 @@ export default class RecordsPage extends React.PureComponent {
           dataIndex={key}
           key={key}
           sorter={!!sort}
+          width={width || ''}
           sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={
             (value, record) => render(renderValueFunc(value), record)
