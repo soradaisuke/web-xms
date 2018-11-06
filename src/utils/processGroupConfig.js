@@ -16,8 +16,8 @@ export default function processGroupConfig({ config, path }) {
   let primaryKey = 'id';
   let orderKey;
   let defaultSort;
-  const searchFileds = [];
   let defaultFilter;
+  const searchFileds = [];
 
   forEach(schema, (definition) => {
     if (definition.primaryKey) {
@@ -111,8 +111,18 @@ export default function processGroupConfig({ config, path }) {
         sort = { desc: true };
       }
 
+      const enabledFilters = [];
+
+      if (isArray(filters)) {
+        forEach(filters, (f) => {
+          if (!f.disabled) {
+            enabledFilters.push(f);
+          }
+        });
+      }
+
       return {
-        ...definition, visibility, sort, defaultSort: ds,
+        ...definition, visibility, sort, defaultSort: ds, enabledFilters,
       };
     }),
   };
