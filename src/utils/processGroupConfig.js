@@ -111,18 +111,12 @@ export default function processGroupConfig({ config, path }) {
         sort = { desc: true };
       }
 
-      const enabledFilters = [];
-
-      if (isArray(filters)) {
-        forEach(filters, (f) => {
-          if (!f.disabled) {
-            enabledFilters.push(f);
-          }
-        });
-      }
-
       return {
-        ...definition, visibility, sort, defaultSort: ds, enabledFilters,
+        ...definition,
+        visibility,
+        sort,
+        defaultSort: ds,
+        enabledFilters: isArray(filters) ? filter(filters, ({ disabled }) => !disabled) : [],
       };
     }),
   };

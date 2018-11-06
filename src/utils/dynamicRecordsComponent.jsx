@@ -52,7 +52,7 @@ function generateModel({
         return state.merge(Immutable.fromJS({ records, total }));
       },
       saveFilters(state, { payload: { filters, index } }) {
-        return state.set('schema', state.get('schema').setIn([index, 'filters'], filters));
+        return state.set('schema', state.get('schema').setIn([index, 'filters'], filters).setIn([index, 'enabledFilters'], filters.filter(({ disabled }) => !disabled)));
       },
     },
     effects: {
