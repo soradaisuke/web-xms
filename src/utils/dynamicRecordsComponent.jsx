@@ -177,8 +177,8 @@ function generateRecordsPage({
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
       schema: schemaSelector(state),
-      search: searchSelector(queries),
-      sort: queries.sort,
+      search: searchSelector(queries) || {},
+      sort: queries.sort || '',
       total: state[namespace].get('total'),
     };
   };

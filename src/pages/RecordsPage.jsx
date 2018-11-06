@@ -6,7 +6,7 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce, map, has,
+  split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual,
 } from 'lodash';
 import moment from 'moment';
 import { makeCancelablePromise } from 'web-core';
@@ -73,9 +73,9 @@ export default class RecordsPage extends React.PureComponent {
     order: null,
     page: 1,
     pagesize: 10,
-    search: '',
+    search: {},
     searchFileds: [],
-    sort: null,
+    sort: '',
     total: 0,
   };
 
@@ -141,7 +141,7 @@ export default class RecordsPage extends React.PureComponent {
 
   onSearch = ({ type, key }, value) => {
     const {
-      updatePage, page, pagesize, sort, filter,
+      updatePage, pagesize, sort, filter,
     } = this.props;
 
     let searchValue;
@@ -155,22 +155,22 @@ export default class RecordsPage extends React.PureComponent {
     }
 
     updatePage({
-      page, pagesize, sort, filter, search: { [key]: searchValue },
+      page: 1, pagesize, sort, filter, search: { [key]: searchValue },
     });
   }
 
   onChange = async (pagination, filters, sorter) => {
-    const { schema } = this.props;
-    let { sort } = this.props;
     const {
-      page, pagesize, search, updatePage,
+      schema, page, pagesize, search, updatePage, sort, filter,
     } = this.props;
+
+    let newSort;
     if (sorter && sorter.columnKey && sorter.order) {
-      sort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+      newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     } else {
-      sort = '';
+      newSort = '';
     }
-    const filter = reduce(schema, (acc, { key, type, filterKey }) => {
+    const newFilter = reduce(schema, (acc, { key, type, filterKey }) => {
       const value = filters[key];
       if (value && value.length > 0) {
         switch (type) {
@@ -184,8 +184,15 @@ export default class RecordsPage extends React.PureComponent {
       }
       return acc;
     }, {});
+
+    let newPage = page;
+
+    if (sort !== newSort || !isEqual(filter, newFilter)) {
+      newPage = 1;
+    }
+
     updatePage({
-      page, pagesize, sort, search, filter,
+      page: newPage, pagesize, sort: newSort, search, filter: newFilter,
     });
   }
 
