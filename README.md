@@ -62,16 +62,6 @@ const MyPage = dynamic({
 | isError | 是否显示错误页面 | bool | false |
 | isLoading | 是否显示加载页面 | bool | false |
 
-## Img
-图片React组件
-
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| src | 图片地址 | string | - |
-| format | 图片UpYun参数 | string | - |
-| lazyLoad | 是否懒加载 | bool | true |
-| useImg | 是否使用img tag | bool | false |
-
 ## ActivatorModal
 由点击某个组件激活的Modal
 

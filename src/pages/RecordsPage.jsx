@@ -10,7 +10,7 @@ import {
 } from 'lodash';
 import moment from 'moment';
 import { makeCancelablePromise } from 'web-core';
-import Img from '../components/Img';
+import { Img } from 'react-core';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
