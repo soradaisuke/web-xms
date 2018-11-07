@@ -157,7 +157,7 @@ const MyPage = dynamic({
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
 | type | 链接类型<br />external：外站链接<br />relative：在当前页面path下扩展<br />absolute：会在当前host下扩展 | string(external, relative, absolute) | - |
-| url | 链接的url | string/Function(record) | - |
+| url | 链接的url，如果其中有存在特殊字符的字段（如专辑标题），请用{}包起 | string/Function(record) | - |
 
 # sort
 | 参数 | 说明 | 类型 | 默认值 |
