@@ -18,7 +18,11 @@ async function generateRequest(path, options = {}) {
   newOptions.headers.Accept = 'application/json, text/plain, */*';
   newOptions.credentials = 'include';
 
-  const uri = generateUri(`//${host}${path}`, options.params ? options.params : {});
+  const uri = generateUri(path, options.params ? options.params : {});
+
+  if (uri.host === window.location.host) {
+    uri.set('host', host);
+  }
 
   try {
     let response = await fetch(uri.href, newOptions);

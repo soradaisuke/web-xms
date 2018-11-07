@@ -122,7 +122,8 @@ const MyPage = dynamic({
 # route api
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| path | 页面数据api路径（不包括id），需符合restful标准 | string/Function(matchParams) | - |
+| host | 页面数据API host, 每个页面可以设置不同的API host，只会用于自动生成的页面请求；为空的话默认使用APP配置里的API host  | string | - |
+| path | 页面数据API path（不包括id），需符合restful标准 | string/Function(matchParams) | - |
 | defaultFilter | 默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据 | object/Function(matchParams) | - |
 
 # action

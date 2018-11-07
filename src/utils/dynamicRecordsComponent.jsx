@@ -110,7 +110,7 @@ function generateModel({
 }
 
 function generateRecordsPage({
-  namespace, actions, api: { path, defaultFilter },
+  namespace, actions, api: { host, path, defaultFilter },
   primaryKey, searchFileds, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
@@ -198,6 +198,9 @@ function generateRecordsPage({
       apiPath = path(matchParams);
     } else if (isString(path)) {
       apiPath = path;
+    }
+    if (host) {
+      apiPath = `${host}${apiPath}`;
     }
 
     const props = {
