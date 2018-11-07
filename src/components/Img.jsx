@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 import classNames from 'classnames';
-import formatImageUrl from '../utils/formatImageUrl';
+import { generateUpYunImageUrl } from 'web-core';
 import './Img.less';
 
 export default class Img extends React.PureComponent {
@@ -26,7 +26,7 @@ export default class Img extends React.PureComponent {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const src = formatImageUrl(nextProps.format, nextProps.src);
+    const src = generateUpYunImageUrl(nextProps.src, nextProps.format);
 
     return src !== prevState.src ? { src, loaded: false } : null;
   }
