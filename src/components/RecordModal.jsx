@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input, InputNumber } from 'antd';
+import {
+  Form, Input, InputNumber, Select,
+} from 'antd';
+import { find } from 'lodash';
 import ActivatorModal from './ActivatorModal';
 import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
-const { STRING, NUMBER, URL } = DataType;
+const {
+  STRING, NUMBER, URL, ENUM,
+} = DataType;
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -56,7 +61,10 @@ class RecordModal extends React.PureComponent {
   }
 
   renderFormItem({ key, type, title }) {
-    const { form: { getFieldDecorator }, record } = this.props;
+    const { form: { getFieldDecorator }, record, schema } = this.props;
+    const targetSchema = find(schema, { key }) || {};
+    const filters = targetSchema.filters || [];
+
     let children;
     switch (type) {
       case NUMBER:
@@ -68,6 +76,24 @@ class RecordModal extends React.PureComponent {
             required: true, message: `${title}不能为空`, whitespace: true, type,
           }],
         })(type === NUMBER ? <InputNumber /> : <Input />);
+        break;
+      case ENUM:
+        children = getFieldDecorator(key, {
+          initialValue: this.isEdit() ? record[key] : '',
+          rules: [{
+            required: true, message: `${title}不能为空`,
+          }],
+        })(
+          <Select placeholder="请选择">
+            {
+              filters.map(op => (
+                <Select.Option key={op.value} value={op.value}>
+                  {op.text}
+                </Select.Option>
+              ))
+            }
+          </Select>,
+        );
         break;
       default:
         break;
