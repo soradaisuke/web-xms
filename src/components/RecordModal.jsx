@@ -73,7 +73,7 @@ class RecordModal extends React.PureComponent {
         children = getFieldDecorator(key, {
           initialValue: this.isEdit() ? record[key] : '',
           rules: [{
-            required: true, message: `${title}不能为空`, whitespace: true, type,
+            required: !targetSchema.optional, message: `${title}不能为空`, whitespace: true, type,
           }],
         })(type === NUMBER ? <InputNumber /> : <Input />);
         break;
@@ -81,7 +81,7 @@ class RecordModal extends React.PureComponent {
         children = getFieldDecorator(key, {
           initialValue: this.isEdit() ? record[key] : '',
           rules: [{
-            required: true, message: `${title}不能为空`,
+            required: !targetSchema.optional, message: `${title}不能为空`,
           }],
         })(
           <Select placeholder="请选择">

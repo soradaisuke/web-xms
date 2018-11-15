@@ -145,6 +145,7 @@ const MyPage = dynamic({
 | filterKey | 如果该属性作为filter时的key值数据源内的不同，设置该属性 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |
+| optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | - |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |
