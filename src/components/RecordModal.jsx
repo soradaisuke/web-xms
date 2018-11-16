@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, InputNumber, Select,
 } from 'antd';
-import { find } from 'lodash';
+import { find, forEach, isFunction } from 'lodash';
 import ActivatorModal from './ActivatorModal';
 import DataType from '../constants/DataType';
 
@@ -34,12 +34,24 @@ class RecordModal extends React.PureComponent {
   };
 
   onOk = async () => {
-    const { form, record, onOk } = this.props;
+    const {
+      form, record, onOk, schema,
+    } = this.props;
 
     await new Promise((resolve, reject) => {
       form.validateFields(async (err, values) => {
         if (!err) {
-          await onOk({ ...record, ...values });
+          const formatValues = {};
+          forEach(values, (value, key) => {
+            const targetSchema = find(schema, { key }) || {};
+            const formConfig = targetSchema.form || {};
+            if (isFunction(formConfig.generateSubmitValue)) {
+              formatValues[key] = formConfig.generateSubmitValue(value);
+            } else {
+              formatValues[key] = value;
+            }
+          });
+          await onOk({ ...record, ...formatValues });
           resolve();
         } else {
           reject();
@@ -61,30 +73,43 @@ class RecordModal extends React.PureComponent {
   }
 
   renderFormItem({ key, type, title }) {
-    const { form: { getFieldDecorator }, record, schema } = this.props;
+    const { form, record, schema } = this.props;
+    const { getFieldDecorator } = form;
     const targetSchema = find(schema, { key }) || {};
-    const filters = targetSchema.filters || [];
+    const { form: formConfig = {}, filters = [] } = targetSchema;
+    const enable = isFunction(formConfig.enable) ? formConfig.enable(form) : true;
+    let initialValue = this.isEdit() ? record[key] : '';
+    if (isFunction(formConfig.generateInitValue)) {
+      initialValue = formConfig.generateInitValue(initialValue);
+    }
 
     let children;
     switch (type) {
       case NUMBER:
       case STRING:
       case URL:
-        children = getFieldDecorator(key, {
-          initialValue: this.isEdit() ? record[key] : '',
+        children = enable ? getFieldDecorator(key, {
+          initialValue,
+          validateFirst: true,
           rules: [{
-            required: !targetSchema.optional, message: `${title}不能为空`, whitespace: true, type,
-          }],
-        })(type === NUMBER ? <InputNumber /> : <Input />);
+            required: !formConfig.optional,
+            message: `${title}不能为空`,
+            whitespace: true,
+          }, {
+            type,
+            message: `格式不正确，要求为${type}`,
+          }].concat(formConfig.rules || []),
+        })(type === NUMBER ? <InputNumber /> : <Input />) : null;
         break;
       case ENUM:
-        children = getFieldDecorator(key, {
-          initialValue: this.isEdit() ? record[key] : '',
+        children = enable ? getFieldDecorator(key, {
+          initialValue,
+          validateFirst: true,
           rules: [{
-            required: !targetSchema.optional, message: `${title}不能为空`,
-          }],
+            required: !formConfig.optional, message: `${title}不能为空`,
+          }].concat(formConfig.rules || []),
         })(
-          <Select placeholder="请选择">
+          <Select placeholder="请选择一个选项">
             {
               filters.map(op => (
                 <Select.Option key={op.value} value={op.value}>
@@ -93,7 +118,7 @@ class RecordModal extends React.PureComponent {
               ))
             }
           </Select>,
-        );
+        ) : null;
         break;
       default:
         break;

@@ -145,7 +145,16 @@ const MyPage = dynamic({
 | filterKey | 如果该属性作为filter时的key值数据源内的不同，设置该属性 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |
-| optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | - |
+| form | 该属性在表单中的配置，详见[form](#form) | object | '' |
+
+# form
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | false |
+| enable | 表单中是否可见，返回true的时候可见 | Function(form) | - |
+| rules | 在表单中的校验规则，详见ant design的form的rules | array | [] |
+| generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
+| generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |
