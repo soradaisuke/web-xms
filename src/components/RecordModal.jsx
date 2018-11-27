@@ -9,7 +9,7 @@ import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
 const {
-  STRING, NUMBER, URL, ENUM,
+  STRING, NUMBER, URL, ENUM, IMAGE,
 } = DataType;
 
 class RecordModal extends React.PureComponent {
@@ -82,9 +82,10 @@ class RecordModal extends React.PureComponent {
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
     }
+    const convertedType = type === IMAGE ? URL : type;
 
     let children;
-    switch (type) {
+    switch (convertedType) {
       case NUMBER:
       case STRING:
       case URL:
@@ -96,8 +97,8 @@ class RecordModal extends React.PureComponent {
             message: `${title}不能为空`,
             whitespace: true,
           }, {
-            type,
-            message: `格式不正确，要求为${type}`,
+            type: convertedType,
+            message: `格式不正确，要求为${convertedType}`,
           }].concat(formConfig.rules || []),
         })(type === NUMBER ? <InputNumber /> : <Input />) : null;
         break;

@@ -31,7 +31,7 @@
     "react-router-dom": "^4.3.1",
     "reselect": "^3.0.1",
     "url-parse": "^1.4.1",
-    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#f6fd2fb9"
+    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#642ad13"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",
