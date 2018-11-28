@@ -155,6 +155,7 @@ const MyPage = dynamic({
 | rules | 在表单中的校验规则，详见ant design的form的rules | array | [] |
 | generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
 | generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |
+| tip | IMAGE类型数据在form中显示的提示 | string | '' |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |

@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import {
   Form, Input, InputNumber, Select,
 } from 'antd';
+import Immutable from 'immutable';
+import { connect } from 'dva';
 import { find, forEach, isFunction } from 'lodash';
 import ActivatorModal from './ActivatorModal';
+import UploadImage from './UploadImage';
 import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
@@ -31,7 +34,12 @@ class RecordModal extends React.PureComponent {
       }),
     })).isRequired,
     onOk: PropTypes.func.isRequired,
+    user: PropTypes.instanceOf(Immutable.Map),
   };
+
+  static defaultProps = {
+    user: null,
+  }
 
   onOk = async () => {
     const {
@@ -72,7 +80,9 @@ class RecordModal extends React.PureComponent {
     return record && Object.keys(record).length > 0;
   }
 
-  renderFormItem({ key, type, title }) {
+  renderFormItem({
+    key, type, title, user,
+  }) {
     const { form, record, schema } = this.props;
     const { getFieldDecorator } = form;
     const targetSchema = find(schema, { key }) || {};
@@ -82,10 +92,9 @@ class RecordModal extends React.PureComponent {
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
     }
-    const convertedType = type === IMAGE ? URL : type;
 
     let children;
-    switch (convertedType) {
+    switch (type) {
       case NUMBER:
       case STRING:
       case URL:
@@ -97,8 +106,8 @@ class RecordModal extends React.PureComponent {
             message: `${title}不能为空`,
             whitespace: true,
           }, {
-            type: convertedType,
-            message: `格式不正确，要求为${convertedType}`,
+            type,
+            message: `格式不正确，要求为${type}`,
           }].concat(formConfig.rules || []),
         })(type === NUMBER ? <InputNumber /> : <Input />) : null;
         break;
@@ -121,6 +130,18 @@ class RecordModal extends React.PureComponent {
           </Select>,
         ) : null;
         break;
+      case IMAGE:
+        children = enable ? getFieldDecorator(key, {
+          initialValue,
+          validateFirst: true,
+          valuePropName: 'url',
+          rules: [{
+            required: !formConfig.optional, message: `${title}不能为空`,
+          }].concat(formConfig.rules || []),
+        })(
+          <UploadImage user={user} title={formConfig.tip} />,
+        ) : null;
+        break;
       default:
         break;
     }
@@ -140,7 +161,7 @@ class RecordModal extends React.PureComponent {
   }
 
   render() {
-    const { children, schema } = this.props;
+    const { children, schema, user } = this.props;
 
     return (
       <ActivatorModal
@@ -153,7 +174,7 @@ class RecordModal extends React.PureComponent {
           {
             schema.filter(({ visibility }) => (
               (this.isEdit() && visibility.edit) || (!this.isEdit() && visibility.create)
-            )).map(definition => this.renderFormItem({ ...definition }))
+            )).map(definition => this.renderFormItem({ user, ...definition }))
           }
         </Form>
       </ActivatorModal>
@@ -161,4 +182,8 @@ class RecordModal extends React.PureComponent {
   }
 }
 
-export default Form.create()(RecordModal);
+const mapStateToProps = state => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps)(Form.create()(RecordModal));
