@@ -80,6 +80,16 @@ export default class UploadImage extends React.PureComponent {
       });
   }
 
+  beforeUpload = (file) => {
+    const isJPG = file.type === 'image/jpeg';
+    const isPNG = file.type === 'image/png';
+    if (!(isJPG || isPNG)) {
+      message.error('文件格式要求是JPEG/JPG或PNG');
+    }
+
+    return isJPG || isPNG;
+  }
+
   render() {
     const { title } = this.props;
     const {
@@ -97,10 +107,12 @@ export default class UploadImage extends React.PureComponent {
         <Row>
           <Upload
             listType="picture-card"
+            accept="image/jpeg, image/png"
             fileList={fileList}
             customRequest={this.uploadImage}
             onPreview={this.onClickPreview}
             onRemove={this.onClickRemove}
+            beforeUpload={this.beforeUpload}
           >
             {fileList.length ? null : uploadButton}
           </Upload>
