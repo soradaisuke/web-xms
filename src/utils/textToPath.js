@@ -1,8 +1,8 @@
 import { forEach, flow } from 'lodash';
 import { replace } from 'lodash/fp';
 
-const translateSlashes = replace('/', '{slashes}');
-const translatePercent = replace('%', '{percent}');
+const translateSlashes = replace(/\//g, '{slashes}');
+const translatePercent = replace(/%/g, '{percent}');
 
 function translatePatterns(text) {
   let result = text;
