@@ -101,7 +101,7 @@ export default function processGroupConfig({ config, path }) {
       }
 
       if (type === ORDER) {
-        sort = { asc: true };
+        sort = { asc: true, desc: true };
         ds = 'asc';
       } else if (sort === true) {
         sort = { asc: true, desc: true };
