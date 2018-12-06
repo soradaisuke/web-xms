@@ -101,14 +101,22 @@ class RecordModal extends React.PureComponent {
         children = enable ? getFieldDecorator(key, {
           initialValue,
           validateFirst: true,
-          rules: [{
-            required: !formConfig.optional,
-            message: `${title}不能为空`,
-            whitespace: true,
-          }, {
-            type,
-            message: `格式不正确，要求为${type}`,
-          }].concat(formConfig.rules || []),
+          rules: [
+            type === NUMBER
+              ? {
+                required: !formConfig.optional,
+                message: `${title}不能为空`,
+              }
+              : {
+                required: !formConfig.optional,
+                message: `${title}不能为空`,
+                whitespace: true,
+              },
+            {
+              type,
+              message: `格式不正确，要求为${type}`,
+            },
+          ].concat(formConfig.rules || []),
         })(type === NUMBER ? <InputNumber /> : <Input />) : null;
         break;
       case ENUM:
