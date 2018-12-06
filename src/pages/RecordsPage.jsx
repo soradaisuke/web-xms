@@ -163,10 +163,18 @@ export default class RecordsPage extends React.PureComponent {
     const {
       schema, page, pagesize, search, updatePage, sort, filter,
     } = this.props;
-
+    const { sort: schemaSort } = find(schema, { key: sorter.columnKey }) || {};
     let newSort;
-    if (sorter && sorter.columnKey && sorter.order) {
-      newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+    if (schemaSort && sorter && sorter.columnKey && sorter.order) {
+      if (schemaSort[sorter.order.replace('end', '')]) {
+        newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+      } else if (schemaSort.asc) {
+        newSort = `${sorter.columnKey} asc`;
+      } else if (schemaSort.desc) {
+        newSort = `${sorter.columnKey} desc`;
+      } else {
+        newSort = '';
+      }
     } else {
       newSort = '';
     }
