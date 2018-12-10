@@ -6,11 +6,10 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual,
+  split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
 } from 'lodash';
 import moment from 'moment';
-import { makeCancelablePromise } from 'web-core';
-import { Img } from 'react-core';
+import { makeCancelablePromise, generateUpYunImageUrl } from 'web-core';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
@@ -334,9 +333,12 @@ export default class RecordsPage extends React.PureComponent {
           );
         };
       } else if (type === IMAGE) {
-        render = value => (
-          <Img useImg src={value} format={`/both/${imageSize || '100x100'}`} />
-        );
+        render = (value) => {
+          const src = generateUpYunImageUrl(value, `/both/${imageSize || '100x100'}`);
+          const style = width ? { width: isNumber(width) ? `${width}px` : width } : {};
+
+          return <img alt="" src={src} style={style} />;
+        };
       }
 
       const filterProps = canFilter && isArray(enabledFilters) && enabledFilters.length > 0 ? {
