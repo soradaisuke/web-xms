@@ -7,7 +7,7 @@ import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
 import {
-  upperFirst, isFunction, isPlainObject, isString, forEach, toInteger,
+  upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, get,
 } from 'lodash';
 import { generateUri } from 'web-core';
 import request from '../services/request';
@@ -22,11 +22,11 @@ function generateService({ actions, primaryKey }) {
     if (action === 'create') {
       service.create = async ({ path, body }) => request.post(`${path}`, { body });
     } else if (action === 'edit') {
-      service.edit = async ({ path, body }) => request.put(`${path}/${body[primaryKey]}`, { body });
+      service.edit = async ({ path, body }) => request.put(`${path}/${get(body, primaryKey)}`, { body });
     } else if (action === 'remove') {
-      service.remove = async ({ path, body }) => request.remove(`${path}/${body[primaryKey]}`);
+      service.remove = async ({ path, body }) => request.remove(`${path}/${get(body, primaryKey)}`);
     } else if (action === 'order') {
-      service.order = async ({ path, body }) => request.put(`${path}/${body[primaryKey]}`, { body });
+      service.order = async ({ path, body }) => request.put(`${path}/${get(body, primaryKey)}`, { body });
     }
   });
 

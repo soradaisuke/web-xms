@@ -5,7 +5,9 @@ import {
 } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
-import { find, forEach, isFunction } from 'lodash';
+import {
+  find, forEach, isFunction, get,
+} from 'lodash';
 import ActivatorModal from './ActivatorModal';
 import UploadImage from './UploadImage';
 import DataType from '../constants/DataType';
@@ -86,9 +88,9 @@ class RecordModal extends React.PureComponent {
     const { form, record, schema } = this.props;
     const { getFieldDecorator } = form;
     const targetSchema = find(schema, { key }) || {};
-    const { form: formConfig = {}, filters = [] } = targetSchema;
+    const { form: formConfig = {}, filters = [], mapKey } = targetSchema;
     const enable = isFunction(formConfig.enable) ? formConfig.enable(form) : true;
-    let initialValue = this.isEdit() ? record[key] : '';
+    let initialValue = this.isEdit() ? get(record, key) : '';
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
     }
@@ -98,7 +100,7 @@ class RecordModal extends React.PureComponent {
       case NUMBER:
       case STRING:
       case URL:
-        children = enable ? getFieldDecorator(key, {
+        children = enable ? getFieldDecorator(mapKey, {
           initialValue,
           validateFirst: true,
           rules: [
@@ -120,14 +122,14 @@ class RecordModal extends React.PureComponent {
         })(type === NUMBER ? <InputNumber /> : <Input />) : null;
         break;
       case ENUM:
-        children = enable ? getFieldDecorator(key, {
+        children = enable ? getFieldDecorator(mapKey, {
           initialValue,
           validateFirst: true,
           rules: [{
             required: !formConfig.optional, message: `${title}不能为空`,
           }].concat(formConfig.rules || []),
         })(
-          <Select placeholder="请选择一个选项">
+          <Select placeholder="请选择一个选项" getPopupContainer={trigger => trigger.parentNode}>
             {
               filters.map(op => (
                 <Select.Option key={op.value} value={op.value}>
@@ -139,7 +141,7 @@ class RecordModal extends React.PureComponent {
         ) : null;
         break;
       case IMAGE:
-        children = enable ? getFieldDecorator(key, {
+        children = enable ? getFieldDecorator(mapKey, {
           initialValue,
           validateFirst: true,
           valuePropName: 'url',
@@ -157,7 +159,7 @@ class RecordModal extends React.PureComponent {
     if (children) {
       return (
         <FormItem
-          key={key}
+          key={mapKey}
           label={title}
         >
           {children}

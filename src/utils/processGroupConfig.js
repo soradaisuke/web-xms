@@ -1,5 +1,5 @@
 import {
-  isPlainObject, isArray, map, flatten, filter, forEach,
+  isPlainObject, isArray, map, flatten, filter, forEach, join,
 } from 'lodash';
 import DataType from '../constants/DataType';
 
@@ -18,8 +18,71 @@ export default function processGroupConfig({ config, path }) {
   let defaultSort;
   let defaultFilter;
   const searchFileds = [];
+  const newSchema = schema.map((definition) => {
+    let {
+      visibility, sort, defaultSort: ds, mapKey,
+    } = definition;
+    const {
+      type, filters, key, search,
+    } = definition;
 
-  forEach(schema, (definition) => {
+    if (type === ENUM && !filters) {
+      throw new Error(`${path}: ENUM类型必须设置filters`);
+    }
+
+    if (visibility === 'all' || visibility === true) {
+      visibility = {
+        create: true,
+        edit: true,
+        table: true,
+      };
+    } else if (visibility === 'table') {
+      visibility = {
+        table: true,
+      };
+    } else if (visibility === 'modal') {
+      visibility = {
+        create: true,
+        edit: true,
+      };
+    }
+
+    if (!isPlainObject(visibility)) {
+      visibility = {};
+    }
+
+    if (type === ORDER) {
+      sort = { asc: true };
+      ds = 'asc';
+    } else if (sort === true) {
+      sort = { asc: true, desc: true };
+    } else if (sort === 'asc') {
+      sort = { asc: true };
+    } else if (sort === 'desc') {
+      sort = { desc: true };
+    }
+
+    if (isArray(key)) {
+      if ((filters || search || type === ORDER || visibility.create || visibility.edit)
+        && !mapKey) {
+        throw new Error(`${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`);
+      }
+    } else {
+      mapKey = mapKey || key;
+    }
+
+    return {
+      ...definition,
+      visibility,
+      sort,
+      mapKey,
+      defaultSort: ds,
+      enabledFilters: isArray(filters) ? filter(filters, ({ disabled }) => !disabled) : [],
+      key: isArray(key) ? join(key, '.') : key,
+    };
+  });
+
+  forEach(newSchema, (definition) => {
     if (definition.primaryKey) {
       primaryKey = definition.key;
     }
@@ -27,20 +90,20 @@ export default function processGroupConfig({ config, path }) {
       if (orderKey) {
         throw new Error(`${path}: type = ORDER的属性最多有一个`);
       }
-      orderKey = definition.key;
-      defaultSort = `${definition.key} asc`;
+      orderKey = definition.mapKey; // eslint-disable-line prefer-destructuring
+      defaultSort = `${orderKey} asc`;
     }
     if (definition.search) {
       searchFileds.push(definition);
     }
     if (definition.sort && definition.defaultSort) {
-      defaultSort = `${definition.key} ${definition.defaultSort}`;
+      defaultSort = `${definition.mapKey} ${definition.defaultSort}`;
     }
     if (isArray(definition.filters)) {
       forEach(definition.filters, ({ value, default: d }) => {
         if (d) {
           defaultFilter = defaultFilter || {};
-          defaultFilter[definition.key] = value;
+          defaultFilter[definition.mapKey] = value;
         }
       });
     }
@@ -71,53 +134,6 @@ export default function processGroupConfig({ config, path }) {
     defaultSort,
     defaultFilter,
     namespace: path.replace(/(\/|:)/g, '@'),
-    schema: schema.map((definition) => {
-      let { visibility, sort, defaultSort: ds } = definition;
-      const { type, filters } = definition;
-
-      if (type === ENUM && !filters) {
-        throw new Error(`${path}: ENUM类型必须设置filters`);
-      }
-
-      if (visibility === 'all' || visibility === true) {
-        visibility = {
-          create: true,
-          edit: true,
-          table: true,
-        };
-      } else if (visibility === 'table') {
-        visibility = {
-          table: true,
-        };
-      } else if (visibility === 'modal') {
-        visibility = {
-          create: true,
-          edit: true,
-        };
-      }
-
-      if (!isPlainObject(visibility)) {
-        visibility = {};
-      }
-
-      if (type === ORDER) {
-        sort = { asc: true };
-        ds = 'asc';
-      } else if (sort === true) {
-        sort = { asc: true, desc: true };
-      } else if (sort === 'asc') {
-        sort = { asc: true };
-      } else if (sort === 'desc') {
-        sort = { desc: true };
-      }
-
-      return {
-        ...definition,
-        visibility,
-        sort,
-        defaultSort: ds,
-        enabledFilters: isArray(filters) ? filter(filters, ({ disabled }) => !disabled) : [],
-      };
-    }),
+    schema: newSchema,
   };
 }

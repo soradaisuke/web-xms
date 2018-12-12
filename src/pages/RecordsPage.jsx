@@ -6,7 +6,8 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
+  split, startsWith, isFunction, isArray, find,
+  reduce, map, has, isEqual, isNumber, get,
 } from 'lodash';
 import moment from 'moment';
 import { makeCancelablePromise, generateUpYunImageUrl } from 'web-core';
@@ -16,7 +17,9 @@ import RecordModal from '../components/RecordModal';
 import Page from './Page';
 import './RecordsPage.less';
 
-const { DATETIME, IMAGE, NUMBER } = DataType;
+const {
+  DATE, DATETIME, IMAGE, NUMBER,
+} = DataType;
 const { Column } = Table;
 const { Search } = Input;
 
@@ -138,7 +141,7 @@ export default class RecordsPage extends React.PureComponent {
     });
   }
 
-  onSearch = ({ type, key }, value) => {
+  onSearch = ({ type, mapKey: searchKey }, value) => {
     const {
       updatePage, pagesize, sort, filter,
     } = this.props;
@@ -154,7 +157,7 @@ export default class RecordsPage extends React.PureComponent {
     }
 
     updatePage({
-      page: 1, pagesize, sort, filter, search: { [key]: searchValue },
+      page: 1, pagesize, sort, filter, search: { [searchKey]: searchValue },
     });
   }
 
@@ -162,7 +165,7 @@ export default class RecordsPage extends React.PureComponent {
     const {
       schema, page, pagesize, search, updatePage, sort, filter,
     } = this.props;
-    const { sort: schemaSort } = find(schema, { key: sorter.columnKey }) || {};
+    const { sort: schemaSort } = find(schema, { mapKey: sorter.columnKey }) || {};
     let newSort;
     if (schemaSort && sorter && sorter.columnKey && sorter.order) {
       if (schemaSort[sorter.order.replace('end', '')]) {
@@ -177,15 +180,15 @@ export default class RecordsPage extends React.PureComponent {
     } else {
       newSort = '';
     }
-    const newFilter = reduce(schema, (acc, { key, type, filterKey }) => {
-      const value = filters[key];
+    const newFilter = reduce(schema, (acc, { type, mapKey }) => {
+      const value = filters[mapKey];
       if (value && value.length > 0) {
         switch (type) {
           case NUMBER:
-            acc[filterKey || key] = parseInt(value[0], 10);
+            acc[mapKey] = parseInt(value[0], 10);
             break;
           default:
-            acc[filterKey || key] = String(value[0]);
+            acc[mapKey] = String(value[0]);
             break;
         }
       }
@@ -260,7 +263,7 @@ export default class RecordsPage extends React.PureComponent {
   editRecord = async (body) => {
     const { edit, create, primaryKey } = this.props;
     await this.updateRecord({
-      promise: body[primaryKey] && edit ? edit(body) : create(body),
+      promise: get(body, primaryKey) && edit ? edit(body) : create(body),
       throwError: true,
     });
   }
@@ -291,18 +294,22 @@ export default class RecordsPage extends React.PureComponent {
     this.activePromise = null;
   }
 
+  getRowKey = (record) => {
+    const { primaryKey } = this.props;
+    return get(record, primaryKey);
+  }
+
   hasAddButton() {
     const { create } = this.props;
     return !!create;
   }
 
   renderColumn({
-    visibility, link, title, key, sort, filterKey, width,
+    visibility, link, title, key, sort, width, mapKey,
     type, imageSize, renderValue, filters, enabledFilters, canFilter,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (has(filter, key) ? String(filter[key]) : '')
-      || (has(filter, filterKey) ? String(filter[filterKey]) : '');
+    const filteredValue = (has(filter, mapKey) ? String(filter[mapKey]) : '');
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
@@ -332,6 +339,15 @@ export default class RecordsPage extends React.PureComponent {
             </span>
           );
         };
+      } else if (type === DATE) {
+        render = (value) => {
+          const date = moment(value);
+          return (
+            <span>
+              {date.isValid() ? date.format('YYYY-MM-DD') : ''}
+            </span>
+          );
+        };
       } else if (type === IMAGE) {
         render = (value) => {
           const src = generateUpYunImageUrl(value, `/both/${imageSize || '100x100'}`);
@@ -357,7 +373,7 @@ export default class RecordsPage extends React.PureComponent {
           key={key}
           sorter={!!sort}
           width={width || ''}
-          sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
+          sortOrder={currentSort && startsWith(currentSort, `${mapKey} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={
             (value, record) => render(renderValueFunc(value), record)
           }
@@ -510,12 +526,12 @@ export default class RecordsPage extends React.PureComponent {
     const { searchFileds, search } = this.props;
     return searchFileds.map(definition => (
       <Search
-        key={definition.key}
-        defaultValue={search[definition.key]}
+        key={definition.mapKey}
+        defaultValue={search[definition.mapKey]}
         placeholder={definition.title}
-        value={inputSearch[definition.key]}
+        value={inputSearch[definition.mapKey]}
         onSearch={value => this.onSearch(definition, value)}
-        onChange={e => this.setState({ inputSearch: { [definition.key]: e.target.value } })}
+        onChange={e => this.setState({ inputSearch: { [definition.mapKey]: e.target.value } })}
         style={{ width: 150 }}
         enterButton
       />
@@ -525,7 +541,7 @@ export default class RecordsPage extends React.PureComponent {
   renderContent() {
     const { isLoading, dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey, schema, searchFileds,
+      total, page, pagesize, schema, searchFileds,
       customMultipleActions, customGlobalActions,
     } = this.props;
 
@@ -560,7 +576,7 @@ export default class RecordsPage extends React.PureComponent {
         <Table
           loading={isLoading}
           dataSource={dataSource}
-          rowKey={primaryKey}
+          rowKey={this.getRowKey}
           rowSelection={rowSelection}
           pagination={false}
           onChange={this.onChange}

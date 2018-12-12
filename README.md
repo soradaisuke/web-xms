@@ -20,7 +20,7 @@ app.start();
 ```javascript
 import { DateType } from 'xms';
 
-const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL } = DataType;
+const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE } = DataType;
 ```
 ## request
 网络请求
@@ -130,7 +130,7 @@ const MyPage = dynamic({
 # schema
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| key | 数据源中对应的key | string | - |
+| key | 数据源中对应的key，key为['program', 'id']时对应{program: { id: 1 }} | string/array | - |
 | type | 数据源中对应的数据格式<br />number：以数字格式显示数据<br />string：以文本格式显示数据<br />datetime：以时间格式显示数据<br />order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息<br />image：以图片格式显示数据<br />enum：该属性为枚举类型，必须和filters搭配使用<br />url: 网页链接 | string(number, string, datetime, order, image, enum, url) | - |
 | title | 表格或创建/编辑窗口的数据名称 | string | - |
 | visibility | 数据可视性<br />true or all：表格、创建和修改时均可见<br />table：仅在表格中可见<br />edit：仅在编辑时可见<br />modal：仅在创建和编辑时可见<br />object配置见[visibility](#visibility) | bool/string(all, table, modal)/object | - |
@@ -142,7 +142,7 @@ const MyPage = dynamic({
 | renderValue | 自定义函数，获取展示值 | Function(record) | - |
 | filters | 该属性的所有过滤信息，支持函数动态获取，返回格式也需要是object[]，见[filters](#filters) | object[]/Function(currentFiler) | [] |
 | canFilter | 是否可以用该属性筛选数据 | bool | false |
-| filterKey | 如果该属性作为filter时的key值数据源内的不同，设置该属性 | string | - |
+| mapKey | 如果该属性在排序/筛选/创建/修改/搜索时的key值与数据源内的不同，设置该属性。如果key为array且支持排序/筛选/创建/修改/搜索时该属性必须设置。 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |
 | form | 该属性在表单中的配置，详见[form](#form) | object | '' |
