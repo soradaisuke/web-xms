@@ -16,6 +16,7 @@ export default function processGroupConfig({ config, path }) {
   let primaryKey = 'id';
   let orderKey;
   let defaultSort;
+  let fixedSort;
   let defaultFilter;
   const searchFileds = [];
   const newSchema = schema.map((definition) => {
@@ -91,7 +92,7 @@ export default function processGroupConfig({ config, path }) {
         throw new Error(`${path}: type = ORDER的属性最多有一个`);
       }
       orderKey = definition.mapKey; // eslint-disable-line prefer-destructuring
-      defaultSort = `${orderKey} asc`;
+      fixedSort = `${orderKey} asc`;
     }
     if (definition.search) {
       searchFileds.push(definition);
@@ -133,6 +134,7 @@ export default function processGroupConfig({ config, path }) {
     searchFileds,
     defaultSort,
     defaultFilter,
+    fixedSort,
     namespace: path.replace(/(\/|:)/g, '@'),
     schema: newSchema,
   };

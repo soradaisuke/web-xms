@@ -110,8 +110,8 @@ function generateModel({
 }
 
 function generateRecordsPage({
-  namespace, actions, api: { host, path, defaultFilter },
-  primaryKey, searchFileds, defaultSort, defaultFilter: defaultFilterQuery,
+  api: { host, path, defaultFilter }, namespace, actions, primaryKey,
+  searchFileds, fixedSort, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
   const customGlobalActions = customActions.filter(({ global }) => global);
@@ -209,11 +209,11 @@ function generateRecordsPage({
       }) => {
         const queries = parse(location.search);
 
-        if ((defaultSort || defaultFilterQuery)
-          && (!queries || Object.keys(queries).length === 0)) {
+        if ((fixedSort && fixedSort !== sort) || ((defaultSort || defaultFilterQuery)
+          && (!queries || Object.keys(queries).length === 0))) {
           const uri = generateUri(window.location.href, {
             filter: JSON.stringify(defaultFilterQuery),
-            sort: defaultSort,
+            sort: fixedSort || defaultSort,
           });
           history.replace(uri.href.substring(uri.origin.length, uri.href.length));
 
