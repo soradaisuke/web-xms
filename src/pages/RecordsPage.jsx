@@ -138,7 +138,7 @@ export default class RecordsPage extends React.PureComponent {
     });
   }
 
-  onSearch = ({ type, key }, value) => {
+  onSearch = ({ type, mapKey }, value) => {
     const {
       updatePage, pagesize, sort, filter,
     } = this.props;
@@ -154,7 +154,7 @@ export default class RecordsPage extends React.PureComponent {
     }
 
     updatePage({
-      page: 1, pagesize, sort, filter, search: { [key]: searchValue },
+      page: 1, pagesize, sort, filter, search: { [mapKey]: searchValue },
     });
   }
 
@@ -162,30 +162,31 @@ export default class RecordsPage extends React.PureComponent {
     const {
       schema, page, pagesize, search, updatePage, sort, filter,
     } = this.props;
-    const { sort: schemaSort } = find(schema, { key: sorter.columnKey }) || {};
+    const targetSchema = find(schema, { key: sorter.columnKey }) || {};
+    const { sort: schemaSort } = targetSchema;
     let newSort;
     if (schemaSort && sorter && sorter.columnKey && sorter.order) {
       if (schemaSort[sorter.order.replace('end', '')]) {
-        newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+        newSort = `${targetSchema.mapKey} ${sorter.order.replace('end', '')}`;
       } else if (schemaSort.asc) {
-        newSort = `${sorter.columnKey} asc`;
+        newSort = `${targetSchema.mapKey} asc`;
       } else if (schemaSort.desc) {
-        newSort = `${sorter.columnKey} desc`;
+        newSort = `${targetSchema.mapKey} desc`;
       } else {
         newSort = '';
       }
     } else {
       newSort = '';
     }
-    const newFilter = reduce(schema, (acc, { key, type, filterKey }) => {
+    const newFilter = reduce(schema, (acc, { key, type, mapKey }) => {
       const value = filters[key];
       if (value && value.length > 0) {
         switch (type) {
           case NUMBER:
-            acc[filterKey || key] = parseInt(value[0], 10);
+            acc[mapKey] = parseInt(value[0], 10);
             break;
           default:
-            acc[filterKey || key] = String(value[0]);
+            acc[mapKey] = String(value[0]);
             break;
         }
       }
@@ -297,12 +298,12 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort, filterKey, width,
+    visibility, link, title, key, sort, mapKey, width,
     type, imageSize, renderValue, filters, enabledFilters, canFilter,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (has(filter, key) ? String(filter[key]) : '')
-      || (has(filter, filterKey) ? String(filter[filterKey]) : '');
+    const filteredValue = (has(filter, mapKey) ? String(filter[mapKey]) : '')
+      || (has(filter, mapKey) ? String(filter[mapKey]) : '');
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
@@ -357,7 +358,7 @@ export default class RecordsPage extends React.PureComponent {
           key={key}
           sorter={!!sort}
           width={width || ''}
-          sortOrder={currentSort && startsWith(currentSort, `${key} `) ? `${split(currentSort, ' ')[1]}end` : false}
+          sortOrder={currentSort && startsWith(currentSort, `${mapKey} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={
             (value, record) => render(renderValueFunc(value), record)
           }
@@ -510,12 +511,12 @@ export default class RecordsPage extends React.PureComponent {
     const { searchFileds, search } = this.props;
     return searchFileds.map(definition => (
       <Search
-        key={definition.key}
-        defaultValue={search[definition.key]}
+        key={definition.mapKey}
+        defaultValue={search[definition.mapKey]}
         placeholder={definition.title}
-        value={inputSearch[definition.key]}
+        value={inputSearch[definition.mapKey]}
         onSearch={value => this.onSearch(definition, value)}
-        onChange={e => this.setState({ inputSearch: { [definition.key]: e.target.value } })}
+        onChange={e => this.setState({ inputSearch: { [definition.mapKey]: e.target.value } })}
         style={{ width: 150 }}
         enterButton
       />
