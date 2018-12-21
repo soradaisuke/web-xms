@@ -9,7 +9,7 @@ import {
   split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
 } from 'lodash';
 import moment from 'moment';
-import { makeCancelablePromise, generateUpYunImageUrl } from 'web-core';
+import { generateUpYunImageUrl } from 'web-core';
 import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
@@ -44,6 +44,8 @@ export default class RecordsPage extends React.PureComponent {
     customGlobalActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    error: PropTypes.instanceOf(Error),
+    isLoading: PropTypes.bool,
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
@@ -64,6 +66,8 @@ export default class RecordsPage extends React.PureComponent {
     customGlobalActions: [],
     customMultipleActions: [],
     customRowActions: [],
+    error: null,
+    isLoading: false,
     edit: null,
     filter: {},
     primaryKey: 'id',
@@ -83,17 +87,12 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   state = {
-    errorMessage: '',
-    isError: false,
-    isLoading: true,
     records: Immutable.List(),
     dataSource: [],
     selectedRowKeys: [],
     selectedRows: [],
     inputSearch: {},
   };
-
-  activePromise = null;
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.records !== nextProps.records) {
@@ -115,13 +114,6 @@ export default class RecordsPage extends React.PureComponent {
       || prevProps.sort !== sort || prevProps.search !== search
       || prevProps.filter !== filter) {
       this.fetch();
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.activePromise) {
-      this.activePromise.cancel();
-      this.activePromise = null;
     }
   }
 
@@ -244,18 +236,15 @@ export default class RecordsPage extends React.PureComponent {
   updateRecord = async ({ promise, loadingMessage = '正在保存……', throwError = false }) => {
     const hide = message.loading(loadingMessage, 0);
     try {
-      this.activePromise = makeCancelablePromise(promise);
-      await this.activePromise;
+      await promise;
       hide();
-      await this.fetch();
     } catch (e) {
       hide();
       if (throwError) {
-        this.activePromise = null;
         throw e;
       }
     }
-    this.activePromise = null;
+    this.fetch();
   }
 
   editRecord = async (body) => {
@@ -270,26 +259,9 @@ export default class RecordsPage extends React.PureComponent {
     const {
       fetch, page, pagesize, sort, search, filter,
     } = this.props;
-    this.setState({
-      isLoading: true,
+    fetch({
+      page, pagesize, sort, search, filter,
     });
-    try {
-      this.activePromise = makeCancelablePromise(fetch({
-        page, pagesize, sort, search, filter,
-      }));
-      await this.activePromise;
-      this.setState({
-        isError: false,
-        isLoading: false,
-      });
-    } catch (error) {
-      this.setState({
-        errorMessage: error.message,
-        isError: true,
-        isLoading: false,
-      });
-    }
-    this.activePromise = null;
   }
 
   hasAddButton() {
@@ -524,10 +496,10 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderContent() {
-    const { isLoading, dataSource, selectedRowKeys } = this.state;
+    const { dataSource, selectedRowKeys } = this.state;
     const {
       total, page, pagesize, primaryKey, schema, searchFileds,
-      customMultipleActions, customGlobalActions,
+      customMultipleActions, customGlobalActions, isLoading,
     } = this.props;
 
     const rowSelection = customMultipleActions.length > 0 ? {
@@ -585,11 +557,10 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   render() {
-    const { isError, errorMessage } = this.state;
-    const { component: Component } = this.props;
+    const { component: Component, error } = this.props;
 
     return (
-      <Page isError={isError} errorMessage={errorMessage}>
+      <Page isError={!!error} errorMessage={error ? error.message : ''}>
         {Component ? <Component /> : null}
         {this.renderContent()}
       </Page>

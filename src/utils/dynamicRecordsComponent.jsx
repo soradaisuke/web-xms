@@ -46,6 +46,7 @@ function generateModel({
       schema,
       records: [],
       total: 0,
+      error: null,
     }),
     reducers: {
       save(state, { payload: { records, total } }) {
@@ -53,6 +54,9 @@ function generateModel({
       },
       saveFilters(state, { payload: { filters, index } }) {
         return state.set('schema', state.get('schema').setIn([index, 'filters'], filters).setIn([index, 'enabledFilters'], filters.filter(({ disabled }) => !disabled)));
+      },
+      saveError(state, { payload: { error } }) {
+        return state.set('error', error);
       },
     },
     effects: {
@@ -64,6 +68,8 @@ function generateModel({
         },
         { call, put },
       ) {
+        yield put({ type: 'saveError', payload: { error: null } });
+
         const currentFiler = { ...filter, ...search };
 
         for (let i = 0; i < schema.length; i += 1) {
@@ -72,10 +78,14 @@ function generateModel({
           }
         }
 
-        const { items: records, total } = yield call(service.fetch, {
-          path, page, pagesize, filter: JSON.stringify(currentFiler), order: sort,
-        });
-        yield put({ type: 'save', payload: { total, records } });
+        try {
+          const { items: records, total } = yield call(service.fetch, {
+            path, page, pagesize, filter: JSON.stringify(currentFiler), order: sort,
+          });
+          yield put({ type: 'save', payload: { total, records } });
+        } catch (error) {
+          yield put({ type: 'saveError', payload: { error } });
+        }
       }, { type: 'takeLatest' }],
       * getFilters({ payload: { index, filtersFunc, currentFiler } }, { call, put }) {
         const filters = yield call(filtersFunc, currentFiler);
@@ -180,6 +190,8 @@ function generateRecordsPage({
       search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),
+      isLoading: state.loading.effects[`${namespace}/fetch`],
+      error: state[namespace].get('error'),
     };
   };
 

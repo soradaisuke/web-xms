@@ -1,5 +1,6 @@
 import dva from 'dva';
 import createHistory from 'history/createBrowserHistory';
+import createLoading from 'dva-loading';
 import { merge } from 'lodash';
 import { message } from 'antd';
 import request from './services/request';
@@ -15,6 +16,8 @@ export default function xms(config = {}) {
       message.error(err.message);
     },
   });
+
+  app.use(createLoading());
 
   app.config = merge(defaultConfig, config);
   const { routes, api: { host, login } = {} } = config;
