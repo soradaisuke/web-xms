@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Immutable from 'immutable';
 import shortId from 'shortid';
 import { uploadImage } from 'web-core';
 import {
@@ -13,12 +12,16 @@ export default class UploadImage extends React.PureComponent {
   static propTypes = {
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
     title: PropTypes.string,
-    user: PropTypes.instanceOf(Immutable.Map),
+    ssoToken: PropTypes.string,
+    modalWidth: PropTypes.string,
+    fileMaxSize: PropTypes.number, // 单位MB
   };
 
   static defaultProps = {
     title: '',
-    user: null,
+    ssoToken: '',
+    fileMaxSize: 5,
+    modalWidth: '500px',
   };
 
   state = {
@@ -62,11 +65,11 @@ export default class UploadImage extends React.PureComponent {
   }
 
   uploadImage = (options) => {
-    const { user, onChange } = this.props;
+    const { ssoToken, onChange } = this.props;
     this.setState({
       imageLoading: true,
     });
-    uploadImage(options.file, { ssoToken: user ? user.get('sso_token') : '' })
+    uploadImage(options.file, { ssoToken })
       .then((url) => {
         onChange(url);
         this.setState({
@@ -81,17 +84,23 @@ export default class UploadImage extends React.PureComponent {
   }
 
   beforeUpload = (file) => {
+    const { fileMaxSize } = this.props;
     const isJPG = file.type === 'image/jpeg';
     const isPNG = file.type === 'image/png';
+    const isLtMaxSize = file.size / 1024 / 1024 <= fileMaxSize;
     if (!(isJPG || isPNG)) {
       message.error('文件格式要求是JPEG/JPG或PNG');
+    } else if (!isLtMaxSize) {
+      message.error(`图片大小超过限制（${fileMaxSize}MB）`);
     }
 
-    return isJPG || isPNG;
+    return (isJPG || isPNG) && isLtMaxSize;
   }
 
   render() {
-    const { title } = this.props;
+    const {
+      title, modalWidth, ssoToken, onChange, ...props
+    } = this.props;
     const {
       previewVisible, previewImage, imageLoading, fileList,
     } = this.state;
@@ -113,10 +122,16 @@ export default class UploadImage extends React.PureComponent {
             onPreview={this.onClickPreview}
             onRemove={this.onClickRemove}
             beforeUpload={this.beforeUpload}
+            {...props}
           >
             {fileList.length ? null : uploadButton}
           </Upload>
-          <Modal visible={previewVisible} footer={null} onCancel={this.onClickCancel}>
+          <Modal
+            width={modalWidth}
+            visible={previewVisible}
+            footer={null}
+            onCancel={this.onClickCancel}
+          >
             <img alt="" style={{ width: '100%' }} src={previewImage} />
           </Modal>
         </Row>

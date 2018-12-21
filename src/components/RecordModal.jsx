@@ -9,7 +9,7 @@ import {
   find, forEach, isFunction, get,
 } from 'lodash';
 import ActivatorModal from './ActivatorModal';
-import UploadImage from './UploadImage';
+import UploadImage from './FormItems/UploadImage';
 import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
@@ -149,7 +149,7 @@ class RecordModal extends React.PureComponent {
             required: !formConfig.optional, message: `${title}不能为空`,
           }].concat(formConfig.rules || []),
         })(
-          <UploadImage user={user} title={formConfig.tip} />,
+          <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={formConfig.tip} />,
         ) : null;
         break;
       default:

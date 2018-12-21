@@ -72,6 +72,24 @@ const MyPage = dynamic({
 | onOk | 点击确定时的回调 | Function | - |
 | onVisibleChange | Modal的visible变化时的回调 | Function | - |
 
+## UploadImage
+上传图片React组件，用于antd的FormItems。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| title | 提示文字 | string | - |
+| ssoToken | user sso token | string | - |
+| modalWidth | 点击图片后显示的Modal的width | string | '500px' |
+| fileMaxSize | 上传图片文件大小限制，单位MB | number | 5 |
+
+## Tags
+标签React组件，用于antd的FormItems, value: [string, ...]。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| style | 组件style | object | - |
+| max | 标签最大个数限制 | number | 99 |
+
 # App配置
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
@@ -152,7 +170,7 @@ const MyPage = dynamic({
 | :---- | :---- | :---- | :---- |
 | optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | false |
 | enable | 表单中是否可见，返回true的时候可见 | Function(form) | - |
-| rules | 在表单中的校验规则，详见ant design的form的rules | array | [] |
+| rules | 在表单中的校验规则，详见[antd的form](https://ant.design/components/form-cn/)的rules | array | [] |
 | generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
 | generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |
 | tip | IMAGE类型数据在form中显示的提示 | string | '' |
