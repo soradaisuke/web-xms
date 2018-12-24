@@ -169,7 +169,7 @@ const MyPage = dynamic({
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
 | optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | false |
-| enable | 表单中是否可见，返回true的时候可见 | Function(form) | - |
+| enable | 表单中是否可见，返回true的时候可见 | Function(form, record) | - |
 | rules | 在表单中的校验规则，详见[antd的form](https://ant.design/components/form-cn/)的rules | array | [] |
 | generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
 | generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |

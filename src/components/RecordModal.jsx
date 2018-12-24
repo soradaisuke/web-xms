@@ -89,7 +89,7 @@ class RecordModal extends React.PureComponent {
     const { getFieldDecorator } = form;
     const targetSchema = find(schema, { key }) || {};
     const { form: formConfig = {}, filters = [], mapKey } = targetSchema;
-    const enable = isFunction(formConfig.enable) ? formConfig.enable(form) : true;
+    const enable = isFunction(formConfig.enable) ? formConfig.enable(form, record) : true;
     let initialValue = this.isEdit() ? get(record, key) : '';
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
