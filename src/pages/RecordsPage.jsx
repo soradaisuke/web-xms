@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message,
+  Table, Pagination, Button, Popconfirm, Input, message, Modal,
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
@@ -19,6 +19,7 @@ import './RecordsPage.less';
 const { DATETIME, IMAGE, NUMBER } = DataType;
 const { Column } = Table;
 const { Search } = Input;
+const { confirm } = Modal;
 
 export default class RecordsPage extends React.PureComponent {
   static displayName = 'RecordsPage';
@@ -351,7 +352,7 @@ export default class RecordsPage extends React.PureComponent {
     const { customRowActions, match: { params: matchParams } } = this.props;
 
     return customRowActions.map(({
-      title, type, handler, enable, render,
+      title, type, handler, enable, render, confirmModal,
     }) => {
       if (isFunction(enable) && !enable(record)) {
         return null;
@@ -366,7 +367,18 @@ export default class RecordsPage extends React.PureComponent {
           key={title}
           type={type}
           // eslint-disable-next-line react/jsx-no-bind
-          onClick={() => this.onCustomRowAction(record, handler)}
+          onClick={
+            confirmModal
+              ? () => confirm({
+                ...confirmModal,
+                title: isFunction(confirmModal.title)
+                  ? confirmModal.title(record) : (confirmModal.title || ''),
+                content: isFunction(confirmModal.content)
+                  ? confirmModal.content(record) : (confirmModal.content || ''),
+                onOk: () => this.onCustomRowAction(record, handler),
+              })
+              : () => this.onCustomRowAction(record, handler)
+          }
         >
           {title}
         </Button>
@@ -375,19 +387,30 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderCustomMultipleActions() {
-    const { selectedRowKeys } = this.state;
-    const hasSelected = selectedRowKeys.length > 0;
+    const { selectedRows } = this.state;
+    const hasSelected = selectedRows.length > 0;
     const { customMultipleActions } = this.props;
 
     return customMultipleActions.map(({
-      title, type, handler, enable,
+      title, type, handler, enable, confirmModal,
     }) => (
       <Button
         key={title}
         type={type}
         disabled={!hasSelected}
         // eslint-disable-next-line react/jsx-no-bind
-        onClick={() => this.onCustomMultipleAction(handler, enable)}
+        onClick={
+          confirmModal
+            ? () => confirm({
+              ...confirmModal,
+              title: isFunction(confirmModal.title)
+                ? confirmModal.title(selectedRows) : (confirmModal.title || ''),
+              content: isFunction(confirmModal.content)
+                ? confirmModal.content(selectedRows) : (confirmModal.content || ''),
+              onOk: () => this.onCustomMultipleAction(handler, enable),
+            })
+            : () => this.onCustomMultipleAction(handler, enable)
+        }
       >
         {title}
       </Button>
