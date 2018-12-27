@@ -164,17 +164,19 @@ const MyPage = dynamic({
 | defaultSort | 该属性作为该列表的默认排序及默认排序类型 | string(asc, desc) | - |
 | search | 是否支持用该属性模糊搜索 | bool | false |
 | imageSize | 图片大小，{width}x{height} | string | 100x100 |
-| renderValue | 自定义函数，获取展示值 | Function(record) | - |
+| renderValue | 自定义函数，获取展示值 | Function(value, record) | - |
 | filters | 该属性的所有过滤信息，支持函数动态获取，返回格式也需要是object[]，见[filters](#filters) | object[]/Function(currentFiler) | [] |
 | canFilter | 是否可以用该属性筛选数据 | bool | false |
 | mapKey | 如果该属性在排序/筛选/创建/修改/搜索时的key值与数据源内的不同，设置该属性。如果key为array且支持排序/筛选/创建/修改/搜索时该属性必须设置。 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |
 | form | 该属性在表单中的配置，详见[form](#form) | object | '' |
+| inlineEdit | STRING类型数据支持行内直接编辑，placeholder和校验沿用form.placeholder和form.rules | bool | false |
 
 # form
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
+| placeholder | placeholder | string | '' |
 | optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | false |
 | enable | 表单中是否可见，返回true的时候可见 | Function(form, record) | - |
 | rules | 在表单中的校验规则，详见[antd的form](https://ant.design/components/form-cn/)的rules | array | [] |

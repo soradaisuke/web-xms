@@ -119,7 +119,15 @@ class RecordModal extends React.PureComponent {
               message: `格式不正确，要求为${type}`,
             },
           ].concat(formConfig.rules || []),
-        })(type === NUMBER ? <InputNumber /> : <Input />) : null;
+        })(type === NUMBER
+          ? (
+            <InputNumber
+              placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
+            />)
+          : (
+            <Input
+              placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
+            />)) : null;
         break;
       case ENUM:
         children = enable ? getFieldDecorator(mapKey, {

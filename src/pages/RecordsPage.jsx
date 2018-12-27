@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import classNames from 'classnames';
+import AsyncValidator from 'async-validator';
 import {
   Table, Pagination, Button, Popconfirm, Input, message, Modal,
 } from 'antd';
@@ -16,7 +17,9 @@ import RecordModal from '../components/RecordModal';
 import Page from './Page';
 import './RecordsPage.less';
 
-const { DATETIME, IMAGE, NUMBER } = DataType;
+const {
+  DATETIME, IMAGE, NUMBER, STRING,
+} = DataType;
 const { Column } = Table;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -272,7 +275,8 @@ export default class RecordsPage extends React.PureComponent {
 
   renderColumn({
     visibility, link, title, key, sort, mapKey, width,
-    type, imageSize, renderValue, filters, enabledFilters, canFilter,
+    type, imageSize, renderValue, filters, enabledFilters,
+    canFilter, inlineEdit, form: formConfig,
   }) {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = (has(filter, mapKey) ? String(filter[mapKey]) : '')
@@ -313,6 +317,37 @@ export default class RecordsPage extends React.PureComponent {
 
           return <img alt="" src={src} style={style} />;
         };
+      } else if (inlineEdit && type === STRING) {
+        render = (value, record = {}) => (
+          <Input.TextArea
+            placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
+            autoComplete="off"
+            defaultValue={value}
+            onBlur={({ relatedTarget, target: { value: editValue } = {} } = {}) => {
+              if (formConfig && formConfig.rules) {
+                const validator = new AsyncValidator({
+                  [mapKey]: [{
+                    required: !formConfig.optional,
+                    message: `${title}不能为空`,
+                    whitespace: true,
+                  }].concat(formConfig.rules),
+                });
+                validator.validate({ [mapKey]: editValue }, (errors) => {
+                  if (errors) {
+                    message.error(errors[0].message);
+                    if (relatedTarget && isFunction(relatedTarget.focus)) {
+                      relatedTarget.focus();
+                    }
+                  } else {
+                    this.editRecord({ ...record, [mapKey]: editValue });
+                  }
+                });
+              } else {
+                this.editRecord({ ...record, [mapKey]: editValue });
+              }
+            }}
+          />
+        );
       }
 
       const filterProps = canFilter && isArray(enabledFilters) && enabledFilters.length > 0 ? {
@@ -333,7 +368,7 @@ export default class RecordsPage extends React.PureComponent {
           width={width || ''}
           sortOrder={currentSort && startsWith(currentSort, `${mapKey} `) ? `${split(currentSort, ' ')[1]}end` : false}
           render={
-            (value, record) => render(renderValueFunc(value), record)
+            (value, record) => render(renderValueFunc(value, record), record)
           }
         />
       );
