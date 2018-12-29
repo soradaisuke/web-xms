@@ -3,6 +3,7 @@ import { replace } from 'lodash/fp';
 
 const translateSlashes = replace(/\//g, '{slashes}');
 const translatePercent = replace(/%/g, '{percent}');
+const translateHash = replace(/#/g, '{hash}');
 
 function translatePatterns(text) {
   let result = text;
@@ -17,4 +18,4 @@ function translatePatterns(text) {
   return result;
 }
 
-export default flow(translatePatterns, translatePercent);
+export default flow(translatePatterns, translatePercent, translateHash);
