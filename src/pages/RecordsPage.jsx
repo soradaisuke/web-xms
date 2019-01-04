@@ -18,8 +18,9 @@ import Page from './Page';
 import './RecordsPage.less';
 
 const {
-  DATETIME, IMAGE, NUMBER, STRING,
+  DATETIME, IMAGE, NUMBER, STRING, DATE,
 } = DataType;
+
 const { Column } = Table;
 const { Search } = Input;
 const { confirm } = Modal;
@@ -307,6 +308,15 @@ export default class RecordsPage extends React.PureComponent {
           return (
             <span>
               {datetime.isValid() ? datetime.format('YYYY-MM-DD HH:mm:ss') : ''}
+            </span>
+          );
+        };
+      } else if (type === DATE) {
+        render = (value) => {
+          const date = moment(value);
+          return (
+            <span>
+              {date.isValid() ? date.format('YYYY-MM-DD') : ''}
             </span>
           );
         };

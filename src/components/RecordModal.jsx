@@ -137,7 +137,7 @@ class RecordModal extends React.PureComponent {
             required: !formConfig.optional, message: `${title}不能为空`,
           }].concat(formConfig.rules || []),
         })(
-          <Select placeholder="请选择一个选项" getPopupContainer={trigger => trigger.parentNode}>
+          <Select allowClear placeholder="请选择一个选项" getPopupContainer={trigger => trigger.parentNode}>
             {
               filters.map(op => (
                 <Select.Option key={op.value} value={op.value}>
