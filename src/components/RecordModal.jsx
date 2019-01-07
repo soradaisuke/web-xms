@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Form, Input, InputNumber, Select,
+  Form, Input, InputNumber, Select, DatePicker,
 } from 'antd';
+import moment from 'moment';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
@@ -14,7 +15,7 @@ import DataType from '../constants/DataType';
 
 const FormItem = Form.Item;
 const {
-  STRING, NUMBER, URL, ENUM, IMAGE,
+  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME,
 } = DataType;
 
 class RecordModal extends React.PureComponent {
@@ -112,7 +113,7 @@ class RecordModal extends React.PureComponent {
               : {
                 required: !formConfig.optional,
                 message: `${title}不能为空`,
-                whitespace: true,
+                whitespace: !formConfig.optional,
               },
             {
               type,
@@ -146,6 +147,18 @@ class RecordModal extends React.PureComponent {
               ))
             }
           </Select>,
+        ) : null;
+        break;
+      case DATETIME:
+      case DATE:
+        children = enable ? getFieldDecorator(mapKey, {
+          initialValue: initialValue ? moment(initialValue) : null,
+          validateFirst: true,
+          rules: [{
+            required: !formConfig.optional, message: `${title}不能为空`,
+          }].concat(formConfig.rules || []),
+        })(
+          <DatePicker showTime={type === DATETIME} />,
         ) : null;
         break;
       case IMAGE:
