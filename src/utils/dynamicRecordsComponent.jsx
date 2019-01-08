@@ -258,6 +258,8 @@ function generateRecordsPage({
         props.remove = async body => dispatch({ type: `${namespace}/remove`, payload: { path: apiPath, body } });
       } else if (action === 'order') {
         props.order = async (body, diff) => dispatch({ type: `${namespace}/order`, payload: { path: apiPath, body, diff } });
+      } else if (action === 'create_in_new_page') {
+        props.hasCreateNew = true;
       }
     });
 

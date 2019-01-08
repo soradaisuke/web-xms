@@ -124,7 +124,7 @@ const MyPage = dynamic({
 | :---- | :---- | :---- | :---- |
 | type | 页面类型<br />single：单个数据页面<br />group：列表数据页面 | string(single, group) | - |
 | api | 页面api配置，见[api](#route_api) | string(single, group) | - |
-| actions | 该页面支持的所有操作<br />create: 创建<br />edit: 编辑<br />remove: 删除<br />order: 调整顺序<br />default：创建 + 编辑 + 删除<br />object见[action](#action) | (string/object)[] | [] |
+| actions | 该页面支持的所有操作<br />create_in_new_page: 新建（跳转至${path}/new页面）<br />create: 创建<br />edit: 编辑<br />remove: 删除<br />order: 调整顺序<br />default：创建 + 编辑 + 删除<br />object见[action](#action) | (string/object)[] | [] |
 | schema | 数据结构，见[schema](#schema) | object[] | [] |
 
 # route api

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
+import { Link } from 'react-router-dom';
 import {
   Table, Pagination, Button, Popconfirm, Input, message, Modal,
 } from 'antd';
@@ -270,8 +271,8 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   hasAddButton() {
-    const { create } = this.props;
-    return !!create;
+    const { create, hasCreateNew } = this.props;
+    return !!create || hasCreateNew;
   }
 
   renderColumn({
@@ -385,6 +386,22 @@ export default class RecordsPage extends React.PureComponent {
     }
 
     return null;
+  }
+
+  renderAddButton() {
+    const { hasCreateNew, schema } = this.props;
+    if (hasCreateNew) {
+      return (
+        <Button className="add-button" type="primary">
+          <Link to={`${window.location.pathname}/new`}>新建</Link>
+        </Button>
+      );
+    }
+    return (
+      <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
+        <Button className="add-button" type="primary">添加</Button>
+      </RecordModal>
+    );
   }
 
   renderSchema() {
@@ -566,7 +583,7 @@ export default class RecordsPage extends React.PureComponent {
   renderContent() {
     const { dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey, schema, searchFileds,
+      total, page, pagesize, primaryKey, searchFileds,
       customMultipleActions, customGlobalActions, isLoading,
     } = this.props;
 
@@ -582,13 +599,7 @@ export default class RecordsPage extends React.PureComponent {
           hasHeader && (
             <div className="xms-records-page-content-header">
               <div className="xms-records-page-content-header-buttons">
-                {
-                  this.hasAddButton() && (
-                    <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
-                      <Button className="add-button" type="primary">添加</Button>
-                    </RecordModal>
-                  )
-                }
+                {this.hasAddButton() && this.renderAddButton()}
                 {this.renderCustomGlobalActions()}
                 {this.renderCustomMultipleActions()}
               </div>
