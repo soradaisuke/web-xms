@@ -24,7 +24,7 @@ export default function processGroupConfig({ config, path }) {
       visibility, sort, defaultSort: ds, mapKey,
     } = definition;
     const {
-      type, filters, key, search,
+      type, filters, key, search, canFilter,
     } = definition;
 
     if (type === ENUM && !filters) {
@@ -64,7 +64,7 @@ export default function processGroupConfig({ config, path }) {
     }
 
     if (isArray(key)) {
-      if ((filters || search || type === ORDER || visibility.create || visibility.edit)
+      if ((canFilter || search || type === ORDER || visibility.create || visibility.edit)
         && !mapKey) {
         throw new Error(`${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`);
       }

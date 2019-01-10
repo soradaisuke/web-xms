@@ -10,8 +10,11 @@ import {
   upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, get,
 } from 'lodash';
 import { generateUri } from 'web-core';
+import DataType from '../constants/DataType';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
+
+const { DATE, DATETIME } = DataType;
 
 function generateService({ actions, primaryKey }) {
   const service = {
@@ -120,13 +123,16 @@ function generateModel({
 }
 
 function generateRecordsPage({
-  api: { host, path, defaultFilter }, namespace, actions, primaryKey,
+  api: { host, path, defaultFilter }, namespace, actions, primaryKey, schema,
   searchFileds, fixedSort, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
   const customGlobalActions = customActions.filter(({ global }) => global);
   const customMultipleActions = customActions.filter(({ multiple }) => multiple);
   const customRowActions = customActions.filter(({ global }) => !global);
+  const dateFilterSchemas = schema.filter(({ type, canFilter }) => (
+    canFilter && (type === DATE || type === DATETIME)
+  ));
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -141,6 +147,7 @@ function generateRecordsPage({
           customMultipleActions={customMultipleActions}
           customRowActions={customRowActions}
           searchFileds={searchFileds}
+          dateFilterSchemas={dateFilterSchemas}
         />
       );
     }
@@ -176,7 +183,7 @@ function generateRecordsPage({
     [
       state => state[namespace].get('schema'),
     ],
-    schema => schema.toJS(),
+    sche => sche.toJS(),
   );
 
   const mapStateToProps = (state, props) => {

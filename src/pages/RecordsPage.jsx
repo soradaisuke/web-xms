@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
 import { Link } from 'react-router-dom';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message, Modal,
+  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker,
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
@@ -16,6 +16,7 @@ import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
 import Page from './Page';
+import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import './RecordsPage.less';
 
 const {
@@ -270,6 +271,34 @@ export default class RecordsPage extends React.PureComponent {
     });
   }
 
+  onChangeDateFilter = (mapKey, date) => {
+    const { filter, updatePage, dateFilterSchemas } = this.props;
+    const target = dateFilterSchemas.find(({ mapKey: mk }) => mk === mapKey);
+    if ((!isArray(date) && !date)
+    || (isArray(date) && (!date[0] || !date[1]))) {
+      delete filter[mapKey];
+      updatePage({ filter });
+    } else if (isArray(date)) {
+      updatePage({
+        filter: {
+          ...filter,
+          [mapKey]: target.type === DATE
+            ? [date[0].format('YYYY-MM-DD'), date[1].format('YYYY-MM-DD')]
+            : [date[0].toISOString(), date[1].toISOString()],
+        },
+      });
+    } else {
+      updatePage({
+        filter: {
+          ...filter,
+          [mapKey]: target.type === DATE
+            ? date.format('YYYY-MM-DD')
+            : date.toISOString(),
+        },
+      });
+    }
+  }
+
   hasAddButton() {
     const { create, hasCreateNew } = this.props;
     return !!create || hasCreateNew;
@@ -281,8 +310,7 @@ export default class RecordsPage extends React.PureComponent {
     canFilter, inlineEdit, form: formConfig,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (has(filter, mapKey) ? String(filter[mapKey]) : '')
-      || (has(filter, mapKey) ? String(filter[mapKey]) : '');
+    const filteredValue = (!(type === DATE || type === DATETIME) && has(filter, mapKey) ? String(filter[mapKey]) : '');
     let renderValueFunc = v => v;
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
@@ -365,7 +393,7 @@ export default class RecordsPage extends React.PureComponent {
         filtered: !!filteredValue,
         filteredValue: filteredValue ? [filteredValue] : [],
         filterMultiple: false,
-        filters: enabledFilters,
+        filters: type === DATE || type === DATETIME ? [] : enabledFilters,
       } : {};
 
       return (
@@ -580,10 +608,64 @@ export default class RecordsPage extends React.PureComponent {
     ));
   }
 
+  renderDateFilters() {
+    const { dateFilterSchemas, filter } = this.props;
+    return dateFilterSchemas.map(({
+      key, mapKey, type, title, rangeFilter, filters,
+    }) => {
+      const ranges = {};
+      if (rangeFilter && filters && filters.length) {
+        filters.map(({ text, value }) => {
+          if (!moment(value[0]).isValid() || !moment(value[1]).isValid()) {
+            throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
+          }
+          ranges[text] = [moment(value[0]), moment(value[1])];
+          return null;
+        });
+      }
+      return (
+        <div key={key}>
+          {`${title}：`}
+          {
+            rangeFilter
+              ? (
+                <DatePicker.RangePicker
+                  showTime={type === DATETIME}
+                  format={type === DATETIME ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD'}
+                  defaultValue={has(filter, mapKey) && isArray(filter[mapKey])
+                    && moment(filter[mapKey][0]).isValid()
+                    && moment(filter[mapKey][1]).isValid()
+                    ? [moment(filter[mapKey][0]), moment(filter[mapKey][1])]
+                    : []
+                  }
+                  ranges={ranges}
+                  onChange={newDate => (
+                    this.onChangeDateFilter(mapKey, newDate)
+                  )}
+                />
+              )
+              : (
+                <DatePickerWithPresets
+                  defaultValue={has(filter, mapKey) && moment(filter[mapKey]).isValid()
+                    ? moment(filter[mapKey]) : null}
+                  showTime={type === DATETIME}
+                  format={type === DATETIME ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD'}
+                  presets={filters}
+                  onChange={newDate => (
+                    this.onChangeDateFilter(mapKey, newDate)
+                  )}
+                />
+              )
+          }
+        </div>
+      );
+    });
+  }
+
   renderContent() {
     const { dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey, searchFileds,
+      total, page, pagesize, primaryKey, searchFileds, dateFilterSchemas,
       customMultipleActions, customGlobalActions, isLoading,
     } = this.props;
 
@@ -606,6 +688,13 @@ export default class RecordsPage extends React.PureComponent {
               <div className="xms-records-page-content-header-searchs">
                 {this.renderSearchs()}
               </div>
+            </div>
+          )
+        }
+        {
+          dateFilterSchemas && dateFilterSchemas.length > 0 && (
+            <div className="xms-records-page-content-header-filters">
+              {this.renderDateFilters()}
             </div>
           )
         }
