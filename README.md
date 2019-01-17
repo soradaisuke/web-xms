@@ -90,6 +90,13 @@ const MyPage = dynamic({
 | style | 组件style | object | - |
 | max | 标签最大个数限制 | number | 99 |
 
+## DatePickerWithPresets
+带有预设的日历组件，详见[DatePicker](https://ant.design/components/date-picker-cn/#DatePicker)
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| presets | 预设日期 | [{text: string, value: 'YYYY-MM-DD'}] | - |
+
 # App配置
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |

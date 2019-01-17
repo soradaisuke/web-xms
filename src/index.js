@@ -6,3 +6,4 @@ export DataType from './constants/DataType';
 export ActivatorModal from './components/ActivatorModal';
 export Tags from './components/FormItems/Tags';
 export UploadImage from './components/FormItems/UploadImage';
+export DatePickerWithPresets from './components/DatePickerWithPresets';
