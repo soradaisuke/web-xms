@@ -631,8 +631,8 @@ export default class RecordsPage extends React.PureComponent {
               ? (
                 <DatePicker.RangePicker
                   showTime={type === DATETIME}
-                  format={type === DATETIME ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD'}
-                  defaultValue={has(filter, mapKey) && isArray(filter[mapKey])
+                  format={type === DATETIME ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
+                  value={has(filter, mapKey) && isArray(filter[mapKey])
                     && moment(filter[mapKey][0]).isValid()
                     && moment(filter[mapKey][1]).isValid()
                     ? [moment(filter[mapKey][0]), moment(filter[mapKey][1])]
@@ -646,10 +646,10 @@ export default class RecordsPage extends React.PureComponent {
               )
               : (
                 <DatePickerWithPresets
-                  defaultValue={has(filter, mapKey) && moment(filter[mapKey]).isValid()
+                  value={has(filter, mapKey) && moment(filter[mapKey]).isValid()
                     ? moment(filter[mapKey]) : null}
                   showTime={type === DATETIME}
-                  format={type === DATETIME ? 'YYYY-MM-DD HH:MM:SS' : 'YYYY-MM-DD'}
+                  format={type === DATETIME ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
                   presets={filters}
                   onChange={newDate => (
                     this.onChangeDateFilter(mapKey, newDate)
