@@ -312,9 +312,14 @@ export default class RecordsPage extends React.PureComponent {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = (!(type === DATE || type === DATETIME) && has(filter, mapKey) ? String(filter[mapKey]) : '');
     let renderValueFunc = v => v;
+    if (type === DATETIME) {
+      renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '');
+    } else if (type === DATE) {
+      renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '');
+    }
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
-    } else if (isArray(filters)) {
+    } else if (isArray(filters) && type !== DATE && type !== DATETIME) {
       renderValueFunc = (v) => {
         const filtered = find(filters, f => f.value === v);
         return filtered ? filtered.text : v;
@@ -331,24 +336,6 @@ export default class RecordsPage extends React.PureComponent {
             </RecordLink>
           </span>
         );
-      } else if (type === DATETIME) {
-        render = (value) => {
-          const datetime = moment(value);
-          return (
-            <span>
-              {datetime.isValid() ? datetime.format('YYYY-MM-DD HH:mm:ss') : ''}
-            </span>
-          );
-        };
-      } else if (type === DATE) {
-        render = (value) => {
-          const date = moment(value);
-          return (
-            <span>
-              {date.isValid() ? date.format('YYYY-MM-DD') : ''}
-            </span>
-          );
-        };
       } else if (type === IMAGE) {
         render = (value) => {
           const src = generateUpYunImageUrl(value, `/both/${imageSize || '100x100'}`);
