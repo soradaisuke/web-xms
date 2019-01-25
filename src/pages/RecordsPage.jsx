@@ -20,7 +20,7 @@ import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import './RecordsPage.less';
 
 const {
-  DATETIME, IMAGE, NUMBER, STRING, DATE,
+  DATETIME, IMAGE, NUMBER, STRING, DATE, BOOL,
 } = DataType;
 
 const { Column } = Table;
@@ -184,6 +184,9 @@ export default class RecordsPage extends React.PureComponent {
           case NUMBER:
             acc[mapKey] = parseInt(value[0], 10);
             break;
+          case BOOL:
+            acc[mapKey] = (value[0] && value[0] !== 'false');
+            break;
           default:
             acc[mapKey] = String(value[0]);
             break;
@@ -316,6 +319,8 @@ export default class RecordsPage extends React.PureComponent {
       renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '');
     } else if (type === DATE) {
       renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '');
+    } else if (type === BOOL) {
+      renderValueFunc = v => (v ? '是' : '否');
     }
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;

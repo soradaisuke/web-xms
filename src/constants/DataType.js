@@ -6,6 +6,7 @@ const ORDER = 'order';
 const IMAGE = 'image';
 const ENUM = 'enum';
 const URL = 'url';
+const BOOL = 'bool';
 export default {
   NUMBER,
   STRING,
@@ -15,4 +16,5 @@ export default {
   IMAGE,
   ENUM,
   URL,
+  BOOL,
 };

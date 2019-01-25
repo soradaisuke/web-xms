@@ -20,7 +20,7 @@ app.start();
 ```javascript
 import { DateType } from 'xms';
 
-const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE } = DataType;
+const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE, BOOL } = DataType;
 ```
 ## request
 网络请求
