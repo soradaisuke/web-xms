@@ -1,5 +1,5 @@
 import dva from 'dva';
-import createHistory from 'history/createBrowserHistory';
+import history from './utils/history';
 import createLoading from 'dva-loading';
 import { merge } from 'lodash';
 import { message } from 'antd';
@@ -11,7 +11,7 @@ import router from './router';
 
 export default function xms(config = {}) {
   const app = dva({
-    history: createHistory(),
+    history,
     onError(err) {
       message.error(err.message);
     },

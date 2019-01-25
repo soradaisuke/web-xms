@@ -7,3 +7,5 @@ export ActivatorModal from './components/ActivatorModal';
 export Tags from './components/FormItems/Tags';
 export UploadImage from './components/FormItems/UploadImage';
 export DatePickerWithPresets from './components/DatePickerWithPresets';
+export history from './utils/history';
+export textToPath from './utils/textToPath';
