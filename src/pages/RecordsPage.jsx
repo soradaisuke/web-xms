@@ -179,7 +179,10 @@ export default class RecordsPage extends React.PureComponent {
     }
     const newFilter = reduce(schema, (acc, { key, type, mapKey }) => {
       const value = filters[key];
-      if (value && value.length > 0) {
+      const preValue = filter[key];
+      if ((type === DATE || type === DATETIME) && preValue) {
+        acc[mapKey] = preValue;
+      } else if (value && value.length > 0) {
         switch (type) {
           case NUMBER:
             acc[mapKey] = parseInt(value[0], 10);
