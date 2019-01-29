@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isBoolean } from 'lodash';
 import { Modal } from 'antd';
 
 export default class ActivatorModal extends React.PureComponent {
@@ -51,20 +52,26 @@ export default class ActivatorModal extends React.PureComponent {
     const { onOk } = this.props;
 
     if (onOk) {
-      await onOk();
+      const hide = await onOk();
+      if (!isBoolean(hide) || hide) {
+        this.hideModalHandler();
+      }
+    } else {
+      this.hideModalHandler();
     }
-
-    this.hideModalHandler();
   };
 
   onCancel = async () => {
     const { onCancel } = this.props;
 
     if (onCancel) {
-      await onCancel();
+      const hide = await onCancel();
+      if (!isBoolean(hide) || hide) {
+        this.hideModalHandler();
+      }
+    } else {
+      this.hideModalHandler();
     }
-
-    this.hideModalHandler();
   };
 
   render() {

@@ -68,8 +68,8 @@ const MyPage = dynamic({
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
 | activator | 激活组件 | ReactNode | - |
-| onCancel | 点击取消时的回调 | Function | - |
-| onOk | 点击确定时的回调 | Function | - |
+| onCancel | 点击取消时的回调，返回false可以阻止modal关闭 | Function | - |
+| onOk | 点击确定时的回调，返回false可以阻止modal关闭 | Function | - |
 | onVisibleChange | Modal的visible变化时的回调 | Function | - |
 
 ## UploadImage
