@@ -72,6 +72,25 @@ const MyPage = dynamic({
 | onOk | 点击确定时的回调，返回false可以阻止modal关闭 | Function | - |
 | onVisibleChange | Modal的visible变化时的回调 | Function | - |
 
+## AudioPlayer
+播放器组件
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| url | 音频地址 | string | '' |
+| loop | 是否循环播放 | bool | false |
+| showPlaybackRate | 是否显示调整速率的按钮，有4种速率：1、1.25、1.5、2 | bool | true |
+| showVolume | 是否显示调整音量大小的组件 | bool | true |
+| className | 类名 | string | '' |
+
+ref获得节点后可以调用的方法有
+
+| 方法 | 说明 |
+| :---- | :---- |
+| pause() | 暂停播放 |
+| setVolume(value) | 设置音量大小，value = 100 为100%的音量 |
+| setPlaybackRate(value) | 设置播放速率，value = 1 为1倍速播放 |
+
 ## UploadImage
 上传图片React组件，用于antd的FormItems。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
 
