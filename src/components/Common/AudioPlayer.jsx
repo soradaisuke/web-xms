@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Player from 'react-player';
 import classNames from 'classnames';
-import { Button, Slider } from 'antd';
+import { Button, Slider, Radio } from 'antd';
 import { formatDuration } from 'web-core';
 import { ClickableDiv } from 'react-core';
 import './AudioPlayer.less';
@@ -11,6 +11,7 @@ export default class AudioPlayer extends React.PureComponent {
   static displayName = 'AudioPlayer';
 
   static propTypes = {
+    playbackRates: PropTypes.arrayOf(PropTypes.number),
     url: PropTypes.string,
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
@@ -19,6 +20,7 @@ export default class AudioPlayer extends React.PureComponent {
   };
 
   static defaultProps = {
+    playbackRates: [1, 1.25, 1.5, 2],
     url: '',
     className: '',
     loop: false,
@@ -104,13 +106,9 @@ export default class AudioPlayer extends React.PureComponent {
     });
   }
 
-  onClick1x = () => this.setPlaybackRate(1);
-
-  onClick125x = () => this.setPlaybackRate(1.25);
-
-  onClick15x = () => this.setPlaybackRate(1.5);
-
-  onClick2x = () => this.setPlaybackRate(2);
+  onChangeRate = (e) => {
+    this.setPlaybackRate(e.target.value);
+  }
 
   addEventListeners() {
     window.addEventListener('mouseup', this.onSeekEnd);
@@ -124,7 +122,7 @@ export default class AudioPlayer extends React.PureComponent {
 
   render() {
     const {
-      url, className, loop, showPlaybackRate, showVolume,
+      url, className, loop, showPlaybackRate, showVolume, playbackRates,
     } = this.props;
     const {
       playing, volume, played, seekTo, seeking,
@@ -176,36 +174,18 @@ export default class AudioPlayer extends React.PureComponent {
           </div>
           {
             showPlaybackRate && (
-              <React.Fragment>
-                <Button
-                  className="audio-player-margin"
-                  type={playbackRate === 1 ? 'primary' : ''}
-                  onClick={this.onClick1x}
-                >
-                  1x
-                </Button>
-                <Button
-                  className="audio-player-margin"
-                  type={playbackRate === 1.25 ? 'primary' : ''}
-                  onClick={this.onClick125x}
-                >
-                  1.25x
-                </Button>
-                <Button
-                  className="audio-player-margin"
-                  type={playbackRate === 1.5 ? 'primary' : ''}
-                  onClick={this.onClick15x}
-                >
-                  1.5x
-                </Button>
-                <Button
-                  className="audio-player-margin"
-                  type={playbackRate === 2 ? 'primary' : ''}
-                  onClick={this.onClick2x}
-                >
-                  2x
-                </Button>
-              </React.Fragment>
+              <Radio.Group
+                value={playbackRate}
+                onChange={this.onChangeRate}
+                buttonStyle="solid"
+                className="audio-player-rates"
+              >
+                {
+                  playbackRates.map(v => (
+                    <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
+                  ))
+                }
+              </Radio.Group>
             )
           }
           {

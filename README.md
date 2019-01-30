@@ -79,7 +79,8 @@ const MyPage = dynamic({
 | :---- | :---- | :---- | :---- |
 | url | 音频地址 | string | '' |
 | loop | 是否循环播放 | bool | false |
-| showPlaybackRate | 是否显示调整速率的按钮，有4种速率：1、1.25、1.5、2 | bool | true |
+| showPlaybackRate | 是否显示调整速率的组件 | bool | true |
+| playbackRates | 播放速率可选项配置 | array | [1, 1.25, 1.5, 2] |
 | showVolume | 是否显示调整音量大小的组件 | bool | true |
 | className | 类名 | string | '' |
 
