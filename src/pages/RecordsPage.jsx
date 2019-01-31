@@ -261,9 +261,12 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   editRecord = async (body) => {
-    const { edit, create, primaryKey } = this.props;
+    const {
+      edit, inlineEdit, create, primaryKey,
+    } = this.props;
+    const newEdit = edit || inlineEdit;
     await this.updateRecord({
-      promise: body[primaryKey] && edit ? edit(body) : create(body),
+      promise: body[primaryKey] && newEdit ? newEdit(body) : create(body),
       throwError: true,
     });
   }

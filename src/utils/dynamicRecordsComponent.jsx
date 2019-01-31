@@ -24,7 +24,7 @@ function generateService({ actions, primaryKey }) {
   forEach(actions, (action) => {
     if (action === 'create') {
       service.create = async ({ path, body }) => request.post(`${path}`, { body });
-    } else if (action === 'edit') {
+    } else if (action === 'edit' || action === 'inlineEdit') {
       service.edit = async ({ path, body }) => request.put(`${path}/${get(body, primaryKey)}`, { body });
     } else if (action === 'remove') {
       service.remove = async ({ path, body }) => request.remove(`${path}/${get(body, primaryKey)}`);
@@ -102,7 +102,7 @@ function generateModel({
       model.effects.create = function* modelCreate({ payload: { path, body } }, { call }) {
         yield call(service.create, { path, body });
       };
-    } else if (action === 'edit') {
+    } else if (action === 'edit' || action === 'inlineEdit') {
       model.effects.edit = function* modelEdit({ payload: { path, body } }, { call }) {
         yield call(service.edit, { path, body });
       };
@@ -259,8 +259,8 @@ function generateRecordsPage({
     forEach(actions, (action) => {
       if (action === 'create') {
         props.create = async body => dispatch({ type: `${namespace}/create`, payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } } });
-      } else if (action === 'edit') {
-        props.edit = async body => dispatch({ type: `${namespace}/edit`, payload: { path: apiPath, body } });
+      } else if (action === 'edit' || action === 'inlineEdit') {
+        props[action] = async body => dispatch({ type: `${namespace}/edit`, payload: { path: apiPath, body } });
       } else if (action === 'remove') {
         props.remove = async body => dispatch({ type: `${namespace}/remove`, payload: { path: apiPath, body } });
       } else if (action === 'order') {
