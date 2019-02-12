@@ -1,8 +1,8 @@
 import dva from 'dva';
-import history from './utils/history';
 import createLoading from 'dva-loading';
 import { merge } from 'lodash';
 import { message } from 'antd';
+import history from './utils/history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';

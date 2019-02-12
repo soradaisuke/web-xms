@@ -46,17 +46,22 @@ export default class RecordsPage extends React.PureComponent {
       }),
     })).isRequired,
     updatePage: PropTypes.func.isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({}).isRequired,
+    }).isRequired,
     create: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     customGlobalActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    dateFilterSchemas: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
     order: PropTypes.func,
     page: PropTypes.number,
     pagesize: PropTypes.number,
     edit: PropTypes.func,
+    inlineEdit: PropTypes.func,
     filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     primaryKey: PropTypes.string,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
@@ -65,6 +70,7 @@ export default class RecordsPage extends React.PureComponent {
     searchFileds: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
+    hasCreateNew: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -73,6 +79,7 @@ export default class RecordsPage extends React.PureComponent {
     customGlobalActions: [],
     customMultipleActions: [],
     customRowActions: [],
+    dateFilterSchemas: [],
     error: null,
     isLoading: false,
     edit: null,
@@ -87,6 +94,8 @@ export default class RecordsPage extends React.PureComponent {
     searchFileds: [],
     sort: '',
     total: 0,
+    inlineEdit: null,
+    hasCreateNew: false,
   };
 
   static showTotal(total, range) {
@@ -357,6 +366,7 @@ export default class RecordsPage extends React.PureComponent {
       } else if (inlineEdit && type === STRING) {
         render = (value, record = {}) => (
           <Input.TextArea
+            key={value}
             placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
             autoComplete="off"
             defaultValue={value}
