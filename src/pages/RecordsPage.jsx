@@ -161,8 +161,10 @@ export default class RecordsPage extends React.PureComponent {
         break;
     }
 
+    const search = searchValue || searchValue === 0 ? { [mapKey]: searchValue } : {};
+
     updatePage({
-      page: 1, pagesize, sort, filter, search: { [mapKey]: searchValue },
+      page: 1, pagesize, sort, filter, search,
     });
   }
 
