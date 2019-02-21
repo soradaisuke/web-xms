@@ -29,10 +29,12 @@ async function generateRequest(path, options = {}) {
 
     if (response.status < 200 || response.status >= 300) {
       const error = new Error(response.statusText);
+      error.code = response.status;
 
       try {
         response = await response.json();
         error.message = response.errmsg;
+        error.code = response.code || response.errcode || error.code;
       } catch (e) {
         //
       }
