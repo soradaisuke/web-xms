@@ -12,7 +12,7 @@ import './User.less';
 
 
 function onClickLogOut() {
-  Cookie.remove('sso_token', { path: '', domain: '.qingtingfm.com' });
+  Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
   window.location.replace(generateUri('//entry.qingtingfm.com/v1/sso/login.html', { return_url: generateUri(window.location.href, { auth: 1 }) }).href);
 }
 
@@ -32,10 +32,6 @@ class User extends React.PureComponent {
   static defaultProps = {
     user: null,
   };
-
-  onClickLogOut = () => {
-
-  }
 
   render() {
     const { user } = this.props;
