@@ -7,6 +7,8 @@ const IMAGE = 'image';
 const ENUM = 'enum';
 const URL = 'url';
 const BOOL = 'bool';
+const ARRAY = 'array';
+const OBJECT = 'object';
 export default {
   NUMBER,
   STRING,
@@ -17,4 +19,6 @@ export default {
   ENUM,
   URL,
   BOOL,
+  ARRAY,
+  OBJECT,
 };

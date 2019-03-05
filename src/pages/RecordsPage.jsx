@@ -8,7 +8,8 @@ import {
   Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker,
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce, map, has, isEqual, isNumber,
+  split, startsWith, isFunction, isArray, find, reduce, map,
+  has, isEqual, isNumber, join,
 } from 'lodash';
 import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
@@ -20,7 +21,7 @@ import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import './RecordsPage.less';
 
 const {
-  DATETIME, IMAGE, NUMBER, STRING, DATE, BOOL,
+  DATETIME, IMAGE, NUMBER, STRING, DATE, BOOL, ARRAY, OBJECT,
 } = DataType;
 
 const { Column } = Table;
@@ -331,13 +332,26 @@ export default class RecordsPage extends React.PureComponent {
   }) {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = (!(type === DATE || type === DATETIME) && has(filter, mapKey) ? String(filter[mapKey]) : '');
-    let renderValueFunc = v => v;
-    if (type === DATETIME) {
-      renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '');
-    } else if (type === DATE) {
-      renderValueFunc = v => (moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '');
-    } else if (type === BOOL) {
-      renderValueFunc = v => (v ? '是' : '否');
+    let renderValueFunc;
+    switch (type) { // 默认的渲染值函数根据数据类型不同而不同
+      case DATETIME:
+        renderValueFunc = v => (v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '');
+        break;
+      case DATE:
+        renderValueFunc = v => (v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '');
+        break;
+      case BOOL:
+        renderValueFunc = v => (v ? '是' : '否');
+        break;
+      case ARRAY:
+        renderValueFunc = v => (v ? join(v, ',') : '');
+        break;
+      case OBJECT:
+        renderValueFunc = v => (v ? join(map(v, value => value), ',') : '');
+        break;
+      default:
+        renderValueFunc = v => v;
+        break;
     }
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;

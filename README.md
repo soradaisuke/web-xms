@@ -20,7 +20,7 @@ app.start();
 ```javascript
 import { DateType } from 'xms';
 
-const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE, BOOL } = DataType;
+const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE, BOOL, OBJECT, ARRAY } = DataType;
 ```
 ## request
 网络请求
@@ -109,6 +109,16 @@ ref获得节点后可以调用的方法有
 | :---- | :---- | :---- | :---- |
 | style | 组件style | object | - |
 | max | 标签最大个数限制 | number | 99 |
+
+## CommonArraylikeItems
+类数组组件，用于antd的FormItems, value: { key1: string1/number1, ... }。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
+
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| style | 一项数据的输入框的 style | object | { marginTop: '10px', width: '80%', marginRight: 8 } |
+| max | 标签最大个数限制 | number | 99 |
+| placeholder | 输入框里的 placeholder | string | '请输入一个值' |
+| enableAdd | 是否可以添加一项数据，如果为 true 且传入数据长度为0的时候会自动生成一项空数据 | bool | true |
 
 ## DatePickerWithPresets
 带有预设的日历组件，详见[DatePicker](https://ant.design/components/date-picker-cn/#DatePicker)
@@ -211,6 +221,7 @@ ref获得节点后可以调用的方法有
 | generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
 | generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |
 | tip | IMAGE类型数据在form中显示的提示 | string | '' |
+| enableAdd | ARRAY或OBJECT数据是否可以添加项 | bool | '' |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |

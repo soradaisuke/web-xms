@@ -12,10 +12,11 @@ import {
 import ActivatorModal from './ActivatorModal';
 import UploadImage from './FormItems/UploadImage';
 import DataType from '../constants/DataType';
+import CommonArraylikeItems from './FormItems/CommonArraylikeItems';
 
 const FormItem = Form.Item;
 const {
-  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME,
+  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME, ARRAY, OBJECT,
 } = DataType;
 
 class RecordModal extends React.PureComponent {
@@ -58,6 +59,8 @@ class RecordModal extends React.PureComponent {
             const formConfig = targetSchema.form || {};
             if (isFunction(formConfig.generateSubmitValue)) {
               formatValues[key] = formConfig.generateSubmitValue(value);
+            } else if (targetSchema.type === ARRAY) {
+              formatValues[key] = value.map(v => v);
             } else {
               formatValues[key] = value;
             }
@@ -94,6 +97,13 @@ class RecordModal extends React.PureComponent {
     let initialValue = this.isEdit() ? get(record, key) : '';
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
+    } else if (type === ARRAY) {
+      initialValue = {};
+      if (get(record, key)) {
+        forEach(get(record, key), (v, i) => {
+          initialValue[String(i)] = v;
+        });
+      }
     }
 
     let children;
@@ -175,6 +185,23 @@ class RecordModal extends React.PureComponent {
           }].concat(formConfig.rules || []),
         })(
           <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={formConfig.tip} />,
+        ) : null;
+        break;
+      case ARRAY:
+      case OBJECT:
+        children = enable ? getFieldDecorator(mapKey, {
+          initialValue,
+          validateFirst: true,
+          rules: [{
+            required: !formConfig.optional, message: `${title}不能为空`,
+          }].concat(formConfig.rules || []),
+        })(
+          <CommonArraylikeItems
+            title={formConfig.tip}
+            max={formConfig.max}
+            placeholder={formConfig.placeholder}
+            enableAdd={formConfig.enableAdd}
+          />,
         ) : null;
         break;
       default:
