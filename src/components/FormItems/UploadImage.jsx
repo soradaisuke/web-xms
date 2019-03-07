@@ -132,7 +132,7 @@ export default class UploadImage extends React.PureComponent {
             footer={null}
             onCancel={this.onClickCancel}
           >
-            <img alt="" style={{ width: '100%' }} src={previewImage} />
+            <img alt="" style={{ width: '100%', padding: '15px' }} src={previewImage} />
           </Modal>
         </Row>
       </Col>
