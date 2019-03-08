@@ -3,6 +3,7 @@ export request from './services/request';
 export dynamic from 'dva/dynamic';
 export Page from './pages/Page';
 export DataType from './constants/DataType';
+export ColumnTypes from './utils/ColumnTypes';
 export ActivatorModal from './components/ActivatorModal';
 export Tags from './components/FormItems/Tags';
 export UploadImage from './components/FormItems/UploadImage';

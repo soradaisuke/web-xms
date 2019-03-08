@@ -1,23 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  Form, Input, InputNumber, Select, DatePicker,
-} from 'antd';
-import moment from 'moment';
+import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
   find, forEach, isFunction, get,
 } from 'lodash';
 import ActivatorModal from './ActivatorModal';
-import UploadImage from './FormItems/UploadImage';
-import DataType from '../constants/DataType';
-import CommonArray from './FormItems/CommonArray';
 
 const FormItem = Form.Item;
-const {
-  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME, ARRAY,
-} = DataType;
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -92,115 +83,35 @@ class RecordModal extends React.PureComponent {
     const targetSchema = find(schema, { key }) || {};
     const { form: formConfig = {}, filters = [], mapKey } = targetSchema;
     const enable = isFunction(formConfig.enable) ? formConfig.enable(form, record) : true;
-    let initialValue = this.isEdit() ? get(record, key) : '';
-    if (isFunction(formConfig.generateInitValue)) {
-      initialValue = formConfig.generateInitValue(initialValue);
-    } else if (!initialValue && type === ARRAY) {
-      initialValue = [];
+
+    if (!enable) {
+      return null;
     }
 
-    let children;
-    switch (type) {
-      case NUMBER:
-      case STRING:
-      case URL:
-        children = enable ? getFieldDecorator(mapKey, {
-          initialValue,
-          validateFirst: true,
-          rules: [
-            type === NUMBER
-              ? {
-                required: !formConfig.optional,
-                message: `${title}不能为空`,
-              }
-              : {
-                required: !formConfig.optional,
-                message: `${title}不能为空`,
-                whitespace: !formConfig.optional,
-              },
-            {
-              type,
-              message: `格式不正确，要求为${type}`,
-            },
-          ].concat(formConfig.rules || []),
-        })(
-          type === NUMBER
-            ? (
-              <InputNumber
-                placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
-              />
-            )
-            : (
-              <Input
-                placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
-              />
-            ),
-        ) : null;
-        break;
-      case ENUM:
-        children = enable ? getFieldDecorator(mapKey, {
-          initialValue,
-          validateFirst: true,
-          rules: [{
-            required: !formConfig.optional, message: `${title}不能为空`,
-          }].concat(formConfig.rules || []),
-        })(
-          <Select allowClear placeholder="请选择一个选项" getPopupContainer={trigger => trigger.parentNode}>
-            {
-              filters.map(op => (
-                <Select.Option key={op.value} value={op.value}>
-                  {op.text}
-                </Select.Option>
-              ))
-            }
-          </Select>,
-        ) : null;
-        break;
-      case DATETIME:
-      case DATE:
-        children = enable ? getFieldDecorator(mapKey, {
-          initialValue: initialValue ? moment(initialValue) : null,
-          validateFirst: true,
-          rules: [{
-            required: !formConfig.optional, message: `${title}不能为空`,
-          }].concat(formConfig.rules || []),
-        })(
-          <DatePicker showTime={type === DATETIME} />,
-        ) : null;
-        break;
-      case IMAGE:
-        children = enable ? getFieldDecorator(mapKey, {
-          initialValue,
-          validateFirst: true,
-          valuePropName: 'url',
-          rules: [{
-            required: !formConfig.optional, message: `${title}不能为空`,
-          }].concat(formConfig.rules || []),
-        })(
-          <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={formConfig.tip} />,
-        ) : null;
-        break;
-      case ARRAY:
-        children = enable ? getFieldDecorator(mapKey, {
-          initialValue,
-          validateFirst: true,
-          rules: [{
-            required: !formConfig.optional, message: `${title}不能为空`,
-          }].concat(formConfig.rules || []),
-        })(
-          <CommonArray
-            title={formConfig.tip}
-            max={formConfig.max}
-            placeholder={formConfig.placeholder}
-            enableAdd={formConfig.enableAdd}
-            generateValue={formConfig.arrayGenerateValue}
-            renderValue={formConfig.arrayRenderValue}
-          />,
-        ) : null;
-        break;
-      default:
-        break;
+    let initialValue = this.isEdit() ? type.formatFormValue(get(record, key))
+      : type.getFormDefaultInitialValue();
+    if (isFunction(formConfig.generateInitValue)) {
+      initialValue = formConfig.generateInitValue(initialValue);
     }
+
+    const commonEmptyRule = {
+      required: !formConfig.optional,
+      message: `${title}不能为空`,
+    };
+
+    if (type.canCheckWhiteSpace()) {
+      commonEmptyRule.whitespace = !formConfig.optional;
+    }
+
+    const children = type.canShowInForm() ? getFieldDecorator(mapKey, {
+      initialValue,
+      validateFirst: true,
+      rules: [commonEmptyRule].concat(type.getFormRules({ ...formConfig, title, user }))
+        .concat(formConfig.rules || []),
+      ...type.getFormExtraConfig(),
+    })(type.renderFormItem({
+      ...formConfig, title, filters, user,
+    })) : null;
 
     if (children) {
       return (

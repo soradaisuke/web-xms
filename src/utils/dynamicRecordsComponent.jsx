@@ -10,11 +10,9 @@ import {
   upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, get,
 } from 'lodash';
 import { generateUri } from 'web-core';
-import DataType from '../constants/DataType';
+import ColumnTypes from './ColumnTypes';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
-
-const { DATE, DATETIME } = DataType;
 
 function generateService({ actions, primaryKey }) {
   const service = {
@@ -131,7 +129,7 @@ function generateRecordsPage({
   const customMultipleActions = customActions.filter(({ multiple }) => multiple);
   const customRowActions = customActions.filter(({ global }) => !global);
   const dateFilterSchemas = schema.filter(({ type, canFilter }) => (
-    canFilter && (type === DATE || type === DATETIME)
+    canFilter && (type === ColumnTypes.date || type === ColumnTypes.datetime)
   ));
 
   class Page extends React.PureComponent {

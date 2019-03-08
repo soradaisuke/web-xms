@@ -9,20 +9,16 @@ import {
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
-  has, isEqual, isNumber, join,
+  has, isEqual, isNumber,
 } from 'lodash';
 import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
-import DataType from '../constants/DataType';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
 import Page from './Page';
 import DatePickerWithPresets from '../components/DatePickerWithPresets';
+import ColumnTypes from '../utils/ColumnTypes';
 import './RecordsPage.less';
-
-const {
-  DATETIME, IMAGE, NUMBER, STRING, DATE, BOOL, ARRAY, OBJECT,
-} = DataType;
 
 const { Column } = Table;
 const { Search } = Input;
@@ -152,16 +148,7 @@ export default class RecordsPage extends React.PureComponent {
       updatePage, pagesize, sort, filter,
     } = this.props;
 
-    let searchValue;
-    switch (type) {
-      case NUMBER:
-        searchValue = parseInt(value, 10);
-        break;
-      default:
-        searchValue = String(value);
-        break;
-    }
-
+    const searchValue = type.formatSubmitValue(value);
     const search = searchValue || searchValue === 0 ? { [mapKey]: searchValue } : {};
 
     updatePage({
@@ -192,20 +179,10 @@ export default class RecordsPage extends React.PureComponent {
     const newFilter = reduce(schema, (acc, { key, type, mapKey }) => {
       const value = filters[key];
       const preValue = filter[key];
-      if ((type === DATE || type === DATETIME) && preValue) {
+      if ((type === ColumnTypes.date || type === ColumnTypes.datetime) && preValue) {
         acc[mapKey] = preValue;
       } else if (value && value.length > 0) {
-        switch (type) {
-          case NUMBER:
-            acc[mapKey] = parseInt(value[0], 10);
-            break;
-          case BOOL:
-            acc[mapKey] = (value[0] && value[0] !== 'false');
-            break;
-          default:
-            acc[mapKey] = String(value[0]);
-            break;
-        }
+        acc[mapKey] = type.formatSubmitValue(value[0]);
       }
       return acc;
     }, {});
@@ -303,18 +280,17 @@ export default class RecordsPage extends React.PureComponent {
       updatePage({
         filter: {
           ...filter,
-          [mapKey]: target.type === DATE
-            ? [date[0].format('YYYY-MM-DD'), date[1].format('YYYY-MM-DD')]
-            : [date[0].toISOString(), date[1].toISOString()],
+          [mapKey]: [
+            target.type.formatSubmitValue(date[0]),
+            target.type.formatSubmitValue(date[1]),
+          ],
         },
       });
     } else {
       updatePage({
         filter: {
           ...filter,
-          [mapKey]: target.type === DATE
-            ? date.format('YYYY-MM-DD')
-            : date.toISOString(),
+          [mapKey]: target.type.formatSubmitValue(date),
         },
       });
     }
@@ -331,31 +307,12 @@ export default class RecordsPage extends React.PureComponent {
     canFilter, inlineEdit, form: formConfig,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (!(type === DATE || type === DATETIME) && has(filter, mapKey) ? String(filter[mapKey]) : '');
-    let renderValueFunc;
-    switch (type) { // 默认的渲染值函数根据数据类型不同而不同
-      case DATETIME:
-        renderValueFunc = v => (v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '');
-        break;
-      case DATE:
-        renderValueFunc = v => (v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '');
-        break;
-      case BOOL:
-        renderValueFunc = v => (v ? '是' : '否');
-        break;
-      case ARRAY:
-        renderValueFunc = v => (v ? join(v, ',') : '');
-        break;
-      case OBJECT:
-        renderValueFunc = v => (v ? join(map(v, value => value), ',') : '');
-        break;
-      default:
-        renderValueFunc = v => v;
-        break;
-    }
+    const filteredValue = (type.canUseColumnFliter() && has(filter, mapKey) ? String(filter[mapKey]) : '');
+    let renderValueFunc = type.renderValue;
+
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
-    } else if (isArray(filters) && type !== DATE && type !== DATETIME) {
+    } else if (isArray(filters) && type.canUseColumnFliter()) {
       renderValueFunc = (v) => {
         const filtered = find(filters, f => f.value === v);
         return filtered ? filtered.text : v;
@@ -372,14 +329,14 @@ export default class RecordsPage extends React.PureComponent {
             </RecordLink>
           </span>
         );
-      } else if (type === IMAGE) {
+      } else if (type === ColumnTypes.image) {
         render = (value) => {
           const src = generateUpYunImageUrl(value, `/both/${imageSize || '100x100'}`);
           const style = width ? { width: isNumber(width) ? `${width}px` : width } : {};
 
           return <img alt="" src={src} style={style} />;
         };
-      } else if (inlineEdit && type === STRING) {
+      } else if (inlineEdit && type.canInlineEdit()) {
         render = (value, record = {}) => (
           <Input.TextArea
             key={value}
@@ -417,7 +374,7 @@ export default class RecordsPage extends React.PureComponent {
         filtered: !!filteredValue,
         filteredValue: filteredValue ? [filteredValue] : [],
         filterMultiple: false,
-        filters: type === DATE || type === DATETIME ? [] : enabledFilters,
+        filters: !type.canUseColumnFliter() ? [] : enabledFilters,
       } : {};
 
       return (
@@ -654,8 +611,8 @@ export default class RecordsPage extends React.PureComponent {
             rangeFilter
               ? (
                 <DatePicker.RangePicker
-                  showTime={type === DATETIME}
-                  format={type === DATETIME ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
+                  showTime={type.showTime()}
+                  format={type.getFormat()}
                   value={has(filter, mapKey) && isArray(filter[mapKey])
                     && moment(filter[mapKey][0]).isValid()
                     && moment(filter[mapKey][1]).isValid()
@@ -672,8 +629,8 @@ export default class RecordsPage extends React.PureComponent {
                 <DatePickerWithPresets
                   value={has(filter, mapKey) && moment(filter[mapKey]).isValid()
                     ? moment(filter[mapKey]) : null}
-                  showTime={type === DATETIME}
-                  format={type === DATETIME ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'}
+                  showTime={type.showTime()}
+                  format={type.getFormat()}
                   presets={filters}
                   onChange={newDate => (
                     this.onChangeDateFilter(mapKey, newDate)

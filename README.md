@@ -14,13 +14,24 @@ const app = xms(config);
 app.start();
 ```
 
-## DateType
+## ColumnTypes `DateType is Deperated`
 数据类型定义
 
 ```javascript
-import { DateType } from 'xms';
+import { ColumnTypes } from 'xms';
 
-const { NUMBER, STRING, DATETIME, ORDER, IMAGE, ENUM, URL, DATE, BOOL, ARRAY } = DataType;
+ColumnTypes.string
+ColumnTypes.number
+ColumnTypes.bool
+ColumnTypes.date
+ColumnTypes.datetime
+ColumnTypes.order
+ColumnTypes.image
+ColumnTypes.url
+ColumnTypes.enumOf(ColumnTypes.string...)
+ColumnTypes.arrayOf(ColumnTypes.string...)
+ColumnTypes.objectOf(ColumnTypes.string...)
+
 ```
 ## request
 网络请求
