@@ -8,7 +8,6 @@ const ENUM = 'enum';
 const URL = 'url';
 const BOOL = 'bool';
 const ARRAY = 'array';
-const OBJECT = 'object';
 export default {
   NUMBER,
   STRING,
@@ -20,5 +19,4 @@ export default {
   URL,
   BOOL,
   ARRAY,
-  OBJECT,
 };

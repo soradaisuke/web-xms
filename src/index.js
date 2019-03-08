@@ -10,4 +10,4 @@ export DatePickerWithPresets from './components/DatePickerWithPresets';
 export history from './utils/history';
 export textToPath from './utils/textToPath';
 export AudioPlayer from './components/Common/AudioPlayer';
-export CommonArraylikeItems from './components/FormItems/CommonArraylikeItems';
+export CommonArray from './components/FormItems/CommonArray';

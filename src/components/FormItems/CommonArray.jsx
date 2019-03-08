@@ -1,17 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { keys, size } from 'lodash';
-import shortId from 'shortid';
+import { size, remove } from 'lodash';
 import {
   Icon, Row, Input, Button, Col,
 } from 'antd';
 
-export default class CommonArraylikeItems extends React.PureComponent {
-  static displayName = 'CommonArraylikeItems';
+export default class CommonArray extends React.PureComponent {
+  static displayName = 'CommonArray';
 
   static propTypes = {
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
-    value: PropTypes.shape({}), // eslint-disable-line react/require-default-props
+    value: PropTypes.arrayOf([]), // eslint-disable-line react/require-default-props
+    generateValue: PropTypes.func, // (preValue, nextValue) => newValue
+    renderValue: PropTypes.func, // (value, index) => renderValue(string)
     style: PropTypes.shape({}),
     max: PropTypes.number,
     placeholder: PropTypes.string,
@@ -23,62 +24,55 @@ export default class CommonArraylikeItems extends React.PureComponent {
     style: { marginTop: '10px', width: '80%', marginRight: 8 },
     placeholder: '请输入一个值',
     enableAdd: true,
+    generateValue: (_, nextValue) => (nextValue || ''),
+    renderValue: v => v,
   };
 
   componentDidMount() {
-    const { value, onChange, enableAdd } = this.props;
+    const { value, enableAdd } = this.props;
     if (!size(value) && enableAdd) {
-      onChange({
-        [shortId.generate()]: '',
-      });
+      this.add();
     }
   }
 
   add = () => {
-    const { onChange, value } = this.props;
-    onChange({
-      ...value,
-      [shortId.generate()]: '',
-    });
+    const { onChange, value, generateValue } = this.props;
+    value.push(generateValue());
+    onChange(value);
   }
 
-  remove = (k) => {
+  remove = (index) => {
     const { onChange, value } = this.props;
-    delete value[k];
-    onChange({
-      ...value,
-    });
+    onChange(remove(value, (_, i) => i !== index));
   }
 
-  onChange = (k, v) => {
-    const { onChange, value } = this.props;
-    onChange({
-      ...value,
-      [k]: v,
-    });
+  onChange = (index, v) => {
+    const { onChange, value, generateValue } = this.props;
+    onChange(value.map((preValue, i) => (i === index ? generateValue(preValue, v) : preValue)));
   }
 
   render() {
     const {
-      value, max, style, placeholder, enableAdd,
+      value, max, style, placeholder, enableAdd, renderValue,
     } = this.props;
     return (
       <Col>
         {
-          size(value) > 0 && keys(value).map(k => (
-            <Row key={k}>
+          size(value) > 0 && value.map((v, i) => (
+            /* eslint-disable-next-line react/no-array-index-key */
+            <Row key={i}>
               <Input
                 placeholder={placeholder}
                 style={style}
-                value={value[k]}
-                onChange={e => this.onChange(k, e.target.value)}
+                value={renderValue(v)}
+                onChange={e => this.onChange(i, e.target.value)}
               />
               {
                 size(value) > 1 && (
                   <Icon
                     style={{ fontSize: '18px', color: 'rgb(255, 0, 0)' }}
                     type="minus-circle-o"
-                    onClick={() => this.remove(k)}
+                    onClick={() => this.remove(i)}
                   />
                 )
               }

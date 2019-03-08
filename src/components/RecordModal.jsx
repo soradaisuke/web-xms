@@ -12,11 +12,11 @@ import {
 import ActivatorModal from './ActivatorModal';
 import UploadImage from './FormItems/UploadImage';
 import DataType from '../constants/DataType';
-import CommonArraylikeItems from './FormItems/CommonArraylikeItems';
+import CommonArray from './FormItems/CommonArray';
 
 const FormItem = Form.Item;
 const {
-  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME, ARRAY, OBJECT,
+  STRING, NUMBER, URL, ENUM, IMAGE, DATE, DATETIME, ARRAY,
 } = DataType;
 
 class RecordModal extends React.PureComponent {
@@ -59,8 +59,6 @@ class RecordModal extends React.PureComponent {
             const formConfig = targetSchema.form || {};
             if (isFunction(formConfig.generateSubmitValue)) {
               formatValues[key] = formConfig.generateSubmitValue(value);
-            } else if (targetSchema.type === ARRAY) {
-              formatValues[key] = value.map(v => v);
             } else {
               formatValues[key] = value;
             }
@@ -97,13 +95,8 @@ class RecordModal extends React.PureComponent {
     let initialValue = this.isEdit() ? get(record, key) : '';
     if (isFunction(formConfig.generateInitValue)) {
       initialValue = formConfig.generateInitValue(initialValue);
-    } else if (type === ARRAY) {
-      initialValue = {};
-      if (get(record, key)) {
-        forEach(get(record, key), (v, i) => {
-          initialValue[String(i)] = v;
-        });
-      }
+    } else if (!initialValue && type === ARRAY) {
+      initialValue = [];
     }
 
     let children;
@@ -188,7 +181,6 @@ class RecordModal extends React.PureComponent {
         ) : null;
         break;
       case ARRAY:
-      case OBJECT:
         children = enable ? getFieldDecorator(mapKey, {
           initialValue,
           validateFirst: true,
@@ -196,11 +188,13 @@ class RecordModal extends React.PureComponent {
             required: !formConfig.optional, message: `${title}不能为空`,
           }].concat(formConfig.rules || []),
         })(
-          <CommonArraylikeItems
+          <CommonArray
             title={formConfig.tip}
             max={formConfig.max}
             placeholder={formConfig.placeholder}
             enableAdd={formConfig.enableAdd}
+            generateValue={formConfig.arrayGenerateValue}
+            renderValue={formConfig.arrayRenderValue}
           />,
         ) : null;
         break;
