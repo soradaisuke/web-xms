@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { map } from 'lodash';
 import Page from './Page';
 
 export default class RecordPage extends React.PureComponent {
@@ -24,9 +25,19 @@ export default class RecordPage extends React.PureComponent {
 
   renderRoutes() {
     const { routes } = this.props;
-    if (routes && routes.length === 1) {
-      const Component = routes[0].component;
-      return <Component />;
+    if (routes && routes.length) {
+      return map(routes, ({ component: Component, path, title = '' }) => (
+        <React.Fragment key={path}>
+          {
+            title && (
+              <span style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '10px' }}>
+                {title}
+              </span>
+            )
+          }
+          <Component />
+        </React.Fragment>
+      ));
     }
 
     return null;
