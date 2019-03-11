@@ -10,7 +10,7 @@ export default class CommonArray extends React.PureComponent {
 
   static propTypes = {
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
-    value: PropTypes.arrayOf([]), // eslint-disable-line react/require-default-props
+    value: PropTypes.arrayOf(PropTypes.any), // eslint-disable-line react/require-default-props
     generateValue: PropTypes.func, // (preValue, nextValue) => newValue
     renderValue: PropTypes.func, // (value, index) => renderValue(string)
     style: PropTypes.shape({}),
@@ -37,8 +37,11 @@ export default class CommonArray extends React.PureComponent {
 
   add = () => {
     const { onChange, value, generateValue } = this.props;
-    value.push(generateValue());
-    onChange(value);
+    if (!value) {
+      onChange([generateValue()]);
+    } else {
+      onChange(value.concat([generateValue()]));
+    }
   }
 
   remove = (index) => {
