@@ -79,10 +79,11 @@ class RecordModal extends React.PureComponent {
     key, type, title, user,
   }) {
     const { form, record, schema } = this.props;
-    const { getFieldDecorator } = form;
+    const { getFieldDecorator, getFieldsValue } = form;
     const targetSchema = find(schema, { key }) || {};
     const { form: formConfig = {}, filters = [], mapKey } = targetSchema;
-    const enable = isFunction(formConfig.enable) ? formConfig.enable(form, record) : true;
+    const enable = isFunction(formConfig.enable)
+      ? formConfig.enable(getFieldsValue(), record) : true;
 
     if (!enable) {
       return null;
@@ -110,7 +111,7 @@ class RecordModal extends React.PureComponent {
         .concat(formConfig.rules || []),
       ...type.getFormExtraConfig(),
     })(type.renderFormItem({
-      ...formConfig, title, filters, user,
+      ...formConfig, title, filters, user, formFieldValues: getFieldsValue(),
     })) : null;
 
     if (children) {

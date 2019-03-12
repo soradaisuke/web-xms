@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  Input, InputNumber, Select, DatePicker,
+  Input, InputNumber, DatePicker,
 } from 'antd';
 import {
   toNumber, toString, join, map,
 } from 'lodash';
 import moment from 'moment';
+import Select from '../components/FormItems/Select';
 import UploadImage from '../components/FormItems/UploadImage';
 import CommonArray from '../components/FormItems/CommonArray';
 
@@ -331,17 +332,15 @@ class EnumColumnType extends BaseColumnType {
     return true;
   }
 
-  renderFormItem({ filters }) { // eslint-disable-line class-methods-use-this
+  renderFormItem({ // eslint-disable-line class-methods-use-this
+    filters, selectProps = {}, formFieldValues,
+  }) {
     return (
-      <Select allowClear placeholder="请选择一个选项" getPopupContainer={trigger => trigger.parentNode}>
-        {
-          filters.map(op => (
-            <Select.Option key={op.value} value={op.value}>
-              {op.text}
-            </Select.Option>
-          ))
-        }
-      </Select>
+      <Select
+        options={map(filters, item => ({ key: item.value, children: item.text }))}
+        formFieldValues={formFieldValues}
+        {...selectProps}
+      />
     );
   }
 }

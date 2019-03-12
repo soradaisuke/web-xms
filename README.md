@@ -229,7 +229,7 @@ ref获得节点后可以调用的方法有
 | :---- | :---- | :---- | :---- |
 | placeholder | placeholder | string | '' |
 | optional | 表单中是否是可选项，不指定则该项在表单中不能为空 | bool | false |
-| enable | 表单中是否可见，返回true的时候可见 | Function(form, record) | - |
+| enable | 表单中是否可见，返回true的时候可见 | Function(formFieldValues, record) | - |
 | rules | 在表单中的校验规则，详见[antd的form](https://ant.design/components/form-cn/)的rules | array | [] |
 | generateSubmitValue | 支持数据在表单提交之前进行自定义 | Function(value) | - |
 | generateInitValue | 支持数据在表单初始化时进行自定义 | Function(value) | - |
@@ -237,6 +237,13 @@ ref获得节点后可以调用的方法有
 | enableAdd | ARRAY数据是否可以添加项 | bool | '' |
 | arrayGenerateValue | 非字符串ARRAY类型必须要定义此项，返回string类型的新数据值 | Function(preValue, nextValue) | - |
 | arrayRenderValue | 非字符串ARRAY类型必须要定义此项，接收的数据是数组里的一项，返回该项在Input组件里的value | Function(value) | - |
+| selectProps | enum类型数据在表单中的配置，详见[selectProps](#selectProps) | object | - |
+
+# selectProps
+支持antd的Select的除value, onChange, onSearch以外的其他props，详见[antd Select](https://ant.design/components/select-cn/#Select-props)。
+| 参数 | 说明 | 类型 | 默认值 |
+| :---- | :---- | :---- | :---- |
+| onSearch | 当showSearch=true时Select的onSearch会调用此函数。参数：value：同Select的onSearc(value)的value；formFieldValues：form里的所有field的当前值；cb：回调函数，调用cb(options)会重新设置options。options形如[{key: 'key1', children: '显示的文字', ...}]，每一项数据的key:value可以参考[antd Select.Option的props](https://ant.design/components/select-cn/#Option-props)，其中特殊的是children，用到的地方是<Select.Option>{children}</Select.Option>| Function(value, formFieldValues, cb) | () => {} |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |
