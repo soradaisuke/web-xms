@@ -237,7 +237,7 @@ ref获得节点后可以调用的方法有
 | enableAdd | ARRAY数据是否可以添加项 | bool | '' |
 | arrayGenerateValue | 非字符串ARRAY类型必须要定义此项，返回string类型的新数据值 | Function(preValue, nextValue) | - |
 | arrayRenderValue | 非字符串ARRAY类型必须要定义此项，接收的数据是数组里的一项，返回该项在Input组件里的value | Function(value) | - |
-| selectProps | enum类型数据在表单中的配置，详见[selectProps](#selectProps) | object | - |
+| formItemProps | 根据schema的不同type支持antd的不同组件的props。特殊的：enum类型数据详见[selectProps](#selectProps) | object | - |
 
 # selectProps
 支持antd的Select的除value, onChange, onSearch以外的其他props，详见[antd Select](https://ant.design/components/select-cn/#Select-props)。

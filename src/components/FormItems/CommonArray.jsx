@@ -17,6 +17,7 @@ export default class CommonArray extends React.PureComponent {
     max: PropTypes.number,
     placeholder: PropTypes.string,
     enableAdd: PropTypes.bool,
+    formItemProps: PropTypes.shape({}),
   };
 
   static defaultProps = {
@@ -26,6 +27,7 @@ export default class CommonArray extends React.PureComponent {
     enableAdd: true,
     generateValue: (_, nextValue) => (nextValue || ''),
     renderValue: v => v,
+    formItemProps: {},
   };
 
   componentDidMount() {
@@ -56,7 +58,7 @@ export default class CommonArray extends React.PureComponent {
 
   render() {
     const {
-      value, max, style, placeholder, enableAdd, renderValue,
+      value, max, style, placeholder, enableAdd, renderValue, formItemProps,
     } = this.props;
     return (
       <Col>
@@ -69,6 +71,7 @@ export default class CommonArray extends React.PureComponent {
                 style={style}
                 value={renderValue(v)}
                 onChange={e => this.onChange(i, e.target.value)}
+                {...formItemProps}
               />
               {
                 size(value) > 1 && (

@@ -147,15 +147,15 @@ class PrimitiveColumnType extends BaseColumnType {
     }
   }
 
-  renderFormItem({ placeholder, title }) {
+  renderFormItem({ placeholder, title, formItemProps = {} }) {
     switch (this.primitiveType) {
       case TYPES.NUMBER:
         return (
-          <InputNumber placeholder={placeholder || `请输入${title}`} />
+          <InputNumber placeholder={placeholder || `请输入${title}`} {...formItemProps} />
         );
       case TYPES.STRING:
         return (
-          <Input placeholder={placeholder || `请输入${title}`} />
+          <Input placeholder={placeholder || `请输入${title}`} {...formItemProps} />
         );
       default:
         return super.renderFormItem();
@@ -206,9 +206,9 @@ class DateColumnType extends BaseColumnType {
     return v.format(this.getFormat());
   }
 
-  renderFormItem() {
+  renderFormItem({ formItemProps = {} }) {
     return (
-      <DatePicker showTime={this.showTime()} />
+      <DatePicker showTime={this.showTime()} {...formItemProps} />
     );
   }
 
@@ -253,9 +253,9 @@ class DateTimeColumnType extends BaseColumnType {
     return v.toISOString();
   }
 
-  renderFormItem() {
+  renderFormItem({ formItemProps = {} }) {
     return (
-      <DatePicker showTime={this.showTime()} />
+      <DatePicker showTime={this.showTime()} {...formItemProps} />
     );
   }
 
@@ -368,9 +368,11 @@ class UrlColumnType extends BaseColumnType {
     return TYPES.URL;
   }
 
-  renderFormItem({ placeholder, title }) { // eslint-disable-line class-methods-use-this
+  renderFormItem({ // eslint-disable-line class-methods-use-this
+    placeholder, title, formItemProps = {},
+  }) {
     return (
-      <Input placeholder={placeholder || `请输入${title}`} />
+      <Input placeholder={placeholder || `请输入${title}`} {...formItemProps} />
     );
   }
 }
@@ -394,7 +396,7 @@ class ArrayColumnType extends BaseColumnType {
   }
 
   renderFormItem({ // eslint-disable-line class-methods-use-this
-    tip, max, placeholder, enableAdd, arrayGenerateValue, arrayRenderValue,
+    tip, max, placeholder, enableAdd, arrayGenerateValue, arrayRenderValue, formItemProps,
   }) {
     return (
       <CommonArray
@@ -404,6 +406,7 @@ class ArrayColumnType extends BaseColumnType {
         enableAdd={enableAdd}
         generateValue={arrayGenerateValue}
         renderValue={arrayRenderValue}
+        formItemProps={formItemProps}
       />
     );
   }
