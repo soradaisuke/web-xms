@@ -50,6 +50,8 @@ class RecordModal extends React.PureComponent {
             const formConfig = targetSchema.form || {};
             if (isFunction(formConfig.generateSubmitValue)) {
               formatValues[key] = formConfig.generateSubmitValue(value);
+            } else if (isFunction(targetSchema.type.formatSubmitValue)) {
+              formatValues[key] = targetSchema.type.formatSubmitValue(value);
             } else {
               formatValues[key] = value;
             }

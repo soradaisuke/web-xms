@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  Input, InputNumber, DatePicker,
+  Input, InputNumber, DatePicker, TimePicker,
 } from 'antd';
 import {
-  toNumber, toString, join, map,
+  toNumber, toString, join, map, isNumber,
 } from 'lodash';
 import moment from 'moment';
 import Select from '../components/FormItems/Select';
@@ -22,6 +22,7 @@ const TYPES = {
   ARRAY: 'array',
   OBJECT: 'object',
   ENUM: 'enum',
+  TIME: 'time',
 };
 
 class BaseColumnType {
@@ -274,6 +275,53 @@ class DateTimeColumnType extends BaseColumnType {
   }
 }
 
+class TimeColumnType extends BaseColumnType {
+  constructor() {
+    super();
+    this.innerColumnType = string;
+  }
+
+  canShowInForm() { // eslint-disable-line class-methods-use-this
+    return true;
+  }
+
+  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+    return null;
+  }
+
+  getName() { // eslint-disable-line class-methods-use-this
+    return TYPES.TIME;
+  }
+
+  formatFormValue(v) { // eslint-disable-line class-methods-use-this
+    return isNumber(v) ? moment.utc(Math.abs(moment.duration(v, 's'))) : moment.utc(0);
+  }
+
+  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+    return v ? v.diff(moment.utc(0), 's') : 0;
+  }
+
+  renderFormItem({ formItemProps = {} }) { // eslint-disable-line class-methods-use-this
+    return (
+      <TimePicker defaultOpenValue={moment.utc(0)} {...formItemProps} />
+    );
+  }
+
+  renderValue = v => (
+    isNumber(v)
+      ? moment.utc(Math.abs(moment.duration(v, 's'))).format(this.getFormat())
+      : ''
+  );
+
+  getFormat() { // eslint-disable-line class-methods-use-this
+    return 'HH:mm:ss';
+  }
+
+  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+    return false;
+  }
+}
+
 class OrderColumnType extends BaseColumnType {
   constructor() {
     super();
@@ -433,6 +481,7 @@ export default {
   bool,
   date: new DateColumnType(),
   datetime: new DateTimeColumnType(),
+  time: new TimeColumnType(),
   order: new OrderColumnType(),
   image: new ImageColumnType(),
   url: new UrlColumnType(),

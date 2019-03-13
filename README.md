@@ -28,6 +28,7 @@ ColumnTypes.datetime
 ColumnTypes.order
 ColumnTypes.image
 ColumnTypes.url
+ColumnTypes.time
 ColumnTypes.enumOf(ColumnTypes.string...)
 ColumnTypes.arrayOf(ColumnTypes.string...)
 ColumnTypes.objectOf(ColumnTypes.string...)
