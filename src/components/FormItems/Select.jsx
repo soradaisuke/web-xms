@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select as AntdSelect } from 'antd';
+import { isUndefined } from 'lodash';
 
 export default class Select extends React.PureComponent {
   static displayName = 'Select';
@@ -59,8 +60,11 @@ export default class Select extends React.PureComponent {
         {...props}
       >
         {
-          options.map(({ children, ...opProps }) => (
-            <AntdSelect.Option {...opProps}>
+          options.map(({ children, value, ...opProps }) => (
+            <AntdSelect.Option
+              value={isUndefined(value) ? opProps.key : value}
+              {...opProps}
+            >
               {children}
             </AntdSelect.Option>
           ))
