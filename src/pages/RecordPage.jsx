@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Divider } from 'antd';
 import { map } from 'lodash';
 import Page from './Page';
 
@@ -28,13 +29,7 @@ export default class RecordPage extends React.PureComponent {
     if (routes && routes.length) {
       return map(routes, ({ component: Component, path, title = '' }) => (
         <React.Fragment key={path}>
-          {
-            title && (
-              <span style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '10px' }}>
-                {title}
-              </span>
-            )
-          }
+          <Divider>{title}</Divider>
           <Component />
         </React.Fragment>
       ));

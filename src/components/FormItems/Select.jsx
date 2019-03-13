@@ -60,9 +60,9 @@ export default class Select extends React.PureComponent {
         {...props}
       >
         {
-          options.map(({ children, value, ...opProps }) => (
+          options.map(({ children, value: v, ...opProps }) => (
             <AntdSelect.Option
-              value={isUndefined(value) ? opProps.key : value}
+              value={isUndefined(v) ? opProps.key : v}
               {...opProps}
             >
               {children}
