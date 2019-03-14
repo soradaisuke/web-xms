@@ -46,7 +46,7 @@ class RecordModal extends React.PureComponent {
         if (!err) {
           const formatValues = {};
           forEach(values, (value, key) => {
-            const targetSchema = find(schema, { key }) || {};
+            const targetSchema = find(schema, { mapKey: key }) || {};
             const formConfig = targetSchema.form || {};
             if (isFunction(formConfig.generateSubmitValue)) {
               formatValues[key] = formConfig.generateSubmitValue(value);
