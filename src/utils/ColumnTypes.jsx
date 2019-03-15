@@ -9,6 +9,7 @@ import moment from 'moment';
 import Select from '../components/FormItems/Select';
 import UploadImage from '../components/FormItems/UploadImage';
 import CommonArray from '../components/FormItems/CommonArray';
+import InlineAudioPlayer from '../components/Common/InlineAudioPlayer';
 
 const TYPES = {
   NUMBER: 'number',
@@ -23,6 +24,7 @@ const TYPES = {
   OBJECT: 'object',
   ENUM: 'enum',
   TIME: 'time',
+  AUDIO: 'audio',
 };
 
 class BaseColumnType {
@@ -322,6 +324,38 @@ class TimeColumnType extends BaseColumnType {
   }
 }
 
+
+class AudioColumnType extends BaseColumnType {
+  constructor() {
+    super();
+    this.innerColumnType = string;
+  }
+
+  canShowInForm() { // eslint-disable-line class-methods-use-this
+    return false;
+  }
+
+  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+    return null;
+  }
+
+  getName() { // eslint-disable-line class-methods-use-this
+    return TYPES.AUDIO;
+  }
+
+  renderValue = v => (
+    v ? <InlineAudioPlayer url={v} /> : ''
+  );
+
+  getFormat() { // eslint-disable-line class-methods-use-this
+    return '';
+  }
+
+  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+    return false;
+  }
+}
+
 class OrderColumnType extends BaseColumnType {
   constructor() {
     super();
@@ -485,6 +519,7 @@ export default {
   order: new OrderColumnType(),
   image: new ImageColumnType(),
   url: new UrlColumnType(),
+  audio: new AudioColumnType(),
   enumOf: innerColumnType => new EnumColumnType(innerColumnType),
   arrayOf: innerColumnType => new ArrayColumnType(innerColumnType),
   objectOf: innerColumnType => new ObjectColumnType(innerColumnType),

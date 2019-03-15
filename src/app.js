@@ -8,6 +8,7 @@ import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';
 import defaultConfig from './defaultConfig';
 import router from './router';
+import audio from './models/audio';
 
 export default function xms(config = {}) {
   const app = dva({
@@ -30,6 +31,7 @@ export default function xms(config = {}) {
         throw new Error('域名必须是*.qingtingfm.com');
       }
       app.model(generateUserModel(login));
+      app.model(audio);
     }
     app.routes = processRoutes({ app, routes });
     app.router(router);
