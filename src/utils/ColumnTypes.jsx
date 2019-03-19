@@ -296,22 +296,22 @@ class TimeColumnType extends BaseColumnType {
   }
 
   formatFormValue(v) { // eslint-disable-line class-methods-use-this
-    return isNumber(v) ? moment.utc(Math.abs(moment.duration(v, 's'))) : moment.utc(0);
+    return isNumber(v) ? moment().startOf('day').add(v, 's') : null;
   }
 
   formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
-    return v ? v.diff(moment.utc(0), 's') : 0;
+    return v ? v.diff(moment(v).startOf('day'), 's') : 0;
   }
 
   renderFormItem({ formItemProps = {} }) { // eslint-disable-line class-methods-use-this
     return (
-      <TimePicker defaultOpenValue={moment.utc(0)} {...formItemProps} />
+      <TimePicker defaultOpenValue={moment().startOf('day')} {...formItemProps} />
     );
   }
 
   renderValue = v => (
     isNumber(v)
-      ? moment.utc(Math.abs(moment.duration(v, 's'))).format(this.getFormat())
+      ? moment().startOf('day').add(v, 's').format(this.getFormat())
       : ''
   );
 
