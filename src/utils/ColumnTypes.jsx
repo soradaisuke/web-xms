@@ -3,7 +3,7 @@ import {
   Input, InputNumber, DatePicker, TimePicker,
 } from 'antd';
 import {
-  toNumber, toString, join, map, isNumber,
+  toNumber, toString, join, map, isNumber, isArray,
 } from 'lodash';
 import moment from 'moment';
 import Select from '../components/FormItems/Select';
@@ -40,7 +40,7 @@ class BaseColumnType {
     return false;
   }
 
-  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
     return true;
   }
 
@@ -225,7 +225,7 @@ class DateColumnType extends BaseColumnType {
     return 'YYYY-MM-DD';
   }
 
-  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
     return false;
   }
 }
@@ -272,7 +272,7 @@ class DateTimeColumnType extends BaseColumnType {
     return 'YYYY-MM-DD HH:mm:ss';
   }
 
-  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
     return false;
   }
 }
@@ -319,7 +319,7 @@ class TimeColumnType extends BaseColumnType {
     return 'HH:mm:ss';
   }
 
-  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
     return false;
   }
 }
@@ -351,7 +351,7 @@ class AudioColumnType extends BaseColumnType {
     return '';
   }
 
-  canUseColumnFliter() { // eslint-disable-line class-methods-use-this
+  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
     return false;
   }
 }
@@ -425,6 +425,8 @@ class EnumColumnType extends BaseColumnType {
       />
     );
   }
+
+  renderValue = values => (isArray(values) ? join(map(values, v => this.innerColumnType.renderValue(v)), ',') : values);
 }
 
 class UrlColumnType extends BaseColumnType {

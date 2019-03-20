@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
-  has, isEqual, isNumber,
+  has, isEqual, isNumber, get,
 } from 'lodash';
 import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
@@ -176,13 +176,19 @@ export default class RecordsPage extends React.PureComponent {
     } else {
       newSort = '';
     }
-    const newFilter = reduce(schema, (acc, { key, type, mapKey }) => {
-      const value = filters[key];
-      const preValue = filter[key];
+    const newFilter = reduce(schema, (acc, {
+      key, type, mapKey, filterMultiple,
+    }) => {
+      const value = get(filters, key);
+      const preValue = get(filter, key);
       if ((type === ColumnTypes.date || type === ColumnTypes.datetime) && preValue) {
         acc[mapKey] = preValue;
       } else if (value && value.length > 0) {
-        acc[mapKey] = type.formatSubmitValue(value[0]);
+        if (filterMultiple) {
+          acc[mapKey] = value.map(v => type.formatSubmitValue(v));
+        } else {
+          acc[mapKey] = type.formatSubmitValue(value[0]);
+        }
       }
       return acc;
     }, {});
@@ -304,16 +310,23 @@ export default class RecordsPage extends React.PureComponent {
   renderColumn({
     visibility, link, title, key, sort, mapKey, width,
     type, imageSize, renderValue, filters, enabledFilters,
-    canFilter, inlineEdit, form: formConfig,
+    canFilter, inlineEdit, form: formConfig, filterMultiple = false,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (type.canUseColumnFliter() && has(filter, mapKey) ? String(filter[mapKey]) : '');
+    const filteredValue = (type.canUseColumnFilter() && filter[mapKey]
+      ? filter[mapKey] : []);
     let renderValueFunc = type.renderValue;
 
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
-    } else if (isArray(filters) && type.canUseColumnFliter()) {
+    } else if (isArray(filters) && type.canUseColumnFilter()) {
       renderValueFunc = (v) => {
+        if (isArray(v)) {
+          return v.map((item) => {
+            const filtered = find(filters, f => f.value === item);
+            return filtered ? filtered.text : item;
+          }).join('，');
+        }
         const filtered = find(filters, f => f.value === v);
         return filtered ? filtered.text : v;
       };
@@ -371,10 +384,10 @@ export default class RecordsPage extends React.PureComponent {
       }
 
       const filterProps = canFilter && isArray(enabledFilters) && enabledFilters.length > 0 ? {
-        filtered: !!filteredValue,
-        filteredValue: filteredValue ? [filteredValue] : [],
-        filterMultiple: false,
-        filters: !type.canUseColumnFliter() ? [] : enabledFilters,
+        filterMultiple,
+        filtered: isArray(filteredValue) ? !!filteredValue.length : !!filteredValue,
+        filteredValue: isArray(filteredValue) ? filteredValue : [filteredValue],
+        filters: !type.canUseColumnFilter() ? [] : enabledFilters,
       } : {};
 
       return (
