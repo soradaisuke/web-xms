@@ -515,7 +515,7 @@ export default class RecordsPage extends React.PureComponent {
     const {
       edit, remove, order, customRowActions, schema,
     } = this.props;
-    return (edit || remove || customRowActions.length > 0) ? (
+    return (edit || remove || customRowActions.length > 0 || order) ? (
       <Column
         title="操作"
         key="action"
