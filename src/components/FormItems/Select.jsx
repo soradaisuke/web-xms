@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select as AntdSelect } from 'antd';
-import { isUndefined } from 'lodash';
+import { isUndefined, debounce } from 'lodash';
 
 export default class Select extends React.PureComponent {
   static displayName = 'Select';
@@ -32,12 +32,12 @@ export default class Select extends React.PureComponent {
     };
   }
 
-  onSearch = (value) => {
+  onSearch = debounce((value) => {
     const { onSearch, showSearch, formFieldValues } = this.props;
     if (showSearch) {
       onSearch(value, formFieldValues, newOptions => this.setState({ options: newOptions }));
     }
-  }
+  }, 400)
 
   onChange = (value) => {
     const { onChange } = this.props;

@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
-  has, isEqual, isNumber, get,
+  has, isEqual, isNumber, get, isUndefined,
 } from 'lodash';
 import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
@@ -313,7 +313,7 @@ export default class RecordsPage extends React.PureComponent {
     canFilter, inlineEdit, form: formConfig, filterMultiple = false,
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (type.canUseColumnFilter() && filter[mapKey]
+    const filteredValue = (type.canUseColumnFilter() && !isUndefined(filter[mapKey])
       ? filter[mapKey] : []);
     let renderValueFunc = type.renderValue;
 
@@ -385,8 +385,9 @@ export default class RecordsPage extends React.PureComponent {
 
       const filterProps = canFilter && isArray(enabledFilters) && enabledFilters.length > 0 ? {
         filterMultiple,
-        filtered: isArray(filteredValue) ? !!filteredValue.length : !!filteredValue,
-        filteredValue: isArray(filteredValue) ? filteredValue : [filteredValue],
+        filtered: isArray(filteredValue) ? !!filteredValue.length : !isUndefined(filteredValue),
+        filteredValue: isArray(filteredValue)
+          ? filteredValue : [String(filteredValue)],
         filters: !type.canUseColumnFilter() ? [] : enabledFilters,
       } : {};
 

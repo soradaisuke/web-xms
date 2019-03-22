@@ -1,5 +1,5 @@
 import {
-  isPlainObject, isArray, map, flatten, filter, forEach, join,
+  isPlainObject, isArray, map, flatten, filter, forEach, join, isNumber,
 } from 'lodash';
 import ColumnTypes from './ColumnTypes';
 import DataType from '../constants/DataType';
@@ -145,7 +145,7 @@ export default function processGroupConfig({ config, path }) {
       forEach(definition.filters, ({ value, default: d }) => {
         if (d) {
           defaultFilter = defaultFilter || {};
-          defaultFilter[definition.mapKey] = value;
+          defaultFilter[definition.mapKey] = isNumber(value) ? String(value) : value;
         }
       });
     }
