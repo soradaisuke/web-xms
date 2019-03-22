@@ -35,7 +35,7 @@
     "reselect": "^3.0.1",
     "shortid": "^2.2.14",
     "url-parse": "^1.4.1",
-    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#642ad13"
+    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#67e0cfb"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-rc.1",

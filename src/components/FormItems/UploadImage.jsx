@@ -15,6 +15,7 @@ export default class UploadImage extends React.PureComponent {
     ssoToken: PropTypes.string,
     modalWidth: PropTypes.string,
     fileMaxSize: PropTypes.number, // 单位MB
+    bucket: PropTypes.string,
   };
 
   static defaultProps = {
@@ -22,6 +23,7 @@ export default class UploadImage extends React.PureComponent {
     ssoToken: '',
     fileMaxSize: 5,
     modalWidth: '500px',
+    bucket: '',
   };
 
   state = {
@@ -65,11 +67,11 @@ export default class UploadImage extends React.PureComponent {
   }
 
   uploadImage = (options) => {
-    const { ssoToken, onChange } = this.props;
+    const { ssoToken, onChange, bucket } = this.props;
     this.setState({
       imageLoading: true,
     });
-    uploadImage(options.file, { ssoToken })
+    uploadImage(options.file, { ssoToken, bucket })
       .then((url) => {
         onChange(url);
         this.setState({

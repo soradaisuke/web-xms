@@ -114,6 +114,7 @@ ref获得节点后可以调用的方法有
 | ssoToken | user sso token | string | - |
 | modalWidth | 点击图片后显示的Modal的width | string | '500px' |
 | fileMaxSize | 上传图片文件大小限制，单位MB | number | 5 |
+| bucket | 上传图片用到的bucket | string | '' |
 
 ## Tags
 标签React组件，用于antd的FormItems, value: [string, ...]。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
@@ -241,6 +242,7 @@ ref获得节点后可以调用的方法有
 | arrayGenerateValue | 非字符串ARRAY类型必须要定义此项，返回string类型的新数据值 | Function(preValue, nextValue) | - |
 | arrayRenderValue | 非字符串ARRAY类型必须要定义此项，接收的数据是数组里的一项，返回该项在Input组件里的value | Function(value) | - |
 | formItemProps | 根据schema的不同type支持antd的不同组件的props。特殊的：enum类型数据详见[selectProps](#selectProps) | object | - |
+| bucket | IMAGE类型数据在form中UploadImage用的bucket | string | '' |
 
 # selectProps
 支持antd的Select的除value, onChange, onSearch以外的其他props，详见[antd Select](https://ant.design/components/select-cn/#Select-props)。
