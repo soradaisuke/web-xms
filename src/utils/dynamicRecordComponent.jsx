@@ -36,13 +36,13 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({ namespace, api: { path } = {} }, component) {
+function generateRecordPage({ namespace, inlineWidgetType, api: { path } = {} }, component) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
     render() {
       return (
-        <RecordPage {...this.props} component={component} />
+        <RecordPage {...this.props} inlineWidgetType={inlineWidgetType} component={component} />
       );
     }
   }
