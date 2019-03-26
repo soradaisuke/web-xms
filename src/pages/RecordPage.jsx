@@ -80,7 +80,7 @@ export default class RecordPage extends React.PureComponent {
     const { isLoading, isError } = this.state;
 
     return (
-      <Page cisLoading={isLoading} isError={isError}>
+      <Page isLoading={isLoading} isError={isError}>
         {Component ? <Component /> : null}
         {routes && routes.length && <Divider />}
         {this.renderRoutes()}
