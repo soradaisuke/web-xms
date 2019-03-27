@@ -79,7 +79,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
                 }
               </Switch>
               <Footer>
-                ©2011-2018 qingting.fm All Rights Reserved.
+                ©2011-2019 qingting.fm All Rights Reserved.
               </Footer>
             </Layout>
           </Layout>
