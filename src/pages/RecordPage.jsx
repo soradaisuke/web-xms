@@ -13,6 +13,9 @@ export default class RecordPage extends React.PureComponent {
   static displayName = 'RecordPage';
 
   static propTypes = {
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }).isRequired,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     routes: PropTypes.arrayOf(PropTypes.shape({
       component: PropTypes.bode,
@@ -30,6 +33,11 @@ export default class RecordPage extends React.PureComponent {
     isLoading: false,
     isError: false,
   };
+
+  onChangeTabs = () => {
+    const { history } = this.props;
+    history.push(window.location.pathname);
+  }
 
   renderRoutes() {
     const { routes, inlineWidgetType } = this.props;
@@ -53,7 +61,7 @@ export default class RecordPage extends React.PureComponent {
           ));
         case 'tabs':
           return (
-            <Tabs>
+            <Tabs onChange={this.onChangeTabs}>
               {
                 map(routes, ({ component: Component, path, title = '' }) => (
                   <TabPane tab={title} key={path}><Component /></TabPane>
