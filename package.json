@@ -45,7 +45,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^5.1.1",
     "react": "^16.8.6",
-    "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#7b41a2c",
+    "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#5d9ac33",
     "react-dom": "^16.8.6",
     "react-lazyload": "^2.3.0",
     "react-player": "^1.9.3",
@@ -55,7 +55,7 @@
     "reselect": "^3.0.1",
     "shortid": "^2.2.14",
     "url-parse": "^1.4.4",
-    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#ce9a9e7"
+    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#eb685dc"
   },
   "peerDependencies": {
     "antd": "^3.10.3",
@@ -75,7 +75,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^5.1.1",
     "react": "^16.8.6",
-    "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#7b41a2c",
+    "react-core": "git+ssh://git@git2.qingtingfm.com/zhibo/react-core.git#5d9ac33",
     "react-dom": "^16.8.6",
     "react-lazyload": "^2.3.0",
     "react-player": "^1.9.3",
@@ -84,6 +84,6 @@
     "reselect": "^3.0.1",
     "shortid": "^2.2.14",
     "url-parse": "^1.4.4",
-    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#ce9a9e7"
+    "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#eb685dc"
   }
 }
