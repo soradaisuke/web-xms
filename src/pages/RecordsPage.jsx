@@ -534,7 +534,7 @@ export default class RecordsPage extends React.PureComponent {
         title="操作"
         key="action"
         render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
-          <span className="actions">
+          <div className="actions">
             {
               edit && (
                 <RecordModal schema={schema} record={record} onOk={this.editRecord}>
@@ -580,7 +580,7 @@ export default class RecordsPage extends React.PureComponent {
               )
             }
             {this.renderCustomRowActions(record)}
-          </span>
+          </div>
         )}
       />
     ) : null;
