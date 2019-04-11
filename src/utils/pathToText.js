@@ -5,4 +5,5 @@ export default flow(
   replace(/\{slashes\}/g, '/'),
   replace(/\{percent\}/g, '%'),
   replace(/\{hash\}/g, '#'),
+  replace(/\{qmark\}/g, '?'),
 );
