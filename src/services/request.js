@@ -33,7 +33,7 @@ async function generateRequest(path, options = {}) {
 
       try {
         response = await response.json();
-        error.message = response.errmsg;
+        error.message = response.errmsg || response.msg;
         error.code = response.code || response.errcode || error.code;
       } catch (e) {
         //
