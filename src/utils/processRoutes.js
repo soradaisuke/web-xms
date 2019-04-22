@@ -38,21 +38,18 @@ export default function processRoutes({ app, routes }) {
         });
       }
 
-      if (config) {
-        const { type } = config;
-        if (type === 'group') {
-          component = dynamicRecordsComponent({
-            app,
-            component,
-            config: processGroupConfig({ config, path }),
-          });
-        } else if (type === 'single') {
-          component = dynamicRecordComponent({
-            app,
-            component,
-            config: processSingleConfig({ config, path }),
-          });
-        }
+      if (config && config.type === 'group') {
+        component = dynamicRecordsComponent({
+          app,
+          component,
+          config: processGroupConfig({ config, path }),
+        });
+      } else {
+        component = dynamicRecordComponent({
+          app,
+          component,
+          config: processSingleConfig({ config, path }),
+        });
       }
 
       return {

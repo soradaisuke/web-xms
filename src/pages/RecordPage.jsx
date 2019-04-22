@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Tabs, Divider, Card, Collapse,
+  Tabs, Card, Collapse,
 } from 'antd';
 import { map } from 'lodash';
+import classNames from 'classnames';
 import Page from './Page';
 
 const { TabPane } = Tabs;
@@ -45,13 +46,15 @@ export default class RecordPage extends React.PureComponent {
       switch (inlineWidgetType) {
         case 'collapse':
           return (
-            <Collapse>
-              {
-                map(routes, ({ component: Component, path, title = '' }) => (
-                  <Panel header={title} key={path}><Component /></Panel>
-                ))
-              }
-            </Collapse>
+            <Card className="content-card">
+              <Collapse>
+                {
+                  map(routes, ({ component: Component, path, title = '' }) => (
+                    <Panel header={title} key={path}><Component /></Panel>
+                  ))
+                }
+              </Collapse>
+            </Card>
           );
         case 'card':
           return map(routes, ({ component: Component, path, title = '' }) => (
@@ -61,21 +64,22 @@ export default class RecordPage extends React.PureComponent {
           ));
         case 'tabs':
           return (
-            <Tabs onChange={this.onChangeTabs}>
-              {
-                map(routes, ({ component: Component, path, title = '' }) => (
-                  <TabPane tab={title} key={path}><Component /></TabPane>
-                ))
-              }
-            </Tabs>
+            <Card className="content-card">
+              <Tabs onChange={this.onChangeTabs}>
+                {
+                  map(routes, ({ component: Component, path, title = '' }) => (
+                    <TabPane tab={title} key={path}><Component /></TabPane>
+                  ))
+                }
+              </Tabs>
+            </Card>
           );
         case 'stack':
         default:
           return map(routes, ({ component: Component, path, title = '' }) => (
-            <React.Fragment key={path}>
-              <Divider>{title}</Divider>
+            <Card key={path} title={title} className="content-card">
               <Component />
-            </React.Fragment>
+            </Card>
           ));
       }
     }
@@ -84,13 +88,16 @@ export default class RecordPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component, routes } = this.props;
+    const { component: Component } = this.props;
     const { isLoading, isError } = this.state;
 
     return (
       <Page isLoading={isLoading} isError={isError}>
-        {Component ? <Component /> : null}
-        {routes && routes.length > 0 && <Divider />}
+        {
+          Component
+            ? <Card className={classNames('content-card', 'first-card')}><Component /></Card>
+            : null
+        }
         {this.renderRoutes()}
       </Page>
     );

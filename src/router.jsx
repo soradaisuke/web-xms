@@ -13,7 +13,7 @@ import 'moment/locale/zh-cn';
 import './router.less';
 
 const {
-  Header, Content, Footer, Sider,
+  Header, Footer, Sider,
 } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
@@ -38,9 +38,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
           render={() => (
             <React.Fragment>
               <Breadcrumb routes={routes} />
-              <Content>
-                <Component routes={inlineRoutes} />
-              </Content>
+              <Component routes={inlineRoutes} />
             </React.Fragment>
           )}
         />

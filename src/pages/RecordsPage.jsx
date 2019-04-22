@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
 import { Link } from 'react-router-dom';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker,
+  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker, Card,
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
@@ -721,11 +721,12 @@ export default class RecordsPage extends React.PureComponent {
 
   render() {
     const { component: Component, error } = this.props;
-
     return (
       <Page isError={!!error} errorMessage={error ? error.message : ''}>
         {Component ? <Component /> : null}
-        {this.renderContent()}
+        <Card className={classNames('content-card', Component ? '' : 'first-card')}>
+          {this.renderContent()}
+        </Card>
       </Page>
     );
   }
