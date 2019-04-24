@@ -353,6 +353,11 @@ export default class RecordsPage extends React.PureComponent {
         render = (value, record = {}) => (
           <Input.TextArea
             key={value}
+            disabled={
+              formConfig && isFunction(formConfig.enable)
+                ? (!formConfig.enable(undefined, record))
+                : false
+            }
             placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
             autoComplete="off"
             defaultValue={value}
