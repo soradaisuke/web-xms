@@ -389,9 +389,11 @@ class ImageColumnType extends BaseColumnType {
     return TYPES.IMAGE;
   }
 
-  renderFormItem({ user, tip, bucket = '' }) { // eslint-disable-line class-methods-use-this
+  renderFormItem({ // eslint-disable-line class-methods-use-this
+    user, tip, bucket = '', formItemProps = {},
+  } = {}) {
     return (
-      <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={tip} bucket={bucket} />
+      <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={tip} bucket={bucket} {...formItemProps} />
     );
   }
 }

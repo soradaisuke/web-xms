@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
 import { uploadImage } from 'web-core';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import {
   Upload, Icon, Col, Row, Modal, message,
 } from 'antd';
@@ -22,6 +24,8 @@ export default class UploadImage extends React.PureComponent {
     }),
     modalWidth: PropTypes.string,
     bucket: PropTypes.string,
+    needCrop: PropTypes.bool,
+    aspect: PropTypes.number,
   };
 
   static defaultProps = {
@@ -36,13 +40,36 @@ export default class UploadImage extends React.PureComponent {
       maxHeight: 0,
       minHeight: 0,
     },
+    needCrop: false,
+    aspect: 0,
   };
 
-  state = {
-    previewImage: '',
-    previewVisible: false,
-    imageLoading: false,
-    fileList: [],
+  constructor(props) {
+    super(props);
+    const { aspect } = props;
+    this.state = {
+      cropParameter: {
+        crop: {
+          aspect,
+          width: 60,
+          x: 0,
+          y: 0,
+        },
+        fileSrc: '',
+        cropVisible: false,
+        pixelCrop: {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+        },
+        fileLoading: false,
+      },
+      previewImage: '',
+      previewVisible: false,
+      imageLoading: false,
+      fileList: [],
+    };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -110,23 +137,83 @@ export default class UploadImage extends React.PureComponent {
   }
 
   uploadImage = async (options) => {
-    const { ssoToken, onChange, bucket } = this.props;
+    const {
+      ssoToken, onChange, bucket, needCrop,
+    } = this.props;
+    const { cropParameter: { pixelCrop } } = this.state;
+
+    const upYunSyncPreprocessor = needCrop ? `/crop/${pixelCrop.width}x${pixelCrop.height}a${pixelCrop.x}a${pixelCrop.y}` : '';
+
     this.setState({
       imageLoading: true,
     });
 
     try {
       await this.checkFile(options.file);
-      const url = await uploadImage(options.file, { ssoToken, bucket });
+      const url = await uploadImage(options.file, { ssoToken, bucket, upYunSyncPreprocessor });
       onChange(url);
       this.setState({
         imageLoading: false,
       });
+      this.setCropState({ cropVisible: false });
     } catch (e) {
       message.error(e.message || e);
       this.setState({
         imageLoading: false,
       });
+    }
+  }
+
+  setCropState = (cropParameter) => {
+    this.setState(prevState => ({
+      cropParameter: {
+        ...prevState.cropParameter,
+        ...cropParameter,
+      },
+    }));
+  }
+
+  onCropChange = (crop, pixelCrop) => {
+    this.setCropState({ crop, pixelCrop });
+  };
+
+  handleCropCancel = () => {
+    this.setCropState({ cropVisible: false });
+  }
+
+  generateFileSrc = file => (
+    new Promise((resolve, reject) => {
+      try {
+        const reader = new FileReader();
+
+        reader.addEventListener('load', () => resolve(reader.result));
+        reader.addEventListener('error', () => reject(new Error('读取图片失败')));
+        reader.readAsDataURL(file);
+      } catch {
+        reject(new Error('读取图片失败'));
+      }
+    }))
+
+  customRequest = async (options) => {
+    const { needCrop } = this.props;
+    if (needCrop) {
+      this.setCropState({ fileLoading: true });
+      try {
+        const fileSrc = await this.generateFileSrc(options.file);
+        this.setCropState({
+          fileSrc,
+          cropVisible: true,
+          handleCropOk: () => {
+            this.uploadImage(options);
+          },
+        });
+      } catch (e) {
+        message.error(e);
+      } finally {
+        this.setCropState({ fileLoading: false });
+      }
+    } else {
+      this.uploadImage(options);
     }
   }
 
@@ -144,16 +231,43 @@ export default class UploadImage extends React.PureComponent {
     return (isJPG || isPNG) && isLtMaxSize;
   }
 
+  renderCropModal() {
+    const {
+      cropParameter: {
+        fileSrc, crop, cropVisible, handleCropOk,
+      },
+      imageLoading,
+    } = this.state;
+    return (
+      <Modal
+        title="裁剪图片"
+        maskClosable={false}
+        destroyOnClose
+        visible={cropVisible}
+        onCancel={this.handleCropCancel}
+        onOk={handleCropOk}
+        confirmLoading={imageLoading}
+      >
+        <ReactCrop
+          keepSelection
+          src={fileSrc}
+          crop={crop}
+          onChange={this.onCropChange}
+        />
+      </Modal>
+    );
+  }
+
   render() {
     const {
-      title, modalWidth, ssoToken, onChange, ...props
+      title, modalWidth, ssoToken, onChange, needCrop, ...props
     } = this.props;
     const {
-      previewVisible, previewImage, imageLoading, fileList,
+      previewVisible, previewImage, imageLoading, fileList, cropParameter: { fileLoading },
     } = this.state;
     const uploadButton = (
       <div>
-        <Icon type={imageLoading ? 'loading' : 'plus'} />
+        <Icon type={imageLoading || fileLoading ? 'loading' : 'plus'} />
         <div className="ant-upload-text">上传</div>
       </div>
     );
@@ -165,7 +279,7 @@ export default class UploadImage extends React.PureComponent {
             listType="picture-card"
             accept="image/jpeg, image/png"
             fileList={fileList}
-            customRequest={this.uploadImage}
+            customRequest={this.customRequest}
             onPreview={this.onClickPreview}
             onRemove={this.onClickRemove}
             beforeUpload={this.beforeUpload}
@@ -181,6 +295,7 @@ export default class UploadImage extends React.PureComponent {
           >
             <img alt="" style={{ width: '100%', padding: '15px' }} src={previewImage} />
           </Modal>
+          {needCrop && this.renderCropModal()}
         </Row>
       </Col>
     );
