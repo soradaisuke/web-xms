@@ -7,6 +7,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import {
   Upload, Icon, Col, Row, Modal, message,
 } from 'antd';
+import getImageSize from '../../utils/getImageSize';
 
 export default class UploadImage extends React.PureComponent {
   static displayName = 'UploadImage';
@@ -76,15 +77,43 @@ export default class UploadImage extends React.PureComponent {
     const file = prevState.fileList && prevState.fileList.length ? prevState.fileList[0] : null;
     if (file) {
       if (!nextProps.url) {
-        return ({ fileList: [] });
+        return ({ fileList: [], paddingUrl: null });
       }
       if (nextProps.url !== file.url) {
-        return ({ fileList: [{ uid: shortId.generate(), url: nextProps.url }] });
+        return ({ paddingUrl: nextProps.url });
       }
     } else if (nextProps.url) {
-      return ({ fileList: [{ uid: shortId.generate(), url: nextProps.url }] });
+      return ({ paddingUrl: nextProps.url });
     }
-    return null;
+    return { paddingUrl: null };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { paddingUrl } = this.state;
+    const {
+      onChange,
+      limit: {
+        maxWidth, minWidth, maxHeight, minHeight,
+      },
+    } = this.props;
+    if (!prevState.paddingUrl && paddingUrl) {
+      getImageSize({ url: paddingUrl }).then(({ width, height }) => {
+        if (maxWidth > 0 && width > maxWidth) {
+          onChange('');
+        } else if (minWidth > 0 && width < minWidth) {
+          onChange('');
+        } else if (maxHeight > 0 && height > maxHeight) {
+          onChange('');
+        } else if (minHeight > 0 && height < minHeight) {
+          onChange('');
+        } else {
+          this.setState({
+            fileList: [{ uid: shortId.generate(), url: paddingUrl }],
+            paddingUrl: null,
+          });
+        }
+      });
+    }
   }
 
   onClickPreview = (file) => {
@@ -105,36 +134,25 @@ export default class UploadImage extends React.PureComponent {
     });
   }
 
-  checkFile = (file) => {
+  checkFile = file => getImageSize({ file }).then(({ width, height }) => {
     const {
       limit: {
         maxWidth, minWidth, maxHeight, minHeight,
       },
     } = this.props;
-    return new Promise((resolve, reject) => {
-      const fr = new FileReader();
-      fr.onload = () => {
-        const img = new Image();
 
-        img.onload = () => {
-          if (maxWidth > 0 && img.width > maxWidth) {
-            reject(new Error(`图片宽度不能大于${maxWidth}`));
-          } else if (minWidth > 0 && img.width < minWidth) {
-            reject(new Error(`图片宽度不能小于${minWidth}`));
-          } else if (maxHeight > 0 && img.height > maxHeight) {
-            reject(new Error(`图片高度不能大于${maxHeight}`));
-          } else if (minHeight > 0 && img.height < minHeight) {
-            reject(new Error(`图片高度不能小于${minHeight}`));
-          } else {
-            resolve(file);
-          }
-        };
-
-        img.src = fr.result;
-      };
-      fr.readAsDataURL(file);
-    });
-  }
+    if (maxWidth > 0 && width > maxWidth) {
+      throw new Error(`图片宽度不能大于${maxWidth}`);
+    } else if (minWidth > 0 && width < minWidth) {
+      throw new Error(`图片宽度不能小于${minWidth}`);
+    } else if (maxHeight > 0 && height > maxHeight) {
+      throw new Error(`图片高度不能大于${maxHeight}`);
+    } else if (minHeight > 0 && height < minHeight) {
+      throw new Error(`图片高度不能小于${minHeight}`);
+    } else {
+      return file;
+    }
+  });
 
   uploadImage = async (options) => {
     const {
