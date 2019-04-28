@@ -248,6 +248,7 @@ export default class RecordsPage extends React.PureComponent {
       hide();
     } catch (e) {
       hide();
+      message.error(e.message);
       if (throwError) {
         throw e;
       }
