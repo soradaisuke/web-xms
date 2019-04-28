@@ -13,17 +13,29 @@ export default class UploadImage extends React.PureComponent {
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
     title: PropTypes.string,
     ssoToken: PropTypes.string,
-    modalWidth: PropTypes.string,
     fileMaxSize: PropTypes.number, // 单位MB
+    limit: PropTypes.shape({
+      maxWidth: PropTypes.number,
+      minWidth: PropTypes.number,
+      maxHeight: PropTypes.number,
+      minHeight: PropTypes.number,
+    }),
+    modalWidth: PropTypes.string,
     bucket: PropTypes.string,
   };
 
   static defaultProps = {
     title: '',
     ssoToken: '',
-    fileMaxSize: 5,
     modalWidth: '500px',
+    fileMaxSize: 5, // 单位MB
     bucket: '',
+    limit: {
+      maxWidth: 0,
+      minWidth: 0,
+      maxHeight: 0,
+      minHeight: 0,
+    },
   };
 
   state = {
@@ -66,23 +78,56 @@ export default class UploadImage extends React.PureComponent {
     });
   }
 
-  uploadImage = (options) => {
+  checkFile = (file) => {
+    const {
+      limit: {
+        maxWidth, minWidth, maxHeight, minHeight,
+      },
+    } = this.props;
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => {
+        const img = new Image();
+
+        img.onload = () => {
+          if (maxWidth > 0 && img.width > maxWidth) {
+            reject(new Error(`图片宽度不能大于${maxWidth}`));
+          } else if (minWidth > 0 && img.width < minWidth) {
+            reject(new Error(`图片宽度不能小于${minWidth}`));
+          } else if (maxHeight > 0 && img.height > maxHeight) {
+            reject(new Error(`图片高度不能大于${maxHeight}`));
+          } else if (minHeight > 0 && img.height < minHeight) {
+            reject(new Error(`图片高度不能小于${minHeight}`));
+          } else {
+            resolve(file);
+          }
+        };
+
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  uploadImage = async (options) => {
     const { ssoToken, onChange, bucket } = this.props;
     this.setState({
       imageLoading: true,
     });
-    uploadImage(options.file, { ssoToken, bucket })
-      .then((url) => {
-        onChange(url);
-        this.setState({
-          imageLoading: false,
-        });
-      }, (err) => {
-        message.error(err);
-        this.setState({
-          imageLoading: false,
-        });
+
+    try {
+      await this.checkFile(options.file);
+      const url = await uploadImage(options.file, { ssoToken, bucket });
+      onChange(url);
+      this.setState({
+        imageLoading: false,
       });
+    } catch (e) {
+      message.error(e.message || e);
+      this.setState({
+        imageLoading: false,
+      });
+    }
   }
 
   beforeUpload = (file) => {
