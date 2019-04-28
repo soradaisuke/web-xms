@@ -115,6 +115,7 @@ ref获得节点后可以调用的方法有
 | modalWidth | 点击图片后显示的Modal的width | string | '500px' |
 | fileMaxSize | 上传图片文件大小限制，单位MB | number | 5 |
 | bucket | 上传图片用到的bucket | string | '' |
+| limit: { maxWidth, minWidth, maxHeight, minHeight } | 图片宽高限制 | object: { number } | { 0 } |
 
 ## Tags
 标签React组件，用于antd的FormItems, value: [string, ...]。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))
