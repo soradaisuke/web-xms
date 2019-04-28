@@ -2,7 +2,9 @@ import React from 'react';
 import {
   Route, Switch, Router, Redirect,
 } from 'dva/router';
-import { filter, find, map } from 'lodash';
+import {
+  filter, find, map, forEach,
+} from 'lodash';
 import { Layout, Spin, LocaleProvider } from 'antd';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -53,7 +55,21 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
   }
 
   const homeRoute = find(routes, ({ path }) => path === '/');
-  const firstAvaliableNonHomeRoute = find(routes, ({ path, component }) => path !== '/' && !!component);
+
+  let firstAvaliableNonHomeRoutePath;
+
+  function findFirstAvaliableNonHomeRoute({ path, routes: subRoutes, component }) {
+    if (path !== '/' && !!component) {
+      firstAvaliableNonHomeRoutePath = path;
+    } else {
+      const nonInlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => !inline) : [];
+      if (nonInlineRoutes && nonInlineRoutes.length > 0) {
+        forEach(nonInlineRoutes, r => findFirstAvaliableNonHomeRoute(r));
+      }
+    }
+    return !firstAvaliableNonHomeRoutePath;
+  }
+  forEach(routes, r => findFirstAvaliableNonHomeRoute(r));
 
   return (
     <LocaleProvider locale={zhCN}>
@@ -73,7 +89,7 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
                   map(routes, route => renderRoute(route))
                 }
                 {
-                  !homeRoute && firstAvaliableNonHomeRoute ? <Redirect from="/" to={firstAvaliableNonHomeRoute.path} /> : null
+                  !homeRoute && firstAvaliableNonHomeRoutePath ? <Redirect from="/" to={firstAvaliableNonHomeRoutePath} /> : null
                 }
               </Switch>
               <Footer>
