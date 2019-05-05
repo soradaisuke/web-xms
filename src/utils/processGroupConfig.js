@@ -17,16 +17,21 @@ export default function processGroupConfig({ config, path }) {
   let defaultSort;
   let fixedSort;
   let defaultFilter;
+  let hasInlineEdit = false;
   const searchFileds = [];
   const newSchema = schema.map((definition) => {
     let {
       visibility, sort, defaultSort: ds, mapKey,
     } = definition;
     const {
-      type: oldType, filters, key, search, canFilter,
+      type: oldType, filters, key, search, canFilter, inlineEdit,
     } = definition;
 
     let type;
+
+    if (inlineEdit && !hasInlineEdit) {
+      hasInlineEdit = true;
+    }
 
     switch (oldType) {
       case DataType.NUMBER:
@@ -166,6 +171,10 @@ export default function processGroupConfig({ config, path }) {
 
     return action;
   }));
+
+  if (hasInlineEdit) {
+    actions.push('inlineEdit');
+  }
 
   return {
     ...config,
