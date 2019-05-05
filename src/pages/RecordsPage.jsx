@@ -5,16 +5,17 @@ import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
 import { Link } from 'react-router-dom';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker, Card,
+  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker, Card, Col, Row,
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
-  has, isEqual, isNumber, get, isUndefined,
+  has, isEqual, isNumber, get, isUndefined, chunk, join,
 } from 'lodash';
 import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
+import Group from '../components/Group';
 import Page from './Page';
 import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import ColumnTypes from '../utils/ColumnTypes';
@@ -417,22 +418,6 @@ export default class RecordsPage extends React.PureComponent {
     return null;
   }
 
-  renderAddButton() {
-    const { hasCreateNew, schema } = this.props;
-    if (hasCreateNew) {
-      return (
-        <Button className="add-button" type="primary">
-          <Link to={`${window.location.pathname}/new`}>新建</Link>
-        </Button>
-      );
-    }
-    return (
-      <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
-        <Button className="add-button" type="primary">添加</Button>
-      </RecordModal>
-    );
-  }
-
   renderSchema() {
     const { schema } = this.props;
 
@@ -470,60 +455,6 @@ export default class RecordsPage extends React.PureComponent {
               })
               : () => this.onCustomRowAction(record, handler)
           }
-        >
-          {title}
-        </Button>
-      );
-    });
-  }
-
-  renderCustomMultipleActions() {
-    const { selectedRows } = this.state;
-    const hasSelected = selectedRows.length > 0;
-    const { customMultipleActions } = this.props;
-
-    return customMultipleActions.map(({
-      title, type, handler, enable, confirmModal,
-    }) => (
-      <Button
-        key={title}
-        type={type}
-        disabled={!hasSelected}
-        // eslint-disable-next-line react/jsx-no-bind
-        onClick={
-          confirmModal
-            ? () => confirm({
-              ...confirmModal,
-              title: isFunction(confirmModal.title)
-                ? confirmModal.title(selectedRows) : (confirmModal.title || ''),
-              content: isFunction(confirmModal.content)
-                ? confirmModal.content(selectedRows) : (confirmModal.content || ''),
-              onOk: () => this.onCustomMultipleAction(handler, enable),
-            })
-            : () => this.onCustomMultipleAction(handler, enable)
-        }
-      >
-        {title}
-      </Button>
-    ));
-  }
-
-  renderCustomGlobalActions() {
-    const { customGlobalActions, match: { params: matchParams } } = this.props;
-
-    return customGlobalActions.map(({
-      title, type, handler, render,
-    }) => {
-      if (isFunction(render)) {
-        return render(matchParams, this.fetch);
-      }
-
-      return (
-        <Button
-          key={title}
-          type={type}
-          // eslint-disable-next-line react/jsx-no-bind
-          onClick={() => this.onCustomGlobalAction(handler)}
         >
           {title}
         </Button>
@@ -592,135 +523,245 @@ export default class RecordsPage extends React.PureComponent {
     ) : null;
   }
 
-  renderSearchs() {
+  renderSearchGroup() {
     const { inputSearch } = this.state;
     const { searchFileds, search } = this.props;
-    return searchFileds.map(definition => (
-      <Search
-        key={definition.mapKey}
-        defaultValue={search[definition.mapKey]}
-        placeholder={definition.title}
-        value={inputSearch[definition.mapKey]}
-        onSearch={value => this.onSearch(definition, value)}
-        onChange={e => this.setState({ inputSearch: { [definition.mapKey]: e.target.value } })}
-        style={{ width: 150 }}
-        enterButton
-      />
-    ));
+
+    if (!searchFileds || searchFileds.length === 0) {
+      return null;
+    }
+
+    return (
+      <Group title="搜索">
+        {chunk(searchFileds, 6).map(definitions => (
+          <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
+            {
+              definitions.map(definition => (
+                <Col span={4} key={definition.mapKey}>
+                  <Search
+                    defaultValue={search[definition.mapKey]}
+                    placeholder={definition.title}
+                    value={inputSearch[definition.mapKey]}
+                    onSearch={value => this.onSearch(definition, value)}
+                    onChange={
+                      e => this.setState({ inputSearch: { [definition.mapKey]: e.target.value } })
+                    }
+                    style={{ width: '100%' }}
+                    enterButton
+                  />
+                </Col>
+              ))
+            }
+          </Row>
+        ))}
+      </Group>
+    );
   }
 
-  renderDateFilters() {
+  renderFilterGroup() {
     const { dateFilterSchemas, filter } = this.props;
-    return dateFilterSchemas.map(({
-      key, mapKey, type, title, rangeFilter, filters,
-    }) => {
-      const ranges = {};
-      if (rangeFilter && filters && filters.length) {
-        filters.map(({ text, value }) => {
-          if (!moment(value[0]).isValid() || !moment(value[1]).isValid()) {
-            throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
-          }
-          ranges[text] = [moment(value[0]), moment(value[1])];
-          return null;
-        });
-      }
-      return (
-        <div key={key}>
-          {`${title}：`}
-          {
-            rangeFilter
-              ? (
-                <DatePicker.RangePicker
-                  showTime={type.showTime()}
-                  format={type.getFormat()}
-                  value={has(filter, mapKey) && isArray(filter[mapKey])
-                    && moment(filter[mapKey][0]).isValid()
-                    && moment(filter[mapKey][1]).isValid()
-                    ? [moment(filter[mapKey][0]), moment(filter[mapKey][1])]
-                    : []
+
+    if (!dateFilterSchemas || dateFilterSchemas.length === 0) {
+      return null;
+    }
+
+    return (
+      <Group title="筛选">
+        {chunk(dateFilterSchemas, 4).map(definitions => (
+          <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
+            {
+              definitions.map(({
+                mapKey, type, title, rangeFilter, filters,
+              }) => {
+                const ranges = {};
+                if (rangeFilter && filters && filters.length) {
+                  filters.map(({ text, value }) => {
+                    if (!moment(value[0]).isValid() || !moment(value[1]).isValid()) {
+                      throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
+                    }
+                    ranges[text] = [moment(value[0]), moment(value[1])];
+                    return null;
+                  });
+                }
+                return (
+                  <Col span={6} key={mapKey}>
+                    <div className="filter-title">{`${title}：`}</div>
+                    {
+                      rangeFilter
+                        ? (
+                          <DatePicker.RangePicker
+                            showTime={type.showTime()}
+                            format={type.getFormat()}
+                            value={has(filter, mapKey) && isArray(filter[mapKey])
+                              && moment(filter[mapKey][0]).isValid()
+                              && moment(filter[mapKey][1]).isValid()
+                              ? [moment(filter[mapKey][0]), moment(filter[mapKey][1])]
+                              : []
+                            }
+                            ranges={ranges}
+                            onChange={newDate => (
+                              this.onChangeDateFilter(mapKey, newDate)
+                            )}
+                          />
+                        )
+                        : (
+                          <DatePickerWithPresets
+                            value={has(filter, mapKey) && moment(filter[mapKey]).isValid()
+                              ? moment(filter[mapKey]) : null}
+                            showTime={type.showTime()}
+                            format={type.getFormat()}
+                            presets={filters}
+                            onChange={newDate => (
+                              this.onChangeDateFilter(mapKey, newDate)
+                            )}
+                          />
+                        )
+                    }
+                  </Col>
+                );
+              })
+            }
+          </Row>
+        ))}
+      </Group>
+    );
+  }
+
+  renderActionGroup() {
+    let actions = [];
+    const { selectedRows } = this.state;
+    const hasSelected = selectedRows.length > 0;
+    const {
+      create, hasCreateNew, schema,
+      customGlobalActions, customMultipleActions,
+      match: { params: matchParams },
+    } = this.props;
+
+    if (hasCreateNew) {
+      actions.push({ createNew: true, title: 'createNew' });
+    } else if (create) {
+      actions.push({ create: true, title: 'create' });
+    }
+
+    actions = actions.concat(customGlobalActions).concat(customMultipleActions);
+
+    if (actions.length === 0) {
+      return null;
+    }
+
+    return (
+      <Group title="操作">
+        {chunk(actions, 6).map(groupActions => (
+          <Row gutter={20} key={join(map(groupActions, ({ title }) => title))}>
+            {
+              groupActions.map(({
+                createNew, create: crt, global, render, title,
+                type, handler, multiple, confirmModal, enable,
+              }, index) => {
+                let children;
+                if (createNew) {
+                  children = (
+                    <Button className="add-button" type="primary">
+                      <Link to={`${window.location.pathname}/new`}>新建</Link>
+                    </Button>
+                  );
+                } else if (crt) {
+                  children = (
+                    <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
+                      <Button className="add-button" type="primary">添加</Button>
+                    </RecordModal>
+                  );
+                } else if (global) {
+                  if (isFunction(render)) {
+                    children = render(matchParams, this.fetch);
+                  } else {
+                    children = (
+                      <Button
+                        type={type}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onClick={() => this.onCustomGlobalAction(handler)}
+                      >
+                        {title}
+                      </Button>
+                    );
                   }
-                  ranges={ranges}
-                  onChange={newDate => (
-                    this.onChangeDateFilter(mapKey, newDate)
-                  )}
-                />
-              )
-              : (
-                <DatePickerWithPresets
-                  value={has(filter, mapKey) && moment(filter[mapKey]).isValid()
-                    ? moment(filter[mapKey]) : null}
-                  showTime={type.showTime()}
-                  format={type.getFormat()}
-                  presets={filters}
-                  onChange={newDate => (
-                    this.onChangeDateFilter(mapKey, newDate)
-                  )}
-                />
-              )
-          }
-        </div>
-      );
-    });
+                } else if (multiple) {
+                  children = (
+                    <Button
+                      type={type}
+                      disabled={!hasSelected}
+                      // eslint-disable-next-line react/jsx-no-bind
+                      onClick={
+                        confirmModal
+                          ? () => confirm({
+                            ...confirmModal,
+                            title: isFunction(confirmModal.title)
+                              ? confirmModal.title(selectedRows) : (confirmModal.title || ''),
+                            content: isFunction(confirmModal.content)
+                              ? confirmModal.content(selectedRows) : (confirmModal.content || ''),
+                            onOk: () => this.onCustomMultipleAction(handler, enable),
+                          })
+                          : () => this.onCustomMultipleAction(handler, enable)
+                      }
+                    >
+                      {title}
+                    </Button>
+                  );
+                }
+
+                return (
+                  <Col span={4} key={title || index}>
+                    {children}
+                  </Col>
+                );
+              })
+            }
+          </Row>
+        ))}
+      </Group>
+    );
   }
 
   renderContent() {
     const { dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey, searchFileds, dateFilterSchemas,
-      customMultipleActions, customGlobalActions, isLoading,
+      total, page, pagesize, primaryKey,
+      customMultipleActions, isLoading,
     } = this.props;
 
     const rowSelection = customMultipleActions.length > 0 ? {
       selectedRowKeys, onChange: this.onSelectChange,
     } : null;
-    const hasHeader = this.hasAddButton() || searchFileds.length > 0
-      || customMultipleActions.length > 0 || customGlobalActions.length > 0;
 
     return (
       <React.Fragment>
-        {
-          hasHeader && (
-            <div className="xms-records-page-content-header">
-              <div className="xms-records-page-content-header-buttons">
-                {this.hasAddButton() && this.renderAddButton()}
-                {this.renderCustomGlobalActions()}
-                {this.renderCustomMultipleActions()}
-              </div>
-              <div className="xms-records-page-content-header-searchs">
-                {this.renderSearchs()}
-              </div>
-            </div>
-          )
-        }
-        {
-          dateFilterSchemas && dateFilterSchemas.length > 0 && (
-            <div className="xms-records-page-content-header-filters">
-              {this.renderDateFilters()}
-            </div>
-          )
-        }
-        <Table
-          loading={isLoading}
-          dataSource={dataSource}
-          rowKey={primaryKey}
-          rowSelection={rowSelection}
-          pagination={false}
-          onChange={this.onChange}
-        >
-          {this.renderSchema()}
-          {this.renderRowActions()}
-        </Table>
-        <Pagination
-          showQuickJumper
-          showSizeChanger
-          showTotal={RecordsPage.showTotal}
-          className="ant-table-pagination"
-          total={total}
-          current={page}
-          pagesize={pagesize}
-          onChange={this.onChangePage}
-          onShowSizeChange={this.onChangePage}
-        />
+        {this.renderSearchGroup()}
+        {this.renderFilterGroup()}
+        {this.renderActionGroup()}
+        <Group title="详情">
+          <Table
+            loading={isLoading}
+            dataSource={dataSource}
+            rowKey={primaryKey}
+            rowSelection={rowSelection}
+            pagination={false}
+            onChange={this.onChange}
+          >
+            {this.renderSchema()}
+            {this.renderRowActions()}
+          </Table>
+          <Pagination
+            showQuickJumper
+            showSizeChanger
+            showTotal={RecordsPage.showTotal}
+            className="ant-table-pagination"
+            total={total}
+            current={page}
+            pagesize={pagesize}
+            onChange={this.onChangePage}
+            onShowSizeChange={this.onChangePage}
+          />
+        </Group>
       </React.Fragment>
     );
   }
@@ -729,8 +770,8 @@ export default class RecordsPage extends React.PureComponent {
     const { component: Component, error } = this.props;
     return (
       <Page isError={!!error} errorMessage={error ? error.message : ''}>
-        {Component ? <Component /> : null}
-        <Card className={classNames('content-card', Component ? '' : 'first-card')}>
+        {Component ? <Card className="content-card"><Component /></Card> : null}
+        <Card className="content-card">
           {this.renderContent()}
         </Card>
       </Page>

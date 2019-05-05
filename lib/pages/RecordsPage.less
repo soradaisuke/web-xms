@@ -1,36 +1,5 @@
 @import '../styles/mixins';
 
-.xms-records-page-content-header {
-  .flex-row-container();
-  .flex-container-align-items-center();
-
-  justify-content: space-between;
-  margin-bottom: 1.2rem;
-
-  .xms-records-page-content-header-buttons {
-    & > * {
-      margin-right: 1rem;
-    }
-  }
-
-  .xms-records-page-content-header-searchs {
-    & > * {
-      margin-left: 1rem;
-    }
-  }
-}
-
-.xms-records-page-content-header-filters {
-  .flex-row-container();
-  flex-wrap: wrap;
-  margin-bottom: 1.2rem;
-  font-size: 14px;
-  & > * {
-    margin-bottom: 0.5rem;
-    margin-right: 1rem;
-  }
-}
-
 .actions > * {
   margin: 0.6rem;
 }
@@ -63,8 +32,14 @@
   .content-card {
     border-radius: 0.6rem;
     margin-top: 1.5rem;
-    &.first-card {
+
+    &:first-child {
       margin-top: 0;
+    }
+
+    .filter-title {
+      margin-bottom: 10px;
+      font-size: 14px;
     }
   }
 }
