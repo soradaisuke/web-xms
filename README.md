@@ -106,7 +106,7 @@ ref获得节点后可以调用的方法有
 | setPlaybackRate(value) | 设置播放速率，value = 1 为1倍速播放 |
 
 ## UploadImage
-上传图片React组件，用于antd的FormItems，在 getFieldDecorator 里要指定 valuePropName: 'url'。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))。
+上传图片React组件，用于antd的FormItems。props里的onChange和value由[antd的form](https://ant.design/components/form-cn/)接管，详见[this.props.form.getFieldDecorator](https://ant.design/components/form-cn/#this.props.form.getFieldDecorator(id,-options))。
 
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |

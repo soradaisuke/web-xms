@@ -69,49 +69,48 @@ export default class UploadImage extends React.PureComponent {
       previewImage: '',
       previewVisible: false,
       imageLoading: false,
-      fileList: [],
+      fileList: null,
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const file = prevState.fileList && prevState.fileList.length ? prevState.fileList[0] : null;
-    if (file) {
-      if (!nextProps.url) {
-        return ({ fileList: [], paddingUrl: null });
-      }
-      if (nextProps.url !== file.url) {
-        return ({ paddingUrl: nextProps.url });
-      }
-    } else if (nextProps.url) {
-      return ({ paddingUrl: nextProps.url });
-    }
-    return { paddingUrl: null };
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { paddingUrl } = this.state;
+  componentDidUpdate(prevProps) {
     const {
+      url,
+      value,
       onChange,
       limit: {
         maxWidth, minWidth, maxHeight, minHeight,
       },
     } = this.props;
-    if (!prevState.paddingUrl && paddingUrl) {
-      getImageSize({ url: paddingUrl }).then(({ width, height }) => {
-        if (maxWidth > 0 && width > maxWidth) {
-          onChange('');
-        } else if (minWidth > 0 && width < minWidth) {
-          onChange('');
-        } else if (maxHeight > 0 && height > maxHeight) {
-          onChange('');
-        } else if (minHeight > 0 && height < minHeight) {
-          onChange('');
-        } else {
-          this.setState({
-            fileList: [{ uid: shortId.generate(), url: paddingUrl }],
-            paddingUrl: null,
-          });
-        }
+    const { url: preUrl, value: preValue } = prevProps;
+    const { fileList } = this.state;
+    const imageUrl = url || value || '';
+    const preImageUrl = preUrl || preValue || '';
+    if (!fileList && imageUrl) {
+      if (maxWidth || minWidth || maxHeight || minHeight) {
+        getImageSize({ url: imageUrl }).then(({ width, height }) => {
+          if (maxWidth > 0 && width > maxWidth) {
+            onChange('');
+          } else if (minWidth > 0 && width < minWidth) {
+            onChange('');
+          } else if (maxHeight > 0 && height > maxHeight) {
+            onChange('');
+          } else if (minHeight > 0 && height < minHeight) {
+            onChange('');
+          } else {
+            this.setState({ // eslint-disable-line react/no-did-update-set-state
+              fileList: [{ uid: shortId.generate(), url: imageUrl }],
+            });
+          }
+        });
+      } else {
+        this.setState({ // eslint-disable-line react/no-did-update-set-state
+          fileList: [{ uid: shortId.generate(), url: imageUrl }],
+        });
+      }
+    } else if (preImageUrl !== imageUrl) {
+      this.setState({ // eslint-disable-line react/no-did-update-set-state
+        fileList: imageUrl ? [{ uid: shortId.generate(), url: imageUrl }] : [],
       });
     }
   }
@@ -134,25 +133,28 @@ export default class UploadImage extends React.PureComponent {
     });
   }
 
-  checkFile = file => getImageSize({ file }).then(({ width, height }) => {
+  checkFile = (file) => {
     const {
       limit: {
         maxWidth, minWidth, maxHeight, minHeight,
       },
     } = this.props;
 
-    if (maxWidth > 0 && width > maxWidth) {
-      throw new Error(`图片宽度不能大于${maxWidth}`);
-    } else if (minWidth > 0 && width < minWidth) {
-      throw new Error(`图片宽度不能小于${minWidth}`);
-    } else if (maxHeight > 0 && height > maxHeight) {
-      throw new Error(`图片高度不能大于${maxHeight}`);
-    } else if (minHeight > 0 && height < minHeight) {
-      throw new Error(`图片高度不能小于${minHeight}`);
-    } else {
-      return file;
-    }
-  });
+    if (!(maxWidth || minWidth || maxHeight || minHeight)) return null;
+    return getImageSize({ file }).then(({ width, height }) => {
+      if (maxWidth > 0 && width > maxWidth) {
+        throw new Error(`图片宽度不能大于${maxWidth}`);
+      } else if (minWidth > 0 && width < minWidth) {
+        throw new Error(`图片宽度不能小于${minWidth}`);
+      } else if (maxHeight > 0 && height > maxHeight) {
+        throw new Error(`图片高度不能大于${maxHeight}`);
+      } else if (minHeight > 0 && height < minHeight) {
+        throw new Error(`图片高度不能小于${minHeight}`);
+      } else {
+        return file;
+      }
+    });
+  }
 
   uploadImage = async (options) => {
     const {
@@ -303,7 +305,7 @@ export default class UploadImage extends React.PureComponent {
             beforeUpload={this.beforeUpload}
             {...props}
           >
-            {fileList.length ? null : uploadButton}
+            {fileList && fileList.length ? null : uploadButton}
           </Upload>
           <Modal
             width={modalWidth}
