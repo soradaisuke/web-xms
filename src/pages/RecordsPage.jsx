@@ -59,6 +59,7 @@ export default class RecordsPage extends React.PureComponent {
     page: PropTypes.number,
     pagesize: PropTypes.number,
     edit: PropTypes.func,
+    inline: PropTypes.bool,
     inlineEdit: PropTypes.func,
     filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     primaryKey: PropTypes.string,
@@ -92,6 +93,7 @@ export default class RecordsPage extends React.PureComponent {
     searchFileds: [],
     sort: '',
     total: 0,
+    inline: false,
     inlineEdit: null,
     hasCreateNew: false,
   };
@@ -767,11 +769,11 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component, error } = this.props;
+    const { component: Component, error, inline } = this.props;
     return (
       <Page isError={!!error} errorMessage={error ? error.message : ''}>
-        {Component ? <Card className="content-card"><Component /></Card> : null}
-        <Card className="content-card">
+        {Component ? <Card className={classNames('content-card', inline ? 'inline' : '')}><Component /></Card> : null}
+        <Card className={classNames('content-card', inline ? 'inline' : '')}>
           {this.renderContent()}
         </Card>
       </Page>

@@ -21,13 +21,15 @@ export default class RecordPage extends React.PureComponent {
     routes: PropTypes.arrayOf(PropTypes.shape({
       component: PropTypes.bode,
     })),
-    inlineWidgetType: PropTypes.oneOf(['stack', 'tabs', 'collapse']),
+    inline: PropTypes.bool,
+    inlineWidgetType: PropTypes.oneOf(['card', 'tabs', 'collapse']),
   };
 
   static defaultProps = {
     component: null,
     routes: [],
-    inlineWidgetType: 'stack',
+    inline: false,
+    inlineWidgetType: 'card',
   };
 
   state = {
@@ -41,44 +43,38 @@ export default class RecordPage extends React.PureComponent {
   }
 
   renderRoutes() {
-    const { routes, inlineWidgetType } = this.props;
+    const { routes, inlineWidgetType, inline } = this.props;
     if (routes && routes.length) {
       switch (inlineWidgetType) {
         case 'collapse':
           return (
-            <Card className="content-card">
+            <Card className={classNames('content-card', inline ? 'inline' : '')}>
               <Collapse>
                 {
                   map(routes, ({ component: Component, path, title = '' }) => (
-                    <Panel header={title} key={path}><Component /></Panel>
+                    <Panel header={title} key={path}><Component inline /></Panel>
                   ))
                 }
               </Collapse>
             </Card>
           );
-        case 'card':
-          return map(routes, ({ component: Component, path, title = '' }) => (
-            <Card className="inline-card" title={title} key={path}>
-              <Component />
-            </Card>
-          ));
         case 'tabs':
           return (
-            <Card className="content-card">
+            <Card className={classNames('content-card', inline ? 'inline' : '')}>
               <Tabs onChange={this.onChangeTabs}>
                 {
                   map(routes, ({ component: Component, path, title = '' }) => (
-                    <TabPane tab={title} key={path}><Component /></TabPane>
+                    <TabPane tab={title} key={path}><Component inline /></TabPane>
                   ))
                 }
               </Tabs>
             </Card>
           );
-        case 'stack':
+        case 'card':
         default:
           return map(routes, ({ component: Component, path, title = '' }) => (
-            <Card key={path} title={title} className="content-card">
-              <Component />
+            <Card key={path} title={title} className={classNames('content-card', inline ? 'inline' : '')}>
+              <Component inline />
             </Card>
           ));
       }
@@ -88,14 +84,14 @@ export default class RecordPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component } = this.props;
+    const { component: Component, inline } = this.props;
     const { isLoading, isError } = this.state;
 
     return (
       <Page isLoading={isLoading} isError={isError}>
         {
           Component
-            ? <Card className={classNames('content-card', 'first-card')}><Component /></Card>
+            ? <Card className={classNames('content-card', inline ? 'inline' : '')}><Component /></Card>
             : null
         }
         {this.renderRoutes()}
