@@ -408,6 +408,10 @@ class EnumColumnType extends BaseColumnType {
     return true;
   }
 
+  formatSubmitValue(v) {
+    return this.innerColumnType.formatSubmitValue(v);
+  }
+
   getName() { // eslint-disable-line class-methods-use-this
     return TYPES.ENUM;
   }
