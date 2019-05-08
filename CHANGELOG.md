@@ -1,8 +1,17 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.1.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.1.0...v1.1.1) (2019-05-07)
+# [1.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.1.1...v1.2.0) (2019-05-08)
+
+
+### Features
+
+* **DYP-269:** XMS - EnumColumnType使用innerColumnType formatSubmitValue ([2b2c050](https://git2.qingtingfm.com/zhibo/xms/commits/2b2c050))
+
+
+
+## [1.1.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.1.0...v1.1.1) (2019-05-07)
 
 
 ### Bug Fixes
