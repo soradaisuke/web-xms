@@ -425,7 +425,9 @@ class EnumColumnType extends BaseColumnType {
   }) {
     return (
       <Select
-        options={map(filters, item => ({ key: item.value, children: item.text }))}
+        options={map(filters, ({ value, text, ...item }) => (
+          { key: value, children: text, ...item }
+        ))}
         formFieldValues={formFieldValues}
         {...selectProps}
       />

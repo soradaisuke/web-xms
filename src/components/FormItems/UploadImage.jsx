@@ -73,7 +73,26 @@ export default class UploadImage extends React.PureComponent {
     };
   }
 
+  componentDidMount() {
+    this.initFileCheck();
+  }
+
   componentDidUpdate(prevProps) {
+    const { url, value } = this.props;
+    const { url: preUrl, value: preValue } = prevProps;
+    const { fileList } = this.state;
+    const imageUrl = url || value || '';
+    const preImageUrl = preUrl || preValue || '';
+    if (!fileList) {
+      this.initFileCheck();
+    } else if (preImageUrl !== imageUrl) {
+      this.setState({ // eslint-disable-line react/no-did-update-set-state
+        fileList: imageUrl ? [{ uid: shortId.generate(), url: imageUrl }] : [],
+      });
+    }
+  }
+
+  initFileCheck = () => {
     const {
       url,
       value,
@@ -82,35 +101,27 @@ export default class UploadImage extends React.PureComponent {
         maxWidth, minWidth, maxHeight, minHeight,
       },
     } = this.props;
-    const { url: preUrl, value: preValue } = prevProps;
-    const { fileList } = this.state;
     const imageUrl = url || value || '';
-    const preImageUrl = preUrl || preValue || '';
-    if (!fileList && imageUrl) {
-      if (maxWidth || minWidth || maxHeight || minHeight) {
-        getImageSize({ url: imageUrl }).then(({ width, height }) => {
-          if (maxWidth > 0 && width > maxWidth) {
-            onChange('');
-          } else if (minWidth > 0 && width < minWidth) {
-            onChange('');
-          } else if (maxHeight > 0 && height > maxHeight) {
-            onChange('');
-          } else if (minHeight > 0 && height < minHeight) {
-            onChange('');
-          } else {
-            this.setState({ // eslint-disable-line react/no-did-update-set-state
-              fileList: [{ uid: shortId.generate(), url: imageUrl }],
-            });
-          }
-        });
-      } else {
-        this.setState({ // eslint-disable-line react/no-did-update-set-state
-          fileList: [{ uid: shortId.generate(), url: imageUrl }],
-        });
-      }
-    } else if (preImageUrl !== imageUrl) {
-      this.setState({ // eslint-disable-line react/no-did-update-set-state
-        fileList: imageUrl ? [{ uid: shortId.generate(), url: imageUrl }] : [],
+    if (!imageUrl) return;
+    if (maxWidth || minWidth || maxHeight || minHeight) {
+      getImageSize({ url: imageUrl }).then(({ width, height }) => {
+        if (maxWidth > 0 && width > maxWidth) {
+          onChange('');
+        } else if (minWidth > 0 && width < minWidth) {
+          onChange('');
+        } else if (maxHeight > 0 && height > maxHeight) {
+          onChange('');
+        } else if (minHeight > 0 && height < minHeight) {
+          onChange('');
+        } else {
+          this.setState({
+            fileList: [{ uid: shortId.generate(), url: imageUrl }],
+          });
+        }
+      });
+    } else {
+      this.setState({
+        fileList: [{ uid: shortId.generate(), url: imageUrl }],
       });
     }
   }

@@ -262,6 +262,7 @@ ref获得节点后可以调用的方法有
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
 | onSearch | 当showSearch=true时Select的onSearch会调用此函数。参数：value：同Select的onSearc(value)的value；formFieldValues：form里的所有field的当前值；cb：回调函数，调用cb(options)会重新设置options。options形如[{key: 'key1', children: '显示的文字', ...}]，每一项数据的key:value可以参考[antd Select.Option的props](https://ant.design/components/select-cn/#Option-props)，其中特殊的是children，用到的地方是<Select.Option>{children}</Select.Option>| Function(value, formFieldValues, cb) | () => {} |
+| filterOptions | 对options进行过滤，返回新的options([ { key, children, ...props } ]) | Function(options, formFieldValues) | null |
 
 # visibility
 | 参数 | 说明 | 类型 | 默认值 |

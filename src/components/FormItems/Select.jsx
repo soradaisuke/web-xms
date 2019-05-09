@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Select as AntdSelect } from 'antd';
-import { isUndefined, debounce } from 'lodash';
+import { isUndefined, debounce, isFunction } from 'lodash';
 
 export default class Select extends React.PureComponent {
   static displayName = 'Select';
@@ -46,9 +46,11 @@ export default class Select extends React.PureComponent {
 
   render() {
     const {
-      value, onChange, onSearch, ...props
+      value, onChange, onSearch, filterOptions, formFieldValues, ...props
     } = this.props;
     const { options } = this.state;
+    const newOptions = isFunction(filterOptions)
+      ? filterOptions(options, formFieldValues) : options;
     return (
       <AntdSelect
         allowClear
@@ -60,7 +62,7 @@ export default class Select extends React.PureComponent {
         {...props}
       >
         {
-          options.map(({ children, value: v, ...opProps }) => (
+          newOptions.map(({ children, value: v, ...opProps }) => (
             <AntdSelect.Option
               value={isUndefined(v) ? opProps.key : v}
               {...opProps}
