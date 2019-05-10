@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.3.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.2.0...v1.3.0) (2019-05-10)
+
+
+### Features
+
+* **NoTicket:** 支持modal表单里select.options的过滤函数filterOptions ([77b8c7c](https://git2.qingtingfm.com/zhibo/xms/commit/77b8c7c))
+
+
 
 # [1.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.1.1...v1.2.0) (2019-05-08)
 
