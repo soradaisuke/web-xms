@@ -128,8 +128,18 @@ function generateRecordsPage({
   const customGlobalActions = customActions.filter(({ global }) => global);
   const customMultipleActions = customActions.filter(({ multiple }) => multiple);
   const customRowActions = customActions.filter(({ global }) => !global);
-  const dateFilterSchemas = schema.filter(({ type, canFilter }) => (
-    canFilter && (type === ColumnTypes.date || type === ColumnTypes.datetime)
+  const filterInGroupSchemas = schema.filter(({
+    type,
+    canFilter,
+    rangeFilter,
+    visibility,
+  }) => (
+    canFilter && (
+      type === ColumnTypes.date
+      || type === ColumnTypes.datetime
+      || (type === ColumnTypes.number && rangeFilter)
+      || !(visibility && visibility.table)
+    )
   ));
 
   class Page extends React.PureComponent {
@@ -145,7 +155,8 @@ function generateRecordsPage({
           customMultipleActions={customMultipleActions}
           customRowActions={customRowActions}
           searchFileds={searchFileds}
-          dateFilterSchemas={dateFilterSchemas}
+          filterInGroupSchemas={filterInGroupSchemas}
+          defaultFilter={defaultFilterQuery}
         />
       );
     }

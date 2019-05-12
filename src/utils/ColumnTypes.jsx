@@ -3,9 +3,10 @@ import {
   Input, InputNumber, DatePicker, TimePicker,
 } from 'antd';
 import {
-  toNumber, toString, join, map, isNumber, isArray,
+  toNumber, toString, join, map, isNumber, isArray, isNaN, isFunction,
 } from 'lodash';
 import moment from 'moment';
+import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import Select from '../components/FormItems/Select';
 import UploadImage from '../components/FormItems/UploadImage';
 import CommonArray from '../components/FormItems/CommonArray';
@@ -78,6 +79,10 @@ class BaseColumnType {
 
   renderValue = v => v;
 
+  renderFilterItem() { // eslint-disable-line class-methods-use-this
+    return null;
+  }
+
   renderFormItem() { // eslint-disable-line class-methods-use-this
     return null;
   }
@@ -106,6 +111,21 @@ class PrimitiveColumnType extends BaseColumnType {
       default:
         return super.canShowInForm();
     }
+  }
+
+  renderFilterItem({ // eslint-disable-line class-methods-use-this
+    rangeFilter, onChange, value = [],
+  }) {
+    if (this.primitiveType === TYPES.NUMBER && rangeFilter) {
+      return (
+        <div>
+          <InputNumber value={value[0]} onChange={v => onChange([v, value[1]])} />
+          ~
+          <InputNumber value={value[1]} onChange={v => onChange([value[0], v])} />
+        </div>
+      );
+    }
+    return null;
   }
 
   getFormRules() { // eslint-disable-line class-methods-use-this
@@ -138,13 +158,13 @@ class PrimitiveColumnType extends BaseColumnType {
       case TYPES.STRING:
         return toString(v);
       case TYPES.NUMBER:
-        return toNumber(v);
+        return !isNaN(toNumber(v)) ? toNumber(v) : v;
       case TYPES.BOOL:
         return v && v !== 'false';
       case TYPES.DATE:
-        return v.format('YYYY-MM-DD');
+        return v && isFunction(v.format) ? v.format('YYYY-MM-DD') : v;
       case TYPES.DATETIME:
-        return v.toISOString();
+        return v && isFunction(v.toISOString) ? v.toISOString() : v;
       default:
         return super.formatSubmitValue(v);
     }
@@ -183,7 +203,7 @@ const number = new PrimitiveColumnType(TYPES.NUMBER);
 const string = new PrimitiveColumnType(TYPES.STRING);
 const bool = new PrimitiveColumnType(TYPES.BOOL);
 
-class DateColumnType extends BaseColumnType {
+class BaseDateColumnType extends BaseColumnType {
   constructor() {
     super();
     this.innerColumnType = string;
@@ -205,8 +225,53 @@ class DateColumnType extends BaseColumnType {
     return v ? moment(v) : null;
   }
 
-  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
-    return v.format(this.getFormat());
+  renderFilterItem({
+    value, onChange, rangeFilter, filters, mapKey,
+  }) { // eslint-disable-line class-methods-use-this
+    const ranges = {};
+    if (rangeFilter && filters && filters.length) {
+      filters.map(({ text, value: v }) => {
+        if (!moment(v[0]).isValid() || !moment(v[1]).isValid()) {
+          throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
+        }
+        ranges[text] = [moment(v[0]), moment(v[1])];
+        return null;
+      });
+    }
+    if (rangeFilter) {
+      const newValue = value || [];
+      return (
+        <DatePicker.RangePicker
+          key={mapKey}
+          showTime={this.showTime()}
+          format={this.getFormat()}
+          value={[
+            newValue[0] && moment(newValue[0]).isValid() ? moment(newValue[0]) : null,
+            newValue[1] && moment(newValue[1]).isValid() ? moment(newValue[1]) : null,
+          ]}
+          ranges={ranges}
+          onChange={newDate => (
+            onChange([
+              this.formatSubmitValue(newDate[0]),
+              this.formatSubmitValue(newDate[1]),
+            ])
+          )}
+        />
+      );
+    }
+    return (
+      <DatePickerWithPresets
+        key={mapKey}
+        value={value && moment(value).isValid()
+          ? moment(value) : null}
+        showTime={this.showTime()}
+        format={this.getFormat()}
+        presets={filters}
+        onChange={newDate => (
+          onChange(this.formatSubmitValue(newDate))
+        )}
+      />
+    );
   }
 
   renderFormItem({ formItemProps = {} }) {
@@ -230,39 +295,32 @@ class DateColumnType extends BaseColumnType {
   }
 }
 
-class DateTimeColumnType extends BaseColumnType {
-  constructor() {
-    super();
-    this.innerColumnType = string;
-  }
-
-  canShowInForm() { // eslint-disable-line class-methods-use-this
-    return true;
-  }
-
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
-    return null;
-  }
-
+class DateColumnType extends BaseDateColumnType {
   getName() { // eslint-disable-line class-methods-use-this
-    return TYPES.DATETIME;
+    return TYPES.DATE;
   }
 
   formatFormValue(v) { // eslint-disable-line class-methods-use-this
     return v ? moment(v) : null;
   }
 
+  showTime() { // eslint-disable-line class-methods-use-this
+    return false;
+  }
+
+  getFormat() { // eslint-disable-line class-methods-use-this
+    return 'YYYY-MM-DD';
+  }
+}
+
+class DateTimeColumnType extends BaseDateColumnType {
+  getName() { // eslint-disable-line class-methods-use-this
+    return TYPES.DATETIME;
+  }
+
   formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
-    return v.toISOString();
+    return v && isFunction(v.toISOString) ? v.toISOString() : v;
   }
-
-  renderFormItem({ formItemProps = {} }) {
-    return (
-      <DatePicker showTime={this.showTime()} {...formItemProps} />
-    );
-  }
-
-  renderValue = v => (v && moment(v).isValid() ? moment(v).format(this.getFormat()) : '');
 
   showTime() { // eslint-disable-line class-methods-use-this
     return true;
@@ -270,10 +328,6 @@ class DateTimeColumnType extends BaseColumnType {
 
   getFormat() { // eslint-disable-line class-methods-use-this
     return 'YYYY-MM-DD HH:mm:ss';
-  }
-
-  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
-    return false;
   }
 }
 
@@ -409,6 +463,9 @@ class EnumColumnType extends BaseColumnType {
   }
 
   formatSubmitValue(v) {
+    if (isArray(v)) {
+      return v.map(value => this.innerColumnType.formatSubmitValue(value));
+    }
     return this.innerColumnType.formatSubmitValue(v);
   }
 
@@ -418,6 +475,27 @@ class EnumColumnType extends BaseColumnType {
 
   mustHasFilters() { // eslint-disable-line class-methods-use-this
     return true;
+  }
+
+  renderFilterItem({ // eslint-disable-line class-methods-use-this
+    filters, value, onChange, filterMultiple,
+  }) {
+    return (
+      <Select
+        allowClear
+        mode={filterMultiple ? 'multiple' : ''}
+        options={map(filters, ({ value: v, text, ...item }) => ({
+          key: v,
+          value: v,
+          children: text,
+          ...item,
+        }))}
+        style={{ width: '100%' }}
+        formFieldValues={{}}
+        value={this.formatSubmitValue(value)}
+        onChange={onChange}
+      />
+    );
   }
 
   renderFormItem({ // eslint-disable-line class-methods-use-this

@@ -5,19 +5,17 @@ import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
 import { Link } from 'react-router-dom';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message, Modal, DatePicker, Card, Col, Row,
+  Table, Pagination, Button, Popconfirm, Input, message, Modal, Card, Col, Row,
 } from 'antd';
 import {
   split, startsWith, isFunction, isArray, find, reduce, map,
-  has, isEqual, isNumber, get, isUndefined, chunk, join,
+  isEqual, isNumber, get, isUndefined, chunk, join, forEach, findIndex,
 } from 'lodash';
-import moment from 'moment';
 import { generateUpYunImageUrl } from 'web-core';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
 import Group from '../components/Group';
 import Page from './Page';
-import DatePickerWithPresets from '../components/DatePickerWithPresets';
 import ColumnTypes from '../utils/ColumnTypes';
 import './RecordsPage.less';
 
@@ -52,7 +50,7 @@ export default class RecordsPage extends React.PureComponent {
     customGlobalActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    dateFilterSchemas: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    filterInGroupSchemas: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
     order: PropTypes.func,
@@ -78,7 +76,7 @@ export default class RecordsPage extends React.PureComponent {
     customGlobalActions: [],
     customMultipleActions: [],
     customRowActions: [],
-    dateFilterSchemas: [],
+    filterInGroupSchemas: [],
     error: null,
     isLoading: false,
     edit: null,
@@ -102,13 +100,26 @@ export default class RecordsPage extends React.PureComponent {
     return `${range[0]}-${range[1]}，共${total}个`;
   }
 
-  state = {
-    records: Immutable.List(),
-    dataSource: [],
-    selectedRowKeys: [],
-    selectedRows: [],
-    inputSearch: {},
-  };
+  constructor(props) {
+    super(props);
+
+    const { defaultFilter, filterInGroupSchemas } = props;
+    const filterGroup = {};
+    forEach(filterInGroupSchemas, ({ mapKey }) => {
+      if ((defaultFilter[mapKey] === 0 || defaultFilter[mapKey])) {
+        filterGroup[mapKey] = defaultFilter[mapKey];
+      }
+    });
+
+    this.state = {
+      filterGroup,
+      records: Immutable.List(),
+      dataSource: [],
+      selectedRowKeys: [],
+      selectedRows: [],
+      inputSearch: {},
+    };
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.records !== nextProps.records) {
@@ -279,31 +290,27 @@ export default class RecordsPage extends React.PureComponent {
     });
   }
 
-  onChangeDateFilter = (mapKey, date) => {
-    const { filter, updatePage, dateFilterSchemas } = this.props;
-    const target = dateFilterSchemas.find(({ mapKey: mk }) => mk === mapKey);
-    if ((!isArray(date) && !date)
-    || (isArray(date) && (!date[0] || !date[1]))) {
-      delete filter[mapKey];
-      updatePage({ filter });
-    } else if (isArray(date)) {
-      updatePage({
-        filter: {
-          ...filter,
-          [mapKey]: [
-            target.type.formatSubmitValue(date[0]),
-            target.type.formatSubmitValue(date[1]),
-          ],
-        },
-      });
-    } else {
-      updatePage({
-        filter: {
-          ...filter,
-          [mapKey]: target.type.formatSubmitValue(date),
-        },
-      });
-    }
+  onClickQuery = () => {
+    const { filter, updatePage } = this.props;
+    const { filterGroup } = this.state;
+    const newFilter = { ...filter, ...filterGroup };
+    forEach(newFilter, (f, key) => {
+      const hasNoEmpty = arr => (
+        findIndex(arr, item => (item !== 0 && !item)) !== -1
+      );
+      if ((isArray(f) && (!f.length || hasNoEmpty(f))) || (f !== 0 && !f)) {
+        delete newFilter[key];
+      }
+    });
+    updatePage({
+      filter: {
+        ...newFilter,
+      },
+    });
+  }
+
+  onClickReset = () => {
+    this.setState({ filterGroup: {} });
   }
 
   hasAddButton() {
@@ -561,70 +568,54 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderFilterGroup() {
-    const { dateFilterSchemas, filter } = this.props;
-
-    if (!dateFilterSchemas || dateFilterSchemas.length === 0) {
+    const { filterInGroupSchemas } = this.props;
+    const { filterGroup } = this.state;
+    if (!filterInGroupSchemas || filterInGroupSchemas.length === 0) {
       return null;
     }
 
     return (
       <Group title="筛选">
-        {chunk(dateFilterSchemas, 4).map(definitions => (
-          <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
-            {
-              definitions.map(({
-                mapKey, type, title, rangeFilter, filters,
-              }) => {
-                const ranges = {};
-                if (rangeFilter && filters && filters.length) {
-                  filters.map(({ text, value }) => {
-                    if (!moment(value[0]).isValid() || !moment(value[1]).isValid()) {
-                      throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
-                    }
-                    ranges[text] = [moment(value[0]), moment(value[1])];
-                    return null;
-                  });
+        {
+          filterInGroupSchemas.map(({
+            mapKey, type, title, ...definition
+          }) => (
+            <Row
+              type="flex"
+              align="middle"
+              className="filter-row"
+              key={mapKey}
+            >
+              <div className="filter-title">{`${title}：`}</div>
+              <Col span={12}>
+                {
+                  type.renderFilterItem({
+                    ...definition,
+                    value: filterGroup[mapKey],
+                    onChange: (v) => {
+                      this.setState({ filterGroup: { ...filterGroup, [mapKey]: v } });
+                    },
+                  })
                 }
-                return (
-                  <Col span={6} key={mapKey}>
-                    <div className="filter-title">{`${title}：`}</div>
-                    {
-                      rangeFilter
-                        ? (
-                          <DatePicker.RangePicker
-                            showTime={type.showTime()}
-                            format={type.getFormat()}
-                            value={has(filter, mapKey) && isArray(filter[mapKey])
-                              && moment(filter[mapKey][0]).isValid()
-                              && moment(filter[mapKey][1]).isValid()
-                              ? [moment(filter[mapKey][0]), moment(filter[mapKey][1])]
-                              : []
-                            }
-                            ranges={ranges}
-                            onChange={newDate => (
-                              this.onChangeDateFilter(mapKey, newDate)
-                            )}
-                          />
-                        )
-                        : (
-                          <DatePickerWithPresets
-                            value={has(filter, mapKey) && moment(filter[mapKey]).isValid()
-                              ? moment(filter[mapKey]) : null}
-                            showTime={type.showTime()}
-                            format={type.getFormat()}
-                            presets={filters}
-                            onChange={newDate => (
-                              this.onChangeDateFilter(mapKey, newDate)
-                            )}
-                          />
-                        )
-                    }
-                  </Col>
-                );
-              })
-            }
-          </Row>
-        ))}
+              </Col>
+            </Row>
+          ))
+        }
+        <Row key="filter-group-action-buttons">
+          <Popconfirm
+            title="确认重置？"
+            onConfirm={this.onClickReset}
+          >
+            <Button type="danger">重置</Button>
+          </Popconfirm>
+          <Button
+            type="primary"
+            style={{ marginLeft: '.6rem' }}
+            onClick={this.onClickQuery}
+          >
+            查询
+          </Button>
+        </Row>
       </Group>
     );
   }

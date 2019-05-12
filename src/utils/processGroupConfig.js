@@ -147,12 +147,22 @@ export default function processGroupConfig({ config, path }) {
       defaultSort = `${definition.mapKey} ${definition.defaultSort}`;
     }
     if (isArray(definition.filters)) {
-      forEach(definition.filters, ({ value, default: d }) => {
-        if (d) {
-          defaultFilter = defaultFilter || {};
-          defaultFilter[definition.mapKey] = isNumber(value) ? String(value) : value;
-        }
-      });
+      if (definition.multiple) {
+        forEach(definition.filters, ({ value, default: d }) => {
+          if (d) {
+            defaultFilter = defaultFilter || {};
+            defaultFilter[definition.mapKey] = defaultFilter[definition.mapKey] || [];
+            defaultFilter[definition.mapKey].push(isNumber(value) ? String(value) : value);
+          }
+        });
+      } else {
+        forEach(definition.filters, ({ value, default: d }) => {
+          if (d) {
+            defaultFilter = defaultFilter || {};
+            defaultFilter[definition.mapKey] = isNumber(value) ? String(value) : value;
+          }
+        });
+      }
     }
   });
 
