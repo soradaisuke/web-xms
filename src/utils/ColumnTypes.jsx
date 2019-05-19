@@ -28,6 +28,19 @@ const TYPES = {
   AUDIO: 'audio',
 };
 
+const generateTreeData = (filters) => {
+  if (!isArray(filters)) return null;
+  return (map(filters, ({
+    value, text, children, ...item
+  }) => ({
+    value,
+    key: value,
+    title: text,
+    children: generateTreeData(children),
+    ...item,
+  })));
+};
+
 class BaseColumnType {
   canCheckWhiteSpace() { // eslint-disable-line class-methods-use-this
     return false;
@@ -478,22 +491,17 @@ class EnumColumnType extends BaseColumnType {
   }
 
   renderFilterItem({ // eslint-disable-line class-methods-use-this
-    filters, value, onChange, filterMultiple,
+    filters, value, onChange, filterMultiple, ...otherProps
   }) {
     return (
       <Select
         allowClear
-        mode={filterMultiple ? 'multiple' : ''}
-        options={map(filters, ({ value: v, text, ...item }) => ({
-          key: v,
-          value: v,
-          children: text,
-          ...item,
-        }))}
+        treeData={generateTreeData(filters)}
+        treeCheckable={filterMultiple}
         style={{ width: '100%' }}
-        formFieldValues={{}}
         value={this.formatSubmitValue(value)}
         onChange={onChange}
+        {...otherProps}
       />
     );
   }
@@ -503,9 +511,7 @@ class EnumColumnType extends BaseColumnType {
   }) {
     return (
       <Select
-        options={map(filters, ({ value, text, ...item }) => (
-          { key: value, children: text, ...item }
-        ))}
+        treeData={generateTreeData(filters)}
         formFieldValues={formFieldValues}
         {...selectProps}
       />

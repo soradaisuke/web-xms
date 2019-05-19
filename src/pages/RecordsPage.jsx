@@ -106,7 +106,7 @@ export default class RecordsPage extends React.PureComponent {
     const { defaultFilter, filterInGroupSchemas } = props;
     const filterGroup = {};
     forEach(filterInGroupSchemas, ({ mapKey }) => {
-      if ((defaultFilter[mapKey] === 0 || defaultFilter[mapKey])) {
+      if (defaultFilter && (defaultFilter[mapKey] === 0 || defaultFilter[mapKey])) {
         filterGroup[mapKey] = defaultFilter[mapKey];
       }
     });

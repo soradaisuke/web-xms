@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select as AntdSelect } from 'antd';
-import { isUndefined, debounce, isFunction } from 'lodash';
+import { TreeSelect } from 'antd';
+import {
+  isArray, debounce, isFunction,
+} from 'lodash';
 
 export default class Select extends React.PureComponent {
   static displayName = 'Select';
@@ -17,61 +19,59 @@ export default class Select extends React.PureComponent {
     formFieldValues: PropTypes.shape({}).isRequired,
     onSearch: PropTypes.func, // (value, formFieldValues, cb) => cb(newOptions)
     showSearch: PropTypes.bool,
+    treeNodeFilterProp: PropTypes.string,
   };
 
   static defaultProps = {
     showSearch: false,
     onSearch: () => {},
+    treeNodeFilterProp: 'title',
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      options: props.options,
+      treeData: props.treeData,
     };
   }
 
   onSearch = debounce((value) => {
     const { onSearch, showSearch, formFieldValues } = this.props;
     if (showSearch) {
-      onSearch(value, formFieldValues, newOptions => this.setState({ options: newOptions }));
+      onSearch(value, formFieldValues, newTreeData => this.setState({ treeData: newTreeData }));
     }
   }, 400)
 
   onChange = (value) => {
-    const { onChange } = this.props;
-    onChange(value);
+    const { onChange, treeCheckStrictly } = this.props;
+    if (treeCheckStrictly && isArray(value)) {
+      onChange(value.map(v => (v ? v.value : null)));
+    } else {
+      onChange(value);
+    }
   }
 
   render() {
     const {
-      value, onChange, onSearch, filterOptions, formFieldValues, ...props
+      value, onChange, onSearch, filterOptions,
+      formFieldValues, treeData: td, ...props
     } = this.props;
-    const { options } = this.state;
-    const newOptions = isFunction(filterOptions)
-      ? filterOptions(options, formFieldValues) : options;
+    const { treeData } = this.state;
+    const newTreeData = isFunction(filterOptions)
+      ? filterOptions(treeData, formFieldValues) : treeData;
+
     return (
-      <AntdSelect
+      <TreeSelect
         allowClear
-        value={value}
         placeholder="请选择一个选项"
+        value={value}
+        treeData={newTreeData}
         getPopupContainer={trigger => trigger.parentNode}
         onSearch={this.onSearch}
         onChange={this.onChange}
         {...props}
-      >
-        {
-          newOptions.map(({ children, value: v, ...opProps }) => (
-            <AntdSelect.Option
-              value={isUndefined(v) ? opProps.key : v}
-              {...opProps}
-            >
-              {children}
-            </AntdSelect.Option>
-          ))
-        }
-      </AntdSelect>
+      />
     );
   }
 }
