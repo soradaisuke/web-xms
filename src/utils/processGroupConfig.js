@@ -1,5 +1,5 @@
 import {
-  isPlainObject, isArray, map, flatten, filter, forEach, join, isNumber,
+  isPlainObject, isArray, map, flatten, filter, forEach, join,
 } from 'lodash';
 import ColumnTypes from './ColumnTypes';
 import DataType from '../constants/DataType';
@@ -18,7 +18,7 @@ export default function processGroupConfig({ config, path }) {
   let fixedSort;
   let defaultFilter;
   let hasInlineEdit = false;
-  const searchFileds = [];
+  const searchFields = [];
   const newSchema = schema.map((definition) => {
     let {
       visibility, sort, defaultSort: ds, mapKey,
@@ -141,7 +141,7 @@ export default function processGroupConfig({ config, path }) {
       fixedSort = `${orderKey} asc`;
     }
     if (definition.search) {
-      searchFileds.push(definition);
+      searchFields.push(definition);
     }
     if (definition.sort && definition.defaultSort) {
       defaultSort = `${definition.mapKey} ${definition.defaultSort}`;
@@ -152,14 +152,14 @@ export default function processGroupConfig({ config, path }) {
           if (d) {
             defaultFilter = defaultFilter || {};
             defaultFilter[definition.mapKey] = defaultFilter[definition.mapKey] || [];
-            defaultFilter[definition.mapKey].push(isNumber(value) ? String(value) : value);
+            defaultFilter[definition.mapKey].push(value);
           }
         });
       } else {
         forEach(definition.filters, ({ value, default: d }) => {
           if (d) {
             defaultFilter = defaultFilter || {};
-            defaultFilter[definition.mapKey] = isNumber(value) ? String(value) : value;
+            defaultFilter[definition.mapKey] = value;
           }
         });
       }
@@ -191,7 +191,7 @@ export default function processGroupConfig({ config, path }) {
     actions,
     primaryKey,
     orderKey,
-    searchFileds,
+    searchFields,
     defaultSort,
     defaultFilter,
     fixedSort,

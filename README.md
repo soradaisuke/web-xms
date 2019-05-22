@@ -234,6 +234,7 @@ ref获得节点后可以调用的方法有
 | rangeFilter | 是否范围选择时间，type为DATE或DATETIME起作用 | bool | false |
 | canFilter | 是否可以用该属性筛选数据, 关于filter渲染的位置是否在表格里见[filterGroup](#filterGroup) | bool | false |
 | filterMultiple | 筛选数据是否可以多选 | bool | false |
+| filterTree | 筛选数据是否是树形结构，是的话筛选组件会在表格外 | bool | false |
 | mapKey | 如果该属性在排序/筛选/创建/修改/搜索时的key值与数据源内的不同，设置该属性。如果key为array且支持排序/筛选/创建/修改/搜索时该属性必须设置。 | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |

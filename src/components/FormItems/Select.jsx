@@ -16,7 +16,7 @@ export default class Select extends React.PureComponent {
       PropTypes.arrayOf(PropTypes.number),
       PropTypes.arrayOf(PropTypes.string),
     ]),
-    formFieldValues: PropTypes.shape({}).isRequired,
+    formFieldValues: PropTypes.shape({}),
     onSearch: PropTypes.func, // (value, formFieldValues, cb) => cb(newOptions)
     showSearch: PropTypes.bool,
     treeNodeFilterProp: PropTypes.string,
@@ -24,7 +24,8 @@ export default class Select extends React.PureComponent {
 
   static defaultProps = {
     showSearch: false,
-    onSearch: () => {},
+    onSearch: null,
+    formFieldValues: {},
     treeNodeFilterProp: 'title',
   };
 
@@ -38,7 +39,7 @@ export default class Select extends React.PureComponent {
 
   onSearch = debounce((value) => {
     const { onSearch, showSearch, formFieldValues } = this.props;
-    if (showSearch) {
+    if (showSearch && isFunction(onSearch)) {
       onSearch(value, formFieldValues, newTreeData => this.setState({ treeData: newTreeData }));
     }
   }, 400)
@@ -57,10 +58,10 @@ export default class Select extends React.PureComponent {
       value, onChange, onSearch, filterOptions,
       formFieldValues, treeData: td, ...props
     } = this.props;
-    const { treeData } = this.state;
+    const { treeData: tds } = this.state;
+    const treeData = isFunction(onSearch) ? tds : td;
     const newTreeData = isFunction(filterOptions)
       ? filterOptions(treeData, formFieldValues) : treeData;
-
     return (
       <TreeSelect
         allowClear

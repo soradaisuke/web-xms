@@ -70,7 +70,6 @@ function generateModel({
         { call, put },
       ) {
         yield put({ type: 'saveError', payload: { error: null } });
-
         const currentFiler = { ...filter, ...search };
 
         for (let i = 0; i < schema.length; i += 1) {
@@ -121,26 +120,13 @@ function generateModel({
 }
 
 function generateRecordsPage({
-  api: { host, path, defaultFilter }, namespace, actions, primaryKey, schema,
-  searchFileds, fixedSort, defaultSort, defaultFilter: defaultFilterQuery,
+  api: { host, path, defaultFilter }, namespace, actions, primaryKey,
+  searchFields, fixedSort, defaultSort, defaultFilter: defaultFilterQuery,
 }, component) {
   const customActions = actions.filter(action => isPlainObject(action));
   const customGlobalActions = customActions.filter(({ global }) => global);
   const customMultipleActions = customActions.filter(({ multiple }) => multiple);
   const customRowActions = customActions.filter(({ global }) => !global);
-  const filterInGroupSchemas = schema.filter(({
-    type,
-    canFilter,
-    rangeFilter,
-    visibility,
-  }) => (
-    canFilter && (
-      type === ColumnTypes.date
-      || type === ColumnTypes.datetime
-      || (type === ColumnTypes.number && rangeFilter)
-      || !(visibility && visibility.table)
-    )
-  ));
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -154,8 +140,7 @@ function generateRecordsPage({
           customGlobalActions={customGlobalActions}
           customMultipleActions={customMultipleActions}
           customRowActions={customRowActions}
-          searchFileds={searchFileds}
-          filterInGroupSchemas={filterInGroupSchemas}
+          searchFields={searchFields}
           defaultFilter={defaultFilterQuery}
         />
       );
@@ -195,6 +180,29 @@ function generateRecordsPage({
     sche => sche.toJS(),
   );
 
+  const filterInGroupSchemas = createSelector(
+    [
+      state => state[namespace].get('schema'),
+    ],
+    (sche) => {
+      const schemas = sche.toJS();
+      return (schemas.filter(({
+        type,
+        canFilter,
+        visibility,
+        filterTree,
+      }) => (
+        canFilter && (
+          type === ColumnTypes.date
+          || type === ColumnTypes.datetime
+          || type === ColumnTypes.number
+          || !(visibility && visibility.table)
+          || filterTree
+        )
+      )));
+    },
+  );
+
   const mapStateToProps = (state, props) => {
     const queries = parse(props.location.search);
     return {
@@ -203,6 +211,7 @@ function generateRecordsPage({
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
       schema: schemaSelector(state),
+      filterInGroupSchemas: filterInGroupSchemas(state),
       search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),

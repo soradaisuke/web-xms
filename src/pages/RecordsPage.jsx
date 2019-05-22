@@ -63,8 +63,9 @@ export default class RecordsPage extends React.PureComponent {
     primaryKey: PropTypes.string,
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     remove: PropTypes.func,
+    defaultFilter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     search: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    searchFileds: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    searchFields: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
     hasCreateNew: PropTypes.bool,
@@ -88,12 +89,13 @@ export default class RecordsPage extends React.PureComponent {
     page: 1,
     pagesize: 10,
     search: {},
-    searchFileds: [],
+    searchFields: [],
     sort: '',
     total: 0,
     inline: false,
     inlineEdit: null,
     hasCreateNew: false,
+    defaultFilter: {},
   };
 
   static showTotal(total, range) {
@@ -103,11 +105,15 @@ export default class RecordsPage extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const { defaultFilter, filterInGroupSchemas } = props;
+    const {
+      defaultFilter, filter, filterInGroupSchemas,
+    } = props;
     const filterGroup = {};
     forEach(filterInGroupSchemas, ({ mapKey }) => {
-      if (defaultFilter && (defaultFilter[mapKey] === 0 || defaultFilter[mapKey])) {
-        filterGroup[mapKey] = defaultFilter[mapKey];
+      const defaultValue = (filter[mapKey] === 0 || filter[mapKey])
+        ? filter[mapKey] : defaultFilter[mapKey];
+      if (filter && (defaultValue === 0 || defaultValue)) {
+        filterGroup[mapKey] = defaultValue;
       }
     });
 
@@ -295,10 +301,11 @@ export default class RecordsPage extends React.PureComponent {
     const { filterGroup } = this.state;
     const newFilter = { ...filter, ...filterGroup };
     forEach(newFilter, (f, key) => {
-      const hasNoEmpty = arr => (
-        findIndex(arr, item => (item !== 0 && !item)) !== -1
+      const hasValidValue = arr => (
+        findIndex(arr, item => (item === 0 || item)) !== -1
       );
-      if ((isArray(f) && (!f.length || hasNoEmpty(f))) || (f !== 0 && !f)) {
+
+      if ((isArray(f) && !hasValidValue(f)) || (f !== 0 && !f)) {
         delete newFilter[key];
       }
     });
@@ -321,7 +328,7 @@ export default class RecordsPage extends React.PureComponent {
   renderColumn({
     visibility, link, title, key, sort, mapKey, width,
     type, imageSize, renderValue, filters, enabledFilters,
-    canFilter, inlineEdit, form: formConfig, filterMultiple = false,
+    canFilter, inlineEdit, form: formConfig, filterMultiple = false, filterTree,
   }) {
     const { sort: currentSort, filter } = this.props;
     const filteredValue = (type.canUseColumnFilter() && !isUndefined(filter[mapKey])
@@ -399,7 +406,7 @@ export default class RecordsPage extends React.PureComponent {
         );
       }
 
-      const filterProps = canFilter && isArray(enabledFilters) && enabledFilters.length > 0 ? {
+      const filterProps = canFilter && !filterTree && isArray(enabledFilters) && enabledFilters.length > 0 ? {
         filterMultiple,
         filtered: isArray(filteredValue) ? !!filteredValue.length : !isUndefined(filteredValue),
         filteredValue: isArray(filteredValue)
@@ -534,15 +541,15 @@ export default class RecordsPage extends React.PureComponent {
 
   renderSearchGroup() {
     const { inputSearch } = this.state;
-    const { searchFileds, search } = this.props;
+    const { searchFields, search } = this.props;
 
-    if (!searchFileds || searchFileds.length === 0) {
+    if (!searchFields || searchFields.length === 0) {
       return null;
     }
 
     return (
       <Group title="搜索">
-        {chunk(searchFileds, 6).map(definitions => (
+        {chunk(searchFields, 6).map(definitions => (
           <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
             {
               definitions.map(definition => (

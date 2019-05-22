@@ -3,7 +3,8 @@ import {
   Input, InputNumber, DatePicker, TimePicker,
 } from 'antd';
 import {
-  toNumber, toString, join, map, isNumber, isArray, isNaN, isFunction,
+  toNumber, toString, join, map, isNumber, isArray, isNaN,
+  isFunction, isUndefined,
 } from 'lodash';
 import moment from 'moment';
 import DatePickerWithPresets from '../components/DatePickerWithPresets';
@@ -138,6 +139,9 @@ class PrimitiveColumnType extends BaseColumnType {
         </div>
       );
     }
+    if (this.primitiveType === TYPES.NUMBER) {
+      return (<InputNumber value={value} onChange={v => onChange(v)} />);
+    }
     return null;
   }
 
@@ -169,9 +173,13 @@ class PrimitiveColumnType extends BaseColumnType {
   formatSubmitValue(v) {
     switch (this.primitiveType) {
       case TYPES.STRING:
-        return toString(v);
+        return isUndefined(v) ? v : toString(v);
       case TYPES.NUMBER:
-        return !isNaN(toNumber(v)) ? toNumber(v) : v;
+        return (
+          isArray(v) // eslint-disable-line no-nested-ternary
+            ? v.map(item => (!isNaN(toNumber(item)) ? toNumber(item) : item))
+            : (!isNaN(toNumber(v)) ? toNumber(v) : v)
+        );
       case TYPES.BOOL:
         return v && v !== 'false';
       case TYPES.DATE:
@@ -496,10 +504,10 @@ class EnumColumnType extends BaseColumnType {
     return (
       <Select
         allowClear
-        treeData={generateTreeData(filters)}
+        treeData={generateTreeData(isArray(filters) ? filters : [])}
         treeCheckable={filterMultiple}
         style={{ width: '100%' }}
-        value={this.formatSubmitValue(value)}
+        value={value}
         onChange={onChange}
         {...otherProps}
       />
