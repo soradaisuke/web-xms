@@ -128,7 +128,7 @@ class PrimitiveColumnType extends BaseColumnType {
   }
 
   renderFilterItem({ // eslint-disable-line class-methods-use-this
-    rangeFilter, onChange, value = [],
+    rangeFilter, onChange, value,
   }) {
     if (this.primitiveType === TYPES.NUMBER && rangeFilter) {
       return (

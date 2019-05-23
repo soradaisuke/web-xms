@@ -301,6 +301,10 @@ export default class RecordsPage extends React.PureComponent {
     const { filterGroup } = this.state;
     const newFilter = { ...filter, ...filterGroup };
     forEach(newFilter, (f, key) => {
+      if (filterGroup[key] !== 0 && !filterGroup[key]) {
+        delete newFilter[key];
+        return;
+      }
       const hasValidValue = arr => (
         findIndex(arr, item => (item === 0 || item)) !== -1
       );
@@ -406,13 +410,17 @@ export default class RecordsPage extends React.PureComponent {
         );
       }
 
-      const filterProps = canFilter && !filterTree && isArray(enabledFilters) && enabledFilters.length > 0 ? {
-        filterMultiple,
-        filtered: isArray(filteredValue) ? !!filteredValue.length : !isUndefined(filteredValue),
-        filteredValue: isArray(filteredValue)
-          ? filteredValue : [String(filteredValue)],
-        filters: !type.canUseColumnFilter() ? [] : enabledFilters,
-      } : {};
+      const filterProps = canFilter
+        && !filterTree
+        && isArray(enabledFilters)
+        && enabledFilters.length > 0
+        ? {
+          filterMultiple,
+          filtered: isArray(filteredValue) ? !!filteredValue.length : !isUndefined(filteredValue),
+          filteredValue: isArray(filteredValue)
+            ? filteredValue : [String(filteredValue)],
+          filters: !type.canUseColumnFilter() ? [] : enabledFilters,
+        } : {};
 
       return (
         <Column
