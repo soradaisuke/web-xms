@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.3.0...v1.4.0) (2019-05-23)
+
+
+### Bug Fixes
+
+* **CLOUD-1034:** xms-当渲染在group里的filters时一个函数时无法正确获取filters ([d70aade](https://git2.qingtingfm.com/zhibo/xms/commit/d70aade))
+* **CLOUD-1043:** filterGroup的筛选重置以后点查询无改变 ([4d67fc0](https://git2.qingtingfm.com/zhibo/xms/commit/4d67fc0))
+
+
+### Features
+
+* **CLOUD-1017:** xms支持树形选择 ([8419ce7](https://git2.qingtingfm.com/zhibo/xms/commit/8419ce7))
+* **NoTicket:** 支持非表格内的filter，即渲染在表格上方的点查询才会查询的filter ([cb86d18](https://git2.qingtingfm.com/zhibo/xms/commit/cb86d18))
+
+
+
 ## [1.3.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.2.0...v1.3.0) (2019-05-10)
 
 
