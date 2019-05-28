@@ -1,6 +1,15 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.4.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.4.0...v1.4.1) (2019-05-28)
+
+
+### Bug Fixes
+
+* **CLOUD-1064:** customRequest为async方法时会报错 ([4f4d9b6](https://git2.qingtingfm.com/zhibo/xms/commits/4f4d9b6))
+
+
 
 ## [1.4.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.3.0...v1.4.0) (2019-05-23)
 
