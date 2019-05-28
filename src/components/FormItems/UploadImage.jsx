@@ -225,24 +225,23 @@ export default class UploadImage extends React.PureComponent {
       }
     }))
 
-  customRequest = async (options) => {
+  customRequest = (options) => { // NOTE: customRequest不能是async方法
     const { needCrop } = this.props;
     if (needCrop) {
       this.setCropState({ fileLoading: true });
-      try {
-        const fileSrc = await this.generateFileSrc(options.file);
+      this.generateFileSrc(options.file).then((fileSrc) => {
         this.setCropState({
           fileSrc,
           cropVisible: true,
           handleCropOk: () => {
             this.uploadImage(options);
           },
+          fileLoading: false,
         });
-      } catch (e) {
+      }).catch((e) => {
         message.error(e);
-      } finally {
         this.setCropState({ fileLoading: false });
-      }
+      });
     } else {
       this.uploadImage(options);
     }
