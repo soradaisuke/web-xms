@@ -4,7 +4,7 @@ import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
-  find, forEach, isFunction, get,
+  find, forEach, isFunction, get, unset,
 } from 'lodash';
 import ActivatorModal from './ActivatorModal';
 
@@ -45,6 +45,7 @@ class RecordModal extends React.PureComponent {
       form.validateFields(async (err, values) => {
         if (!err) {
           const formatValues = {};
+          forEach(schema, s => (s.ignoreWhenNotEdit ? unset(record, s.mapKey) : null));
           forEach(values, (value, key) => {
             const targetSchema = find(schema, { mapKey: key }) || {};
             const formConfig = targetSchema.form || {};

@@ -240,6 +240,7 @@ ref获得节点后可以调用的方法有
 | width | 列宽度 | string/number | '' |
 | form | 该属性在表单中的配置，详见[form](#form) | object | '' |
 | inlineEdit | STRING类型数据支持行内直接编辑，placeholder和校验沿用form.placeholder和form.rules | bool | false |
+| ignoreWhenNotEdit | 为true的时候在修改时不自动回传原始数据 | bool | false |
 
 # form
 | 参数 | 说明 | 类型 | 默认值 |
@@ -258,7 +259,9 @@ ref获得节点后可以调用的方法有
 | bucket | IMAGE类型数据在form中UploadImage用的bucket | string | '' |
 
 # selectProps
-支持antd的TreeSelect的除value, onChange, onSearch以外的其他props，详见[antd Select](https://ant.design/components/tree-select-cn/#Tree-props)。
+支持antd的TreeSelect的除value, onChange, onSearch以外的其他props，详见[antd TreeSelect](https://ant.design/components/tree-select-cn/#Tree-props)。
+
+**注意** v1.4.0以前的如果要升级到v1.4.0以上，如果用到了onSearch注意cb里数据的格式修改（treeData里基本要求key、value、title），此外如果有cb([])的要删除，因为TreeSelect在数据为空以后无法正确显示选中的title。
 
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
@@ -295,7 +298,7 @@ ref获得节点后可以调用的方法有
 # filterGroup
 filterGroup指非表格内筛选的filters，符合以下任一条件的都会渲染在上方：
 * type为ColumnTypes.date或ColumnTypes.datetime
-* type为ColumnTypes.number且rangeFilter为true
+* type为ColumnTypes.number
 * visibility.table为false
 
 # API要求
