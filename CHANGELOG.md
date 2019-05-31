@@ -1,6 +1,20 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.5.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.4.1...v1.5.0) (2019-05-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 删除数据应删除key或key[0]对应的数据 ([2f13ab3](https://git2.qingtingfm.com/zhibo/xms/commit/2f13ab3))
+
+
+### Features
+
+* **NoTicket:** add ignoreWhenNotEdit ([c776bd7](https://git2.qingtingfm.com/zhibo/xms/commit/c776bd7))
+
+
 
 ## [1.5.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.4.1...v1.5.0) (2019-05-31)
 
