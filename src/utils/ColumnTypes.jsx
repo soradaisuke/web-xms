@@ -273,8 +273,8 @@ class BaseDateColumnType extends BaseColumnType {
           ranges={ranges}
           onChange={newDate => (
             onChange([
-              this.formatSubmitValue(newDate[0]),
-              this.formatSubmitValue(newDate[1]),
+              this.formatSubmitValue(newDate[0], true),
+              this.formatSubmitValue(newDate[1], false),
             ])
           )}
         />
@@ -353,6 +353,27 @@ class DateTimeColumnType extends BaseDateColumnType {
 
   getFormat() { // eslint-disable-line class-methods-use-this
     return 'YYYY-MM-DD HH:mm:ss';
+  }
+}
+
+class DateTimeDefaultRangeColumnType extends BaseDateColumnType {
+  getName() { // eslint-disable-line class-methods-use-this
+    return TYPES.DATETIME;
+  }
+
+  formatSubmitValue(v, start = true) { // eslint-disable-line class-methods-use-this
+    if (!(v && isFunction(v.toISOString))) return v;
+    if (start) v.hour(0).minute(0).second(0);
+    else v.hour(23).minute(59).second(59);
+    return v.toISOString();
+  }
+
+  getFormat() { // eslint-disable-line class-methods-use-this
+    return 'YYYY-MM-DD';
+  }
+
+  renderFilterItem(datas) { // eslint-disable-line class-methods-use-this
+    return super.renderFilterItem({ ...datas, rangeFilter: true });
   }
 }
 
@@ -621,6 +642,7 @@ export default {
   bool,
   date: new DateColumnType(),
   datetime: new DateTimeColumnType(),
+  datetimeDafaultRange: new DateTimeDefaultRangeColumnType(),
   time: new TimeColumnType(),
   order: new OrderColumnType(),
   image: new ImageColumnType(),

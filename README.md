@@ -25,6 +25,7 @@ ColumnTypes.number
 ColumnTypes.bool
 ColumnTypes.date
 ColumnTypes.datetime
+ColumnTypes.datetimeDafaultRange
 ColumnTypes.order
 ColumnTypes.image
 ColumnTypes.url
