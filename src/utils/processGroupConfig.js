@@ -21,10 +21,10 @@ export default function processGroupConfig({ config, path }) {
   const searchFields = [];
   const newSchema = schema.map((definition) => {
     let {
-      visibility, sort, defaultSort: ds, mapKey,
+      visibility, sort, defaultSort: ds,
     } = definition;
     const {
-      type: oldType, filters, key, search, canFilter, inlineEdit,
+      type: oldType, filters, key, search, canFilter, inlineEdit, mapKey,
     } = definition;
 
     let type;
@@ -108,13 +108,14 @@ export default function processGroupConfig({ config, path }) {
       sort = { desc: true };
     }
 
-    if (isArray(key)) {
-      if ((canFilter || search || type === ColumnTypes.order
-        || visibility.create || visibility.edit) && !mapKey) {
-        throw new Error(`${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`);
-      }
-    } else {
-      mapKey = mapKey || key;
+    if (isArray(key) && !mapKey && (
+      canFilter
+      || search
+      || type === ColumnTypes.order
+      || visibility.create
+      || visibility.edit
+    )) {
+      throw new Error(`${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`);
     }
 
     return {
@@ -122,7 +123,7 @@ export default function processGroupConfig({ config, path }) {
       type,
       visibility,
       sort,
-      mapKey,
+      mapKey: mapKey || key,
       defaultSort: ds,
       enabledFilters: isArray(filters) ? filter(filters, ({ disabled }) => !disabled) : [],
       key: isArray(key) ? join(key, '.') : key,

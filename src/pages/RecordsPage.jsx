@@ -109,7 +109,9 @@ export default class RecordsPage extends React.PureComponent {
       defaultFilter, filter, filterInGroupSchemas,
     } = props;
     const filterGroup = {};
+    const filterInGroupSchemaKeys = {};
     forEach(filterInGroupSchemas, ({ mapKey }) => {
+      filterInGroupSchemaKeys[mapKey] = true;
       const defaultValue = (filter[mapKey] === 0 || filter[mapKey])
         ? filter[mapKey] : defaultFilter[mapKey];
       if (filter && (defaultValue === 0 || defaultValue)) {
@@ -119,6 +121,7 @@ export default class RecordsPage extends React.PureComponent {
 
     this.state = {
       filterGroup,
+      filterInGroupSchemaKeys,
       records: Immutable.List(),
       dataSource: [],
       selectedRowKeys: [],
@@ -180,6 +183,7 @@ export default class RecordsPage extends React.PureComponent {
     const {
       schema, page, pagesize, search, updatePage, sort, filter,
     } = this.props;
+    const { filterInGroupSchemaKeys } = this.state;
     const targetSchema = find(schema, { key: sorter.columnKey }) || {};
     const { sort: schemaSort } = targetSchema;
     let newSort;
@@ -201,7 +205,7 @@ export default class RecordsPage extends React.PureComponent {
     }) => {
       const value = get(filters, key);
       const preValue = get(filter, key);
-      if ((type === ColumnTypes.date || type === ColumnTypes.datetime) && preValue) {
+      if (filterInGroupSchemaKeys[mapKey] && preValue) {
         acc[mapKey] = preValue;
       } else if (value && value.length > 0) {
         if (filterMultiple) {
@@ -297,26 +301,28 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   onClickQuery = () => {
-    const { filter, updatePage } = this.props;
-    const { filterGroup } = this.state;
-    const newFilter = { ...filter, ...filterGroup };
-    forEach(newFilter, (f, key) => {
-      if (filterGroup[key] !== 0 && !filterGroup[key]) {
-        delete newFilter[key];
-        return;
+    const {
+      filter, updatePage,
+    } = this.props;
+    const { filterGroup, filterInGroupSchemaKeys } = this.state;
+
+    forEach(filter, (_, key) => {
+      if (filterInGroupSchemaKeys[key]) {
+        delete filter[key];
       }
+    });
+    forEach(filterGroup, (v, key) => {
       const hasValidValue = arr => (
         findIndex(arr, item => (item === 0 || item)) !== -1
       );
 
-      if ((isArray(f) && !hasValidValue(f)) || (f !== 0 && !f)) {
-        delete newFilter[key];
+      if ((isArray(v) && !hasValidValue(v)) || (v !== 0 && !v)) {
+        delete filterGroup[key];
       }
     });
+
     updatePage({
-      filter: {
-        ...newFilter,
-      },
+      filter: { ...filter, ...filterGroup },
     });
   }
 

@@ -8,6 +8,7 @@ import { createSelector } from 'reselect';
 import { parse } from 'query-string';
 import {
   upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, get,
+  isUndefined,
 } from 'lodash';
 import { generateUri } from 'web-core';
 import ColumnTypes from './ColumnTypes';
@@ -265,11 +266,19 @@ function generateRecordsPage({
         });
       },
       updatePage: async ({
-        page, pagesize, sort, search, filter = {},
+        page, pagesize, sort, search, filter,
       }) => {
-        const uri = generateUri(window.location.href, {
-          page, pagesize, sort, filter: JSON.stringify(filter), search: JSON.stringify(search),
+        const newQuery = {
+          page,
+          pagesize,
+          sort,
+          filter: isUndefined(filter) ? filter : JSON.stringify(filter),
+          search: isUndefined(search) ? search : JSON.stringify(search),
+        };
+        forEach(newQuery, (v, key) => {
+          if (isUndefined(v)) delete newQuery[key];
         });
+        const uri = generateUri(window.location.href, newQuery);
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
       },
     };

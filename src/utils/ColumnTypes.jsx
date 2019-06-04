@@ -325,6 +325,10 @@ class DateColumnType extends BaseDateColumnType {
     return v ? moment(v) : null;
   }
 
+  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+    return v && isFunction(v.format) ? v.format(this.getFormat()) : v;
+  }
+
   showTime() { // eslint-disable-line class-methods-use-this
     return false;
   }

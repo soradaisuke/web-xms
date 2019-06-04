@@ -4,7 +4,7 @@ import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
-  find, forEach, isFunction, get, unset, isArray,
+  find, forEach, isFunction, get, unset, split,
 } from 'lodash';
 import ActivatorModal from './ActivatorModal';
 
@@ -46,7 +46,7 @@ class RecordModal extends React.PureComponent {
         if (!err) {
           const formatValues = {};
           forEach(schema, ({ key, ignoreWhenNotEdit }) => {
-            const newKey = isArray(key) ? key[0] : key;
+            const newKey = split(key, '.')[0];
             if (ignoreWhenNotEdit && newKey) {
               unset(record, newKey);
             }
