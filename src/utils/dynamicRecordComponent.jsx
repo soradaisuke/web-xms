@@ -10,45 +10,66 @@ import RecordPage from '../pages/RecordPage';
 
 function generateService() {
   return {
-    fetch: async ({ id }) => request.get(id),
+    fetch: async ({ id }) => request.get(id)
   };
 }
 
 function generateModel({ namespace }, service) {
   if (!namespace) {
-    throw new Error('dynamicRecordComponent generateModel: namespace is required');
+    throw new Error(
+      'dynamicRecordComponent generateModel: namespace is required'
+    );
   }
 
   return {
     namespace,
     state: null,
     reducers: {
-      save(state, { payload: { record } }) {
+      save(
+        state,
+        {
+          payload: { record }
+        }
+      ) {
         return Immutable.fromJS(record);
-      },
+      }
     },
     effects: {
-      * fetch({ payload: { id } }, { call, put }) {
+      *fetch(
+        {
+          payload: { id }
+        },
+        { call, put }
+      ) {
         const record = yield call(service.fetch, { id });
         yield put({ type: 'save', payload: { record } });
-      },
-    },
+      }
+    }
   };
 }
 
-function generateRecordPage({ namespace, inlineWidgetType, api: { path } = {} }, component) {
+function generateRecordPage(
+  { namespace, inlineWidgetType, api: { path } = {} },
+  component
+) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
     render() {
       return (
-        <RecordPage {...this.props} inlineWidgetType={inlineWidgetType} component={component} />
+        <RecordPage
+          {...this.props}
+          inlineWidgetType={inlineWidgetType}
+          component={component}
+        />
       );
     }
   }
 
   const mapStateToProps = (state, props) => {
-    const { match: { params: matchParams } } = props;
+    const {
+      match: { params: matchParams }
+    } = props;
 
     let apiPath = '';
     if (isFunction(path)) {
@@ -59,15 +80,21 @@ function generateRecordPage({ namespace, inlineWidgetType, api: { path } = {} },
 
     return {
       record: state[namespace],
-      recordId: apiPath,
+      recordId: apiPath
     };
   };
 
   const mapDispatchToProps = dispatch => ({
-    fetch: async ({ id }) => dispatch({ type: `${namespace}/fetch`, payload: { id } }),
+    fetch: async ({ id }) =>
+      dispatch({ type: `${namespace}/fetch`, payload: { id } })
   });
 
-  return withRouter(connect(mapStateToProps, mapDispatchToProps)(Page));
+  return withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Page)
+  );
 }
 
 function generateDynamicRecordComponent({ app, config, component }) {
@@ -77,7 +104,7 @@ function generateDynamicRecordComponent({ app, config, component }) {
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordPage(config, component)),
+    component: () => Promise.resolve(generateRecordPage(config, component))
   });
 }
 
@@ -92,9 +119,14 @@ export default function dynamicRecordComponent({ app, config, component }) {
   if (isFunction(config)) {
     return dynamic({
       app,
-      resolve: () => config().then(c => (
-        generateDynamicRecordComponent({ app, config: c.default || c, component })
-      )),
+      resolve: () =>
+        config().then(c =>
+          generateDynamicRecordComponent({
+            app,
+            config: c.default || c,
+            component
+          })
+        )
     });
   }
 

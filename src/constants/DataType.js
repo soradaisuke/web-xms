@@ -18,5 +18,5 @@ export default {
   ENUM,
   URL,
   BOOL,
-  ARRAY,
+  ARRAY
 };

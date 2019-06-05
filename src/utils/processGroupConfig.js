@@ -1,5 +1,11 @@
 import {
-  isPlainObject, isArray, map, flatten, filter, forEach, join,
+  isPlainObject,
+  isArray,
+  map,
+  flatten,
+  filter,
+  forEach,
+  join
 } from 'lodash';
 import ColumnTypes from './ColumnTypes';
 import DataType from '../constants/DataType';
@@ -19,12 +25,16 @@ export default function processGroupConfig({ config, path }) {
   let defaultFilter;
   let hasInlineEdit = false;
   const searchFields = [];
-  const newSchema = schema.map((definition) => {
-    let {
-      visibility, sort, defaultSort: ds,
-    } = definition;
+  const newSchema = schema.map(definition => {
+    let { visibility, sort, defaultSort: ds } = definition;
     const {
-      type: oldType, filters, key, search, canFilter, inlineEdit, mapKey,
+      type: oldType,
+      filters,
+      key,
+      search,
+      canFilter,
+      inlineEdit,
+      mapKey
     } = definition;
 
     let type;
@@ -80,16 +90,16 @@ export default function processGroupConfig({ config, path }) {
       visibility = {
         create: true,
         edit: true,
-        table: true,
+        table: true
       };
     } else if (visibility === 'table') {
       visibility = {
-        table: true,
+        table: true
       };
     } else if (visibility === 'modal') {
       visibility = {
         create: true,
-        edit: true,
+        edit: true
       };
     }
 
@@ -108,14 +118,18 @@ export default function processGroupConfig({ config, path }) {
       sort = { desc: true };
     }
 
-    if (isArray(key) && !mapKey && (
-      canFilter
-      || search
-      || type === ColumnTypes.order
-      || visibility.create
-      || visibility.edit
-    )) {
-      throw new Error(`${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`);
+    if (
+      isArray(key) &&
+      !mapKey &&
+      (canFilter ||
+        search ||
+        type === ColumnTypes.order ||
+        visibility.create ||
+        visibility.edit)
+    ) {
+      throw new Error(
+        `${path}: key为Array且支持排序/筛选/创建/修改/搜索的数据必须设置mapKey`
+      );
     }
 
     return {
@@ -125,12 +139,14 @@ export default function processGroupConfig({ config, path }) {
       sort,
       mapKey: mapKey || key,
       defaultSort: ds,
-      enabledFilters: isArray(filters) ? filter(filters, ({ disabled }) => !disabled) : [],
-      key: isArray(key) ? join(key, '.') : key,
+      enabledFilters: isArray(filters)
+        ? filter(filters, ({ disabled }) => !disabled)
+        : [],
+      key: isArray(key) ? join(key, '.') : key
     };
   });
 
-  forEach(newSchema, (definition) => {
+  forEach(newSchema, definition => {
     if (definition.primaryKey) {
       primaryKey = definition.key;
     }
@@ -152,7 +168,8 @@ export default function processGroupConfig({ config, path }) {
         forEach(definition.filters, ({ value, default: d }) => {
           if (d) {
             defaultFilter = defaultFilter || {};
-            defaultFilter[definition.mapKey] = defaultFilter[definition.mapKey] || [];
+            defaultFilter[definition.mapKey] =
+              defaultFilter[definition.mapKey] || [];
             defaultFilter[definition.mapKey].push(value);
           }
         });
@@ -172,16 +189,20 @@ export default function processGroupConfig({ config, path }) {
   }
 
   if (orderKey && filter(schema, definition => !!definition.sort).length > 0) {
-    throw new Error(`${path}: 存在type = ORDER的属性，默认为该属性升序排序，不支持配置其他sort属性`);
+    throw new Error(
+      `${path}: 存在type = ORDER的属性，默认为该属性升序排序，不支持配置其他sort属性`
+    );
   }
 
-  actions = flatten(map(actions, (action) => {
-    if (action === 'default') {
-      return ['create', 'edit', 'remove'];
-    }
+  actions = flatten(
+    map(actions, action => {
+      if (action === 'default') {
+        return ['create', 'edit', 'remove'];
+      }
 
-    return action;
-  }));
+      return action;
+    })
+  );
 
   if (hasInlineEdit) {
     actions.push('inlineEdit');
@@ -197,6 +218,6 @@ export default function processGroupConfig({ config, path }) {
     defaultFilter,
     fixedSort,
     namespace: path.replace(/(\/|:)/g, '@'),
-    schema: newSchema,
+    schema: newSchema
   };
 }

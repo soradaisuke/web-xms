@@ -16,7 +16,7 @@ export default class AudioPlayer extends React.PureComponent {
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
     showVolume: PropTypes.bool,
-    className: PropTypes.string,
+    className: PropTypes.string
   };
 
   static defaultProps = {
@@ -25,7 +25,7 @@ export default class AudioPlayer extends React.PureComponent {
     className: '',
     loop: false,
     showPlaybackRate: true,
-    showVolume: true,
+    showVolume: true
   };
 
   state = {
@@ -33,12 +33,13 @@ export default class AudioPlayer extends React.PureComponent {
     volume: 1.0,
     played: 0,
     playbackRate: 1.0,
-    seekTo: 0,
+    seekTo: 0
   };
 
   getProgressByEvent(event) {
-    let progress = (event.pageX - this.el.getBoundingClientRect().left)
-    / this.el.offsetWidth;
+    let progress =
+      (event.pageX - this.el.getBoundingClientRect().left) /
+      this.el.offsetWidth;
     progress = Math.max(0, progress);
     progress = Math.min(1, progress);
     return progress;
@@ -46,69 +47,69 @@ export default class AudioPlayer extends React.PureComponent {
 
   pause = () => {
     this.setState({ playing: false });
-  }
+  };
 
-  setVolume = (value) => {
+  setVolume = value => {
     this.setState({ volume: value / 100 });
-  }
+  };
 
-  setPlaybackRate = (v) => {
+  setPlaybackRate = v => {
     this.setState({ playbackRate: v });
-  }
+  };
 
   onSeekStart = () => {
     this.addEventListeners();
     this.setState({
       seeking: true,
-      playing: false,
+      playing: false
     });
-  }
+  };
 
   onSeekEnd = () => {
     this.removeEventListenrs();
     this.setState({
       seeking: false,
-      playing: true,
+      playing: true
     });
-  }
+  };
 
-  onProgress = (state) => {
+  onProgress = state => {
     this.setState(state);
-  }
+  };
 
-  onSeek = (seconds) => {
+  onSeek = seconds => {
     this.setState({
-      seekTo: seconds,
+      seekTo: seconds
     });
-  }
+  };
 
-  onChangeProgress = (e) => {
+  onChangeProgress = e => {
     this.player.seekTo(this.getProgressByEvent(e));
-  }
+  };
 
   onEnded = () => {
     const { loop } = this.props;
     this.setState({ playing: loop });
-  }
+  };
 
-  ref = (player) => {
+  ref = player => {
     this.player = player;
-  }
+  };
 
-  onClickableRef = (el) => {
+  onClickableRef = el => {
     this.el = el;
-  }
+  };
 
   onClickPlay = () => {
     const { playing } = this.state;
     this.setState({
-      playing: !playing,
+      playing: !playing
     });
-  }
+  };
 
-  onChangeRate = (e) => {
+  onChangeRate = e => {
     this.setPlaybackRate(e.target.value);
-  }
+  };
 
   addEventListeners() {
     window.addEventListener('mouseup', this.onSeekEnd);
@@ -122,14 +123,26 @@ export default class AudioPlayer extends React.PureComponent {
 
   render() {
     const {
-      url, className, loop, showPlaybackRate, showVolume, playbackRates,
+      url,
+      className,
+      loop,
+      showPlaybackRate,
+      showVolume,
+      playbackRates
     } = this.props;
     const {
-      playing, volume, played, seekTo, seeking,
-      playbackRate, playedSeconds,
+      playing,
+      volume,
+      played,
+      seekTo,
+      seeking,
+      playbackRate,
+      playedSeconds
     } = this.state;
-    const duration = this.player && this.player.getDuration() ? this.player.getDuration() : 0;
-    const currentPlayed = seeking && duration && seekTo ? seekTo / duration : played;
+    const duration =
+      this.player && this.player.getDuration() ? this.player.getDuration() : 0;
+    const currentPlayed =
+      seeking && duration && seekTo ? seekTo / duration : played;
 
     return (
       <div className={classNames('audio-player-wrapper', className)}>
@@ -152,7 +165,10 @@ export default class AudioPlayer extends React.PureComponent {
           onNodeRef={this.onClickableRef}
         >
           <div className="audio-player-rail" />
-          <div className="audio-player-track" style={{ width: `${currentPlayed * 100}%` }} />
+          <div
+            className="audio-player-track"
+            style={{ width: `${currentPlayed * 100}%` }}
+          />
           <button
             type="button"
             className="audio-player-handle"
@@ -168,42 +184,31 @@ export default class AudioPlayer extends React.PureComponent {
             icon={playing ? 'pause' : 'caret-right'}
           />
           <div className="audio-player-duration">
-            {formatDuration({ seconds: playedSeconds })}
-            /
+            {formatDuration({ seconds: playedSeconds })}/
             {formatDuration({ seconds: duration })}
           </div>
-          {
-            showPlaybackRate && (
-              <Radio.Group
-                value={playbackRate}
-                onChange={this.onChangeRate}
-                buttonStyle="solid"
-                className="audio-player-rates"
-              >
-                {
-                  playbackRates.map(v => (
-                    <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
-                  ))
-                }
-              </Radio.Group>
-            )
-          }
-          {
-            showVolume && (
-              <div className="audio-player-sound">
-                <Button
-                  size="small"
-                  shape="circle"
-                  icon="sound"
-                />
-                <Slider
-                  className="audio-player-sound-slider"
-                  defaultValue={volume * 100}
-                  onChange={this.setVolume}
-                />
-              </div>
-            )
-          }
+          {showPlaybackRate && (
+            <Radio.Group
+              value={playbackRate}
+              onChange={this.onChangeRate}
+              buttonStyle="solid"
+              className="audio-player-rates"
+            >
+              {playbackRates.map(v => (
+                <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
+              ))}
+            </Radio.Group>
+          )}
+          {showVolume && (
+            <div className="audio-player-sound">
+              <Button size="small" shape="circle" icon="sound" />
+              <Slider
+                className="audio-player-sound-slider"
+                defaultValue={volume * 100}
+                onChange={this.setVolume}
+              />
+            </div>
+          )}
         </div>
       </div>
     );

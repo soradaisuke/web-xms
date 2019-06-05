@@ -19,7 +19,7 @@ class InlineAudioPlayer extends React.PureComponent {
     url: PropTypes.string,
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
-    className: PropTypes.string,
+    className: PropTypes.string
   };
 
   static defaultProps = {
@@ -27,37 +27,37 @@ class InlineAudioPlayer extends React.PureComponent {
     url: '',
     className: '',
     loop: false,
-    showPlaybackRate: true,
+    showPlaybackRate: true
   };
 
   state = {
     played: 0,
     playbackRate: 1.0,
-    id: shortId.generate(),
+    id: shortId.generate()
   };
 
-  setPlaybackRate = (v) => {
+  setPlaybackRate = v => {
     this.setState({ playbackRate: v });
-  }
+  };
 
-  onProgress = (state) => {
+  onProgress = state => {
     this.setState(state);
-  }
+  };
 
   onEnded = () => {
     const { loop, changePlayedAudio } = this.props;
     if (!loop) {
       changePlayedAudio('');
     }
-  }
+  };
 
-  ref = (player) => {
+  ref = player => {
     this.player = player;
-  }
+  };
 
-  onClickableRef = (el) => {
+  onClickableRef = el => {
     this.el = el;
-  }
+  };
 
   onClickPlay = () => {
     const { changePlayedAudio, id } = this.props;
@@ -67,29 +67,32 @@ class InlineAudioPlayer extends React.PureComponent {
     } else {
       changePlayedAudio(myId);
     }
-  }
+  };
 
-  onChangeRate = (e) => {
+  onChangeRate = e => {
     this.setPlaybackRate(e.target.value);
-  }
+  };
 
   increase = () => {
     const { played } = this.state;
     this.player.seekTo(played + 0.1 < 1 ? played + 0.1 : 0.9999);
-  }
+  };
 
   decline = () => {
     const { played } = this.state;
     this.player.seekTo(played - 0.1 >= 0 ? played - 0.1 : 0);
-  }
+  };
 
   render() {
     const {
-      url, className, loop, showPlaybackRate, playbackRates, id,
+      url,
+      className,
+      loop,
+      showPlaybackRate,
+      playbackRates,
+      id
     } = this.props;
-    const {
-      played, playbackRate, id: myId,
-    } = this.state;
+    const { played, playbackRate, id: myId } = this.state;
     const playing = myId === id;
 
     return (
@@ -126,44 +129,39 @@ class InlineAudioPlayer extends React.PureComponent {
             />
           )}
         />
-        {
-          showPlaybackRate && (
-            <Radio.Group
-              size="small"
-              value={playbackRate}
-              onChange={this.onChangeRate}
-              buttonStyle="solid"
-              className="audio-player-rates"
-            >
-              {
-                playbackRates.map(v => (
-                  <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
-                ))
-              }
-            </Radio.Group>
-          )
-        }
+        {showPlaybackRate && (
+          <Radio.Group
+            size="small"
+            value={playbackRate}
+            onChange={this.onChangeRate}
+            buttonStyle="solid"
+            className="audio-player-rates"
+          >
+            {playbackRates.map(v => (
+              <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
+            ))}
+          </Radio.Group>
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  id: state.audio,
+  id: state.audio
 });
 
 const mapDispatchToProps = dispatch => ({
-  changePlayedAudio: async id => (
+  changePlayedAudio: async id =>
     dispatch({
       type: 'audio/changePlayedAudio',
       payload: {
-        id,
-      },
+        id
+      }
     })
-  ),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(InlineAudioPlayer);

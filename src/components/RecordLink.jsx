@@ -11,17 +11,20 @@ export default class RecordLink extends React.PureComponent {
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     link: PropTypes.shape({
       url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-      type: PropTypes.oneOf(['relative', 'absolute', 'external']),
+      type: PropTypes.oneOf(['relative', 'absolute', 'external'])
     }).isRequired,
-    children: PropTypes.node,
+    children: PropTypes.node
   };
 
   static defaultProps = {
-    children: null,
+    children: null
   };
 
   getUrl() {
-    const { link: { url }, record } = this.props;
+    const {
+      link: { url },
+      record
+    } = this.props;
 
     if (isFunction(url)) {
       return textToPath(url(record));
@@ -50,13 +53,13 @@ export default class RecordLink extends React.PureComponent {
     const { children, link } = this.props;
 
     if (link.type === 'external') {
-      return <a href={this.getUrl()} rel="noopener noreferrer" target="_blank">{children}</a>;
+      return (
+        <a href={this.getUrl()} rel="noopener noreferrer" target="_blank">
+          {children}
+        </a>
+      );
     }
 
-    return (
-      <Link to={this.getLink()}>
-        {children}
-      </Link>
-    );
+    return <Link to={this.getLink()}>{children}</Link>;
   }
 }

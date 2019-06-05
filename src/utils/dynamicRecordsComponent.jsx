@@ -7,8 +7,14 @@ import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
 import {
-  upperFirst, isFunction, isPlainObject, isString, forEach, toInteger, get,
-  isUndefined,
+  upperFirst,
+  isFunction,
+  isPlainObject,
+  isString,
+  forEach,
+  toInteger,
+  get,
+  isUndefined
 } from 'lodash';
 import { generateUri } from 'web-core';
 import ColumnTypes from './ColumnTypes';
@@ -17,27 +23,29 @@ import RecordsPage from '../pages/RecordsPage';
 
 function generateService({ actions, primaryKey }) {
   const service = {
-    fetch: async ({ path, ...params }) => request.get(path, { params }),
+    fetch: async ({ path, ...params }) => request.get(path, { params })
   };
 
-  forEach(actions, (action) => {
+  forEach(actions, action => {
     if (action === 'create') {
-      service.create = async ({ path, body }) => request.post(`${path}`, { body });
+      service.create = async ({ path, body }) =>
+        request.post(`${path}`, { body });
     } else if (action === 'edit' || action === 'inlineEdit') {
-      service.edit = async ({ path, body }) => request.put(`${path}/${get(body, primaryKey)}`, { body });
+      service.edit = async ({ path, body }) =>
+        request.put(`${path}/${get(body, primaryKey)}`, { body });
     } else if (action === 'remove') {
-      service.remove = async ({ path, body }) => request.remove(`${path}/${get(body, primaryKey)}`);
+      service.remove = async ({ path, body }) =>
+        request.remove(`${path}/${get(body, primaryKey)}`);
     } else if (action === 'order') {
-      service.order = async ({ path, body }) => request.put(`${path}/${get(body, primaryKey)}`, { body });
+      service.order = async ({ path, body }) =>
+        request.put(`${path}/${get(body, primaryKey)}`, { body });
     }
   });
 
   return service;
 }
 
-function generateModel({
-  namespace, actions, schema, orderKey,
-}, service) {
+function generateModel({ namespace, actions, schema, orderKey }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -48,70 +56,122 @@ function generateModel({
       schema,
       records: [],
       total: 0,
-      error: null,
+      error: null
     }),
     reducers: {
-      save(state, { payload: { records, total } }) {
+      save(
+        state,
+        {
+          payload: { records, total }
+        }
+      ) {
         return state.merge(Immutable.fromJS({ records, total }));
       },
-      saveFilters(state, { payload: { filters, index } }) {
-        return state.set('schema', state.get('schema').setIn([index, 'filters'], filters).setIn([index, 'enabledFilters'], filters.filter(({ disabled }) => !disabled)));
+      saveFilters(
+        state,
+        {
+          payload: { filters, index }
+        }
+      ) {
+        return state.set(
+          'schema',
+          state
+            .get('schema')
+            .setIn([index, 'filters'], filters)
+            .setIn(
+              [index, 'enabledFilters'],
+              filters.filter(({ disabled }) => !disabled)
+            )
+        );
       },
-      saveError(state, { payload: { error } }) {
+      saveError(
+        state,
+        {
+          payload: { error }
+        }
+      ) {
         return state.set('error', error);
-      },
+      }
     },
     effects: {
-      fetch: [function* fetch(
-        {
-          payload: {
-            path, page, pagesize, sort, search = {}, filter = {},
-          },
-        },
-        { call, put },
-      ) {
-        yield put({ type: 'saveError', payload: { error: null } });
-        const currentFiler = { ...filter, ...search };
+      fetch: [
+        function* fetch(
+          { payload: { path, page, pagesize, sort, search = {}, filter = {} } },
+          { call, put }
+        ) {
+          yield put({ type: 'saveError', payload: { error: null } });
+          const currentFiler = { ...filter, ...search };
 
-        for (let i = 0; i < schema.length; i += 1) {
-          if (isFunction(schema[i].filters)) {
-            yield put({ type: 'getFilters', payload: { index: i, filtersFunc: schema[i].filters, currentFiler } });
+          for (let i = 0; i < schema.length; i += 1) {
+            if (isFunction(schema[i].filters)) {
+              yield put({
+                type: 'getFilters',
+                payload: {
+                  index: i,
+                  filtersFunc: schema[i].filters,
+                  currentFiler
+                }
+              });
+            }
           }
-        }
 
-        try {
-          const { items: records, total } = yield call(service.fetch, {
-            path, page, pagesize, filter: JSON.stringify(currentFiler), order: sort,
-          });
-          yield put({ type: 'save', payload: { total, records } });
-        } catch (error) {
-          yield put({ type: 'saveError', payload: { error } });
-        }
-      }, { type: 'takeLatest' }],
-      * getFilters({ payload: { index, filtersFunc, currentFiler } }, { call, put }) {
+          try {
+            const { items: records, total } = yield call(service.fetch, {
+              path,
+              page,
+              pagesize,
+              filter: JSON.stringify(currentFiler),
+              order: sort
+            });
+            yield put({ type: 'save', payload: { total, records } });
+          } catch (error) {
+            yield put({ type: 'saveError', payload: { error } });
+          }
+        },
+        { type: 'takeLatest' }
+      ],
+      *getFilters(
+        {
+          payload: { index, filtersFunc, currentFiler }
+        },
+        { call, put }
+      ) {
         const filters = yield call(filtersFunc, currentFiler);
         yield put({ type: 'saveFilters', payload: { index, filters } });
-      },
-    },
+      }
+    }
   };
 
-  forEach(actions, (action) => {
+  forEach(actions, action => {
     if (action === 'create') {
-      model.effects.create = function* modelCreate({ payload: { path, body } }, { call }) {
+      model.effects.create = function* modelCreate(
+        { payload: { path, body } },
+        { call }
+      ) {
         yield call(service.create, { path, body });
       };
     } else if (action === 'edit' || action === 'inlineEdit') {
-      model.effects.edit = function* modelEdit({ payload: { path, body } }, { call }) {
+      model.effects.edit = function* modelEdit(
+        { payload: { path, body } },
+        { call }
+      ) {
         yield call(service.edit, { path, body });
       };
     } else if (action === 'remove') {
-      model.effects.remove = function* modelRemove({ payload: { path, body } }, { call }) {
+      model.effects.remove = function* modelRemove(
+        { payload: { path, body } },
+        { call }
+      ) {
         yield call(service.remove, { path, body });
       };
     } else if (action === 'order') {
-      model.effects.order = function* modelOrder({ payload: { path, body, diff } }, { call }) {
+      model.effects.order = function* modelOrder(
+        { payload: { path, body, diff } },
+        { call }
+      ) {
         yield call(service.order, {
-          path, body: { ...body, [orderKey]: body[orderKey] + diff },
+          path,
+          body: { ...body, [orderKey]: body[orderKey] + diff }
         });
       };
     }
@@ -120,13 +180,24 @@ function generateModel({
   return model;
 }
 
-function generateRecordsPage({
-  api: { host, path, defaultFilter }, namespace, actions, primaryKey,
-  searchFields, fixedSort, defaultSort, defaultFilter: defaultFilterQuery,
-}, component) {
+function generateRecordsPage(
+  {
+    api: { host, path, defaultFilter },
+    namespace,
+    actions,
+    primaryKey,
+    searchFields,
+    fixedSort,
+    defaultSort,
+    defaultFilter: defaultFilterQuery
+  },
+  component
+) {
   const customActions = actions.filter(action => isPlainObject(action));
   const customGlobalActions = customActions.filter(({ global }) => global);
-  const customMultipleActions = customActions.filter(({ multiple }) => multiple);
+  const customMultipleActions = customActions.filter(
+    ({ multiple }) => multiple
+  );
   const customRowActions = customActions.filter(({ global }) => !global);
 
   class Page extends React.PureComponent {
@@ -149,59 +220,46 @@ function generateRecordsPage({
   }
 
   const filterSelector = createSelector(
-    [
-      queries => queries.filter,
-    ],
-    (filter) => {
+    [queries => queries.filter],
+    filter => {
       try {
         return JSON.parse(filter);
       } catch (e) {
         return {};
       }
-    },
+    }
   );
 
   const searchSelector = createSelector(
-    [
-      queries => queries.search,
-    ],
-    (search) => {
+    [queries => queries.search],
+    search => {
       try {
         return JSON.parse(search);
       } catch (e) {
         return {};
       }
-    },
+    }
   );
 
   const schemaSelector = createSelector(
-    [
-      state => state[namespace].get('schema'),
-    ],
-    sche => sche.toJS(),
+    [state => state[namespace].get('schema')],
+    sche => sche.toJS()
   );
 
   const filterInGroupSchemas = createSelector(
-    [
-      state => state[namespace].get('schema'),
-    ],
-    (sche) => {
+    [state => state[namespace].get('schema')],
+    sche => {
       const schemas = sche.toJS();
-      return (schemas.filter(({
-        type,
-        canFilter,
-        visibility,
-        filterTree,
-      }) => (
-        canFilter && (
-          type === ColumnTypes.date
-          || type === ColumnTypes.datetime
-          || type === ColumnTypes.number
-          || !(visibility && visibility.table)
-          || filterTree
-        )
-      )));
-    },
+      return schemas.filter(
+        ({ type, canFilter, visibility, filterTree }) =>
+          canFilter &&
+          (type === ColumnTypes.date ||
+            type === ColumnTypes.datetime ||
+            type === ColumnTypes.number ||
+            !(visibility && visibility.table) ||
+            filterTree)
+      );
+    }
   );
 
   const mapStateToProps = (state, props) => {
@@ -217,12 +275,16 @@ function generateRecordsPage({
       sort: queries.sort || '',
       total: state[namespace].get('total'),
       isLoading: state.loading.effects[`${namespace}/fetch`],
-      error: state[namespace].get('error'),
+      error: state[namespace].get('error')
     };
   };
 
   const mapDispatchToProps = (dispatch, ownProps) => {
-    const { match: { params: matchParams }, history, location } = ownProps;
+    const {
+      match: { params: matchParams },
+      history,
+      location
+    } = ownProps;
 
     let apiDefaultFilter = {};
     if (isFunction(defaultFilter)) {
@@ -242,18 +304,21 @@ function generateRecordsPage({
     }
 
     const props = {
-      fetch: async ({
-        page, pagesize, sort, search, filter = {},
-      }) => {
+      fetch: async ({ page, pagesize, sort, search, filter = {} }) => {
         const queries = parse(location.search);
 
-        if ((fixedSort && fixedSort !== sort) || ((defaultSort || defaultFilterQuery)
-          && (!queries || Object.keys(queries).length === 0))) {
+        if (
+          (fixedSort && fixedSort !== sort) ||
+          ((defaultSort || defaultFilterQuery) &&
+            (!queries || Object.keys(queries).length === 0))
+        ) {
           const uri = generateUri(window.location.href, {
             filter: JSON.stringify(defaultFilterQuery),
-            sort: fixedSort || defaultSort,
+            sort: fixedSort || defaultSort
           });
-          history.replace(uri.href.substring(uri.origin.length, uri.href.length));
+          history.replace(
+            uri.href.substring(uri.origin.length, uri.href.length)
+          );
 
           return Promise.resolve();
         }
@@ -261,37 +326,56 @@ function generateRecordsPage({
         return dispatch({
           type: `${namespace}/fetch`,
           payload: {
-            page, pagesize, sort, search, filter: { ...filter, ...apiDefaultFilter }, path: apiPath,
-          },
+            page,
+            pagesize,
+            sort,
+            search,
+            filter: { ...filter, ...apiDefaultFilter },
+            path: apiPath
+          }
         });
       },
-      updatePage: async ({
-        page, pagesize, sort, search, filter,
-      }) => {
+      updatePage: async ({ page, pagesize, sort, search, filter }) => {
         const newQuery = {
           page,
           pagesize,
           sort,
           filter: isUndefined(filter) ? filter : JSON.stringify(filter),
-          search: isUndefined(search) ? search : JSON.stringify(search),
+          search: isUndefined(search) ? search : JSON.stringify(search)
         };
         forEach(newQuery, (v, key) => {
           if (isUndefined(v)) delete newQuery[key];
         });
         const uri = generateUri(window.location.href, newQuery);
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
-      },
+      }
     };
 
-    forEach(actions, (action) => {
+    forEach(actions, action => {
       if (action === 'create') {
-        props.create = async body => dispatch({ type: `${namespace}/create`, payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } } });
+        props.create = async body =>
+          dispatch({
+            type: `${namespace}/create`,
+            payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } }
+          });
       } else if (action === 'edit' || action === 'inlineEdit') {
-        props[action] = async body => dispatch({ type: `${namespace}/edit`, payload: { path: apiPath, body } });
+        props[action] = async body =>
+          dispatch({
+            type: `${namespace}/edit`,
+            payload: { path: apiPath, body }
+          });
       } else if (action === 'remove') {
-        props.remove = async body => dispatch({ type: `${namespace}/remove`, payload: { path: apiPath, body } });
+        props.remove = async body =>
+          dispatch({
+            type: `${namespace}/remove`,
+            payload: { path: apiPath, body }
+          });
       } else if (action === 'order') {
-        props.order = async (body, diff) => dispatch({ type: `${namespace}/order`, payload: { path: apiPath, body, diff } });
+        props.order = async (body, diff) =>
+          dispatch({
+            type: `${namespace}/order`,
+            payload: { path: apiPath, body, diff }
+          });
       } else if (action === 'create_in_new_page') {
         props.hasCreateNew = true;
       }
@@ -300,7 +384,12 @@ function generateRecordsPage({
     return props;
   };
 
-  return withRouter(connect(mapStateToProps, mapDispatchToProps)(Page));
+  return withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(Page)
+  );
 }
 
 function generateDynamicRecordsComponent({ app, config, component }) {
@@ -309,7 +398,7 @@ function generateDynamicRecordsComponent({ app, config, component }) {
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage(config, component)),
+    component: () => Promise.resolve(generateRecordsPage(config, component))
   });
 }
 
@@ -324,9 +413,14 @@ export default function dynamicRecordsComponent({ app, config, component }) {
   if (isFunction(config)) {
     return dynamic({
       app,
-      resolve: () => config().then(c => (
-        generateDynamicRecordsComponent({ app, config: c.default || c, component })
-      )),
+      resolve: () =>
+        config().then(c =>
+          generateDynamicRecordsComponent({
+            app,
+            config: c.default || c,
+            component
+          })
+        )
     });
   }
 

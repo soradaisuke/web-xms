@@ -2,45 +2,50 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, matchPath } from 'react-router';
 import { NavLink } from 'react-router-dom';
-import {
-  forEach, isFunction, isString, split, take, join,
-} from 'lodash';
+import { forEach, isFunction, isString, split, take, join } from 'lodash';
 import { Breadcrumb } from 'antd';
 import pathToText from '../utils/pathToText';
 
-function addBreadcrumbItem({
-  pathname, routes, items, params,
-}) {
-  forEach(routes, ({
-    path, component, title, breadcrumb, routes: childRoutes,
-  }) => {
-    if (matchPath(pathname, { path })) {
-      if (component) {
-        let breadcrumbTitle;
+function addBreadcrumbItem({ pathname, routes, items, params }) {
+  forEach(
+    routes,
+    ({ path, component, title, breadcrumb, routes: childRoutes }) => {
+      if (matchPath(pathname, { path })) {
+        if (component) {
+          let breadcrumbTitle;
 
-        if (isFunction(breadcrumb)) {
-          breadcrumbTitle = breadcrumb(params);
-        } else if (isString(breadcrumb)) {
-          breadcrumbTitle = breadcrumb;
+          if (isFunction(breadcrumb)) {
+            breadcrumbTitle = breadcrumb(params);
+          } else if (isString(breadcrumb)) {
+            breadcrumbTitle = breadcrumb;
+          }
+
+          items.push(
+            <Breadcrumb.Item key={path}>
+              <NavLink
+                exact
+                to={join(
+                  take(split(pathname, '/'), split(path, '/').length),
+                  '/'
+                )}
+              >
+                {pathToText(breadcrumbTitle) || title}
+              </NavLink>
+            </Breadcrumb.Item>
+          );
         }
 
-
-        items.push((
-          <Breadcrumb.Item key={path}>
-            <NavLink exact to={join(take(split(pathname, '/'), split(path, '/').length), '/')}>
-              {pathToText(breadcrumbTitle) || title}
-            </NavLink>
-          </Breadcrumb.Item>
-        ));
-      }
-
-      if (childRoutes && childRoutes.length > 0) {
-        addBreadcrumbItem({
-          pathname, routes: childRoutes, items, params,
-        });
+        if (childRoutes && childRoutes.length > 0) {
+          addBreadcrumbItem({
+            pathname,
+            routes: childRoutes,
+            items,
+            params
+          });
+        }
       }
     }
-  });
+  );
 }
 
 class NavBreadcrumb extends React.PureComponent {
@@ -48,26 +53,29 @@ class NavBreadcrumb extends React.PureComponent {
     // eslint-disable-next-line react/forbid-prop-types
     location: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
     match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    routes: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+    routes: PropTypes.array.isRequired // eslint-disable-line react/forbid-prop-types
   };
 
   renderBreadcrumbItems() {
     const items = [];
-    const { routes, match: { params }, location: { pathname } } = this.props;
+    const {
+      routes,
+      match: { params },
+      location: { pathname }
+    } = this.props;
 
     addBreadcrumbItem({
-      pathname, routes, items, params,
+      pathname,
+      routes,
+      items,
+      params
     });
 
     return items;
   }
 
   render() {
-    return (
-      <Breadcrumb>
-        {this.renderBreadcrumbItems()}
-      </Breadcrumb>
-    );
+    return <Breadcrumb>{this.renderBreadcrumbItems()}</Breadcrumb>;
   }
 }
 

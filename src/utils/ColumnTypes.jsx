@@ -1,10 +1,15 @@
 import React from 'react';
+import { Input, InputNumber, DatePicker, TimePicker } from 'antd';
 import {
-  Input, InputNumber, DatePicker, TimePicker,
-} from 'antd';
-import {
-  toNumber, toString, join, map, isNumber, isArray, isNaN,
-  isFunction, isUndefined,
+  toNumber,
+  toString,
+  join,
+  map,
+  isNumber,
+  isArray,
+  isNaN,
+  isFunction,
+  isUndefined
 } from 'lodash';
 import moment from 'moment';
 import DatePickerWithPresets from '../components/DatePickerWithPresets';
@@ -26,78 +31,90 @@ const TYPES = {
   OBJECT: 'object',
   ENUM: 'enum',
   TIME: 'time',
-  AUDIO: 'audio',
+  AUDIO: 'audio'
 };
 
-const generateTreeData = (filters) => {
+const generateTreeData = filters => {
   if (!isArray(filters)) return null;
-  return (map(filters, ({
-    value, text, children, ...item
-  }) => ({
+  return map(filters, ({ value, text, children, ...item }) => ({
     value,
     key: value,
     title: text,
     children: generateTreeData(children),
-    ...item,
-  })));
+    ...item
+  }));
 };
 
 class BaseColumnType {
-  canCheckWhiteSpace() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canCheckWhiteSpace() {
     return false;
   }
 
-  canInlineEdit() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canInlineEdit() {
     return false;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return false;
   }
 
-  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canUseColumnFilter() {
     return true;
   }
 
-  formatFormValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatFormValue(v) {
     return v;
   }
 
-  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatSubmitValue(v) {
     return v;
   }
 
-  getFormExtraConfig() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormExtraConfig() {
     return {};
   }
 
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
     return '';
   }
 
-  getFormRules() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormRules() {
     return [];
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return '';
   }
 
-  mustHasFilters() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  mustHasFilters() {
     return false;
   }
 
-  mustHasMapKey() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  mustHasMapKey() {
     return false;
   }
 
   renderValue = v => v;
 
-  renderFilterItem() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  renderFilterItem() {
     return null;
   }
 
-  renderFormItem() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem() {
     return null;
   }
 }
@@ -127,39 +144,45 @@ class PrimitiveColumnType extends BaseColumnType {
     }
   }
 
-  renderFilterItem({ // eslint-disable-line class-methods-use-this
-    rangeFilter, onChange, value,
-  }) {
+  // eslint-disable-next-line class-methods-use-this
+  renderFilterItem({ rangeFilter, onChange, value }) {
     if (this.primitiveType === TYPES.NUMBER && rangeFilter) {
       return (
         <div>
-          <InputNumber value={value[0]} onChange={v => onChange([v, value[1]])} />
+          <InputNumber
+            value={value[0]}
+            onChange={v => onChange([v, value[1]])}
+          />
           ~
-          <InputNumber value={value[1]} onChange={v => onChange([value[0], v])} />
+          <InputNumber
+            value={value[1]}
+            onChange={v => onChange([value[0], v])}
+          />
         </div>
       );
     }
     if (this.primitiveType === TYPES.NUMBER) {
-      return (<InputNumber value={value} onChange={v => onChange(v)} />);
+      return <InputNumber value={value} onChange={v => onChange(v)} />;
     }
     return null;
   }
 
-  getFormRules() { // eslint-disable-line class-methods-use-this
+  getFormRules() {
+    // eslint-disable-next-line class-methods-use-this
     switch (this.primitiveType) {
       case TYPES.NUMBER:
         return [
           {
             type: 'number',
-            message: '格式不正确，要求为数字',
-          },
+            message: '格式不正确，要求为数字'
+          }
         ];
       case TYPES.STRING:
         return [
           {
             type: 'string',
-            message: '格式不正确，要求为字符串',
-          },
+            message: '格式不正确，要求为字符串'
+          }
         ];
       default:
         return super.getFormRules();
@@ -175,11 +198,12 @@ class PrimitiveColumnType extends BaseColumnType {
       case TYPES.STRING:
         return isUndefined(v) ? v : toString(v);
       case TYPES.NUMBER:
-        return (
-          isArray(v) // eslint-disable-line no-nested-ternary
-            ? v.map(item => (!isNaN(toNumber(item)) ? toNumber(item) : item))
-            : (!isNaN(toNumber(v)) ? toNumber(v) : v)
-        );
+        // eslint-disable-next-line no-nested-ternary
+        return isArray(v)
+          ? v.map(item => (!isNaN(toNumber(item)) ? toNumber(item) : item))
+          : !isNaN(toNumber(v))
+          ? toNumber(v)
+          : v;
       case TYPES.BOOL:
         return v && v !== 'false';
       case TYPES.DATE:
@@ -195,29 +219,37 @@ class PrimitiveColumnType extends BaseColumnType {
     switch (this.primitiveType) {
       case TYPES.NUMBER:
         return (
-          <InputNumber placeholder={placeholder || `请输入${title}`} {...formItemProps} />
+          <InputNumber
+            placeholder={placeholder || `请输入${title}`}
+            {...formItemProps}
+          />
         );
       case TYPES.STRING:
         return (
-          <Input placeholder={placeholder || `请输入${title}`} {...formItemProps} />
+          <Input
+            placeholder={placeholder || `请输入${title}`}
+            {...formItemProps}
+          />
         );
       default:
         return super.renderFormItem();
     }
   }
 
-  renderValue = (v) => {
+  renderValue = v => {
     switch (this.primitiveType) {
       case TYPES.BOOL:
         return v ? '是' : '否';
       case TYPES.DATE:
         return v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD') : '';
       case TYPES.DATETIME:
-        return v && moment(v).isValid() ? moment(v).format('YYYY-MM-DD HH:mm:ss') : '';
+        return v && moment(v).isValid()
+          ? moment(v).format('YYYY-MM-DD HH:mm:ss')
+          : '';
       default:
         return v;
     }
-  }
+  };
 }
 
 const number = new PrimitiveColumnType(TYPES.NUMBER);
@@ -230,30 +262,35 @@ class BaseDateColumnType extends BaseColumnType {
     this.innerColumnType = string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
     return null;
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.DATE;
   }
 
-  formatFormValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatFormValue(v) {
     return v ? moment(v) : null;
   }
 
-  renderFilterItem({
-    value, onChange, rangeFilter, filters, mapKey,
-  }) { // eslint-disable-line class-methods-use-this
+  renderFilterItem({ value, onChange, rangeFilter, filters, mapKey }) {
+    // eslint-disable-next-line class-methods-use-this
     const ranges = {};
     if (rangeFilter && filters && filters.length) {
       filters.map(({ text, value: v }) => {
         if (!moment(v[0]).isValid() || !moment(v[1]).isValid()) {
-          throw new Error(`mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`);
+          throw new Error(
+            `mapKey: ${mapKey}: 存在RangePicker的filter的value是无效的moment`
+          );
         }
         ranges[text] = [moment(v[0]), moment(v[1])];
         return null;
@@ -267,112 +304,134 @@ class BaseDateColumnType extends BaseColumnType {
           showTime={this.showTime()}
           format={this.getFormat()}
           value={[
-            newValue[0] && moment(newValue[0]).isValid() ? moment(newValue[0]) : null,
-            newValue[1] && moment(newValue[1]).isValid() ? moment(newValue[1]) : null,
+            newValue[0] && moment(newValue[0]).isValid()
+              ? moment(newValue[0])
+              : null,
+            newValue[1] && moment(newValue[1]).isValid()
+              ? moment(newValue[1])
+              : null
           ]}
           ranges={ranges}
-          onChange={newDate => (
+          onChange={newDate =>
             onChange([
               this.formatSubmitValue(newDate[0], true),
-              this.formatSubmitValue(newDate[1], false),
+              this.formatSubmitValue(newDate[1], false)
             ])
-          )}
+          }
         />
       );
     }
     return (
       <DatePickerWithPresets
         key={mapKey}
-        value={value && moment(value).isValid()
-          ? moment(value) : null}
+        value={value && moment(value).isValid() ? moment(value) : null}
         showTime={this.showTime()}
         format={this.getFormat()}
         presets={filters}
-        onChange={newDate => (
-          onChange(this.formatSubmitValue(newDate))
-        )}
+        onChange={newDate => onChange(this.formatSubmitValue(newDate))}
       />
     );
   }
 
   renderFormItem({ formItemProps = {} }) {
-    return (
-      <DatePicker showTime={this.showTime()} {...formItemProps} />
-    );
+    return <DatePicker showTime={this.showTime()} {...formItemProps} />;
   }
 
-  renderValue = v => (v && moment(v).isValid() ? moment(v).format(this.getFormat()) : '');
+  renderValue = v =>
+    v && moment(v).isValid() ? moment(v).format(this.getFormat()) : '';
 
-  showTime() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  showTime() {
     return false;
   }
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return 'YYYY-MM-DD';
   }
 
-  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canUseColumnFilter() {
     return false;
   }
 }
 
 class DateColumnType extends BaseDateColumnType {
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.DATE;
   }
 
-  formatFormValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatFormValue(v) {
     return v ? moment(v) : null;
   }
 
-  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatSubmitValue(v) {
     return v && isFunction(v.format) ? v.format(this.getFormat()) : v;
   }
 
-  showTime() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  showTime() {
     return false;
   }
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return 'YYYY-MM-DD';
   }
 }
 
 class DateTimeColumnType extends BaseDateColumnType {
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.DATETIME;
   }
 
-  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatSubmitValue(v) {
     return v && isFunction(v.toISOString) ? v.toISOString() : v;
   }
 
-  showTime() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  showTime() {
     return true;
   }
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return 'YYYY-MM-DD HH:mm:ss';
   }
 }
 
 class DateTimeDefaultRangeColumnType extends BaseDateColumnType {
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.DATETIME;
   }
 
-  formatSubmitValue(v, start = true) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatSubmitValue(v, start = true) {
     if (!(v && isFunction(v.toISOString))) return v;
-    if (start) v.hour(0).minute(0).second(0);
-    else v.hour(23).minute(59).second(59);
+    if (start)
+      v.hour(0)
+        .minute(0)
+        .second(0);
+    else
+      v.hour(23)
+        .minute(59)
+        .second(59);
     return v.toISOString();
   }
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return 'YYYY-MM-DD';
   }
 
-  renderFilterItem(datas) { // eslint-disable-line class-methods-use-this
+  renderFilterItem(datas) {
+    // eslint-disable-next-line class-methods-use-this
     return super.renderFilterItem({ ...datas, rangeFilter: true });
   }
 }
@@ -383,47 +442,63 @@ class TimeColumnType extends BaseColumnType {
     this.innerColumnType = string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
     return null;
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.TIME;
   }
 
-  formatFormValue(v) { // eslint-disable-line class-methods-use-this
-    return isNumber(v) ? moment().startOf('day').add(v, 's') : null;
+  // eslint-disable-next-line class-methods-use-this
+  formatFormValue(v) {
+    return isNumber(v)
+      ? moment()
+          .startOf('day')
+          .add(v, 's')
+      : null;
   }
 
-  formatSubmitValue(v) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  formatSubmitValue(v) {
     return v ? v.diff(moment(v).startOf('day'), 's') : 0;
   }
 
-  renderFormItem({ formItemProps = {} }) { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem({ formItemProps = {} }) {
     return (
-      <TimePicker defaultOpenValue={moment().startOf('day')} {...formItemProps} />
+      <TimePicker
+        defaultOpenValue={moment().startOf('day')}
+        {...formItemProps}
+      />
     );
   }
 
-  renderValue = v => (
+  renderValue = v =>
     isNumber(v)
-      ? moment().startOf('day').add(v, 's').format(this.getFormat())
-      : ''
-  );
+      ? moment()
+          .startOf('day')
+          .add(v, 's')
+          .format(this.getFormat())
+      : '';
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return 'HH:mm:ss';
   }
 
-  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canUseColumnFilter() {
     return false;
   }
 }
-
 
 class AudioColumnType extends BaseColumnType {
   constructor() {
@@ -431,27 +506,30 @@ class AudioColumnType extends BaseColumnType {
     this.innerColumnType = string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return false;
   }
 
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
     return null;
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.AUDIO;
   }
 
-  renderValue = v => (
-    v ? <InlineAudioPlayer url={v} /> : ''
-  );
+  renderValue = v => (v ? <InlineAudioPlayer url={v} /> : '');
 
-  getFormat() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormat() {
     return '';
   }
 
-  canUseColumnFilter() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canUseColumnFilter() {
     return false;
   }
 }
@@ -462,11 +540,13 @@ class OrderColumnType extends BaseColumnType {
     this.innerColumnType = number;
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.ORDER;
   }
 
-  mustHasMapKey() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  mustHasMapKey() {
     return true;
   }
 }
@@ -477,23 +557,30 @@ class ImageColumnType extends BaseColumnType {
     this.innerColumnType = string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
-  getFormExtraConfig() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormExtraConfig() {
     return { valuePropName: 'url' };
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.IMAGE;
   }
 
-  renderFormItem({ // eslint-disable-line class-methods-use-this
-    user, tip, bucket = '', formItemProps = {},
-  } = {}) {
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem({ user, tip, bucket = '', formItemProps = {} } = {}) {
     return (
-      <UploadImage ssoToken={user ? user.get('sso_token') : ''} title={tip} bucket={bucket} {...formItemProps} />
+      <UploadImage
+        ssoToken={user ? user.get('sso_token') : ''}
+        title={tip}
+        bucket={bucket}
+        {...formItemProps}
+      />
     );
   }
 }
@@ -504,7 +591,8 @@ class EnumColumnType extends BaseColumnType {
     this.innerColumnType = innerColumnType || string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
@@ -515,16 +603,23 @@ class EnumColumnType extends BaseColumnType {
     return this.innerColumnType.formatSubmitValue(v);
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.ENUM;
   }
 
-  mustHasFilters() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  mustHasFilters() {
     return true;
   }
 
-  renderFilterItem({ // eslint-disable-line class-methods-use-this
-    filters, value, onChange, filterMultiple, ...otherProps
+  // eslint-disable-next-line class-methods-use-this
+  renderFilterItem({
+    filters,
+    value,
+    onChange,
+    filterMultiple,
+    ...otherProps
   }) {
     return (
       <Select
@@ -539,9 +634,8 @@ class EnumColumnType extends BaseColumnType {
     );
   }
 
-  renderFormItem({ // eslint-disable-line class-methods-use-this
-    filters, selectProps = {}, formFieldValues,
-  }) {
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem({ filters, selectProps = {}, formFieldValues }) {
     return (
       <Select
         treeData={generateTreeData(filters)}
@@ -551,7 +645,10 @@ class EnumColumnType extends BaseColumnType {
     );
   }
 
-  renderValue = values => (isArray(values) ? join(map(values, v => this.innerColumnType.renderValue(v)), ',') : values);
+  renderValue = values =>
+    isArray(values)
+      ? join(map(values, v => this.innerColumnType.renderValue(v)), ',')
+      : values;
 }
 
 class UrlColumnType extends BaseColumnType {
@@ -560,26 +657,28 @@ class UrlColumnType extends BaseColumnType {
     this.innerColumnType = string;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
-  getFormRules() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormRules() {
     return [
       {
         type: 'url',
-        message: '格式不正确，要求为网络地址',
-      },
+        message: '格式不正确，要求为网络地址'
+      }
     ];
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.URL;
   }
 
-  renderFormItem({ // eslint-disable-line class-methods-use-this
-    placeholder, title, formItemProps = {},
-  }) {
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem({ placeholder, title, formItemProps = {} }) {
     return (
       <Input placeholder={placeholder || `请输入${title}`} {...formItemProps} />
     );
@@ -592,20 +691,30 @@ class ArrayColumnType extends BaseColumnType {
     this.innerColumnType = innerColumnType;
   }
 
-  canShowInForm() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  canShowInForm() {
     return true;
   }
 
-  getFormDefaultInitialValue() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
     return [];
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.ARRAY;
   }
 
-  renderFormItem({ // eslint-disable-line class-methods-use-this
-    tip, max, placeholder, enableAdd, arrayGenerateValue, arrayRenderValue, formItemProps,
+  // eslint-disable-next-line class-methods-use-this
+  renderFormItem({
+    tip,
+    max,
+    placeholder,
+    enableAdd,
+    arrayGenerateValue,
+    arrayRenderValue,
+    formItemProps
   }) {
     return (
       <CommonArray
@@ -620,7 +729,10 @@ class ArrayColumnType extends BaseColumnType {
     );
   }
 
-  renderValue = values => (values ? join(map(values, v => this.innerColumnType.renderValue(v)), ',') : '');
+  renderValue = values =>
+    values
+      ? join(map(values, v => this.innerColumnType.renderValue(v)), ',')
+      : '';
 }
 
 class ObjectColumnType extends BaseColumnType {
@@ -629,11 +741,15 @@ class ObjectColumnType extends BaseColumnType {
     this.innerColumnType = innerColumnType;
   }
 
-  getName() { // eslint-disable-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this
+  getName() {
     return TYPES.OBJECT;
   }
 
-  renderValue = values => (values ? join(map(values, v => this.innerColumnType.renderValue(v)), ',') : '');
+  renderValue = values =>
+    values
+      ? join(map(values, v => this.innerColumnType.renderValue(v)), ',')
+      : '';
 }
 
 export default {
@@ -650,5 +766,5 @@ export default {
   audio: new AudioColumnType(),
   enumOf: innerColumnType => new EnumColumnType(innerColumnType),
   arrayOf: innerColumnType => new ArrayColumnType(innerColumnType),
-  objectOf: innerColumnType => new ObjectColumnType(innerColumnType),
+  objectOf: innerColumnType => new ObjectColumnType(innerColumnType)
 };

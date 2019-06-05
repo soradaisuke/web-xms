@@ -11,7 +11,7 @@ export default class Page extends React.PureComponent {
     className: PropTypes.string,
     errorMessage: PropTypes.string,
     isError: PropTypes.bool,
-    isLoading: PropTypes.bool,
+    isLoading: PropTypes.bool
   };
 
   static defaultProps = {
@@ -19,13 +19,11 @@ export default class Page extends React.PureComponent {
     className: '',
     errorMessage: '',
     isError: false,
-    isLoading: false,
+    isLoading: false
   };
 
   renderContent() {
-    const {
-      isLoading, isError, errorMessage, children,
-    } = this.props;
+    const { isLoading, isError, errorMessage, children } = this.props;
     if (isError) {
       return (
         <Alert
@@ -37,7 +35,11 @@ export default class Page extends React.PureComponent {
       );
     }
 
-    return <Spin className="xms-page-loading" spinning={isLoading} size="large">{children}</Spin>;
+    return (
+      <Spin className="xms-page-loading" spinning={isLoading} size="large">
+        {children}
+      </Spin>
+    );
   }
 
   render() {
@@ -45,7 +47,7 @@ export default class Page extends React.PureComponent {
 
     return (
       <div className={classNames('xms-page', className)}>
-        { this.renderContent() }
+        {this.renderContent()}
       </div>
     );
   }

@@ -10,26 +10,25 @@ export default class ActivatorModal extends React.PureComponent {
     activator: PropTypes.node.isRequired,
     onCancel: PropTypes.func,
     onOk: PropTypes.func,
-    onVisibleChange: PropTypes.func,
+    onVisibleChange: PropTypes.func
   };
 
   static defaultProps = {
     onCancel: null,
     onOk: null,
-    onVisibleChange: null,
+    onVisibleChange: null
   };
-
 
   state = {
-    visible: false,
+    visible: false
   };
 
-  showModalHandler = (e) => {
+  showModalHandler = e => {
     if (e) {
       e.stopPropagation();
     }
     this.setState({
-      visible: true,
+      visible: true
     });
 
     const { onVisibleChange } = this.props;
@@ -40,7 +39,7 @@ export default class ActivatorModal extends React.PureComponent {
 
   hideModalHandler = () => {
     this.setState({
-      visible: false,
+      visible: false
     });
     const { onVisibleChange } = this.props;
     if (onVisibleChange) {
@@ -80,7 +79,14 @@ export default class ActivatorModal extends React.PureComponent {
 
     return (
       <span>
-        <span role="button" tabIndex={0} onClick={this.showModalHandler} onKeyPress={this.showModalHandler}>{activator}</span>
+        <span
+          role="button"
+          tabIndex={0}
+          onClick={this.showModalHandler}
+          onKeyPress={this.showModalHandler}
+        >
+          {activator}
+        </span>
         <Modal
           {...this.props}
           visible={visible}

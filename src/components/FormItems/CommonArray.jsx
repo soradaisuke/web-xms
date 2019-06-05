@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { size, remove } from 'lodash';
-import {
-  Icon, Row, Input, Button, Col,
-} from 'antd';
+import { Icon, Row, Input, Button, Col } from 'antd';
 
 export default class CommonArray extends React.PureComponent {
   static displayName = 'CommonArray';
@@ -17,7 +15,7 @@ export default class CommonArray extends React.PureComponent {
     max: PropTypes.number,
     placeholder: PropTypes.string,
     enableAdd: PropTypes.bool,
-    formItemProps: PropTypes.shape({}),
+    formItemProps: PropTypes.shape({})
   };
 
   static defaultProps = {
@@ -25,9 +23,9 @@ export default class CommonArray extends React.PureComponent {
     style: { marginTop: '10px', width: '80%', marginRight: 8 },
     placeholder: '请输入一个值',
     enableAdd: true,
-    generateValue: (_, nextValue) => (nextValue || ''),
+    generateValue: (_, nextValue) => nextValue || '',
     renderValue: v => v,
-    formItemProps: {},
+    formItemProps: {}
   };
 
   componentDidMount() {
@@ -44,26 +42,36 @@ export default class CommonArray extends React.PureComponent {
     } else {
       onChange(value.concat([generateValue()]));
     }
-  }
+  };
 
-  remove = (index) => {
+  remove = index => {
     const { onChange, value } = this.props;
     onChange(remove(value, (_, i) => i !== index));
-  }
+  };
 
   onChange = (index, v) => {
     const { onChange, value, generateValue } = this.props;
-    onChange(value.map((preValue, i) => (i === index ? generateValue(preValue, v) : preValue)));
-  }
+    onChange(
+      value.map((preValue, i) =>
+        i === index ? generateValue(preValue, v) : preValue
+      )
+    );
+  };
 
   render() {
     const {
-      value, max, style, placeholder, enableAdd, renderValue, formItemProps,
+      value,
+      max,
+      style,
+      placeholder,
+      enableAdd,
+      renderValue,
+      formItemProps
     } = this.props;
     return (
       <Col>
-        {
-          size(value) > 0 && value.map((v, i) => (
+        {size(value) > 0 &&
+          value.map((v, i) => (
             /* eslint-disable-next-line react/no-array-index-key */
             <Row key={i}>
               <Input
@@ -73,26 +81,25 @@ export default class CommonArray extends React.PureComponent {
                 onChange={e => this.onChange(i, e.target.value)}
                 {...formItemProps}
               />
-              {
-                size(value) > 1 && (
-                  <Icon
-                    style={{ fontSize: '18px', color: 'rgb(255, 0, 0)' }}
-                    type="minus-circle-o"
-                    onClick={() => this.remove(i)}
-                  />
-                )
-              }
+              {size(value) > 1 && (
+                <Icon
+                  style={{ fontSize: '18px', color: 'rgb(255, 0, 0)' }}
+                  type="minus-circle-o"
+                  onClick={() => this.remove(i)}
+                />
+              )}
             </Row>
-          ))
-        }
-        {
-          enableAdd && size(value) <= max && (
-            <Button type="dashed" onClick={this.add} style={{ marginTop: '10px', width: '60%' }}>
-              <Icon type="plus" />
-              添加
-            </Button>
-          )
-        }
+          ))}
+        {enableAdd && size(value) <= max && (
+          <Button
+            type="dashed"
+            onClick={this.add}
+            style={{ marginTop: '10px', width: '60%' }}
+          >
+            <Icon type="plus" />
+            添加
+          </Button>
+        )}
       </Col>
     );
   }

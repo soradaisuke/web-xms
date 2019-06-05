@@ -11,7 +11,11 @@ function setHost(h) {
 async function generateRequest(path, options = {}) {
   const newOptions = { ...options };
   newOptions.headers = newOptions.headers || {};
-  if (options.method && includes(['POST', 'PUT', 'PATCH'], options.method) !== -1 && isPlainObject(newOptions.body)) {
+  if (
+    options.method &&
+    includes(['POST', 'PUT', 'PATCH'], options.method) !== -1 &&
+    isPlainObject(newOptions.body)
+  ) {
     newOptions.headers['Content-Type'] = 'application/json;charset=utf-8';
     newOptions.body = JSON.stringify(newOptions.body);
   }
@@ -84,5 +88,5 @@ export default {
   post,
   put,
   remove,
-  patch,
+  patch
 };

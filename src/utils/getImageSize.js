@@ -1,5 +1,5 @@
 export default function getImageSize({ file, url }) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     if (file) {
       const fr = new FileReader();
       fr.onload = () => {

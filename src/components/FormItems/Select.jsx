@@ -1,67 +1,74 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { TreeSelect } from 'antd';
-import {
-  isArray, debounce, isFunction,
-} from 'lodash';
+import { isArray, debounce, isFunction } from 'lodash';
 
 export default class Select extends React.PureComponent {
   static displayName = 'Select';
 
   static propTypes = {
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
-    value: PropTypes.oneOfType([ // eslint-disable-line react/require-default-props
+    // eslint-disable-next-line react/require-default-props
+    value: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number,
       PropTypes.arrayOf(PropTypes.number),
-      PropTypes.arrayOf(PropTypes.string),
+      PropTypes.arrayOf(PropTypes.string)
     ]),
     formFieldValues: PropTypes.shape({}),
     onSearch: PropTypes.func, // (value, formFieldValues, cb) => cb(newOptions)
     showSearch: PropTypes.bool,
-    treeNodeFilterProp: PropTypes.string,
+    treeNodeFilterProp: PropTypes.string
   };
 
   static defaultProps = {
     showSearch: false,
     onSearch: null,
     formFieldValues: {},
-    treeNodeFilterProp: 'title',
+    treeNodeFilterProp: 'title'
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      treeData: props.treeData,
+      treeData: props.treeData
     };
   }
 
-  onSearch = debounce((value) => {
+  onSearch = debounce(value => {
     const { onSearch, showSearch, formFieldValues } = this.props;
     if (showSearch && isFunction(onSearch)) {
-      onSearch(value, formFieldValues, newTreeData => this.setState({ treeData: newTreeData }));
+      onSearch(value, formFieldValues, newTreeData =>
+        this.setState({ treeData: newTreeData })
+      );
     }
-  }, 400)
+  }, 400);
 
-  onChange = (value) => {
+  onChange = value => {
     const { onChange, treeCheckStrictly } = this.props;
     if (treeCheckStrictly && isArray(value)) {
       onChange(value.map(v => (v ? v.value : null)));
     } else {
       onChange(value);
     }
-  }
+  };
 
   render() {
     const {
-      value, onChange, onSearch, filterOptions,
-      formFieldValues, treeData: td, ...props
+      value,
+      onChange,
+      onSearch,
+      filterOptions,
+      formFieldValues,
+      treeData: td,
+      ...props
     } = this.props;
     const { treeData: tds } = this.state;
     const treeData = isFunction(onSearch) ? tds : td;
     const newTreeData = isFunction(filterOptions)
-      ? filterOptions(treeData, formFieldValues) : treeData;
+      ? filterOptions(treeData, formFieldValues)
+      : treeData;
     return (
       <TreeSelect
         allowClear

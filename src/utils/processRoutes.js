@@ -5,9 +5,7 @@ import dynamicRecordComponent from './dynamicRecordComponent';
 import processGroupConfig from './processGroupConfig';
 import processSingleConfig from './processSingleConfig';
 
-function valiadateRoute({
-  path, component, config, routes,
-}, prefix = '/') {
+function valiadateRoute({ path, component, config, routes }, prefix = '/') {
   if (!path) {
     throw new Error('valiadateRoute: path is required');
   }
@@ -15,7 +13,9 @@ function valiadateRoute({
     throw new Error(`valiadateRoute: path ${path} must start with ${prefix}`);
   }
   if (!component && !config && (!routes || routes.length === 0)) {
-    throw new Error(`valiadateRoute: path ${path} must have component or config or routes`);
+    throw new Error(
+      `valiadateRoute: path ${path} must have component or config or routes`
+    );
   }
 }
 
@@ -25,7 +25,7 @@ export default function processRoutes({ app, routes }) {
       return rs;
     }
 
-    return (rs || []).map((route) => {
+    return (rs || []).map(route => {
       valiadateRoute(route, prefix);
 
       const { config, path } = route;
@@ -34,7 +34,7 @@ export default function processRoutes({ app, routes }) {
       if (isPlainObject(component)) {
         component = dynamic({
           ...component,
-          app,
+          app
         });
       }
 
@@ -42,20 +42,20 @@ export default function processRoutes({ app, routes }) {
         component = dynamicRecordsComponent({
           app,
           component,
-          config: processGroupConfig({ config, path }),
+          config: processGroupConfig({ config, path })
         });
       } else if ((config && config.type === 'single') || !!component) {
         component = dynamicRecordComponent({
           app,
           component,
-          config: processSingleConfig({ config, path }),
+          config: processSingleConfig({ config, path })
         });
       }
 
       return {
         ...route,
         component,
-        routes: processRoutesInternal(route.routes, route.path),
+        routes: processRoutesInternal(route.routes, route.path)
       };
     });
   }

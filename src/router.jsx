@@ -1,10 +1,6 @@
 import React from 'react';
-import {
-  Route, Switch, Router, Redirect,
-} from 'dva/router';
-import {
-  filter, find, map, forEach,
-} from 'lodash';
+import { Route, Switch, Router, Redirect } from 'dva/router';
+import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, LocaleProvider } from 'antd';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -14,9 +10,7 @@ import Breadcrumb from './components/Breadcrumb';
 import 'moment/locale/zh-cn';
 import './router.less';
 
-const {
-  Header, Footer, Sider,
-} = Layout;
+const { Header, Footer, Sider } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
   <div className="dynamic-loading">
@@ -24,15 +18,21 @@ dynamic.setDefaultLoadingComponent(() => (
   </div>
 ));
 
-function RouterConfig({ history, app }) { // eslint-disable-line react/prop-types
-  const { routes, config: { name } } = app;
+// eslint-disable-next-line react/prop-types
+function RouterConfig({ history, app }) {
+  const {
+    routes,
+    config: { name }
+  } = app;
 
   function renderRoute({ path, routes: subRoutes, component: Component }) {
     const children = [];
     if (Component) {
-      const inlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => inline) : [];
+      const inlineRoutes = subRoutes
+        ? filter(subRoutes, ({ inline }) => inline)
+        : [];
 
-      children.push((
+      children.push(
         <Route
           exact
           key={path}
@@ -44,9 +44,11 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             </React.Fragment>
           )}
         />
-      ));
+      );
     }
-    const nonInlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => !inline) : [];
+    const nonInlineRoutes = subRoutes
+      ? filter(subRoutes, ({ inline }) => !inline)
+      : [];
     if (nonInlineRoutes && nonInlineRoutes.length > 0) {
       return children.concat(nonInlineRoutes.map(route => renderRoute(route)));
     }
@@ -58,11 +60,17 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
 
   let firstAvaliableNonHomeRoutePath;
 
-  function findFirstAvaliableNonHomeRoute({ path, routes: subRoutes, component }) {
+  function findFirstAvaliableNonHomeRoute({
+    path,
+    routes: subRoutes,
+    component
+  }) {
     if (path !== '/' && !!component) {
       firstAvaliableNonHomeRoutePath = path;
     } else {
-      const nonInlineRoutes = subRoutes ? filter(subRoutes, ({ inline }) => !inline) : [];
+      const nonInlineRoutes = subRoutes
+        ? filter(subRoutes, ({ inline }) => !inline)
+        : [];
       if (nonInlineRoutes && nonInlineRoutes.length > 0) {
         forEach(nonInlineRoutes, r => findFirstAvaliableNonHomeRoute(r));
       }
@@ -85,16 +93,12 @@ function RouterConfig({ history, app }) { // eslint-disable-line react/prop-type
             </Sider>
             <Layout className="content-layout">
               <Switch>
-                {
-                  map(routes, route => renderRoute(route))
-                }
-                {
-                  !homeRoute && firstAvaliableNonHomeRoutePath ? <Redirect from="/" to={firstAvaliableNonHomeRoutePath} /> : null
-                }
+                {map(routes, route => renderRoute(route))}
+                {!homeRoute && firstAvaliableNonHomeRoutePath ? (
+                  <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
+                ) : null}
               </Switch>
-              <Footer>
-                ©2011-2019 qingting.fm All Rights Reserved.
-              </Footer>
+              <Footer>©2011-2019 qingting.fm All Rights Reserved.</Footer>
             </Layout>
           </Layout>
         </Layout>

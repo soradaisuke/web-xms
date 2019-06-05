@@ -1,7 +1,8 @@
 @import './styles/mixins';
 @import './styles/colors';
 
-html, body {
+html,
+body {
   .font-regular();
 
   width: 100%;
@@ -26,10 +27,10 @@ html, body {
         .flex-container-align-items-center();
         .font-medium();
 
-        background: #6760FA;
-        color: #FFFFFF;
+        background: #6760fa;
+        color: #fff;
 
-        &:before {
+        &::before {
           .background-contain-center-no-repeat();
 
           content: '';
@@ -54,8 +55,8 @@ html, body {
 
         .ant-layout-content {
           padding: 1.2rem;
-          background: #FFFFFF;
-          box-shadow: 0rem 0.1rem 0.8rem 0rem rgba(212,215,218,0.51);
+          background: #fff;
+          box-shadow: 0 0.1rem 0.8rem 0 rgba(212, 215, 218, 0.51);
           border-radius: 0.45rem;
 
           .xms-page {
@@ -72,5 +73,3 @@ html, body {
     }
   }
 }
-
-

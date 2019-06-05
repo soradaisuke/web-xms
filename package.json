@@ -9,7 +9,9 @@
   "author": "Yang Zheng",
   "license": "ISC",
   "scripts": {
-    "build": "rm -rf lib && babel -d lib/ src/ --copy-files"
+    "build": "rm -rf lib && npm run fix-code && npm run fix-style && babel -d lib/ src/ --copy-files",
+    "fix-code": "eslint --fix 'src/**/*.{js,jsx}'",
+    "fix-style": "stylelint --fix --syntax less 'src/**/*.less'"
   },
   "main": "lib/index.js",
   "devDependencies": {
@@ -34,14 +36,17 @@
     "dva-loading": "^2.1.0-beta.2",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.3.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-prettier": "^3.1.0",
     "eslint-plugin-react": "^7.11.1",
     "history": "^4.9.0",
     "immutable": "^4.0.0-rc.12",
     "js-cookie": "^2.2.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
+    "prettier": "^1.17.1",
     "prop-types": "^15.7.2",
     "query-string": "^5.1.1",
     "react": "^16.8.6",
@@ -55,6 +60,10 @@
     "redbox-react": "^1.6.0",
     "reselect": "^3.0.1",
     "shortid": "^2.2.14",
+    "stylelint": "^10.0.1",
+    "stylelint-config-prettier": "^5.2.0",
+    "stylelint-config-standard": "^18.3.0",
+    "stylelint-prettier": "^1.1.1",
     "url-parse": "^1.4.4",
     "web-core": "git+ssh://git@git2.qingtingfm.com/zhibo/web-core.git#v1.0.1"
   },

@@ -15,7 +15,7 @@ export default function xms(config = {}) {
     history,
     onError(err) {
       message.error(err.message);
-    },
+    }
   });
 
   app.use(createLoading());

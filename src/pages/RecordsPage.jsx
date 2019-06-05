@@ -5,11 +5,33 @@ import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
 import { Link } from 'react-router-dom';
 import {
-  Table, Pagination, Button, Popconfirm, Input, message, Modal, Card, Col, Row,
+  Table,
+  Pagination,
+  Button,
+  Popconfirm,
+  Input,
+  message,
+  Modal,
+  Card,
+  Col,
+  Row
 } from 'antd';
 import {
-  split, startsWith, isFunction, isArray, find, reduce, map,
-  isEqual, isNumber, get, isUndefined, chunk, join, forEach, findIndex,
+  split,
+  startsWith,
+  isFunction,
+  isArray,
+  find,
+  reduce,
+  map,
+  isEqual,
+  isNumber,
+  get,
+  isUndefined,
+  chunk,
+  join,
+  forEach,
+  findIndex
 } from 'lodash';
 import { generateUpYunImageUrl } from 'web-core';
 import RecordLink from '../components/RecordLink';
@@ -28,22 +50,24 @@ export default class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     fetch: PropTypes.func.isRequired,
-    schema: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      title: PropTypes.string,
-      link: PropTypes.shape({
-        url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-        type: PropTypes.oneOf(['relative', 'absolute', 'external']),
-      }),
-      visibility: PropTypes.shape({
-        create: PropTypes.bool,
-        edit: PropTypes.bool,
-        table: PropTypes.bool,
-      }),
-    })).isRequired,
+    schema: PropTypes.arrayOf(
+      PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        title: PropTypes.string,
+        link: PropTypes.shape({
+          url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+          type: PropTypes.oneOf(['relative', 'absolute', 'external'])
+        }),
+        visibility: PropTypes.shape({
+          create: PropTypes.bool,
+          edit: PropTypes.bool,
+          table: PropTypes.bool
+        })
+      })
+    ).isRequired,
     updatePage: PropTypes.func.isRequired,
     match: PropTypes.shape({
-      params: PropTypes.shape({}).isRequired,
+      params: PropTypes.shape({}).isRequired
     }).isRequired,
     create: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -68,7 +92,7 @@ export default class RecordsPage extends React.PureComponent {
     searchFields: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
-    hasCreateNew: PropTypes.bool,
+    hasCreateNew: PropTypes.bool
   };
 
   static defaultProps = {
@@ -95,7 +119,7 @@ export default class RecordsPage extends React.PureComponent {
     inline: false,
     inlineEdit: null,
     hasCreateNew: false,
-    defaultFilter: {},
+    defaultFilter: {}
   };
 
   static showTotal(total, range) {
@@ -105,15 +129,15 @@ export default class RecordsPage extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const {
-      defaultFilter, filter, filterInGroupSchemas,
-    } = props;
+    const { defaultFilter, filter, filterInGroupSchemas } = props;
     const filterGroup = {};
     const filterInGroupSchemaKeys = {};
     forEach(filterInGroupSchemas, ({ mapKey }) => {
       filterInGroupSchemaKeys[mapKey] = true;
-      const defaultValue = (filter[mapKey] === 0 || filter[mapKey])
-        ? filter[mapKey] : defaultFilter[mapKey];
+      const defaultValue =
+        filter[mapKey] === 0 || filter[mapKey]
+          ? filter[mapKey]
+          : defaultFilter[mapKey];
       if (filter && (defaultValue === 0 || defaultValue)) {
         filterGroup[mapKey] = defaultValue;
       }
@@ -126,13 +150,16 @@ export default class RecordsPage extends React.PureComponent {
       dataSource: [],
       selectedRowKeys: [],
       selectedRows: [],
-      inputSearch: {},
+      inputSearch: {}
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.records !== nextProps.records) {
-      return { records: nextProps.records, dataSource: nextProps.records.toJS() };
+      return {
+        records: nextProps.records,
+        dataSource: nextProps.records.toJS()
+      };
     }
 
     return null;
@@ -143,45 +170,58 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      pagesize, page, sort, search, filter,
-    } = this.props;
-    if (prevProps.pagesize !== pagesize || prevProps.page !== page
-      || prevProps.sort !== sort || prevProps.search !== search
-      || prevProps.filter !== filter) {
+    const { pagesize, page, sort, search, filter } = this.props;
+    if (
+      prevProps.pagesize !== pagesize ||
+      prevProps.page !== page ||
+      prevProps.sort !== sort ||
+      prevProps.search !== search ||
+      prevProps.filter !== filter
+    ) {
       this.fetch();
     }
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
-  }
+  };
 
   onChangePage = (page, pagesize) => {
-    const {
-      updatePage, sort, filter, search,
-    } = this.props;
+    const { updatePage, sort, filter, search } = this.props;
     updatePage({
-      page, pagesize, sort, filter, search,
+      page,
+      pagesize,
+      sort,
+      filter,
+      search
     });
-  }
+  };
 
   onSearch = ({ type, mapKey }, value) => {
-    const {
-      updatePage, pagesize, sort, filter,
-    } = this.props;
+    const { updatePage, pagesize, sort, filter } = this.props;
 
     const searchValue = type.formatSubmitValue(value);
-    const search = searchValue || searchValue === 0 ? { [mapKey]: searchValue } : {};
+    const search =
+      searchValue || searchValue === 0 ? { [mapKey]: searchValue } : {};
 
     updatePage({
-      page: 1, pagesize, sort, filter, search,
+      page: 1,
+      pagesize,
+      sort,
+      filter,
+      search
     });
-  }
+  };
 
   onChange = async (pagination, filters, sorter) => {
     const {
-      schema, page, pagesize, search, updatePage, sort, filter,
+      schema,
+      page,
+      pagesize,
+      search,
+      updatePage,
+      sort,
+      filter
     } = this.props;
     const { filterInGroupSchemaKeys } = this.state;
     const targetSchema = find(schema, { key: sorter.columnKey }) || {};
@@ -200,22 +240,24 @@ export default class RecordsPage extends React.PureComponent {
     } else {
       newSort = '';
     }
-    const newFilter = reduce(schema, (acc, {
-      key, type, mapKey, filterMultiple,
-    }) => {
-      const value = get(filters, key);
-      const preValue = get(filter, key);
-      if (filterInGroupSchemaKeys[mapKey] && preValue) {
-        acc[mapKey] = preValue;
-      } else if (value && value.length > 0) {
-        if (filterMultiple) {
-          acc[mapKey] = value.map(v => type.formatSubmitValue(v));
-        } else {
-          acc[mapKey] = type.formatSubmitValue(value[0]);
+    const newFilter = reduce(
+      schema,
+      (acc, { key, type, mapKey, filterMultiple }) => {
+        const value = get(filters, key);
+        const preValue = get(filter, key);
+        if (filterInGroupSchemaKeys[mapKey] && preValue) {
+          acc[mapKey] = preValue;
+        } else if (value && value.length > 0) {
+          if (filterMultiple) {
+            acc[mapKey] = value.map(v => type.formatSubmitValue(v));
+          } else {
+            acc[mapKey] = type.formatSubmitValue(value[0]);
+          }
         }
-      }
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
 
     let newPage = page;
 
@@ -224,48 +266,69 @@ export default class RecordsPage extends React.PureComponent {
     }
 
     updatePage({
-      page: newPage, pagesize, sort: newSort, search, filter: newFilter,
+      page: newPage,
+      pagesize,
+      sort: newSort,
+      search,
+      filter: newFilter
     });
-  }
+  };
 
   onOrderChange = async (body, diff) => {
     const { order } = this.props;
     await this.updateRecord({ promise: order(body, diff) });
-  }
+  };
 
-  onConfirmRemove = async (record) => {
+  onConfirmRemove = async record => {
     const { remove } = this.props;
-    await this.updateRecord({ promise: remove(record), loadingMessage: '正在删除……' });
-  }
+    await this.updateRecord({
+      promise: remove(record),
+      loadingMessage: '正在删除……'
+    });
+  };
 
   onCustomRowAction = async (record, handler) => {
     if (isFunction(handler)) {
-      const { match: { params: matchParams } } = this.props;
+      const {
+        match: { params: matchParams }
+      } = this.props;
       await this.updateRecord({ promise: handler(record, matchParams) });
     }
-  }
+  };
 
   onCustomMultipleAction = async (handler, enable) => {
     if (isFunction(handler)) {
-      const { match: { params: matchParams } } = this.props;
+      const {
+        match: { params: matchParams }
+      } = this.props;
       const { selectedRows } = this.state;
       await this.updateRecord({
-        promise: Promise.all(map(selectedRows, record => (
-          !isFunction(enable) || enable(record) ? handler(record, matchParams) : null
-        ))),
+        promise: Promise.all(
+          map(selectedRows, record =>
+            !isFunction(enable) || enable(record)
+              ? handler(record, matchParams)
+              : null
+          )
+        )
       });
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     }
-  }
+  };
 
-  onCustomGlobalAction = async (handler) => {
+  onCustomGlobalAction = async handler => {
     if (isFunction(handler)) {
-      const { match: { params: matchParams } } = this.props;
+      const {
+        match: { params: matchParams }
+      } = this.props;
       await this.updateRecord({ promise: handler(matchParams) });
     }
-  }
+  };
 
-  updateRecord = async ({ promise, loadingMessage = '正在保存……', throwError = false }) => {
+  updateRecord = async ({
+    promise,
+    loadingMessage = '正在保存……',
+    throwError = false
+  }) => {
     const hide = message.loading(loadingMessage, 0);
     try {
       await promise;
@@ -278,32 +341,30 @@ export default class RecordsPage extends React.PureComponent {
       }
     }
     this.fetch();
-  }
+  };
 
-  editRecord = async (body) => {
-    const {
-      edit, inlineEdit, create, primaryKey,
-    } = this.props;
+  editRecord = async body => {
+    const { edit, inlineEdit, create, primaryKey } = this.props;
     const newEdit = edit || inlineEdit;
     await this.updateRecord({
       promise: body[primaryKey] && newEdit ? newEdit(body) : create(body),
-      throwError: true,
+      throwError: true
     });
-  }
+  };
 
   fetch = async () => {
-    const {
-      fetch, page, pagesize, sort, search, filter,
-    } = this.props;
+    const { fetch, page, pagesize, sort, search, filter } = this.props;
     fetch({
-      page, pagesize, sort, search, filter,
+      page,
+      pagesize,
+      sort,
+      search,
+      filter
     });
-  }
+  };
 
   onClickQuery = () => {
-    const {
-      filter, updatePage,
-    } = this.props;
+    const { filter, updatePage } = this.props;
     const { filterGroup, filterInGroupSchemaKeys } = this.state;
 
     forEach(filter, (_, key) => {
@@ -312,9 +373,8 @@ export default class RecordsPage extends React.PureComponent {
       }
     });
     forEach(filterGroup, (v, key) => {
-      const hasValidValue = arr => (
-        findIndex(arr, item => (item === 0 || item)) !== -1
-      );
+      const hasValidValue = arr =>
+        findIndex(arr, item => item === 0 || item) !== -1;
 
       if ((isArray(v) && !hasValidValue(v)) || (v !== 0 && !v)) {
         delete filterGroup[key];
@@ -322,13 +382,13 @@ export default class RecordsPage extends React.PureComponent {
     });
 
     updatePage({
-      filter: { ...filter, ...filterGroup },
+      filter: { ...filter, ...filterGroup }
     });
-  }
+  };
 
   onClickReset = () => {
     this.setState({ filterGroup: {} });
-  }
+  };
 
   hasAddButton() {
     const { create, hasCreateNew } = this.props;
@@ -336,24 +396,42 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility, link, title, key, sort, mapKey, width,
-    type, imageSize, renderValue, filters, enabledFilters,
-    canFilter, inlineEdit, form: formConfig, filterMultiple = false, filterTree,
+    visibility,
+    link,
+    title,
+    key,
+    sort,
+    mapKey,
+    width,
+    type,
+    imageSize,
+    renderValue,
+    filters,
+    enabledFilters,
+    canFilter,
+    inlineEdit,
+    form: formConfig,
+    filterMultiple = false,
+    filterTree
   }) {
     const { sort: currentSort, filter } = this.props;
-    const filteredValue = (type.canUseColumnFilter() && !isUndefined(filter[mapKey])
-      ? filter[mapKey] : []);
+    const filteredValue =
+      type.canUseColumnFilter() && !isUndefined(filter[mapKey])
+        ? filter[mapKey]
+        : [];
     let renderValueFunc = type.renderValue;
 
     if (isFunction(renderValue)) {
       renderValueFunc = renderValue;
     } else if (isArray(filters) && type.canUseColumnFilter()) {
-      renderValueFunc = (v) => {
+      renderValueFunc = v => {
         if (isArray(v)) {
-          return v.map((item) => {
-            const filtered = find(filters, f => f.value === item);
-            return filtered ? filtered.text : item;
-          }).join('，');
+          return v
+            .map(item => {
+              const filtered = find(filters, f => f.value === item);
+              return filtered ? filtered.text : item;
+            })
+            .join('，');
         }
         const filtered = find(filters, f => f.value === v);
         return filtered ? filtered.text : v;
@@ -371,9 +449,14 @@ export default class RecordsPage extends React.PureComponent {
           </span>
         );
       } else if (type === ColumnTypes.image) {
-        render = (value) => {
-          const src = generateUpYunImageUrl(value, `/both/${imageSize || '100x100'}`);
-          const style = width ? { width: isNumber(width) ? `${width}px` : width } : {};
+        render = value => {
+          const src = generateUpYunImageUrl(
+            value,
+            `/both/${imageSize || '100x100'}`
+          );
+          const style = width
+            ? { width: isNumber(width) ? `${width}px` : width }
+            : {};
 
           return <img alt="" src={src} style={style} />;
         };
@@ -383,22 +466,31 @@ export default class RecordsPage extends React.PureComponent {
             key={value}
             disabled={
               formConfig && isFunction(formConfig.enable)
-                ? (!formConfig.enable(undefined, record))
+                ? !formConfig.enable(undefined, record)
                 : false
             }
-            placeholder={formConfig && formConfig.placeholder ? formConfig.placeholder : `请输入${title}`}
+            placeholder={
+              formConfig && formConfig.placeholder
+                ? formConfig.placeholder
+                : `请输入${title}`
+            }
             autoComplete="off"
             defaultValue={value}
-            onBlur={({ relatedTarget, target: { value: editValue } = {} } = {}) => {
+            onBlur={({
+              relatedTarget,
+              target: { value: editValue } = {}
+            } = {}) => {
               if (formConfig && formConfig.rules) {
                 const validator = new AsyncValidator({
-                  [mapKey]: [{
-                    required: !formConfig.optional,
-                    message: `${title}不能为空`,
-                    whitespace: true,
-                  }].concat(formConfig.rules),
+                  [mapKey]: [
+                    {
+                      required: !formConfig.optional,
+                      message: `${title}不能为空`,
+                      whitespace: true
+                    }
+                  ].concat(formConfig.rules)
                 });
-                validator.validate({ [mapKey]: editValue }, (errors) => {
+                validator.validate({ [mapKey]: editValue }, errors => {
                   if (errors) {
                     message.error(errors[0].message);
                     if (relatedTarget && isFunction(relatedTarget.focus)) {
@@ -416,17 +508,22 @@ export default class RecordsPage extends React.PureComponent {
         );
       }
 
-      const filterProps = canFilter
-        && !filterTree
-        && isArray(enabledFilters)
-        && enabledFilters.length > 0
-        ? {
-          filterMultiple,
-          filtered: isArray(filteredValue) ? !!filteredValue.length : !isUndefined(filteredValue),
-          filteredValue: isArray(filteredValue)
-            ? filteredValue : [String(filteredValue)],
-          filters: !type.canUseColumnFilter() ? [] : enabledFilters,
-        } : {};
+      const filterProps =
+        canFilter &&
+        !filterTree &&
+        isArray(enabledFilters) &&
+        enabledFilters.length > 0
+          ? {
+              filterMultiple,
+              filtered: isArray(filteredValue)
+                ? !!filteredValue.length
+                : !isUndefined(filteredValue),
+              filteredValue: isArray(filteredValue)
+                ? filteredValue
+                : [String(filteredValue)],
+              filters: !type.canUseColumnFilter() ? [] : enabledFilters
+            }
+          : {};
 
       return (
         <Column
@@ -437,9 +534,13 @@ export default class RecordsPage extends React.PureComponent {
           key={key}
           sorter={!!sort}
           width={width || ''}
-          sortOrder={currentSort && startsWith(currentSort, `${mapKey} `) ? `${split(currentSort, ' ')[1]}end` : false}
-          render={
-            (value, record) => render(renderValueFunc(value, record), record)
+          sortOrder={
+            currentSort && startsWith(currentSort, `${mapKey} `)
+              ? `${split(currentSort, ' ')[1]}end`
+              : false
+          }
+          render={(value, record) =>
+            render(renderValueFunc(value, record), record)
           }
         />
       );
@@ -455,97 +556,94 @@ export default class RecordsPage extends React.PureComponent {
   }
 
   renderCustomRowActions(record) {
-    const { customRowActions, match: { params: matchParams } } = this.props;
+    const {
+      customRowActions,
+      match: { params: matchParams }
+    } = this.props;
 
-    return customRowActions.map(({
-      title, type, handler, enable, render, confirmModal,
-    }) => {
-      if (isFunction(enable) && !enable(record)) {
-        return null;
+    return customRowActions.map(
+      ({ title, type, handler, enable, render, confirmModal }) => {
+        if (isFunction(enable) && !enable(record)) {
+          return null;
+        }
+
+        if (isFunction(render)) {
+          return render(record, matchParams, this.fetch);
+        }
+
+        return (
+          <Button
+            key={title}
+            type={type}
+            // eslint-disable-next-line react/jsx-no-bind
+            onClick={
+              confirmModal
+                ? () =>
+                    confirm({
+                      ...confirmModal,
+                      title: isFunction(confirmModal.title)
+                        ? confirmModal.title(record)
+                        : confirmModal.title || '',
+                      content: isFunction(confirmModal.content)
+                        ? confirmModal.content(record)
+                        : confirmModal.content || '',
+                      onOk: () => this.onCustomRowAction(record, handler)
+                    })
+                : () => this.onCustomRowAction(record, handler)
+            }
+          >
+            {title}
+          </Button>
+        );
       }
-
-      if (isFunction(render)) {
-        return render(record, matchParams, this.fetch);
-      }
-
-      return (
-        <Button
-          key={title}
-          type={type}
-          // eslint-disable-next-line react/jsx-no-bind
-          onClick={
-            confirmModal
-              ? () => confirm({
-                ...confirmModal,
-                title: isFunction(confirmModal.title)
-                  ? confirmModal.title(record) : (confirmModal.title || ''),
-                content: isFunction(confirmModal.content)
-                  ? confirmModal.content(record) : (confirmModal.content || ''),
-                onOk: () => this.onCustomRowAction(record, handler),
-              })
-              : () => this.onCustomRowAction(record, handler)
-          }
-        >
-          {title}
-        </Button>
-      );
-    });
+    );
   }
 
   renderRowActions() {
-    const {
-      edit, remove, order, customRowActions, schema,
-    } = this.props;
-    return (edit || remove || customRowActions.length > 0 || order) ? (
+    const { edit, remove, order, customRowActions, schema } = this.props;
+    return edit || remove || customRowActions.length > 0 || order ? (
       <Column
         title="操作"
         key="action"
-        render={(text, record) => ( // eslint-disable-line react/jsx-no-bind
+        render={(
+          text,
+          record // eslint-disable-line react/jsx-no-bind
+        ) => (
           <div className="actions">
-            {
-              edit && (
-                <RecordModal schema={schema} record={record} onOk={this.editRecord}>
-                  <Button
-                    type="primary"
-                    shape="circle"
-                    icon="edit"
-                  />
-                </RecordModal>
-              )
-            }
-            {
-              remove && (
-                <Popconfirm
-                  title="确认删除？"
+            {edit && (
+              <RecordModal
+                schema={schema}
+                record={record}
+                onOk={this.editRecord}
+              >
+                <Button type="primary" shape="circle" icon="edit" />
+              </RecordModal>
+            )}
+            {remove && (
+              <Popconfirm
+                title="确认删除？"
+                // eslint-disable-next-line react/jsx-no-bind
+                onConfirm={() => this.onConfirmRemove(record)}
+              >
+                <Button type="danger" shape="circle" icon="delete" />
+              </Popconfirm>
+            )}
+            {order && (
+              <React.Fragment>
+                <Button
+                  shape="circle"
+                  icon="up"
                   // eslint-disable-next-line react/jsx-no-bind
-                  onConfirm={() => this.onConfirmRemove(record)}
-                >
-                  <Button
-                    type="danger"
-                    shape="circle"
-                    icon="delete"
-                  />
-                </Popconfirm>
-              )
-            }
-            {
-              order && (
-                <React.Fragment>
-                  <Button
-                    shape="circle"
-                    icon="up"
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => this.onOrderChange(record, -1)}
-                  />
-                  <Button
-                    shape="circle"
-                    icon="down"
-                    // eslint-disable-next-line react/jsx-no-bind
-                    onClick={() => this.onOrderChange(record, 1)}
-                  />
-                </React.Fragment>
-              )
-            }
+                  onClick={() => this.onOrderChange(record, -1)}
+                />
+                <Button
+                  shape="circle"
+                  icon="down"
+                  // eslint-disable-next-line react/jsx-no-bind
+                  onClick={() => this.onOrderChange(record, 1)}
+                />
+              </React.Fragment>
+            )}
             {this.renderCustomRowActions(record)}
           </div>
         )}
@@ -565,23 +663,23 @@ export default class RecordsPage extends React.PureComponent {
       <Group title="搜索">
         {chunk(searchFields, 6).map(definitions => (
           <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
-            {
-              definitions.map(definition => (
-                <Col span={4} key={definition.mapKey}>
-                  <Search
-                    defaultValue={search[definition.mapKey]}
-                    placeholder={definition.title}
-                    value={inputSearch[definition.mapKey]}
-                    onSearch={value => this.onSearch(definition, value)}
-                    onChange={
-                      e => this.setState({ inputSearch: { [definition.mapKey]: e.target.value } })
-                    }
-                    style={{ width: '100%' }}
-                    enterButton
-                  />
-                </Col>
-              ))
-            }
+            {definitions.map(definition => (
+              <Col span={4} key={definition.mapKey}>
+                <Search
+                  defaultValue={search[definition.mapKey]}
+                  placeholder={definition.title}
+                  value={inputSearch[definition.mapKey]}
+                  onSearch={value => this.onSearch(definition, value)}
+                  onChange={e =>
+                    this.setState({
+                      inputSearch: { [definition.mapKey]: e.target.value }
+                    })
+                  }
+                  style={{ width: '100%' }}
+                  enterButton
+                />
+              </Col>
+            ))}
           </Row>
         ))}
       </Group>
@@ -597,36 +695,24 @@ export default class RecordsPage extends React.PureComponent {
 
     return (
       <Group title="筛选">
-        {
-          filterInGroupSchemas.map(({
-            mapKey, type, title, ...definition
-          }) => (
-            <Row
-              type="flex"
-              align="middle"
-              className="filter-row"
-              key={mapKey}
-            >
-              <div className="filter-title">{`${title}：`}</div>
-              <Col span={12}>
-                {
-                  type.renderFilterItem({
-                    ...definition,
-                    value: filterGroup[mapKey],
-                    onChange: (v) => {
-                      this.setState({ filterGroup: { ...filterGroup, [mapKey]: v } });
-                    },
-                  })
+        {filterInGroupSchemas.map(({ mapKey, type, title, ...definition }) => (
+          <Row type="flex" align="middle" className="filter-row" key={mapKey}>
+            <div className="filter-title">{`${title}：`}</div>
+            <Col span={12}>
+              {type.renderFilterItem({
+                ...definition,
+                value: filterGroup[mapKey],
+                onChange: v => {
+                  this.setState({
+                    filterGroup: { ...filterGroup, [mapKey]: v }
+                  });
                 }
-              </Col>
-            </Row>
-          ))
-        }
+              })}
+            </Col>
+          </Row>
+        ))}
         <Row key="filter-group-action-buttons">
-          <Popconfirm
-            title="确认重置？"
-            onConfirm={this.onClickReset}
-          >
+          <Popconfirm title="确认重置？" onConfirm={this.onClickReset}>
             <Button type="danger">重置</Button>
           </Popconfirm>
           <Button
@@ -646,9 +732,12 @@ export default class RecordsPage extends React.PureComponent {
     const { selectedRows } = this.state;
     const hasSelected = selectedRows.length > 0;
     const {
-      create, hasCreateNew, schema,
-      customGlobalActions, customMultipleActions,
-      match: { params: matchParams },
+      create,
+      hasCreateNew,
+      schema,
+      customGlobalActions,
+      customMultipleActions,
+      match: { params: matchParams }
     } = this.props;
 
     if (hasCreateNew) {
@@ -667,11 +756,22 @@ export default class RecordsPage extends React.PureComponent {
       <Group title="操作">
         {chunk(actions, 6).map(groupActions => (
           <Row gutter={20} key={join(map(groupActions, ({ title }) => title))}>
-            {
-              groupActions.map(({
-                createNew, create: crt, global, render, title,
-                type, handler, multiple, confirmModal, enable,
-              }, index) => {
+            {groupActions.map(
+              (
+                {
+                  createNew,
+                  create: crt,
+                  global,
+                  render,
+                  title,
+                  type,
+                  handler,
+                  multiple,
+                  confirmModal,
+                  enable
+                },
+                index
+              ) => {
                 let children;
                 if (createNew) {
                   children = (
@@ -681,8 +781,14 @@ export default class RecordsPage extends React.PureComponent {
                   );
                 } else if (crt) {
                   children = (
-                    <RecordModal schema={schema} record={{}} onOk={this.editRecord}>
-                      <Button className="add-button" type="primary">添加</Button>
+                    <RecordModal
+                      schema={schema}
+                      record={{}}
+                      onOk={this.editRecord}
+                    >
+                      <Button className="add-button" type="primary">
+                        添加
+                      </Button>
                     </RecordModal>
                   );
                 } else if (global) {
@@ -707,14 +813,18 @@ export default class RecordsPage extends React.PureComponent {
                       // eslint-disable-next-line react/jsx-no-bind
                       onClick={
                         confirmModal
-                          ? () => confirm({
-                            ...confirmModal,
-                            title: isFunction(confirmModal.title)
-                              ? confirmModal.title(selectedRows) : (confirmModal.title || ''),
-                            content: isFunction(confirmModal.content)
-                              ? confirmModal.content(selectedRows) : (confirmModal.content || ''),
-                            onOk: () => this.onCustomMultipleAction(handler, enable),
-                          })
+                          ? () =>
+                              confirm({
+                                ...confirmModal,
+                                title: isFunction(confirmModal.title)
+                                  ? confirmModal.title(selectedRows)
+                                  : confirmModal.title || '',
+                                content: isFunction(confirmModal.content)
+                                  ? confirmModal.content(selectedRows)
+                                  : confirmModal.content || '',
+                                onOk: () =>
+                                  this.onCustomMultipleAction(handler, enable)
+                              })
                           : () => this.onCustomMultipleAction(handler, enable)
                       }
                     >
@@ -728,8 +838,8 @@ export default class RecordsPage extends React.PureComponent {
                     {children}
                   </Col>
                 );
-              })
-            }
+              }
+            )}
           </Row>
         ))}
       </Group>
@@ -739,13 +849,21 @@ export default class RecordsPage extends React.PureComponent {
   renderContent() {
     const { dataSource, selectedRowKeys } = this.state;
     const {
-      total, page, pagesize, primaryKey,
-      customMultipleActions, isLoading,
+      total,
+      page,
+      pagesize,
+      primaryKey,
+      customMultipleActions,
+      isLoading
     } = this.props;
 
-    const rowSelection = customMultipleActions.length > 0 ? {
-      selectedRowKeys, onChange: this.onSelectChange,
-    } : null;
+    const rowSelection =
+      customMultipleActions.length > 0
+        ? {
+            selectedRowKeys,
+            onChange: this.onSelectChange
+          }
+        : null;
 
     return (
       <React.Fragment>
@@ -784,7 +902,11 @@ export default class RecordsPage extends React.PureComponent {
     const { component: Component, error, inline } = this.props;
     return (
       <Page isError={!!error} errorMessage={error ? error.message : ''}>
-        {Component ? <Card className={classNames('content-card', inline ? 'inline' : '')}><Component /></Card> : null}
+        {Component ? (
+          <Card className={classNames('content-card', inline ? 'inline' : '')}>
+            <Component />
+          </Card>
+        ) : null}
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
           {this.renderContent()}
         </Card>
