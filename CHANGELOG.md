@@ -1,8 +1,23 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.5.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.5.0...v1.5.1) (2019-05-31)
+# [1.6.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.5.1...v1.6.0) (2019-06-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix filterInGroups ([734fcab](https://git2.qingtingfm.com/zhibo/xms/commits/734fcab))
+
+
+### Features
+
+* **CLOUD-1011:** add DateTimeDefaultRangeColumnType ([71d52d5](https://git2.qingtingfm.com/zhibo/xms/commits/71d52d5))
+* **NoTicket:** use prettier ([ee40a51](https://git2.qingtingfm.com/zhibo/xms/commits/ee40a51))
+
+
+
+## [1.5.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.5.0...v1.5.1) (2019-05-31)
 
 
 
