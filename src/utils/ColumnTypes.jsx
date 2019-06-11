@@ -147,16 +147,17 @@ class PrimitiveColumnType extends BaseColumnType {
   // eslint-disable-next-line class-methods-use-this
   renderFilterItem({ rangeFilter, onChange, value }) {
     if (this.primitiveType === TYPES.NUMBER && rangeFilter) {
+      const newValue = value || [];
       return (
         <div>
           <InputNumber
-            value={value[0]}
-            onChange={v => onChange([v, value[1]])}
+            value={newValue[0]}
+            onChange={v => onChange([v, newValue[1]])}
           />
           ~
           <InputNumber
-            value={value[1]}
-            onChange={v => onChange([value[0], v])}
+            value={newValue[1]}
+            onChange={v => onChange([newValue[0], v])}
           />
         </div>
       );
