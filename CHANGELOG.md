@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.6.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.6.0...v1.6.1) (2019-06-11)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix range number init value error ([026b4c0](https://git2.qingtingfm.com/zhibo/xms/commit/026b4c0))
+
+
 
 # [1.6.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.5.1...v1.6.0) (2019-06-05)
 
