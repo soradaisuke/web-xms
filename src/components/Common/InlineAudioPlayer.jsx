@@ -19,6 +19,7 @@ class InlineAudioPlayer extends React.PureComponent {
     url: PropTypes.string,
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
+    showChangeProgress: PropTypes.bool,
     className: PropTypes.string
   };
 
@@ -27,7 +28,8 @@ class InlineAudioPlayer extends React.PureComponent {
     url: '',
     className: '',
     loop: false,
-    showPlaybackRate: true
+    showPlaybackRate: true,
+    showChangeProgress: false
   };
 
   state = {
@@ -89,6 +91,7 @@ class InlineAudioPlayer extends React.PureComponent {
       className,
       loop,
       showPlaybackRate,
+      showChangeProgress,
       playbackRates,
       id
     } = this.props;
@@ -97,10 +100,12 @@ class InlineAudioPlayer extends React.PureComponent {
 
     return (
       <div className={classNames('inline-audio-player-wrapper', className)}>
-        <ButtonGroup size="small">
-          <Button onClick={this.decline} icon="minus" />
-          <Button onClick={this.increase} icon="plus" />
-        </ButtonGroup>
+        {showChangeProgress && (
+          <ButtonGroup size="small">
+            <Button onClick={this.decline} icon="minus" />
+            <Button onClick={this.increase} icon="plus" />
+          </ButtonGroup>
+        )}
         <Player
           ref={this.ref}
           height="0"

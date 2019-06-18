@@ -29,10 +29,12 @@ class RecordModal extends React.PureComponent {
       })
     ).isRequired,
     onOk: PropTypes.func.isRequired,
+    multipleKey: PropTypes.string,
     user: PropTypes.instanceOf(Immutable.Map)
   };
 
   static defaultProps = {
+    multipleKey: '',
     user: null
   };
 
@@ -141,23 +143,27 @@ class RecordModal extends React.PureComponent {
   }
 
   render() {
-    const { children, schema, user } = this.props;
+    const { children, schema, user, multipleKey } = this.props;
+
+    const targetSchema = multipleKey
+      ? schema.filter(({ mapKey }) => mapKey === multipleKey)
+      : schema.filter(
+          ({ visibility }) =>
+            (this.isEdit() && visibility.edit) ||
+            (!this.isEdit() && visibility.create)
+        );
 
     return (
       <ActivatorModal
         activator={children}
-        title={this.isEdit() ? '编辑' : '添加'}
+        title={this.isEdit() || multipleKey ? '编辑' : '添加'}
         onOk={this.onOk}
         onVisibleChange={this.onVisibleChange}
       >
         <Form onSubmit={this.okHandler}>
-          {schema
-            .filter(
-              ({ visibility }) =>
-                (this.isEdit() && visibility.edit) ||
-                (!this.isEdit() && visibility.create)
-            )
-            .map(definition => this.renderFormItem({ user, ...definition }))}
+          {targetSchema.map(definition =>
+            this.renderFormItem({ user, ...definition })
+          )}
         </Form>
       </ActivatorModal>
     );

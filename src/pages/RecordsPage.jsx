@@ -75,6 +75,7 @@ export default class RecordsPage extends React.PureComponent {
     customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     filterInGroupSchemas: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    customMultipleEdits: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
     order: PropTypes.func,
@@ -102,6 +103,7 @@ export default class RecordsPage extends React.PureComponent {
     customMultipleActions: [],
     customRowActions: [],
     filterInGroupSchemas: [],
+    customMultipleEdits: [],
     error: null,
     isLoading: false,
     edit: null,
@@ -737,6 +739,7 @@ export default class RecordsPage extends React.PureComponent {
       schema,
       customGlobalActions,
       customMultipleActions,
+      customMultipleEdits,
       match: { params: matchParams }
     } = this.props;
 
@@ -748,7 +751,7 @@ export default class RecordsPage extends React.PureComponent {
 
     actions = actions.concat(customGlobalActions).concat(customMultipleActions);
 
-    if (actions.length === 0) {
+    if (actions.length === 0 && customMultipleEdits.length === 0) {
       return null;
     }
 
@@ -840,6 +843,24 @@ export default class RecordsPage extends React.PureComponent {
                 );
               }
             )}
+            {customMultipleEdits.map(({ title, mapKey }, index) => (
+              <Col span={4} key={title || index}>
+                <RecordModal
+                  schema={schema}
+                  record={{}}
+                  multipleKey={mapKey}
+                  onOk={data =>
+                    this.onCustomMultipleAction(record =>
+                      this.editRecord({ ...record, ...data })
+                    )
+                  }
+                >
+                  <Button type="primary" disabled={!hasSelected}>
+                    {title}
+                  </Button>
+                </RecordModal>
+              </Col>
+            ))}
           </Row>
         ))}
       </Group>
@@ -854,11 +875,12 @@ export default class RecordsPage extends React.PureComponent {
       pagesize,
       primaryKey,
       customMultipleActions,
+      customMultipleEdits,
       isLoading
     } = this.props;
 
     const rowSelection =
-      customMultipleActions.length > 0
+      customMultipleActions.length > 0 || customMultipleEdits.length > 0
         ? {
             selectedRowKeys,
             onChange: this.onSelectChange
@@ -872,6 +894,7 @@ export default class RecordsPage extends React.PureComponent {
         {this.renderActionGroup()}
         <Group title="详情">
           <Table
+            bordered
             loading={isLoading}
             dataSource={dataSource}
             rowKey={primaryKey}

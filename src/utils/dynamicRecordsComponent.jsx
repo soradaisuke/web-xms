@@ -189,6 +189,7 @@ function generateRecordsPage(
     searchFields,
     fixedSort,
     defaultSort,
+    schema,
     defaultFilter: defaultFilterQuery
   },
   component
@@ -199,6 +200,7 @@ function generateRecordsPage(
     ({ multiple }) => multiple
   );
   const customRowActions = customActions.filter(({ global }) => !global);
+  const customMultipleEdits = schema.filter(({ multipleEdit }) => multipleEdit);
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -214,6 +216,7 @@ function generateRecordsPage(
           customRowActions={customRowActions}
           searchFields={searchFields}
           defaultFilter={defaultFilterQuery}
+          customMultipleEdits={customMultipleEdits}
         />
       );
     }
