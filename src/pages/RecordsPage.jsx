@@ -799,7 +799,7 @@ class RecordsPage extends React.PureComponent {
                       </Button>
                     </RecordModal>
                   );
-                } else if (global) {
+                } else if (global && !multiple) {
                   if (isFunction(render)) {
                     children = render(matchParams, this.fetch);
                   } else {
