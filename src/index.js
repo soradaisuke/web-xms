@@ -13,3 +13,4 @@ export textToPath from './utils/textToPath';
 export AudioPlayer from './components/Common/AudioPlayer';
 export CommonArray from './components/FormItems/CommonArray';
 export Group from './components/Group';
+export Select from './components/FormItems/Select';

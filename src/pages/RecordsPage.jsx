@@ -569,8 +569,8 @@ class RecordsPage extends React.PureComponent {
     } = this.props;
 
     return customRowActions.map(
-      ({ title, type, handler, enable, render, confirmModal }) => {
-        if (isFunction(enable) && !enable(record, user)) {
+      ({ title, type, handler, enable, render, confirmModal, global }) => {
+        if ((isFunction(enable) && !enable(record, user)) || global) {
           return null;
         }
 
@@ -814,31 +814,35 @@ class RecordsPage extends React.PureComponent {
                     );
                   }
                 } else if (multiple) {
-                  children = (
-                    <Button
-                      type={type}
-                      disabled={!hasSelected}
-                      // eslint-disable-next-line react/jsx-no-bind
-                      onClick={
-                        confirmModal
-                          ? () =>
-                              confirm({
-                                ...confirmModal,
-                                title: isFunction(confirmModal.title)
-                                  ? confirmModal.title(selectedRows)
-                                  : confirmModal.title || '',
-                                content: isFunction(confirmModal.content)
-                                  ? confirmModal.content(selectedRows)
-                                  : confirmModal.content || '',
-                                onOk: () =>
-                                  this.onCustomMultipleAction(handler, enable)
-                              })
-                          : () => this.onCustomMultipleAction(handler, enable)
-                      }
-                    >
-                      {title}
-                    </Button>
-                  );
+                  if (isFunction(render)) {
+                    children = render(matchParams, this.fetch, selectedRows);
+                  } else {
+                    children = (
+                      <Button
+                        type={type}
+                        disabled={!hasSelected}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onClick={
+                          confirmModal
+                            ? () =>
+                                confirm({
+                                  ...confirmModal,
+                                  title: isFunction(confirmModal.title)
+                                    ? confirmModal.title(selectedRows)
+                                    : confirmModal.title || '',
+                                  content: isFunction(confirmModal.content)
+                                    ? confirmModal.content(selectedRows)
+                                    : confirmModal.content || '',
+                                  onOk: () =>
+                                    this.onCustomMultipleAction(handler, enable)
+                                })
+                            : () => this.onCustomMultipleAction(handler, enable)
+                        }
+                      >
+                        {title}
+                      </Button>
+                    );
+                  }
                 }
 
                 return (

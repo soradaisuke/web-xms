@@ -195,7 +195,9 @@ function generateRecordsPage(
   component
 ) {
   const customActions = actions.filter(action => isPlainObject(action));
-  const customGlobalActions = customActions.filter(({ global }) => global);
+  const customGlobalActions = customActions.filter(
+    ({ global, multiple }) => global && !multiple
+  );
   const customMultipleActions = customActions.filter(
     ({ multiple }) => multiple
   );

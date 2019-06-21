@@ -208,7 +208,7 @@ ref获得节点后可以调用的方法有
 | enable | 是否为该行数据启用该操作 | Function(record, user) | - |
 | type | 按钮类型，参数同antd的Button，有primary、default、danger、dashed | string | - |
 | render | 自定义渲染组件，会忽略title、type和handler的值<br />返回的组件需要设置key<br/ >如果需要在某个操作后刷新数据，请执行refresh() | Function(record, matchParams, refresh) | - |
-| multiple | 该操作是否支持多行批量执行 | bool | false |
+| multiple | 该操作是否支持多行批量执行，global为true时在行里不渲染 | bool | false |
 | global | 该操作是否是全局操作 | bool | false |
 | confirmModal | 该操作如果是弹框再确认类型，配置该项，[confirmModal](#confirmModal)，更多配置见[antd的modal.confirm](https://ant.design/components/modal-cn/#Modal.method()) | object | - |
 
