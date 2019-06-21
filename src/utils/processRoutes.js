@@ -1,4 +1,4 @@
-import { startsWith, isPlainObject } from 'lodash';
+import { startsWith, isPlainObject, isFunction } from 'lodash';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
@@ -30,6 +30,15 @@ export default function processRoutes({ app, routes }) {
 
       const { config = {}, path } = route;
       let { component } = route;
+
+      if (
+        !isFunction(component) ||
+        !(isPlainObject(component) && isFunction(component.component))
+      ) {
+        console.error(
+          `${path}: component的类型必须是() =&gt; ReactElement或{ models: [() => import(DvaModel)], component: () => import(ReactComponent) }`
+        );
+      }
 
       if (isPlainObject(component)) {
         component = dynamic({
