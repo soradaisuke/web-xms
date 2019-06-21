@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.10.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.9.0...v1.10.0) (2019-06-21)
+
+
+### Features
+
+* **NoTicket:** 支持批量render ([00c31b4](https://git2.qingtingfm.com/zhibo/xms/commit/00c31b4))
+
+
 
 # [1.9.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.8.0...v1.9.0) (2019-06-21)
 
