@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { Avatar, Menu, Dropdown, Icon } from 'antd';
 import { connect } from 'dva';
-import { generateUri } from 'web-core';
-import { ClickableDiv } from 'react-core';
+import { generateUri } from '@qt/web-core';
+import { ClickableDiv } from '@qt/react-core';
 import Cookie from 'js-cookie';
 import './User.less';
 

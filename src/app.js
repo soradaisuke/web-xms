@@ -21,16 +21,16 @@ export default function xms(config = {}) {
   app.use(createLoading());
 
   app.config = merge(defaultConfig, config);
-  const { routes, api: { host, login } = {} } = config;
+  const { routes, api: { host, login, auth } = {} } = config;
   if (host) {
     request.setHost(host);
   }
   try {
-    if (login) {
+    if (login || auth) {
       if (window.location.host.indexOf('qingtingfm.com') === -1) {
         throw new Error('域名必须是*.qingtingfm.com');
       }
-      app.model(generateUserModel(login));
+      app.model(generateUserModel(login || auth));
       app.model(audio);
     }
     app.routes = processRoutes({ app, routes });

@@ -34,7 +34,7 @@ import {
   forEach,
   findIndex
 } from 'lodash';
-import { generateUpYunImageUrl } from 'web-core';
+import { generateUpYunImageUrl } from '@qt/web-core';
 import RecordLink from '../components/RecordLink';
 import RecordModal from '../components/RecordModal';
 import Group from '../components/Group';

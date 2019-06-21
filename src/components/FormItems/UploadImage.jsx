@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
-import { uploadImage } from 'web-core';
+import { uploadImage } from '@qt/web-core';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Upload, Icon, Col, Row, Modal, message } from 'antd';

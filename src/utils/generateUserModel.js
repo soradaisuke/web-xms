@@ -1,24 +1,22 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
-import { generateUri, isProduction } from 'web-core';
+import { generateUri, isProduction } from '@qt/web-core';
 import request from '../services/request';
 
-const ENTRY_HOST = `//entry${isProduction() ? '' : '.staging'}.qingtingfm.com`;
+const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;
 
-function generateService(login) {
-  if (!login) {
-    throw new Error(
-      'generateUserModel generateService: login path is required'
-    );
+function generateService(auth) {
+  if (!auth) {
+    throw new Error('auth of api is required');
   }
 
   return {
-    login: async () => request.get(login)
+    auth: async () => request.get(auth)
   };
 }
 
-export default function generateUserModel(login) {
-  const service = generateService(login);
+export default function generateUserModel(auth) {
+  const service = generateService(auth);
 
   return {
     namespace: 'user',
@@ -34,9 +32,9 @@ export default function generateUserModel(login) {
       }
     },
     effects: {
-      *login(_, { call, put }) {
+      *auth(_, { call, put }) {
         try {
-          const user = yield call(service.login);
+          const user = yield call(service.auth);
           yield put({ type: 'save', payload: { user } });
         } catch (e) {
           const queries = parse(window.location.search);
@@ -53,7 +51,7 @@ export default function generateUserModel(login) {
     },
     subscriptions: {
       setup({ dispatch }) {
-        dispatch({ type: 'login' });
+        dispatch({ type: 'auth' });
       }
     }
   };

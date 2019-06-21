@@ -17,7 +17,7 @@ import {
   findIndex,
   isUndefined
 } from 'lodash';
-import { generateUri } from 'web-core';
+import { generateUri } from '@qt/web-core';
 import ColumnTypes from './ColumnTypes';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
