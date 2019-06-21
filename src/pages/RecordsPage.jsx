@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
@@ -45,7 +46,7 @@ const { Column } = Table;
 const { Search } = Input;
 const { confirm } = Modal;
 
-export default class RecordsPage extends React.PureComponent {
+class RecordsPage extends React.PureComponent {
   static displayName = 'RecordsPage';
 
   static propTypes = {
@@ -93,7 +94,8 @@ export default class RecordsPage extends React.PureComponent {
     searchFields: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
-    hasCreateNew: PropTypes.bool
+    hasCreateNew: PropTypes.bool,
+    user: PropTypes.instanceOf(Immutable.Map)
   };
 
   static defaultProps = {
@@ -121,7 +123,8 @@ export default class RecordsPage extends React.PureComponent {
     inline: false,
     inlineEdit: null,
     hasCreateNew: false,
-    defaultFilter: {}
+    defaultFilter: {},
+    user: null
   };
 
   static showTotal(total, range) {
@@ -301,13 +304,14 @@ export default class RecordsPage extends React.PureComponent {
   onCustomMultipleAction = async (handler, enable) => {
     if (isFunction(handler)) {
       const {
+        user,
         match: { params: matchParams }
       } = this.props;
       const { selectedRows } = this.state;
       await this.updateRecord({
         promise: Promise.all(
           map(selectedRows, record =>
-            !isFunction(enable) || enable(record)
+            !isFunction(enable) || enable(record, user)
               ? handler(record, matchParams)
               : null
           )
@@ -560,12 +564,13 @@ export default class RecordsPage extends React.PureComponent {
   renderCustomRowActions(record) {
     const {
       customRowActions,
+      user,
       match: { params: matchParams }
     } = this.props;
 
     return customRowActions.map(
       ({ title, type, handler, enable, render, confirmModal }) => {
-        if (isFunction(enable) && !enable(record)) {
+        if (isFunction(enable) && !enable(record, user)) {
           return null;
         }
 
@@ -937,3 +942,9 @@ export default class RecordsPage extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(RecordsPage);
