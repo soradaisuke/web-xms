@@ -28,7 +28,7 @@ export default function processRoutes({ app, routes }) {
     return (rs || []).map(route => {
       valiadateRoute(route, prefix);
 
-      const { config, path } = route;
+      const { config = {}, path } = route;
       let { component } = route;
 
       if (isPlainObject(component)) {
@@ -38,13 +38,13 @@ export default function processRoutes({ app, routes }) {
         });
       }
 
-      if (config && config.type === 'group') {
+      if (config.type === 'group') {
         component = dynamicRecordsComponent({
           app,
           component,
           config: processGroupConfig({ config, path })
         });
-      } else if ((config && config.type === 'single') || !!component) {
+      } else {
         component = dynamicRecordComponent({
           app,
           component,
