@@ -14,6 +14,7 @@ import {
   forEach,
   toInteger,
   get,
+  findIndex,
   isUndefined
 } from 'lodash';
 import { generateUri } from 'web-core';
@@ -84,6 +85,17 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
             )
         );
       },
+      saveModalFilters(
+        state,
+        {
+          payload: { filters, index }
+        }
+      ) {
+        return state.set(
+          'schema',
+          state.get('schema').setIn([index, 'modalFilters'], filters)
+        );
+      },
       saveError(
         state,
         {
@@ -138,6 +150,19 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
       ) {
         const filters = yield call(filtersFunc, currentFiler);
         yield put({ type: 'saveFilters', payload: { index, filters } });
+      },
+      *updateModalFilters(
+        {
+          payload: { mapKey, formFieldsValue }
+        },
+        { call, put }
+      ) {
+        const index = findIndex(schema, ({ mapKey: mk }) => mk === mapKey);
+        const targetSchema = schema[index];
+        if (targetSchema && isFunction(targetSchema.filters)) {
+          const filters = yield call(targetSchema.filters, formFieldsValue);
+          yield put({ type: 'saveModalFilters', payload: { index, filters } });
+        }
       }
     }
   };
@@ -340,6 +365,14 @@ function generateRecordsPage(
           }
         });
       },
+      updateModalFilters: async (mapKey, formFieldsValue) =>
+        dispatch({
+          type: `${namespace}/updateModalFilters`,
+          payload: {
+            mapKey,
+            formFieldsValue
+          }
+        }),
       updatePage: async ({ page, pagesize, sort, search, filter }) => {
         const newQuery = {
           page,

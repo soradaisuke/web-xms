@@ -243,6 +243,7 @@ ref获得节点后可以调用的方法有
 | inlineEdit | STRING类型数据支持行内直接编辑，placeholder和校验沿用form.placeholder和form.rules | bool | false |
 | ignoreWhenNotEdit | 为true的时候在修改时不自动回传原始数据，删除数据时删除的是key或key[0]对应的数据 | bool | false |
 | multipleEdit | 支持批量修改数据 | bool | false |
+| childKey | 关联的子schema的mapKey | string | - |
 
 # form
 | 参数 | 说明 | 类型 | 默认值 |

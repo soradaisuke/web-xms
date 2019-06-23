@@ -18,6 +18,7 @@ class RecordModal extends React.PureComponent {
       getFieldDecorator: PropTypes.func.isRequired,
       resetFields: PropTypes.func.isRequired
     }).isRequired,
+    updateModalFilters: PropTypes.func.isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     schema: PropTypes.arrayOf(
       PropTypes.shape({
@@ -71,11 +72,26 @@ class RecordModal extends React.PureComponent {
     });
   };
 
-  onVisibleChange = visibility => {
+  checkRelevant = () => {
+    const { schema, form, updateModalFilters } = this.props;
+    const formFieldsValue = form.getFieldsValue();
+    forEach(schema, ({ childKey }) =>
+      childKey ? updateModalFilters(childKey, formFieldsValue) : null
+    );
+  };
+
+  onVisibleChange = async visibility => {
     const { form } = this.props;
     if (visibility) {
-      form.resetFields();
+      await form.resetFields();
+      this.checkRelevant();
     }
+  };
+
+  onChangeFormItem = (v, mapKey, childKey) => {
+    const { form, updateModalFilters } = this.props;
+    form.setFieldsValue({ [childKey]: undefined });
+    updateModalFilters(childKey, { [mapKey]: v });
   };
 
   isEdit() {
@@ -87,7 +103,13 @@ class RecordModal extends React.PureComponent {
     const { form, record, schema } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
     const targetSchema = find(schema, { key }) || {};
-    const { form: formConfig = {}, filters = [], mapKey } = targetSchema;
+    const {
+      form: formConfig = {},
+      filters = [],
+      mapKey,
+      modalFilters,
+      childKey
+    } = targetSchema;
     const enable = isFunction(formConfig.enable)
       ? formConfig.enable(getFieldsValue(), record)
       : true;
@@ -116,6 +138,9 @@ class RecordModal extends React.PureComponent {
       ? getFieldDecorator(mapKey, {
           initialValue,
           validateFirst: true,
+          onChange: childKey
+            ? v => this.onChangeFormItem(v, mapKey, childKey)
+            : null,
           rules: [commonEmptyRule]
             .concat(type.getFormRules({ ...formConfig, title, user }))
             .concat(formConfig.rules || []),
@@ -124,8 +149,8 @@ class RecordModal extends React.PureComponent {
           type.renderFormItem({
             ...formConfig,
             title,
-            filters,
             user,
+            filters: modalFilters || filters,
             formFieldValues: getFieldsValue()
           })
         )

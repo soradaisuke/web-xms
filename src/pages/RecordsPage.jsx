@@ -67,6 +67,7 @@ class RecordsPage extends React.PureComponent {
       })
     ).isRequired,
     updatePage: PropTypes.func.isRequired,
+    updateModalFilters: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({}).isRequired
     }).isRequired,
@@ -607,7 +608,14 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderRowActions() {
-    const { edit, remove, order, customRowActions, schema } = this.props;
+    const {
+      edit,
+      remove,
+      order,
+      customRowActions,
+      schema,
+      updateModalFilters
+    } = this.props;
     return edit || remove || customRowActions.length > 0 || order ? (
       <Column
         title="操作"
@@ -622,6 +630,7 @@ class RecordsPage extends React.PureComponent {
                 schema={schema}
                 record={record}
                 onOk={this.editRecord}
+                updateModalFilters={updateModalFilters}
               >
                 <Button type="primary" shape="circle" icon="edit" />
               </RecordModal>
@@ -745,6 +754,7 @@ class RecordsPage extends React.PureComponent {
       customGlobalActions,
       customMultipleActions,
       customMultipleEdits,
+      updateModalFilters,
       match: { params: matchParams }
     } = this.props;
 
@@ -793,6 +803,7 @@ class RecordsPage extends React.PureComponent {
                       schema={schema}
                       record={{}}
                       onOk={this.editRecord}
+                      updateModalFilters={updateModalFilters}
                     >
                       <Button className="add-button" type="primary">
                         添加
@@ -858,6 +869,7 @@ class RecordsPage extends React.PureComponent {
                   schema={schema}
                   record={{}}
                   multipleKey={mapKey}
+                  updateModalFilters={updateModalFilters}
                   onOk={data =>
                     this.onCustomMultipleAction(record =>
                       this.editRecord({ ...record, ...data })
