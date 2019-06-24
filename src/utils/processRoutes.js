@@ -32,11 +32,11 @@ export default function processRoutes({ app, routes }) {
       let { component } = route;
 
       if (
-        !isFunction(component) ||
+        !isFunction(component) &&
         !(isPlainObject(component) && isFunction(component.component))
       ) {
         console.error(
-          `${path}: component的类型必须是() =&gt; ReactElement或{ models: [() => import(DvaModel)], component: () => import(ReactComponent) }`
+          `${path}: component的类型必须是() => ReactElement或{ models: [() => import(DvaModel)], component: () => import(ReactComponent) }`
         );
       }
 

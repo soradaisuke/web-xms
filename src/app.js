@@ -6,6 +6,7 @@ import history from './utils/history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';
+import { migrateApi } from './utils/migrate';
 import defaultConfig from './defaultConfig';
 import router from './router';
 import audio from './models/audio';
@@ -21,16 +22,17 @@ export default function xms(config = {}) {
   app.use(createLoading());
 
   app.config = merge(defaultConfig, config);
-  const { routes, api: { host, login, auth } = {} } = config;
+  const { routes = [], api = {} } = config;
+  const { host = window.location.host, auth } = migrateApi(api);
   if (host) {
     request.setHost(host);
   }
   try {
-    if (login || auth) {
+    if (auth) {
       if (window.location.host.indexOf('qingtingfm.com') === -1) {
         throw new Error('域名必须是*.qingtingfm.com');
       }
-      app.model(generateUserModel(login || auth));
+      app.model(generateUserModel(auth));
       app.model(audio);
     }
     app.routes = processRoutes({ app, routes });
