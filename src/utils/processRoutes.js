@@ -1,16 +1,18 @@
-import { startsWith, isPlainObject, isFunction } from 'lodash';
+import { startsWith, isFunction } from 'lodash';
+import isReact from 'is-react';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
 import processGroupConfig from './processGroupConfig';
 import processSingleConfig from './processSingleConfig';
+import { migrateRoute } from './migrate';
 
 function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
-    throw new Error(`父页面path为${prefix}的route缺少path属性`);
+    throw new Error(`${prefix}: path is required`);
   }
   if (!startsWith(path, prefix)) {
-    throw new Error(`path为${path}的页面必须以${prefix}开头`);
+    throw new Error(`${path}: path must start with ${prefix}`);
   }
 }
 
@@ -20,24 +22,22 @@ export default function processRoutes({ app, routes }) {
       return rs;
     }
 
-    return (rs || []).map(route => {
-      valiadateRoute(route, prefix);
+    return (rs || []).map(r => {
+      valiadateRoute(r, prefix);
 
-      const { config = {}, path } = route;
+      const route = migrateRoute(r, app);
+
+      const { config = {}, path, models } = route;
       let { component } = route;
 
-      if (
-        !isFunction(component) &&
-        !(isPlainObject(component) && isFunction(component.component))
-      ) {
-        console.error(
-          `${path}: component的类型必须是() => ReactElement或{ models: [() => import(DvaModel)], component: () => import(ReactComponent) }`
-        );
-      }
-
-      if (isPlainObject(component)) {
+      if (isReact.element(component)) {
+        throw new Error(`${path}: component can not be React.Element`);
+      } else if (isReact.component(component)) {
+        // keep
+      } else if (isFunction(component)) {
         component = dynamic({
-          ...component,
+          component,
+          models,
           app
         });
       }

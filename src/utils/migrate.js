@@ -1,6 +1,6 @@
-export function migrateApi({ login, other } = {}) {
+export function migrateApi({ login, ...other } = {}) {
   if (login) {
-    console.error('api.login is deprecated, use api.auth');
+    console.error('api.logint is deprecated, please use api.auth');
   }
   return {
     auth: login,
@@ -8,4 +8,13 @@ export function migrateApi({ login, other } = {}) {
   };
 }
 
-export function migrateRoute() {}
+export function migrateRoute({ component, ...other } = {}) {
+  if (component && component.component) {
+    console.error(
+      'route.component.component is deprecated, please use route.component和route.models'
+    );
+    return { ...component, ...other };
+  }
+
+  return { component, ...other };
+}
