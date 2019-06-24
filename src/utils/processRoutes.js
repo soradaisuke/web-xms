@@ -1,11 +1,39 @@
+import React from 'react';
 import { startsWith, isFunction } from 'lodash';
-import isReact from 'is-react';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
 import processGroupConfig from './processGroupConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
+
+const FUNCTION_REGEX = /react(\d+)?./i;
+
+function isClassComponent(component) {
+  return (
+    typeof component === 'function' &&
+    component.prototype &&
+    !!component.prototype.isReactComponent
+  );
+}
+
+// Ensure compatability with transformed code
+function isFunctionComponent(component) {
+  return (
+    typeof component === 'function' &&
+    String(component).includes('return') &&
+    !!String(component).match(FUNCTION_REGEX) &&
+    String(component).includes('.createElement')
+  );
+}
+
+function isComponent(component) {
+  return isClassComponent(component) || isFunctionComponent(component);
+}
+
+function isElement(typeElement) {
+  return React.isValidElement(typeElement);
+}
 
 function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
@@ -30,9 +58,9 @@ export default function processRoutes({ app, routes }) {
       const { config = {}, path, models } = route;
       let { component } = route;
 
-      if (isReact.element(component)) {
+      if (isElement(component)) {
         throw new Error(`${path}: component can not be React.Element`);
-      } else if (isReact.component(component)) {
+      } else if (isComponent(component)) {
         // keep
       } else if (isFunction(component)) {
         component = dynamic({
