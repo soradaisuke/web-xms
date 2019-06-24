@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.10.1...v1.11.0) (2019-06-24)
+
+
+### Features
+
+* **COPYRIGHT-266:** 支持modal里关联的分类获取 ([1cbbea8](https://git2.qingtingfm.com/zhibo/xms/commit/1cbbea8))
+
+
+
 ### [1.10.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.10.0...v1.10.1) (2019-06-21)
 
 
