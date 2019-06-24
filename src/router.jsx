@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Switch, Router, Redirect } from 'dva/router';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, LocaleProvider } from 'antd';
+import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import Menu from './components/Menu';
@@ -18,12 +19,39 @@ dynamic.setDefaultLoadingComponent(() => (
   </div>
 ));
 
+function getValidRoutes(routes, user) {
+  return filter(
+    map(routes, route => {
+      let newRoute = route;
+      if (route.enable) {
+        if (user && route.enable(user)) {
+          newRoute = route;
+        } else {
+          newRoute = null;
+        }
+      }
+
+      if (newRoute && newRoute.routes) {
+        newRoute = {
+          ...newRoute,
+          routes: getValidRoutes(newRoute.routes, user)
+        };
+      }
+
+      return newRoute;
+    }),
+    route => !!route
+  );
+}
+
 // eslint-disable-next-line react/prop-types
-function RouterConfig({ history, app }) {
+function RouterConfig({ history, app, user }) {
   const {
-    routes,
+    routes: unCheckRoutes,
     config: { name }
   } = app;
+
+  const routes = getValidRoutes(unCheckRoutes, user);
 
   function renderRoute({ path, routes: subRoutes, component: Component }) {
     const children = [];
@@ -107,4 +135,13 @@ function RouterConfig({ history, app }) {
   );
 }
 
-export default RouterConfig;
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+const ConnectedRouter = connect(mapStateToProps)(RouterConfig);
+
+// eslint-disable-next-line react/prop-types
+export default ({ history, app }) => (
+  <ConnectedRouter history={history} app={app} />
+);
