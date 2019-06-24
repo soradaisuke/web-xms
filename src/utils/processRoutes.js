@@ -5,17 +5,12 @@ import dynamicRecordComponent from './dynamicRecordComponent';
 import processGroupConfig from './processGroupConfig';
 import processSingleConfig from './processSingleConfig';
 
-function valiadateRoute({ path, component, config, routes }, prefix = '/') {
+function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
-    throw new Error('valiadateRoute: path is required');
+    throw new Error(`父页面path为${prefix}的route缺少path属性`);
   }
   if (!startsWith(path, prefix)) {
-    throw new Error(`valiadateRoute: path ${path} must start with ${prefix}`);
-  }
-  if (!component && !config && (!routes || routes.length === 0)) {
-    throw new Error(
-      `valiadateRoute: path ${path} must have component or config or routes`
-    );
+    throw new Error(`path为${path}的页面必须以${prefix}开头`);
   }
 }
 

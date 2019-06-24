@@ -15,6 +15,7 @@ export default function xms(config = {}) {
   const app = dva({
     history,
     onError(err) {
+      console.error(err.message);
       message.error(err.message);
     }
   });
@@ -38,6 +39,7 @@ export default function xms(config = {}) {
     app.routes = processRoutes({ app, routes });
     app.router(router);
   } catch (err) {
+    console.error(err);
     message.error(err.message);
   }
 
