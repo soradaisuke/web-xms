@@ -2,7 +2,7 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'dva/router';
 import { connect } from 'dva';
 import { upperFirst, isFunction, isString } from 'lodash';
 import request from '../services/request';

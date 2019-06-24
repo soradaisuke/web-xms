@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import AsyncValidator from 'async-validator';
-import { Link } from 'react-router-dom';
+import { Link } from 'dva/router';
 import {
   Table,
   Pagination,

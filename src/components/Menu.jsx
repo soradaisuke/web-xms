@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { withRouter, matchPath } from 'react-router';
+import { Link, withRouter, matchPath } from 'dva/router';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withRouter, matchPath } from 'react-router';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter, matchPath } from 'dva/router';
 import { forEach, isFunction, isString, split, take, join } from 'lodash';
 import { Breadcrumb } from 'antd';
 import pathToText from '../utils/pathToText';

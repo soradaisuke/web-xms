@@ -1,6 +1,9 @@
 export default from './app';
-export request from './services/request';
+
 export dynamic from 'dva/dynamic';
+export { Link } from 'dva/router';
+
+export request from './services/request';
 export Page from './pages/Page';
 export DataType from './constants/DataType';
 export ColumnTypes from './utils/ColumnTypes';
