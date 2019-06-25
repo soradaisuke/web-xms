@@ -1,6 +1,15 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+# [1.8.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.7.0...v1.8.0) (2019-06-25)
+
+
+### Features
+
+* **LIV-2882:** xms sso 登录页面支持staging环境 ([2d800c8](https://git2.qingtingfm.com/zhibo/xms/commits/2d800c8))
+
+
 
 ## [1.7.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.6.1...v1.7.0) (2019-06-19)
 
