@@ -22,9 +22,10 @@ import ColumnTypes from './ColumnTypes';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 
-function generateService({ actions, primaryKey }) {
+function generateService({ api: { fetch } = {}, actions, primaryKey }) {
   const service = {
-    fetch: async ({ path, ...params }) => request.get(path, { params })
+    fetch: async ({ path, ...params }) =>
+      fetch ? fetch({ path, query: params }) : request.get(path, { params })
   };
 
   forEach(actions, action => {

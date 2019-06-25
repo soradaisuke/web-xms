@@ -10,9 +10,9 @@ import {
 import ColumnTypes from './ColumnTypes';
 import DataType from '../constants/DataType';
 
-export default function processGroupConfig({ config, path }) {
+export default function processListConfig({ config, path }) {
   let { actions = [] } = config;
-  const { schema } = config;
+  const { schema = [] } = config;
 
   if (!isArray(actions)) {
     throw new Error(`${path}: actions必须是数组`);

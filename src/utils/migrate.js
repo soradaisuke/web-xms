@@ -8,6 +8,16 @@ export function migrateApi({ login, ...other } = {}) {
   };
 }
 
+export function migrateConfig({ type, ...other } = {}) {
+  let newType = type;
+  if (type === 'group') {
+    console.error("route.config.type 'group' is deprecated, please use 'list'");
+    newType = 'list';
+  }
+
+  return { type: newType, ...other };
+}
+
 export function migrateRoute({ component, config, ...other } = {}) {
   let newRoute;
   if (component && component.component) {
@@ -19,14 +29,16 @@ export function migrateRoute({ component, config, ...other } = {}) {
     newRoute = { component };
   }
 
-  if (config && config.inlineWidgetType) {
+  const newConfig = migrateConfig(config);
+
+  if (newConfig && newConfig.inlineWidgetType) {
     console.error(
       'route.config.inlineWidgetType is deprecated, please use route.inlineLayout'
     );
-    newRoute = { ...newRoute, inlineLayout: config.inlineWidgetType };
+    newRoute = { ...newRoute, inlineLayout: newConfig.inlineWidgetType };
   }
 
-  newRoute = { ...newRoute, ...other };
+  newRoute = { config: newConfig, ...newRoute, ...other };
 
   return newRoute;
 }

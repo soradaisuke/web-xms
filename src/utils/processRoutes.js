@@ -3,7 +3,7 @@ import { startsWith, isFunction } from 'lodash';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
-import processGroupConfig from './processGroupConfig';
+import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
 
@@ -67,11 +67,11 @@ export default function processRoutes({ app, routes }) {
         });
       }
 
-      if (config.type === 'group') {
+      if (config.type === 'list') {
         component = dynamicRecordsComponent({
           app,
           component,
-          config: processGroupConfig({ config, path })
+          config: processListConfig({ config, path })
         });
       } else {
         component = dynamicRecordComponent({
