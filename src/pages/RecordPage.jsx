@@ -22,14 +22,14 @@ export default class RecordPage extends React.PureComponent {
       })
     ),
     inline: PropTypes.bool,
-    inlineWidgetType: PropTypes.oneOf(['card', 'tabs', 'collapse'])
+    inlineLayout: PropTypes.oneOf(['card', 'tab', 'collapse'])
   };
 
   static defaultProps = {
     component: null,
     routes: [],
     inline: false,
-    inlineWidgetType: 'card'
+    inlineLayout: 'card'
   };
 
   state = {
@@ -43,9 +43,9 @@ export default class RecordPage extends React.PureComponent {
   };
 
   renderRoutes() {
-    const { routes, inlineWidgetType, inline } = this.props;
+    const { routes, inlineLayout, inline } = this.props;
     if (routes && routes.length) {
-      switch (inlineWidgetType) {
+      switch (inlineLayout) {
         case 'collapse':
           return (
             <Card
@@ -60,7 +60,7 @@ export default class RecordPage extends React.PureComponent {
               </Collapse>
             </Card>
           );
-        case 'tabs':
+        case 'tab':
           return (
             <Card
               className={classNames('content-card', inline ? 'inline' : '')}

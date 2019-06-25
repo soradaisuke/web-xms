@@ -8,7 +8,7 @@ import { filter } from 'lodash/fp';
 
 const { SubMenu } = Menu;
 
-const validMenues = filter(({ title }) => !!title);
+const validMenues = filter(({ title, inline }) => !!title && !inline);
 
 const selector = createSelector(
   [props => props.location.pathname, props => props.routes],

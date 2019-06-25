@@ -8,13 +8,25 @@ export function migrateApi({ login, ...other } = {}) {
   };
 }
 
-export function migrateRoute({ component, ...other } = {}) {
+export function migrateRoute({ component, config, ...other } = {}) {
+  let newRoute;
   if (component && component.component) {
     console.error(
       'route.component.component is deprecated, please use route.component和route.models'
     );
-    return { ...component, ...other };
+    newRoute = { ...component };
+  } else {
+    newRoute = { component };
   }
 
-  return { component, ...other };
+  if (config && config.inlineWidgetType) {
+    console.error(
+      'route.config.inlineWidgetType is deprecated, please use route.inlineLayout'
+    );
+    newRoute = { ...newRoute, inlineLayout: config.inlineWidgetType };
+  }
+
+  newRoute = { ...newRoute, ...other };
+
+  return newRoute;
 }

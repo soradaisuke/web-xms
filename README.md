@@ -155,35 +155,6 @@ ref获得节点后可以调用的方法有
 | title | 标题 | string | - |
 | children | 内容 | node | - |
 
-# App配置
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| name | 项目中文名称，显示在顶部 | string | - |
-| api | api配置，见[api](#app_api) | object | - |
-| routes | 路由配置，见[route](#route) | object[] | [] |
-
-# App api
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| host | api服务器域名 | string | - |
-| login | 登录api路径，不填则不需要用户登录；此外支持登录的网站域名必须是*.qingtingfm.com | string | - |
-
-# route
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| path | 页面路径，同[react-router](https://reacttraining.com/react-router/web/example/route-config) | string | - |
-| title | 页面导航菜单标题，为空则该页面不显示在导航菜单上 | string | - |
-| breadcrumb | 页面面包屑标题 | string/Function(matchParams) | - |
-| inline | 该页面数据会内嵌展示在父页面上 | bool | false |
-| component | 页面组件，object配置见[component](#component) | object/React.ReactNode | - |
-| config | 页面配置，会根据其自动生成页面组件，如果同时配置了component，两者会层叠显示，component在上，见[config](#config) | object | - |
-
-# component
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| models | 动态引入dva model | (Function() -> import())[] | [] |
-| component | 动态引入React.ReactNode | Function() -> import() | - |
-
 # config
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |

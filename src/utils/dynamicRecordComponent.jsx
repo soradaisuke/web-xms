@@ -48,10 +48,11 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage(
-  { namespace, inlineWidgetType, api: { path } = {} },
-  component
-) {
+function generateRecordPage({
+  config: { namespace, api: { path } = {} } = {},
+  component,
+  inlineLayout
+}) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -59,7 +60,7 @@ function generateRecordPage(
       return (
         <RecordPage
           {...this.props}
-          inlineWidgetType={inlineWidgetType}
+          inlineLayout={inlineLayout}
           component={component}
         />
       );
@@ -97,18 +98,29 @@ function generateRecordPage(
   );
 }
 
-function generateDynamicRecordComponent({ app, config, component }) {
+function generateDynamicRecordComponent({
+  app,
+  config,
+  component,
+  inlineLayout
+}) {
   const service = generateService(config);
   const model = generateModel(config, service);
 
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordPage(config, component))
+    component: () =>
+      Promise.resolve(generateRecordPage({ config, component, inlineLayout }))
   });
 }
 
-export default function dynamicRecordComponent({ app, config, component }) {
+export default function dynamicRecordComponent({
+  app,
+  config,
+  component,
+  inlineLayout
+}) {
   if (!app) {
     throw new Error('dynamicRecordComponent: app is required');
   }
@@ -116,19 +128,10 @@ export default function dynamicRecordComponent({ app, config, component }) {
     throw new Error('dynamicRecordComponent: config is required');
   }
 
-  if (isFunction(config)) {
-    return dynamic({
-      app,
-      resolve: () =>
-        config().then(c =>
-          generateDynamicRecordComponent({
-            app,
-            config: c.default || c,
-            component
-          })
-        )
-    });
-  }
-
-  return generateDynamicRecordComponent({ app, config, component });
+  return generateDynamicRecordComponent({
+    app,
+    config,
+    component,
+    inlineLayout
+  });
 }
