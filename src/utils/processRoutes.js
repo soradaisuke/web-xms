@@ -7,8 +7,6 @@ import processGroupConfig from './processGroupConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
 
-const FUNCTION_REGEX = /react(\d+)?./i;
-
 function isClassComponent(component) {
   return (
     typeof component === 'function' &&
@@ -22,7 +20,6 @@ function isFunctionComponent(component) {
   return (
     typeof component === 'function' &&
     String(component).includes('return') &&
-    !!String(component).match(FUNCTION_REGEX) &&
     String(component).includes('.createElement')
   );
 }
