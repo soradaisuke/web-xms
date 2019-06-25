@@ -282,12 +282,12 @@ function generateRecordsPage(
     sche => {
       const tables = sche.toJS();
       return tables.filter(
-        ({ type, canFilter, visibility, filterTree }) =>
+        ({ type, canFilter, invisible, filterTree }) =>
           canFilter &&
           (type === ColumnTypes.date ||
             type === ColumnTypes.datetime ||
             type === ColumnTypes.number ||
-            !(visibility && visibility.table) ||
+            invisible ||
             filterTree)
       );
     }

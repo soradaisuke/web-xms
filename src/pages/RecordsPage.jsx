@@ -59,11 +59,9 @@ class RecordsPage extends React.PureComponent {
           url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
           type: PropTypes.oneOf(['relative', 'absolute', 'external'])
         }),
-        visibility: PropTypes.shape({
-          create: PropTypes.bool,
-          edit: PropTypes.bool,
-          table: PropTypes.bool
-        })
+        invisible: PropTypes.bool,
+        creatable: PropTypes.bool,
+        editable: PropTypes.bool
       })
     ).isRequired,
     updatePage: PropTypes.func.isRequired,
@@ -403,7 +401,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderColumn({
-    visibility,
+    invisible,
     link,
     title,
     key,
@@ -444,7 +442,7 @@ class RecordsPage extends React.PureComponent {
         return filtered ? filtered.text : v;
       };
     }
-    if (visibility.table) {
+    if (!invisible) {
       let render = v => v;
 
       if (link) {

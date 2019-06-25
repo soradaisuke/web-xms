@@ -190,7 +190,6 @@ ref获得节点后可以调用的方法有
 | key | 数据源中对应的key，key为['program', 'id']时对应{program: { id: 1 }} | string/array | - |
 | type | 数据源中对应的数据格式<br />number：以数字格式显示数据<br />string：以文本格式显示数据<br />datetime：以时间格式显示数据<br />order：该属性为列表排序属性，只能有一个，且存在order属性情况下，不允许设置其他sort信息<br />image：以图片格式显示数据<br />enum：该属性为枚举类型，必须和filters搭配使用<br />url: 网页链接 | string(number, string, datetime, order, image, enum, url) | - |
 | title | 表格或创建/编辑窗口的数据名称 | string | - |
-| visibility | 数据可视性<br />true or all：表格、创建和修改时均可见<br />table：仅在表格中可见<br />edit：仅在编辑时可见<br />modal：仅在创建和编辑时可见<br />object配置见[visibility](#visibility) | bool/string(all, table, modal)/object | - |
 | link | 链接配置，见[link](#link) | object | - |
 | sort | 排序配置<br />true：支持升序和降序排序<br />asc：支持升序排序<br />desc：支持降序排序<br />object配置见[sort](#sort) | bool/string(asc, desc)/object | - |
 | defaultSort | 该属性作为该列表的默认排序及默认排序类型 | string(asc, desc) | - |
@@ -236,13 +235,6 @@ ref获得节点后可以调用的方法有
 | :---- | :---- | :---- | :---- |
 | onSearch | 当showSearch=true时Select的onSearch会调用此函数。参数：value：同TreeSelect的onSearc(value)的value；formFieldValues：form里的所有field的当前值；cb：回调函数，调用cb(treeData)会重新设置treeData（同antd的TreeSelect的Props里的treeData）。| Function(value, formFieldValues, cb) | () => {} |
 | filterOptions | 对treeData进行过滤，返回新的treeData([ { key, children, ...props } ]) | Function(treeData, formFieldValues) | null |
-
-# visibility
-| 参数 | 说明 | 类型 | 默认值 |
-| :---- | :---- | :---- | :---- |
-| table | 该数据是否显示在表格中 | bool | false |
-| edit | 该数据是否显示在编辑窗口中 | bool | false |
-| create | 该数据是否显示在创建窗口中 | bool | false |
 
 # link
 | 参数 | 说明 | 类型 | 默认值 |

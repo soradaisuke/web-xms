@@ -23,10 +23,8 @@ class RecordModal extends React.PureComponent {
     table: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,
-        visibility: PropTypes.shape({
-          create: PropTypes.bool,
-          edit: PropTypes.bool
-        })
+        creatable: PropTypes.bool,
+        editable: PropTypes.bool
       })
     ).isRequired,
     onOk: PropTypes.func.isRequired,
@@ -173,9 +171,8 @@ class RecordModal extends React.PureComponent {
     const targetTable = multipleKey
       ? table.filter(({ mapKey }) => mapKey === multipleKey)
       : table.filter(
-          ({ visibility }) =>
-            (this.isEdit() && visibility.edit) ||
-            (!this.isEdit() && visibility.create)
+          ({ creatable, editable }) =>
+            (this.isEdit() && editable) || (!this.isEdit() && creatable)
         );
 
     return (

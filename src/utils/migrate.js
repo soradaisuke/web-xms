@@ -45,3 +45,41 @@ export function migrateRoute({ component, config, ...other } = {}) {
 
   return newRoute;
 }
+
+export function migrateColumn({ visibility, ...other }) {
+  let newColumn = {};
+
+  if (visibility) {
+    console.error(
+      'visibility is deprecated, please use invisible, creatable or editable'
+    );
+
+    if (visibility === 'all' || visibility === true) {
+      newColumn = {
+        creatable: true,
+        editable: true
+      };
+    } else if (visibility === 'table') {
+      // keep
+    } else if (visibility === 'modal') {
+      newColumn = {
+        invisible: true,
+        creatable: true,
+        editable: true
+      };
+    } else if (visibility === 'edit') {
+      newColumn = {
+        invisible: true,
+        editable: true
+      };
+    } else {
+      newColumn = {
+        invisible: !visibility.table,
+        creatable: visibility.create,
+        editable: newColumn.editable
+      };
+    }
+  }
+
+  return { ...newColumn, ...other };
+}
