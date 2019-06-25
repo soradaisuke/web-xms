@@ -1,7 +1,9 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
-import { generateUri } from 'web-core';
+import { generateUri, isProduction } from 'web-core';
 import request from '../services/request';
+
+const ENTRY_HOST = `//entry${isProduction() ? '' : '.staging'}.qingtingfm.com`;
 
 function generateService(login) {
   if (!login) {
@@ -39,10 +41,9 @@ export default function generateUserModel(login) {
         } catch (e) {
           const queries = parse(window.location.search);
           if (!queries || queries.auth !== '1') {
-            const loginUrl = generateUri(
-              '//entry.qingtingfm.com/v1/sso/login.html',
-              { return_url: generateUri(window.location.href, { auth: 1 }) }
-            );
+            const loginUrl = generateUri(`${ENTRY_HOST}/v1/sso/login.html`, {
+              return_url: generateUri(window.location.href, { auth: 1 })
+            });
             window.location.replace(loginUrl);
           } else {
             throw e;
