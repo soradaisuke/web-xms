@@ -8,14 +8,17 @@ export function migrateApi({ login, ...other } = {}) {
   };
 }
 
-export function migrateConfig({ type, ...other } = {}) {
+export function migrateConfig({ type, schema, ...other } = {}) {
   let newType = type;
   if (type === 'group') {
     console.error("route.config.type 'group' is deprecated, please use 'list'");
     newType = 'list';
   }
+  if (schema) {
+    console.error('route.config.schema is deprecated, please use table');
+  }
 
-  return { type: newType, ...other };
+  return { type: newType, table: schema, ...other };
 }
 
 export function migrateRoute({ component, config, ...other } = {}) {

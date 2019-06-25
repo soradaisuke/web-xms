@@ -20,7 +20,7 @@ class RecordModal extends React.PureComponent {
     }).isRequired,
     updateModalFilters: PropTypes.func.isRequired,
     record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    schema: PropTypes.arrayOf(
+    table: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,
         visibility: PropTypes.shape({
@@ -40,25 +40,25 @@ class RecordModal extends React.PureComponent {
   };
 
   onOk = async () => {
-    const { form, record, onOk, schema } = this.props;
+    const { form, record, onOk, table } = this.props;
 
     await new Promise((resolve, reject) => {
       form.validateFields(async (err, values) => {
         if (!err) {
           const formatValues = {};
-          forEach(schema, ({ key, ignoreWhenNotEdit }) => {
+          forEach(table, ({ key, ignoreWhenNotEdit }) => {
             const newKey = split(key, '.')[0];
             if (ignoreWhenNotEdit && newKey) {
               unset(record, newKey);
             }
           });
           forEach(values, (value, key) => {
-            const targetSchema = find(schema, { mapKey: key }) || {};
-            const formConfig = targetSchema.form || {};
+            const targetTable = find(table, { mapKey: key }) || {};
+            const formConfig = targetTable.form || {};
             if (isFunction(formConfig.generateSubmitValue)) {
               formatValues[key] = formConfig.generateSubmitValue(value);
-            } else if (isFunction(targetSchema.type.formatSubmitValue)) {
-              formatValues[key] = targetSchema.type.formatSubmitValue(value);
+            } else if (isFunction(targetTable.type.formatSubmitValue)) {
+              formatValues[key] = targetTable.type.formatSubmitValue(value);
             } else {
               formatValues[key] = value;
             }
@@ -73,9 +73,9 @@ class RecordModal extends React.PureComponent {
   };
 
   checkRelevant = () => {
-    const { schema, form, updateModalFilters } = this.props;
+    const { table, form, updateModalFilters } = this.props;
     const formFieldsValue = form.getFieldsValue();
-    forEach(schema, ({ childKey }) =>
+    forEach(table, ({ childKey }) =>
       childKey ? updateModalFilters(childKey, formFieldsValue) : null
     );
   };
@@ -100,16 +100,16 @@ class RecordModal extends React.PureComponent {
   }
 
   renderFormItem({ key, type, title, user }) {
-    const { form, record, schema } = this.props;
+    const { form, record, table } = this.props;
     const { getFieldDecorator, getFieldsValue } = form;
-    const targetSchema = find(schema, { key }) || {};
+    const targetTable = find(table, { key }) || {};
     const {
       form: formConfig = {},
       filters = [],
       mapKey,
       modalFilters,
       childKey
-    } = targetSchema;
+    } = targetTable;
     const enable = isFunction(formConfig.enable)
       ? formConfig.enable(getFieldsValue(), record)
       : true;
@@ -168,11 +168,11 @@ class RecordModal extends React.PureComponent {
   }
 
   render() {
-    const { children, schema, user, multipleKey } = this.props;
+    const { children, table, user, multipleKey } = this.props;
 
-    const targetSchema = multipleKey
-      ? schema.filter(({ mapKey }) => mapKey === multipleKey)
-      : schema.filter(
+    const targetTable = multipleKey
+      ? table.filter(({ mapKey }) => mapKey === multipleKey)
+      : table.filter(
           ({ visibility }) =>
             (this.isEdit() && visibility.edit) ||
             (!this.isEdit() && visibility.create)
@@ -186,7 +186,7 @@ class RecordModal extends React.PureComponent {
         onVisibleChange={this.onVisibleChange}
       >
         <Form onSubmit={this.okHandler}>
-          {targetSchema.map(definition =>
+          {targetTable.map(definition =>
             this.renderFormItem({ user, ...definition })
           )}
         </Form>

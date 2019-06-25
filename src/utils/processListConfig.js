@@ -12,7 +12,7 @@ import DataType from '../constants/DataType';
 
 export default function processListConfig({ config, path }) {
   let { actions = [] } = config;
-  const { schema = [] } = config;
+  const { table = [] } = config;
 
   if (!isArray(actions)) {
     throw new Error(`${path}: actions必须是数组`);
@@ -25,7 +25,7 @@ export default function processListConfig({ config, path }) {
   let defaultFilter;
   let hasInlineEdit = false;
   const searchFields = [];
-  const newSchema = schema.map(definition => {
+  const newTable = table.map(definition => {
     let { visibility, sort, defaultSort: ds } = definition;
     const {
       type: oldType,
@@ -146,7 +146,7 @@ export default function processListConfig({ config, path }) {
     };
   });
 
-  forEach(newSchema, definition => {
+  forEach(newTable, definition => {
     if (definition.primaryKey) {
       primaryKey = definition.key;
     }
@@ -188,7 +188,7 @@ export default function processListConfig({ config, path }) {
     throw new Error(`${path}: 必须指定primary key`);
   }
 
-  if (orderKey && filter(schema, definition => !!definition.sort).length > 0) {
+  if (orderKey && filter(table, definition => !!definition.sort).length > 0) {
     throw new Error(
       `${path}: 存在type = ORDER的属性，默认为该属性升序排序，不支持配置其他sort属性`
     );
@@ -218,6 +218,6 @@ export default function processListConfig({ config, path }) {
     defaultFilter,
     fixedSort,
     namespace: path.replace(/(\/|:)/g, '@'),
-    schema: newSchema
+    table: newTable
   };
 }

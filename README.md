@@ -158,16 +158,12 @@ ref获得节点后可以调用的方法有
 # config
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| type | 页面类型<br />single：单个数据页面<br />group：列表数据页面 | string(single, group) | - |
-| api | 页面api配置，见[api](#route_api) | string(single, group) | - |
 | actions | 该页面支持的所有操作<br />create_in_new_page: 新建（跳转至${path}/new页面）<br />create: 创建<br />edit: 编辑<br />remove: 删除<br />order: 调整顺序<br />default：创建 + 编辑 + 删除<br />object见[action](#action) | (string/object)[] | [] |
 | schema | 数据结构，见[schema](#schema) | object[] | [] |
 
 # route api
 | 参数 | 说明 | 类型 | 默认值 |
 | :---- | :---- | :---- | :---- |
-| host | 页面数据API host, 每个页面可以设置不同的API host，只会用于自动生成的页面请求；为空的话默认使用APP配置里的API host  | string | - |
-| path | 页面数据API path（不包括id），需符合restful标准 | string/Function(matchParams) | - |
 | defaultFilter | 默认filter, 获取数据时永远会带上这个filter。后台API应该统一用query里的filter（json string）来筛选数据 | object/Function(matchParams) | - |
 
 # action

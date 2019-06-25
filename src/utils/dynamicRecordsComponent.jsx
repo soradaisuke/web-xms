@@ -47,7 +47,7 @@ function generateService({ api: { fetch } = {}, actions, primaryKey }) {
   return service;
 }
 
-function generateModel({ namespace, actions, schema, orderKey }, service) {
+function generateModel({ namespace, actions, table, orderKey }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -55,7 +55,7 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
   const model = {
     namespace,
     state: Immutable.fromJS({
-      schema,
+      table,
       records: [],
       total: 0,
       error: null
@@ -76,9 +76,9 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
         }
       ) {
         return state.set(
-          'schema',
+          'table',
           state
-            .get('schema')
+            .get('table')
             .setIn([index, 'filters'], filters)
             .setIn(
               [index, 'enabledFilters'],
@@ -93,8 +93,8 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
         }
       ) {
         return state.set(
-          'schema',
-          state.get('schema').setIn([index, 'modalFilters'], filters)
+          'table',
+          state.get('table').setIn([index, 'modalFilters'], filters)
         );
       },
       saveError(
@@ -115,13 +115,13 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
           yield put({ type: 'saveError', payload: { error: null } });
           const currentFiler = { ...filter, ...search };
 
-          for (let i = 0; i < schema.length; i += 1) {
-            if (isFunction(schema[i].filters)) {
+          for (let i = 0; i < table.length; i += 1) {
+            if (isFunction(table[i].filters)) {
               yield put({
                 type: 'getFilters',
                 payload: {
                   index: i,
-                  filtersFunc: schema[i].filters,
+                  filtersFunc: table[i].filters,
                   currentFiler
                 }
               });
@@ -158,10 +158,10 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
         },
         { call, put }
       ) {
-        const index = findIndex(schema, ({ mapKey: mk }) => mk === mapKey);
-        const targetSchema = schema[index];
-        if (targetSchema && isFunction(targetSchema.filters)) {
-          const filters = yield call(targetSchema.filters, formFieldsValue);
+        const index = findIndex(table, ({ mapKey: mk }) => mk === mapKey);
+        const targetTable = table[index];
+        if (targetTable && isFunction(targetTable.filters)) {
+          const filters = yield call(targetTable.filters, formFieldsValue);
           yield put({ type: 'saveModalFilters', payload: { index, filters } });
         }
       }
@@ -215,7 +215,7 @@ function generateRecordsPage(
     searchFields,
     fixedSort,
     defaultSort,
-    schema,
+    table,
     defaultFilter: defaultFilterQuery
   },
   component
@@ -228,7 +228,7 @@ function generateRecordsPage(
     ({ multiple }) => multiple
   );
   const customRowActions = customActions.filter(({ global }) => !global);
-  const customMultipleEdits = schema.filter(({ multipleEdit }) => multipleEdit);
+  const customMultipleEdits = table.filter(({ multipleEdit }) => multipleEdit);
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -272,16 +272,16 @@ function generateRecordsPage(
     }
   );
 
-  const schemaSelector = createSelector(
-    [state => state[namespace].get('schema')],
+  const tableSelector = createSelector(
+    [state => state[namespace].get('table')],
     sche => sche.toJS()
   );
 
-  const filterInGroupSchemas = createSelector(
-    [state => state[namespace].get('schema')],
+  const filterInGroupTables = createSelector(
+    [state => state[namespace].get('table')],
     sche => {
-      const schemas = sche.toJS();
-      return schemas.filter(
+      const tables = sche.toJS();
+      return tables.filter(
         ({ type, canFilter, visibility, filterTree }) =>
           canFilter &&
           (type === ColumnTypes.date ||
@@ -300,8 +300,8 @@ function generateRecordsPage(
       page: queries.page ? toInteger(queries.page) : 1,
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
-      schema: schemaSelector(state),
-      filterInGroupSchemas: filterInGroupSchemas(state),
+      table: tableSelector(state),
+      filterInGroupTables: filterInGroupTables(state),
       search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),

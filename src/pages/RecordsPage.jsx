@@ -51,7 +51,7 @@ class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     fetch: PropTypes.func.isRequired,
-    schema: PropTypes.arrayOf(
+    table: PropTypes.arrayOf(
       PropTypes.shape({
         key: PropTypes.string.isRequired,
         title: PropTypes.string,
@@ -76,7 +76,7 @@ class RecordsPage extends React.PureComponent {
     customGlobalActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customMultipleActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customRowActions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
-    filterInGroupSchemas: PropTypes.array, // eslint-disable-line react/forbid-prop-types
+    filterInGroupTables: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     customMultipleEdits: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
@@ -105,7 +105,7 @@ class RecordsPage extends React.PureComponent {
     customGlobalActions: [],
     customMultipleActions: [],
     customRowActions: [],
-    filterInGroupSchemas: [],
+    filterInGroupTables: [],
     customMultipleEdits: [],
     error: null,
     isLoading: false,
@@ -135,11 +135,11 @@ class RecordsPage extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    const { defaultFilter, filter, filterInGroupSchemas } = props;
+    const { defaultFilter, filter, filterInGroupTables } = props;
     const filterGroup = {};
-    const filterInGroupSchemaKeys = {};
-    forEach(filterInGroupSchemas, ({ mapKey }) => {
-      filterInGroupSchemaKeys[mapKey] = true;
+    const filterInGroupTableKeys = {};
+    forEach(filterInGroupTables, ({ mapKey }) => {
+      filterInGroupTableKeys[mapKey] = true;
       const defaultValue =
         filter[mapKey] === 0 || filter[mapKey]
           ? filter[mapKey]
@@ -151,7 +151,7 @@ class RecordsPage extends React.PureComponent {
 
     this.state = {
       filterGroup,
-      filterInGroupSchemaKeys,
+      filterInGroupTableKeys,
       records: Immutable.List(),
       dataSource: [],
       selectedRowKeys: [],
@@ -221,7 +221,7 @@ class RecordsPage extends React.PureComponent {
 
   onChange = async (pagination, filters, sorter) => {
     const {
-      schema,
+      table,
       page,
       pagesize,
       search,
@@ -229,17 +229,17 @@ class RecordsPage extends React.PureComponent {
       sort,
       filter
     } = this.props;
-    const { filterInGroupSchemaKeys } = this.state;
-    const targetSchema = find(schema, { key: sorter.columnKey }) || {};
-    const { sort: schemaSort } = targetSchema;
+    const { filterInGroupTableKeys } = this.state;
+    const targetTable = find(table, { key: sorter.columnKey }) || {};
+    const { sort: tableSort } = targetTable;
     let newSort;
-    if (schemaSort && sorter && sorter.columnKey && sorter.order) {
-      if (schemaSort[sorter.order.replace('end', '')]) {
-        newSort = `${targetSchema.mapKey} ${sorter.order.replace('end', '')}`;
-      } else if (schemaSort.asc) {
-        newSort = `${targetSchema.mapKey} asc`;
-      } else if (schemaSort.desc) {
-        newSort = `${targetSchema.mapKey} desc`;
+    if (tableSort && sorter && sorter.columnKey && sorter.order) {
+      if (tableSort[sorter.order.replace('end', '')]) {
+        newSort = `${targetTable.mapKey} ${sorter.order.replace('end', '')}`;
+      } else if (tableSort.asc) {
+        newSort = `${targetTable.mapKey} asc`;
+      } else if (tableSort.desc) {
+        newSort = `${targetTable.mapKey} desc`;
       } else {
         newSort = '';
       }
@@ -247,11 +247,11 @@ class RecordsPage extends React.PureComponent {
       newSort = '';
     }
     const newFilter = reduce(
-      schema,
+      table,
       (acc, { key, type, mapKey, filterMultiple }) => {
         const value = get(filters, key);
         const preValue = get(filter, key);
-        if (filterInGroupSchemaKeys[mapKey] && preValue) {
+        if (filterInGroupTableKeys[mapKey] && preValue) {
           acc[mapKey] = preValue;
         } else if (value && value.length > 0) {
           if (filterMultiple) {
@@ -372,10 +372,10 @@ class RecordsPage extends React.PureComponent {
 
   onClickQuery = () => {
     const { filter, updatePage } = this.props;
-    const { filterGroup, filterInGroupSchemaKeys } = this.state;
+    const { filterGroup, filterInGroupTableKeys } = this.state;
 
     forEach(filter, (_, key) => {
-      if (filterInGroupSchemaKeys[key]) {
+      if (filterInGroupTableKeys[key]) {
         delete filter[key];
       }
     });
@@ -556,10 +556,10 @@ class RecordsPage extends React.PureComponent {
     return null;
   }
 
-  renderSchema() {
-    const { schema } = this.props;
+  renderTable() {
+    const { table } = this.props;
 
-    return schema.map(definition => this.renderColumn({ ...definition }));
+    return table.map(definition => this.renderColumn({ ...definition }));
   }
 
   renderCustomRowActions(record) {
@@ -613,7 +613,7 @@ class RecordsPage extends React.PureComponent {
       remove,
       order,
       customRowActions,
-      schema,
+      table,
       updateModalFilters
     } = this.props;
     return edit || remove || customRowActions.length > 0 || order ? (
@@ -627,7 +627,7 @@ class RecordsPage extends React.PureComponent {
           <div className="actions">
             {edit && (
               <RecordModal
-                schema={schema}
+                table={table}
                 record={record}
                 onOk={this.editRecord}
                 updateModalFilters={updateModalFilters}
@@ -703,15 +703,15 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderFilterGroup() {
-    const { filterInGroupSchemas } = this.props;
+    const { filterInGroupTables } = this.props;
     const { filterGroup } = this.state;
-    if (!filterInGroupSchemas || filterInGroupSchemas.length === 0) {
+    if (!filterInGroupTables || filterInGroupTables.length === 0) {
       return null;
     }
 
     return (
       <Group title="筛选">
-        {filterInGroupSchemas.map(({ mapKey, type, title, ...definition }) => (
+        {filterInGroupTables.map(({ mapKey, type, title, ...definition }) => (
           <Row type="flex" align="middle" className="filter-row" key={mapKey}>
             <div className="filter-title">{`${title}：`}</div>
             <Col span={12}>
@@ -750,7 +750,7 @@ class RecordsPage extends React.PureComponent {
     const {
       create,
       hasCreateNew,
-      schema,
+      table,
       customGlobalActions,
       customMultipleActions,
       customMultipleEdits,
@@ -800,7 +800,7 @@ class RecordsPage extends React.PureComponent {
                 } else if (crt) {
                   children = (
                     <RecordModal
-                      schema={schema}
+                      table={table}
                       record={{}}
                       onOk={this.editRecord}
                       updateModalFilters={updateModalFilters}
@@ -866,7 +866,7 @@ class RecordsPage extends React.PureComponent {
             {customMultipleEdits.map(({ title, mapKey }, index) => (
               <Col span={4} key={title || index}>
                 <RecordModal
-                  schema={schema}
+                  table={table}
                   record={{}}
                   multipleKey={mapKey}
                   updateModalFilters={updateModalFilters}
@@ -923,7 +923,7 @@ class RecordsPage extends React.PureComponent {
             pagination={false}
             onChange={this.onChange}
           >
-            {this.renderSchema()}
+            {this.renderTable()}
             {this.renderRowActions()}
           </Table>
           <Pagination
