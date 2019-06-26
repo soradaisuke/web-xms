@@ -18,14 +18,21 @@ import {
   isUndefined
 } from 'lodash';
 import { generateUri } from '@qt/web-core';
-import ColumnTypes from './ColumnTypes';
+// import ColumnTypes from './ColumnTypes';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 
 function generateService({ api: { fetch } = {}, actions, primaryKey }) {
   const service = {
-    fetch: async ({ path, ...params }) =>
-      fetch ? fetch({ path, query: params }) : request.get(path, { params })
+    fetch: async ({ path, page, pagesize, filter, order }) =>
+      fetch
+        ? fetch({ path, query: { page, pagesize, filter, order } })
+        : request.get(path, {
+            page,
+            pagesize,
+            order,
+            filter: JSON.stringify(filter)
+          })
   };
 
   forEach(actions, action => {
@@ -133,7 +140,7 @@ function generateModel({ namespace, actions, table, orderKey }, service) {
               path,
               page,
               pagesize,
-              filter: JSON.stringify(currentFiler),
+              filter: currentFiler,
               order: sort
             });
             yield put({ type: 'save', payload: { total, records } });
@@ -208,27 +215,25 @@ function generateModel({ namespace, actions, table, orderKey }, service) {
 
 function generateRecordsPage(
   {
-    api: { host, path, defaultFilter },
+    api: { host, path, fetchFixedFilter },
     namespace,
-    actions,
-    primaryKey,
-    searchFields,
-    fixedSort,
-    defaultSort,
-    table,
-    defaultFilter: defaultFilterQuery
+    // actions,
+    // primaryKey,
+    // searchFields,
+    table
+    // defaultFilter: defaultFilterQuery
   },
   component
 ) {
-  const customActions = actions.filter(action => isPlainObject(action));
-  const customGlobalActions = customActions.filter(
-    ({ global, multiple }) => global && !multiple
-  );
-  const customMultipleActions = customActions.filter(
-    ({ multiple }) => multiple
-  );
-  const customRowActions = customActions.filter(({ global }) => !global);
-  const customMultipleEdits = table.filter(({ multipleEdit }) => multipleEdit);
+  // const customActions = actions.filter(action => isPlainObject(action));
+  // const customGlobalActions = customActions.filter(
+  //   ({ global, multiple }) => global && !multiple
+  // );
+  // const customMultipleActions = customActions.filter(
+  //   ({ multiple }) => multiple
+  // );
+  // const customRowActions = customActions.filter(({ global }) => !global);
+  // const customMultipleEdits = table.filter(({ multipleEdit }) => multipleEdit);
 
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
@@ -238,13 +243,14 @@ function generateRecordsPage(
         <RecordsPage
           {...this.props}
           component={component}
-          primaryKey={primaryKey}
-          customGlobalActions={customGlobalActions}
-          customMultipleActions={customMultipleActions}
-          customRowActions={customRowActions}
-          searchFields={searchFields}
-          defaultFilter={defaultFilterQuery}
-          customMultipleEdits={customMultipleEdits}
+          table={table}
+          // primaryKey={primaryKey}
+          // customGlobalActions={customGlobalActions}
+          // customMultipleActions={customMultipleActions}
+          // customRowActions={customRowActions}
+          // searchFields={searchFields}
+          // defaultFilter={defaultFilterQuery}
+          // customMultipleEdits={customMultipleEdits}
         />
       );
     }
@@ -272,26 +278,26 @@ function generateRecordsPage(
     }
   );
 
-  const tableSelector = createSelector(
-    [state => state[namespace].get('table')],
-    sche => sche.toJS()
-  );
+  // const tableSelector = createSelector(
+  //   [state => state[namespace].get('table')],
+  //   sche => sche.toJS()
+  // );
 
-  const filterInGroupTables = createSelector(
-    [state => state[namespace].get('table')],
-    sche => {
-      const tables = sche.toJS();
-      return tables.filter(
-        ({ type, canFilter, invisible, filterTree }) =>
-          canFilter &&
-          (type === ColumnTypes.date ||
-            type === ColumnTypes.datetime ||
-            type === ColumnTypes.number ||
-            invisible ||
-            filterTree)
-      );
-    }
-  );
+  // const filterInGroupTables = createSelector(
+  //   [state => state[namespace].get('table')],
+  //   sche => {
+  //     const tables = sche.toJS();
+  //     return tables.filter(
+  //       ({ type, canFilter, invisible, filterTree }) =>
+  //         canFilter &&
+  //         (type === ColumnTypes.date ||
+  //           type === ColumnTypes.datetime ||
+  //           type === ColumnTypes.number ||
+  //           invisible ||
+  //           filterTree)
+  //     );
+  //   }
+  // );
 
   const mapStateToProps = (state, props) => {
     const queries = parse(props.location.search);
@@ -300,8 +306,8 @@ function generateRecordsPage(
       page: queries.page ? toInteger(queries.page) : 1,
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
-      table: tableSelector(state),
-      filterInGroupTables: filterInGroupTables(state),
+      // table: tableSelector(state),
+      // filterInGroupTables: filterInGroupTables(state),
       search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),
@@ -317,11 +323,11 @@ function generateRecordsPage(
       location
     } = ownProps;
 
-    let apiDefaultFilter = {};
-    if (isFunction(defaultFilter)) {
-      apiDefaultFilter = defaultFilter(matchParams);
-    } else if (isPlainObject(defaultFilter)) {
-      apiDefaultFilter = defaultFilter;
+    let fetchApiFixedFilter = {};
+    if (isFunction(fetchFixedFilter)) {
+      fetchApiFixedFilter = fetchFixedFilter(matchParams);
+    } else if (isPlainObject(fetchFixedFilter)) {
+      fetchApiFixedFilter = fetchFixedFilter;
     }
 
     let apiPath = '';
@@ -339,13 +345,15 @@ function generateRecordsPage(
         const queries = parse(location.search);
 
         if (
-          (fixedSort && fixedSort !== sort) ||
-          ((defaultSort || defaultFilterQuery) &&
+          //   ((defaultSort || defaultFilterQuery) &&
+          //     (!queries || Object.keys(queries).length === 0))
+          (table.getOrderColumn() && table.getDefaultSortOrder() !== sort) ||
+          (table.getDefaultSortOrder() &&
             (!queries || Object.keys(queries).length === 0))
         ) {
           const uri = generateUri(window.location.href, {
-            filter: JSON.stringify(defaultFilterQuery),
-            sort: fixedSort || defaultSort
+            // filter: JSON.stringify(defaultFilterQuery),
+            sort: table.getDefaultSortOrder()
           });
           history.replace(
             uri.href.substring(uri.origin.length, uri.href.length)
@@ -361,7 +369,7 @@ function generateRecordsPage(
             pagesize,
             sort,
             search,
-            filter: { ...filter, ...apiDefaultFilter },
+            filter: { ...filter, ...fetchApiFixedFilter },
             path: apiPath
           }
         });
@@ -390,35 +398,35 @@ function generateRecordsPage(
       }
     };
 
-    forEach(actions, action => {
-      if (action === 'create') {
-        props.create = async body =>
-          dispatch({
-            type: `${namespace}/create`,
-            payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } }
-          });
-      } else if (action === 'edit' || action === 'inlineEdit') {
-        props[action] = async body =>
-          dispatch({
-            type: `${namespace}/edit`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'remove') {
-        props.remove = async body =>
-          dispatch({
-            type: `${namespace}/remove`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'order') {
-        props.order = async (body, diff) =>
-          dispatch({
-            type: `${namespace}/order`,
-            payload: { path: apiPath, body, diff }
-          });
-      } else if (action === 'create_in_new_page') {
-        props.hasCreateNew = true;
-      }
-    });
+    // forEach(actions, action => {
+    //   if (action === 'create') {
+    //     props.create = async body =>
+    //       dispatch({
+    //         type: `${namespace}/create`,
+    //         payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } }
+    //       });
+    //   } else if (action === 'edit' || action === 'inlineEdit') {
+    //     props[action] = async body =>
+    //       dispatch({
+    //         type: `${namespace}/edit`,
+    //         payload: { path: apiPath, body }
+    //       });
+    //   } else if (action === 'remove') {
+    //     props.remove = async body =>
+    //       dispatch({
+    //         type: `${namespace}/remove`,
+    //         payload: { path: apiPath, body }
+    //       });
+    //   } else if (action === 'order') {
+    //     props.order = async (body, diff) =>
+    //       dispatch({
+    //         type: `${namespace}/order`,
+    //         payload: { path: apiPath, body, diff }
+    //       });
+    //   } else if (action === 'create_in_new_page') {
+    //     props.hasCreateNew = true;
+    //   }
+    // });
 
     return props;
   };

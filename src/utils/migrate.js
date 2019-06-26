@@ -8,7 +8,20 @@ export function migrateApi({ login, ...other } = {}) {
   };
 }
 
-export function migrateConfig({ type, schema, ...other } = {}) {
+export function migrateRouteApi({ defaultFilter, ...other } = {}) {
+  let newApi = {};
+
+  if (defaultFilter) {
+    console.error(
+      'route.api.defaultFilter is deprecated, please use route.api.fetchFixedFilter'
+    );
+    newApi = { fetchFixedFilter: defaultFilter };
+  }
+
+  return { ...newApi, ...other };
+}
+
+export function migrateConfig({ type, api, schema, ...other } = {}) {
   let newType = type;
   if (type === 'group') {
     console.error("route.config.type 'group' is deprecated, please use 'list'");
@@ -18,7 +31,7 @@ export function migrateConfig({ type, schema, ...other } = {}) {
     console.error('route.config.schema is deprecated, please use table');
   }
 
-  return { type: newType, table: schema, ...other };
+  return { type: newType, api: migrateRouteApi(api), table: schema, ...other };
 }
 
 export function migrateRoute({ component, config, ...other } = {}) {

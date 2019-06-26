@@ -34,8 +34,8 @@ export default function xms(config = {}) {
         throw new Error('域名必须是*.qingtingfm.com');
       }
       app.model(generateUserModel(auth));
-      app.model(audio);
     }
+    app.model(audio);
     app.routes = processRoutes({ app, routes });
     app.router(router);
   } catch (err) {

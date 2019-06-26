@@ -1,4 +1,5 @@
 import { isArray, map, flatten, filter, forEach, join } from 'lodash';
+import Table from '../schema/Table';
 import { migrateColumn } from './migrate';
 import ColumnTypes from './ColumnTypes';
 import DataType from '../constants/DataType';
@@ -13,15 +14,12 @@ export default function processListConfig({ config, path }) {
 
   let primaryKey = 'id';
   let orderKey;
-  let defaultSort;
-  let fixedSort;
   let defaultFilter;
   let hasInlineEdit = false;
   const searchFields = [];
   const newTable = table
     .map(column => migrateColumn(column))
     .map(column => {
-      let { sort, defaultSort: ds } = column;
       const {
         type: oldType,
         filters,
@@ -83,17 +81,6 @@ export default function processListConfig({ config, path }) {
         throw new Error(`${path}: ${type.getName()}类型必须设置filters`);
       }
 
-      if (type === ColumnTypes.order) {
-        sort = { asc: true };
-        ds = 'asc';
-      } else if (sort === true) {
-        sort = { asc: true, desc: true };
-      } else if (sort === 'asc') {
-        sort = { asc: true };
-      } else if (sort === 'desc') {
-        sort = { desc: true };
-      }
-
       if (
         isArray(key) &&
         !mapKey &&
@@ -111,9 +98,7 @@ export default function processListConfig({ config, path }) {
       return {
         ...column,
         type,
-        sort,
         mapKey: mapKey || key,
-        defaultSort: ds,
         enabledFilters: isArray(filters)
           ? filter(filters, ({ disabled }) => !disabled)
           : [],
@@ -130,13 +115,9 @@ export default function processListConfig({ config, path }) {
         throw new Error(`${path}: type = ORDER的属性最多有一个`);
       }
       orderKey = definition.mapKey; // eslint-disable-line prefer-destructuring
-      fixedSort = `${orderKey} asc`;
     }
     if (definition.search) {
       searchFields.push(definition);
-    }
-    if (definition.sort && definition.defaultSort) {
-      defaultSort = `${definition.mapKey} ${definition.defaultSort}`;
     }
     if (isArray(definition.filters)) {
       if (definition.multiple) {
@@ -185,14 +166,12 @@ export default function processListConfig({ config, path }) {
 
   return {
     ...config,
-    actions,
-    primaryKey,
-    orderKey,
-    searchFields,
-    defaultSort,
-    defaultFilter,
-    fixedSort,
+    // actions,
+    // primaryKey,
+    // orderKey,
+    // searchFields,
+    // defaultFilter,
     namespace: path.replace(/(\/|:)/g, '@'),
-    table: newTable
+    table: new Table(table)
   };
 }

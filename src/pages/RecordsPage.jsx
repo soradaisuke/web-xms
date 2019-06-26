@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
-import AsyncValidator from 'async-validator';
+// import AsyncValidator from 'async-validator';
 import { Link } from 'dva/router';
 import {
   Table,
@@ -15,31 +15,30 @@ import {
   Modal,
   Card,
   Col,
-  Row
+  Row,
+  Spin
 } from 'antd';
 import {
   split,
   startsWith,
   isFunction,
   isArray,
-  find,
-  reduce,
   map,
   isEqual,
-  isNumber,
   get,
+  set,
   isUndefined,
+  isNull,
   chunk,
   join,
   forEach,
-  findIndex
+  findIndex,
+  filter as filterFunc
 } from 'lodash';
-import { generateUpYunImageUrl } from '@qt/web-core';
-import RecordLink from '../components/RecordLink';
+import TableType from '../schema/Table';
 import RecordModal from '../components/RecordModal';
 import Group from '../components/Group';
 import Page from './Page';
-import ColumnTypes from '../utils/ColumnTypes';
 import './RecordsPage.less';
 
 const { Column } = Table;
@@ -51,19 +50,7 @@ class RecordsPage extends React.PureComponent {
 
   static propTypes = {
     fetch: PropTypes.func.isRequired,
-    table: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        title: PropTypes.string,
-        link: PropTypes.shape({
-          url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-          type: PropTypes.oneOf(['relative', 'absolute', 'external'])
-        }),
-        invisible: PropTypes.bool,
-        creatable: PropTypes.bool,
-        editable: PropTypes.bool
-      })
-    ).isRequired,
+    table: PropTypes.instanceOf(TableType).isRequired,
     updatePage: PropTypes.func.isRequired,
     updateModalFilters: PropTypes.func.isRequired,
     match: PropTypes.shape({
@@ -180,7 +167,7 @@ class RecordsPage extends React.PureComponent {
       prevProps.page !== page ||
       prevProps.sort !== sort ||
       prevProps.search !== search ||
-      prevProps.filter !== filter
+      !isEqual(prevProps.filter, filter)
     ) {
       this.fetch();
     }
@@ -225,43 +212,70 @@ class RecordsPage extends React.PureComponent {
       search,
       updatePage,
       sort,
-      filter
+      filter,
+      user
     } = this.props;
-    const { filterInGroupTableKeys } = this.state;
-    const targetTable = find(table, { key: sorter.columnKey }) || {};
-    const { sort: tableSort } = targetTable;
+    // const { filterInGroupTableKeys } = this.state;
     let newSort;
-    if (tableSort && sorter && sorter.columnKey && sorter.order) {
-      if (tableSort[sorter.order.replace('end', '')]) {
-        newSort = `${targetTable.mapKey} ${sorter.order.replace('end', '')}`;
-      } else if (tableSort.asc) {
-        newSort = `${targetTable.mapKey} asc`;
-      } else if (tableSort.desc) {
-        newSort = `${targetTable.mapKey} desc`;
-      } else {
-        newSort = '';
-      }
+
+    if (sorter && sorter.columnKey && sorter.order) {
+      newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     } else {
       newSort = '';
     }
-    const newFilter = reduce(
-      table,
-      (acc, { key, type, mapKey, filterMultiple }) => {
-        const value = get(filters, key);
-        const preValue = get(filter, key);
-        if (filterInGroupTableKeys[mapKey] && preValue) {
-          acc[mapKey] = preValue;
-        } else if (value && value.length > 0) {
-          if (filterMultiple) {
-            acc[mapKey] = value.map(v => type.formatSubmitValue(v));
-          } else {
-            acc[mapKey] = type.formatSubmitValue(value[0]);
+    const newFilter = {};
+    table.getColumns().forEach((column, index) => {
+      if (column.canShowInTable(user) && column.canFilterInTable()) {
+        if (column.isParentOnLeft()) {
+          const parentColumn = table.getColumns().get(index - 1);
+          let parentFilteredValue = filters[parentColumn.getKey()];
+          parentFilteredValue = parentColumn.canFilterMultipleInTable()
+            ? parentFilteredValue
+            : parentFilteredValue[0];
+
+          if (
+            !isEqual(
+              parentFilteredValue,
+              get(filter, parentColumn.getTableFilterKey())
+            )
+          ) {
+            return true;
           }
         }
-        return acc;
-      },
-      {}
-    );
+        const value = filters[column.getKey()];
+        if (value && value.length > 0) {
+          if (column.canFilterMultipleInTable()) {
+            if (
+              filterFunc(value, v => !isUndefined(v) && !isNull(v)).length > 0
+            ) {
+              set(newFilter, column.getTableFilterKey(), value);
+            }
+          } else if (!isUndefined(value[0]) && !isNull(value[0])) {
+            set(newFilter, column.getTableFilterKey(), value[0]);
+          }
+        }
+      }
+      return true;
+    });
+
+    // const newFilter = reduce(
+    //   table,
+    //   (acc, { key, type, mapKey, filterMultiple }) => {
+    //     const value = get(filters, key);
+    //     const preValue = get(filter, key);
+    //     if (filterInGroupTableKeys[mapKey] && preValue) {
+    //       acc[mapKey] = preValue;
+    //     } else if (value && value.length > 0) {
+    //       if (filterMultiple) {
+    //         acc[mapKey] = value.map(v => type.formatSubmitValue(v));
+    //       } else {
+    //         acc[mapKey] = type.formatSubmitValue(value[0]);
+    //       }
+    //     }
+    //     return acc;
+    //   },
+    //   {}
+    // );
 
     let newPage = page;
 
@@ -400,153 +414,180 @@ class RecordsPage extends React.PureComponent {
     return !!create || hasCreateNew;
   }
 
-  renderColumn({
-    invisible,
-    link,
-    title,
-    key,
-    sort,
-    mapKey,
-    width,
-    type,
-    imageSize,
-    renderValue,
-    filters,
-    enabledFilters,
-    canFilter,
-    inlineEdit,
-    form: formConfig,
-    filterMultiple = false,
-    filterTree
-  }) {
-    const { sort: currentSort, filter } = this.props;
-    const filteredValue =
-      type.canUseColumnFilter() && !isUndefined(filter[mapKey])
-        ? filter[mapKey]
-        : [];
-    let renderValueFunc = type.renderValue;
+  // renderColumn({
+  //   invisible,
+  //   link,
+  //   title,
+  //   key,
+  //   sort,
+  //   mapKey,
+  //   type,
+  //   imageSize,
+  //   renderValue,
+  //   filters,
+  //   enabledFilters,
+  //   canFilter,
+  //   inlineEdit,
+  //   form: formConfig,
+  //   filterMultiple = false,
+  //   filterTree
+  // }) {
+  renderColumn(column, index) {
+    const { user, sort, table, filter } = this.props;
+    // const { sort: currentSort, filter } = this.props;
+    // let renderValueFunc = type.renderValue;
 
-    if (isFunction(renderValue)) {
-      renderValueFunc = renderValue;
-    } else if (isArray(filters) && type.canUseColumnFilter()) {
-      renderValueFunc = v => {
-        if (isArray(v)) {
-          return v
-            .map(item => {
-              const filtered = find(filters, f => f.value === item);
-              return filtered ? filtered.text : item;
-            })
-            .join('，');
+    // if (isArray(filters) && type.canUseColumnFilter()) {
+    //   renderValueFunc = v => {
+    //     if (isArray(v)) {
+    //       return v
+    //         .map(item => {
+    //           const filtered = find(filters, f => f.value === item);
+    //           return filtered ? filtered.text : item;
+    //         })
+    //         .join('，');
+    //     }
+    //     const filtered = find(filters, f => f.value === v);
+    //     return filtered ? filtered.text : v;
+    //   };
+    // }
+    if (column.canShowInTable(user)) {
+      //   let render = v => v;
+
+      //   if (inlineEdit && type.canInlineEdit()) {
+      //     render = (value, record = {}) => (
+      //       <Input.TextArea
+      //         key={value}
+      //         disabled={
+      //           formConfig && isFunction(formConfig.enable)
+      //             ? !formConfig.enable(undefined, record)
+      //             : false
+      //         }
+      //         placeholder={
+      //           formConfig && formConfig.placeholder
+      //             ? formConfig.placeholder
+      //             : `请输入${title}`
+      //         }
+      //         autoComplete="off"
+      //         defaultValue={value}
+      //         onBlur={({
+      //           relatedTarget,
+      //           target: { value: editValue } = {}
+      //         } = {}) => {
+      //           if (formConfig && formConfig.rules) {
+      //             const validator = new AsyncValidator({
+      //               [mapKey]: [
+      //                 {
+      //                   required: !formConfig.optional,
+      //                   message: `${title}不能为空`,
+      //                   whitespace: true
+      //                 }
+      //               ].concat(formConfig.rules)
+      //             });
+      //             validator.validate({ [mapKey]: editValue }, errors => {
+      //               if (errors) {
+      //                 message.error(errors[0].message);
+      //                 if (relatedTarget && isFunction(relatedTarget.focus)) {
+      //                   relatedTarget.focus();
+      //                 }
+      //               } else {
+      //                 this.editRecord({ ...record, [mapKey]: editValue });
+      //               }
+      //             });
+      //           } else {
+      //             this.editRecord({ ...record, [mapKey]: editValue });
+      //           }
+      //         }}
+      //       />
+      //     );
+      //   }
+
+      //   const filterProps =
+      //     canFilter &&
+      //     !filterTree &&
+      //     isArray(enabledFilters) &&
+      //     enabledFilters.length > 0
+      //       ? {
+      //           filterMultiple,
+      //           filtered: isArray(filteredValue)
+      //             ? !!filteredValue.length
+      //             : !isUndefined(filteredValue),
+      //           filteredValue: isArray(filteredValue)
+      //             ? filteredValue
+      //             : [String(filteredValue)],
+      //           filters: !type.canUseColumnFilter() ? [] : enabledFilters
+      //         }
+      //       : {};
+
+      const filterProps = {};
+
+      if (column.canFilterInTable()) {
+        const parentColumn = column.isParentOnLeft()
+          ? table.getColumns().get(index - 1)
+          : null;
+        const parentFilteredValue = parentColumn
+          ? get(filter, parentColumn.getTableFilterKey())
+          : null;
+
+        let filteredValue = get(filter, column.getTableFilterKey());
+
+        if (!isUndefined(filteredValue)) {
+          if (column.canFilterRangeInTable() || !isArray(filteredValue)) {
+            filteredValue = [filteredValue];
+          }
+        } else {
+          filteredValue = [];
         }
-        const filtered = find(filters, f => f.value === v);
-        return filtered ? filtered.text : v;
-      };
-    }
-    if (!invisible) {
-      let render = v => v;
 
-      if (link) {
-        render = (value, record) => (
-          <span>
-            <RecordLink link={link} record={record}>
-              {value}
-            </RecordLink>
-          </span>
-        );
-      } else if (type === ColumnTypes.image) {
-        render = value => {
-          const src = generateUpYunImageUrl(
-            value,
-            `/both/${imageSize || '100x100'}`
-          );
-          const style = width
-            ? { width: isNumber(width) ? `${width}px` : width }
-            : {};
+        let filters = column.getTableFilters(parentFilteredValue);
+        filters = filters ? filters.toJS() : null;
 
-          return <img alt="" src={src} style={style} />;
-        };
-      } else if (inlineEdit && type.canInlineEdit()) {
-        render = (value, record = {}) => (
-          <Input.TextArea
-            key={value}
-            disabled={
-              formConfig && isFunction(formConfig.enable)
-                ? !formConfig.enable(undefined, record)
-                : false
-            }
-            placeholder={
-              formConfig && formConfig.placeholder
-                ? formConfig.placeholder
-                : `请输入${title}`
-            }
-            autoComplete="off"
-            defaultValue={value}
-            onBlur={({
-              relatedTarget,
-              target: { value: editValue } = {}
-            } = {}) => {
-              if (formConfig && formConfig.rules) {
-                const validator = new AsyncValidator({
-                  [mapKey]: [
-                    {
-                      required: !formConfig.optional,
-                      message: `${title}不能为空`,
-                      whitespace: true
-                    }
-                  ].concat(formConfig.rules)
-                });
-                validator.validate({ [mapKey]: editValue }, errors => {
-                  if (errors) {
-                    message.error(errors[0].message);
-                    if (relatedTarget && isFunction(relatedTarget.focus)) {
-                      relatedTarget.focus();
-                    }
-                  } else {
-                    this.editRecord({ ...record, [mapKey]: editValue });
-                  }
-                });
-              } else {
-                this.editRecord({ ...record, [mapKey]: editValue });
-              }
-            }}
-          />
-        );
+        const valueOptionsRequest = column.getValueOptionsRequest();
+
+        if (filters) {
+          filterProps.filters = filters;
+          filterProps.filtered = !!filteredValue.length;
+          filterProps.filteredValue = filteredValue;
+          filterProps.filterMultiple = column.canFilterMultipleInTable();
+        } else if (valueOptionsRequest) {
+          if (
+            (isArray(parentFilteredValue) && parentFilteredValue.length > 0) ||
+            !isUndefined(parentFilteredValue)
+          ) {
+            filterProps.filterDropdown = () => (
+              <Spin style={{ width: '100%' }} />
+            );
+            column
+              .fetchValueOptions(parentFilteredValue)
+              .then(() => this.forceUpdate())
+              .catch(() => {});
+          }
+        } else if (column.canRenderFilterDropDown()) {
+          filterProps.filtered = !!filteredValue.length;
+          filterProps.filteredValue = filteredValue;
+          filterProps.filterDropdown = column.renderFilterDropDown;
+        }
       }
-
-      const filterProps =
-        canFilter &&
-        !filterTree &&
-        isArray(enabledFilters) &&
-        enabledFilters.length > 0
-          ? {
-              filterMultiple,
-              filtered: isArray(filteredValue)
-                ? !!filteredValue.length
-                : !isUndefined(filteredValue),
-              filteredValue: isArray(filteredValue)
-                ? filteredValue
-                : [String(filteredValue)],
-              filters: !type.canUseColumnFilter() ? [] : enabledFilters
-            }
-          : {};
 
       return (
         <Column
           {...filterProps}
-          className={classNames(sort)}
-          title={title}
-          dataIndex={key}
-          key={key}
-          sorter={!!sort}
-          width={width || ''}
+          title={column.getTitle()}
+          dataIndex={column.getKey()}
+          key={column.getKey()}
+          width={column.getTableWidth()}
+          sorter={
+            table.getOrderColumn()
+              ? column === table.getOrderColumn()
+              : column.canSortInTable()
+          }
+          sortDirections={column.getTableSortDirections().toArray()}
           sortOrder={
-            currentSort && startsWith(currentSort, `${mapKey} `)
-              ? `${split(currentSort, ' ')[1]}end`
+            sort && startsWith(sort, `${column.getKey()} `)
+              ? `${split(sort, ' ')[1]}end`
               : false
           }
-          render={(value, record) =>
-            render(renderValueFunc(value, record), record)
-          }
+          render={(value, record) => column.renderInTable({ value, record })}
         />
       );
     }
@@ -557,7 +598,9 @@ class RecordsPage extends React.PureComponent {
   renderTable() {
     const { table } = this.props;
 
-    return table.map(definition => this.renderColumn({ ...definition }));
+    return table
+      .getColumns()
+      .map((column, index) => this.renderColumn(column, index));
   }
 
   renderCustomRowActions(record) {
@@ -892,7 +935,7 @@ class RecordsPage extends React.PureComponent {
       total,
       page,
       pagesize,
-      primaryKey,
+      table,
       customMultipleActions,
       customMultipleEdits,
       isLoading
@@ -916,7 +959,7 @@ class RecordsPage extends React.PureComponent {
             bordered
             loading={isLoading}
             dataSource={dataSource}
-            rowKey={primaryKey}
+            rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
             pagination={false}
             onChange={this.onChange}
