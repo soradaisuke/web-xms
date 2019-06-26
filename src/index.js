@@ -3,10 +3,12 @@ export default from './app';
 export dynamic from 'dva/dynamic';
 export { Link } from 'dva/router';
 
+export Column from './schema';
+export Action from './actions';
+
 export request from './services/request';
 export Page from './pages/Page';
 export DataType from './constants/DataType';
-export ColumnTypes from './utils/ColumnTypes';
 export ActivatorModal from './components/ActivatorModal';
 export Tags from './components/FormItems/Tags';
 export UploadImage from './components/FormItems/UploadImage';

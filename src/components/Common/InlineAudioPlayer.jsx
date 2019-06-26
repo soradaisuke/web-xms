@@ -15,7 +15,7 @@ class InlineAudioPlayer extends React.PureComponent {
   static propTypes = {
     playbackRates: PropTypes.arrayOf(PropTypes.number),
     changePlayedAudio: PropTypes.func.isRequired,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     url: PropTypes.string,
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
@@ -24,11 +24,12 @@ class InlineAudioPlayer extends React.PureComponent {
   };
 
   static defaultProps = {
+    id: null,
     playbackRates: [1, 2],
     url: '',
     className: '',
     loop: false,
-    showPlaybackRate: true,
+    showPlaybackRate: false,
     showChangeProgress: false
   };
 

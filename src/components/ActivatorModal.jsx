@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isBoolean } from 'lodash';
+import { isBoolean, isFunction } from 'lodash';
 import { Modal } from 'antd';
 
 export default class ActivatorModal extends React.PureComponent {
@@ -20,7 +20,8 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   state = {
-    visible: false
+    visible: false,
+    confirmLoading: false
   };
 
   showModalHandler = e => {
@@ -51,10 +52,17 @@ export default class ActivatorModal extends React.PureComponent {
     const { onOk } = this.props;
 
     if (onOk) {
-      const hide = await onOk();
-      if (!isBoolean(hide) || hide) {
-        this.hideModalHandler();
+      this.setState({ confirmLoading: true });
+      try {
+        const hide = await onOk();
+        if (!isBoolean(hide) || hide) {
+          this.hideModalHandler();
+        }
+      } catch (e) {
+        //
       }
+
+      this.setState({ confirmLoading: true });
     } else {
       this.hideModalHandler();
     }
@@ -74,8 +82,8 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   render() {
-    const { activator } = this.props;
-    const { visible } = this.state;
+    const { activator, children, ...props } = this.props;
+    const { visible, confirmLoading } = this.state;
 
     return (
       <span>
@@ -88,11 +96,14 @@ export default class ActivatorModal extends React.PureComponent {
           {activator}
         </span>
         <Modal
-          {...this.props}
+          {...props}
+          confirmLoading={confirmLoading}
           visible={visible}
           onOk={this.onOk}
           onCancel={this.onCancel}
-        />
+        >
+          {isFunction(children) ? children() : children}
+        </Modal>
       </span>
     );
   }

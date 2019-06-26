@@ -13,41 +13,34 @@ import {
   isString,
   forEach,
   toInteger,
-  get,
-  findIndex,
   isUndefined
 } from 'lodash';
 import { generateUri } from '@qt/web-core';
-import ColumnTypes from './ColumnTypes';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 
-function generateService({ api: { fetch } = {}, actions, primaryKey }) {
+function generateService({ api: { fetch } = {} }) {
   const service = {
-    fetch: async ({ path, ...params }) =>
-      fetch ? fetch({ path, query: params }) : request.get(path, { params })
+    fetch: async ({ path, page, pagesize, filter, order }) =>
+      fetch
+        ? fetch({ path, query: { page, pagesize, filter, order } })
+        : request.get(path, {
+            params: {
+              page,
+              pagesize,
+              order,
+              filter: JSON.stringify(filter)
+            }
+          }),
+    remove: async ({ path, id }) => request.remove(`${path}/${id}`),
+    create: async ({ path, body }) => request.post(`${path}`, { body }),
+    edit: async ({ path, id, body }) => request.put(`${path}/${id}`, { body })
   };
-
-  forEach(actions, action => {
-    if (action === 'create') {
-      service.create = async ({ path, body }) =>
-        request.post(`${path}`, { body });
-    } else if (action === 'edit' || action === 'inlineEdit') {
-      service.edit = async ({ path, body }) =>
-        request.put(`${path}/${get(body, primaryKey)}`, { body });
-    } else if (action === 'remove') {
-      service.remove = async ({ path, body }) =>
-        request.remove(`${path}/${get(body, primaryKey)}`);
-    } else if (action === 'order') {
-      service.order = async ({ path, body }) =>
-        request.put(`${path}/${get(body, primaryKey)}`, { body });
-    }
-  });
 
   return service;
 }
 
-function generateModel({ namespace, actions, table, orderKey }, service) {
+function generateModel({ namespace, table }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -69,34 +62,6 @@ function generateModel({ namespace, actions, table, orderKey }, service) {
       ) {
         return state.merge(Immutable.fromJS({ records, total }));
       },
-      saveFilters(
-        state,
-        {
-          payload: { filters, index }
-        }
-      ) {
-        return state.set(
-          'table',
-          state
-            .get('table')
-            .setIn([index, 'filters'], filters)
-            .setIn(
-              [index, 'enabledFilters'],
-              filters.filter(({ disabled }) => !disabled)
-            )
-        );
-      },
-      saveModalFilters(
-        state,
-        {
-          payload: { filters, index }
-        }
-      ) {
-        return state.set(
-          'table',
-          state.get('table').setIn([index, 'modalFilters'], filters)
-        );
-      },
       saveError(
         state,
         {
@@ -109,31 +74,17 @@ function generateModel({ namespace, actions, table, orderKey }, service) {
     effects: {
       fetch: [
         function* fetch(
-          { payload: { path, page, pagesize, sort, search = {}, filter = {} } },
+          { payload: { path, page, pagesize, sort, filter = {} } },
           { call, put }
         ) {
           yield put({ type: 'saveError', payload: { error: null } });
-          const currentFiler = { ...filter, ...search };
-
-          for (let i = 0; i < table.length; i += 1) {
-            if (isFunction(table[i].filters)) {
-              yield put({
-                type: 'getFilters',
-                payload: {
-                  index: i,
-                  filtersFunc: table[i].filters,
-                  currentFiler
-                }
-              });
-            }
-          }
 
           try {
             const { items: records, total } = yield call(service.fetch, {
               path,
               page,
               pagesize,
-              filter: JSON.stringify(currentFiler),
+              filter,
               order: sort
             });
             yield put({ type: 'save', payload: { total, records } });
@@ -143,93 +94,30 @@ function generateModel({ namespace, actions, table, orderKey }, service) {
         },
         { type: 'takeLatest' }
       ],
-      *getFilters(
-        {
-          payload: { index, filtersFunc, currentFiler }
-        },
-        { call, put }
-      ) {
-        const filters = yield call(filtersFunc, currentFiler);
-        yield put({ type: 'saveFilters', payload: { index, filters } });
+      remove: function* modelRemove({ payload: { path, id } }, { call }) {
+        yield call(service.remove, { path, id });
       },
-      *updateModalFilters(
-        {
-          payload: { mapKey, formFieldsValue }
-        },
-        { call, put }
-      ) {
-        const index = findIndex(table, ({ mapKey: mk }) => mk === mapKey);
-        const targetTable = table[index];
-        if (targetTable && isFunction(targetTable.filters)) {
-          const filters = yield call(targetTable.filters, formFieldsValue);
-          yield put({ type: 'saveModalFilters', payload: { index, filters } });
-        }
+      create: function* modelCreate({ payload: { path, body } }, { call }) {
+        yield call(service.create, { path, body });
+      },
+      edit: function* modelEdit({ payload: { path, id, body } }, { call }) {
+        yield call(service.edit, { path, id, body });
       }
     }
   };
-
-  forEach(actions, action => {
-    if (action === 'create') {
-      model.effects.create = function* modelCreate(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.create, { path, body });
-      };
-    } else if (action === 'edit' || action === 'inlineEdit') {
-      model.effects.edit = function* modelEdit(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.edit, { path, body });
-      };
-    } else if (action === 'remove') {
-      model.effects.remove = function* modelRemove(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.remove, { path, body });
-      };
-    } else if (action === 'order') {
-      model.effects.order = function* modelOrder(
-        { payload: { path, body, diff } },
-        { call }
-      ) {
-        yield call(service.order, {
-          path,
-          body: { ...body, [orderKey]: body[orderKey] + diff }
-        });
-      };
-    }
-  });
 
   return model;
 }
 
 function generateRecordsPage(
   {
-    api: { host, path, defaultFilter },
+    api: { host, path, fetchFixedFilter, createDefaultBody },
     namespace,
     actions,
-    primaryKey,
-    searchFields,
-    fixedSort,
-    defaultSort,
-    table,
-    defaultFilter: defaultFilterQuery
+    table
   },
   component
 ) {
-  const customActions = actions.filter(action => isPlainObject(action));
-  const customGlobalActions = customActions.filter(
-    ({ global, multiple }) => global && !multiple
-  );
-  const customMultipleActions = customActions.filter(
-    ({ multiple }) => multiple
-  );
-  const customRowActions = customActions.filter(({ global }) => !global);
-  const customMultipleEdits = table.filter(({ multipleEdit }) => multipleEdit);
-
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -238,13 +126,8 @@ function generateRecordsPage(
         <RecordsPage
           {...this.props}
           component={component}
-          primaryKey={primaryKey}
-          customGlobalActions={customGlobalActions}
-          customMultipleActions={customMultipleActions}
-          customRowActions={customRowActions}
-          searchFields={searchFields}
-          defaultFilter={defaultFilterQuery}
-          customMultipleEdits={customMultipleEdits}
+          table={table}
+          actions={actions}
         />
       );
     }
@@ -261,38 +144,6 @@ function generateRecordsPage(
     }
   );
 
-  const searchSelector = createSelector(
-    [queries => queries.search],
-    search => {
-      try {
-        return JSON.parse(search);
-      } catch (e) {
-        return {};
-      }
-    }
-  );
-
-  const tableSelector = createSelector(
-    [state => state[namespace].get('table')],
-    sche => sche.toJS()
-  );
-
-  const filterInGroupTables = createSelector(
-    [state => state[namespace].get('table')],
-    sche => {
-      const tables = sche.toJS();
-      return tables.filter(
-        ({ type, canFilter, invisible, filterTree }) =>
-          canFilter &&
-          (type === ColumnTypes.date ||
-            type === ColumnTypes.datetime ||
-            type === ColumnTypes.number ||
-            invisible ||
-            filterTree)
-      );
-    }
-  );
-
   const mapStateToProps = (state, props) => {
     const queries = parse(props.location.search);
     return {
@@ -300,9 +151,6 @@ function generateRecordsPage(
       page: queries.page ? toInteger(queries.page) : 1,
       pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
       records: state[namespace].get('records'),
-      table: tableSelector(state),
-      filterInGroupTables: filterInGroupTables(state),
-      search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),
       isLoading: state.loading.effects[`${namespace}/fetch`],
@@ -317,11 +165,18 @@ function generateRecordsPage(
       location
     } = ownProps;
 
-    let apiDefaultFilter = {};
-    if (isFunction(defaultFilter)) {
-      apiDefaultFilter = defaultFilter(matchParams);
-    } else if (isPlainObject(defaultFilter)) {
-      apiDefaultFilter = defaultFilter;
+    let fetchApiFixedFilter = {};
+    if (isFunction(fetchFixedFilter)) {
+      fetchApiFixedFilter = fetchFixedFilter(matchParams);
+    } else if (isPlainObject(fetchFixedFilter)) {
+      fetchApiFixedFilter = fetchFixedFilter;
+    }
+
+    let createApiDefaultBody = {};
+    if (isFunction(createDefaultBody)) {
+      createApiDefaultBody = createDefaultBody(matchParams);
+    } else if (isPlainObject(createDefaultBody)) {
+      createApiDefaultBody = createDefaultBody;
     }
 
     let apiPath = '';
@@ -335,17 +190,17 @@ function generateRecordsPage(
     }
 
     const props = {
-      fetch: async ({ page, pagesize, sort, search, filter = {} }) => {
+      fetch: async ({ page, pagesize, sort, filter = {} }) => {
         const queries = parse(location.search);
 
         if (
-          (fixedSort && fixedSort !== sort) ||
-          ((defaultSort || defaultFilterQuery) &&
+          (table.getFixedSortOrder() && table.getFixedSortOrder() !== sort) ||
+          ((table.getDefaultSortOrder() || table.getDefaultFilter()) &&
             (!queries || Object.keys(queries).length === 0))
         ) {
           const uri = generateUri(window.location.href, {
-            filter: JSON.stringify(defaultFilterQuery),
-            sort: fixedSort || defaultSort
+            filter: JSON.stringify(table.getDefaultFilter() || {}),
+            sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
           });
           history.replace(
             uri.href.substring(uri.origin.length, uri.href.length)
@@ -360,65 +215,43 @@ function generateRecordsPage(
             page,
             pagesize,
             sort,
-            search,
-            filter: { ...filter, ...apiDefaultFilter },
+            filter: { ...filter, ...fetchApiFixedFilter },
             path: apiPath
           }
         });
       },
-      updateModalFilters: async (mapKey, formFieldsValue) =>
+      remove: async ({ id }) =>
         dispatch({
-          type: `${namespace}/updateModalFilters`,
-          payload: {
-            mapKey,
-            formFieldsValue
-          }
+          type: `${namespace}/remove`,
+          payload: { path: apiPath, id }
         }),
-      updatePage: async ({ page, pagesize, sort, search, filter }) => {
+      updatePage: async ({ page, pagesize, sort, filter }) => {
         const newQuery = {
           page,
           pagesize,
           sort,
-          filter: isUndefined(filter) ? filter : JSON.stringify(filter),
-          search: isUndefined(search) ? search : JSON.stringify(search)
+          filter: isUndefined(filter) ? filter : JSON.stringify(filter)
         };
         forEach(newQuery, (v, key) => {
           if (isUndefined(v)) delete newQuery[key];
         });
         const uri = generateUri(window.location.href, newQuery);
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
-      }
+      },
+      create: async ({ body }) =>
+        dispatch({
+          type: `${namespace}/create`,
+          payload: {
+            path: apiPath,
+            body: { ...createApiDefaultBody, ...body }
+          }
+        }),
+      edit: async ({ id, body }) =>
+        dispatch({
+          type: `${namespace}/edit`,
+          payload: { path: apiPath, id, body }
+        })
     };
-
-    forEach(actions, action => {
-      if (action === 'create') {
-        props.create = async body =>
-          dispatch({
-            type: `${namespace}/create`,
-            payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } }
-          });
-      } else if (action === 'edit' || action === 'inlineEdit') {
-        props[action] = async body =>
-          dispatch({
-            type: `${namespace}/edit`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'remove') {
-        props.remove = async body =>
-          dispatch({
-            type: `${namespace}/remove`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'order') {
-        props.order = async (body, diff) =>
-          dispatch({
-            type: `${namespace}/order`,
-            payload: { path: apiPath, body, diff }
-          });
-      } else if (action === 'create_in_new_page') {
-        props.hasCreateNew = true;
-      }
-    });
 
     return props;
   };

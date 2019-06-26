@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
-import { uploadImage } from '@qt/web-core';
+import { uploadImage, generateDeviceId } from '@qt/web-core';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Upload, Icon, Col, Row, Modal, message } from 'antd';
@@ -183,7 +183,8 @@ export default class UploadImage extends React.PureComponent {
       const url = await uploadImage(options.file, {
         ssoToken,
         bucket,
-        upYunSyncPreprocessor
+        upYunSyncPreprocessor,
+        deviceId: generateDeviceId()
       });
       onChange(url);
       this.setState({
