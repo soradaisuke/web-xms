@@ -32,7 +32,8 @@ import {
   chunk,
   join,
   forEach,
-  findIndex
+  findIndex,
+  zipObjectDeep
 } from 'lodash';
 import { generateUpYunImageUrl } from 'web-core';
 import RecordLink from '../components/RecordLink';
@@ -208,7 +209,7 @@ class RecordsPage extends React.PureComponent {
 
     const searchValue = type.formatSubmitValue(value);
     const search =
-      searchValue || searchValue === 0 ? { [mapKey]: searchValue } : {};
+      searchValue || searchValue === 0 ? zipObjectDeep([mapKey], [value]) : {};
 
     updatePage({
       page: 1,

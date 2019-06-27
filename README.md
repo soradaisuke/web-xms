@@ -236,7 +236,7 @@ ref获得节点后可以调用的方法有
 | canFilter | 是否可以用该属性筛选数据, 关于filter渲染的位置是否在表格里见[filterGroup](#filterGroup) | bool | false |
 | filterMultiple | 筛选数据是否可以多选 | bool | false |
 | filterTree | 筛选数据是否是树形结构，是的话筛选组件会在表格外 | bool | false |
-| mapKey | 如果该属性在排序/筛选/创建/修改/搜索时的key值与数据源内的不同，设置该属性。如果key为array且支持排序/筛选/创建/修改/搜索时该属性必须设置。 | string | - |
+| mapKey | 如果该属性在排序/筛选/创建/修改/搜索时的key值与数据源内的不同，设置该属性。如果key为array且支持排序/筛选/创建/修改/搜索时该属性必须设置。search中的mapKey支持"a.b"形式，将转换成{ a: { b: value } } | string | - |
 | primaryKey | 该属性是否为主键 | bool | flase |
 | width | 列宽度 | string/number | '' |
 | form | 该属性在表单中的配置，详见[form](#form) | object | '' |
