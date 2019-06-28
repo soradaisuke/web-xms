@@ -33,7 +33,6 @@ export default class RecordPage extends React.PureComponent {
   };
 
   state = {
-    isLoading: false,
     isError: false
   };
 
@@ -91,12 +90,48 @@ export default class RecordPage extends React.PureComponent {
     return null;
   }
 
+  renderCustomActions() {
+    const { actions } = this.props;
+  }
+
+  renderDescriptions() {
+    const { table, record, title } = this.props;
+    return (
+      <Descriptions title={title} border>
+        {
+          table.getColumns().map((column, index) => (
+            column.canShowInDescriptions(user)
+              ? (
+                <Descriptions.Item
+                  key={index}
+                  label={column.getTitle()}
+                  span={column.getSpan()}
+                >
+                  {
+                    isFunction(column.renderInDescription)
+                      ? column.renderInDescription({ value: record.get(column.getKey()), record })
+                      : column.renderInTable({ value: record.get(column.getKey()), record })
+                  }
+                </Descriptions.Item>
+              ) : null
+          ))
+        }
+        {this.renderCustomActions()}
+      </Descriptions>
+    )
+  }
+
   render() {
-    const { component: Component, inline } = this.props;
-    const { isLoading, isError } = this.state;
+    const { component: Component, inline, isLoading, record } = this.props;
+    const { isError } = this.state;
 
     return (
       <Page isLoading={isLoading} isError={isError}>
+        {record ? (
+          <Card className={classNames('content-card', inline ? 'inline' : '')}>
+            {this.renderDescriptions()}
+          </Card>
+        ) : null}
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>
             <Component />

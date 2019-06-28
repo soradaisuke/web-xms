@@ -10,7 +10,7 @@ import RecordPage from '../pages/RecordPage';
 
 function generateService() {
   return {
-    fetch: async ({ id }) => request.get(id)
+    fetch: async ({ path }) => request.get(path)
   };
 }
 
@@ -37,19 +37,23 @@ function generateModel({ namespace }, service) {
     effects: {
       *fetch(
         {
-          payload: { id }
+          payload: { path }
         },
         { call, put }
       ) {
-        const record = yield call(service.fetch, { id });
-        yield put({ type: 'save', payload: { record } });
+        try {
+          const record = yield call(service.fetch, { path });
+          yield put({ type: 'save', payload: { record } });
+        } catch (error) {
+          throw new Error("获取详情页数据失败");
+        }
       }
     }
   };
 }
 
 function generateRecordPage({
-  config: { namespace, api: { path } = {} } = {},
+  config: { namespace, title, table, api: { path, host } = {} } = {},
   component,
   inlineLayout
 }) {
@@ -62,6 +66,8 @@ function generateRecordPage({
           {...this.props}
           inlineLayout={inlineLayout}
           component={component}
+          table={table}
+          title={title}
         />
       );
     }
@@ -78,16 +84,21 @@ function generateRecordPage({
     } else if (isString(path)) {
       apiPath = path;
     }
+    if (host) {
+      apiPath = `${host}${apiPath}`;
+    }
 
     return {
+      apiPath,
       record: state[namespace],
+      isLoading: state.loading.effects[`${namespace}/fetch`],
       recordId: apiPath
     };
   };
 
   const mapDispatchToProps = dispatch => ({
-    fetch: async ({ id }) =>
-      dispatch({ type: `${namespace}/fetch`, payload: { id } })
+    fetch: async () =>
+      dispatch({ type: `${namespace}/fetch`, payload: { path: apiPath } })
   });
 
   return withRouter(
