@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.11.0...v1.12.0) (2019-06-28)
+
+
+### Features
+
+* **LIV-2937:** search的mapKey支持将属性的路径解析成object ([33a6758](https://git2.qingtingfm.com/zhibo/xms/commit/33a6758))
+
+
+
 ## [1.11.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.10.1...v1.11.0) (2019-06-24)
 
 
