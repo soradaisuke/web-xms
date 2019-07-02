@@ -417,6 +417,7 @@ class RecordsPage extends React.PureComponent {
     filters,
     enabledFilters,
     canFilter,
+    fixed,
     inlineEdit,
     form: formConfig,
     filterMultiple = false,
@@ -536,6 +537,7 @@ class RecordsPage extends React.PureComponent {
       return (
         <Column
           {...filterProps}
+          fixed={fixed}
           className={classNames(sort)}
           title={title}
           dataIndex={key}
@@ -922,6 +924,7 @@ class RecordsPage extends React.PureComponent {
             rowKey={primaryKey}
             rowSelection={rowSelection}
             pagination={false}
+            scroll={{ x: 1400 }}
             onChange={this.onChange}
           >
             {this.renderSchema()}
