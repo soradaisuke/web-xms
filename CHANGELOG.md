@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.13.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.12.0...v1.13.0) (2019-07-03)
+
+
+### Features
+
+* **NoTicket:** 支持列表页的schema的fixed配置 ([00fc2c1](https://git2.qingtingfm.com/zhibo/xms/commit/00fc2c1))
+
+
+
 ## [1.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.11.0...v1.12.0) (2019-06-28)
 
 
