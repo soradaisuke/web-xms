@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.2...v1.13.3) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** select里value是bool的false的时候无法clear ([e3c00ba](https://git2.qingtingfm.com/zhibo/xms/commit/e3c00ba))
+
+
+
 ### [1.13.2](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.0...v1.13.2) (2019-07-18)
 
 
