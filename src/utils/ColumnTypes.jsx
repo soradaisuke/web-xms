@@ -9,6 +9,7 @@ import {
   isArray,
   isNaN,
   isFunction,
+  isBoolean,
   isUndefined
 } from 'lodash';
 import moment from 'moment';
@@ -37,8 +38,8 @@ const TYPES = {
 const generateTreeData = filters => {
   if (!isArray(filters)) return null;
   return map(filters, ({ value, text, children, ...item }) => ({
-    value,
-    key: value,
+    value: isBoolean(value) ? String(value) : value,
+    key: isBoolean(value) ? String(value) : value,
     title: text,
     children: generateTreeData(children),
     ...item
@@ -628,7 +629,7 @@ class EnumColumnType extends BaseColumnType {
         treeData={generateTreeData(isArray(filters) ? filters : [])}
         treeCheckable={filterMultiple}
         style={{ width: '100%' }}
-        value={value}
+        value={isBoolean(value) ? String(value) : value}
         onChange={onChange}
         {...otherProps}
       />

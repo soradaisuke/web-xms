@@ -724,7 +724,10 @@ class RecordsPage extends React.PureComponent {
                 value: filterGroup[mapKey],
                 onChange: v => {
                   this.setState({
-                    filterGroup: { ...filterGroup, [mapKey]: v }
+                    filterGroup: {
+                      ...filterGroup,
+                      [mapKey]: type.formatSubmitValue(v)
+                    }
                   });
                 }
               })}
