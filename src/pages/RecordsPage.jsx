@@ -385,7 +385,7 @@ class RecordsPage extends React.PureComponent {
       const isValid = value => isBoolean(value) || isNumber(value) || value;
       const hasValidValue = arr => findIndex(arr, item => isValid(item)) !== -1;
 
-      if ((isArray(v) && !hasValidValue(v)) || isValid(v)) {
+      if ((isArray(v) && !hasValidValue(v)) || !isValid(v)) {
         delete filterGroup[key];
       }
     });
