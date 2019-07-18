@@ -29,6 +29,7 @@ import {
   isNumber,
   get,
   isUndefined,
+  isBoolean,
   chunk,
   join,
   forEach,
@@ -381,10 +382,10 @@ class RecordsPage extends React.PureComponent {
       }
     });
     forEach(filterGroup, (v, key) => {
-      const hasValidValue = arr =>
-        findIndex(arr, item => item === 0 || item) !== -1;
+      const isValid = value => isBoolean(value) || isNumber(value) || value;
+      const hasValidValue = arr => findIndex(arr, item => isValid(item)) !== -1;
 
-      if ((isArray(v) && !hasValidValue(v)) || (v !== 0 && !v)) {
+      if ((isArray(v) && !hasValidValue(v)) || isValid(v)) {
         delete filterGroup[key];
       }
     });
