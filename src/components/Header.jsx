@@ -7,12 +7,8 @@ function Header({ name, children }) {
   return (
     <Layout.Header className="xms-header">
       <Row align="middle" type="flex">
-        <Col>
-          {`蜻蜓FM ${name}`}
-        </Col>
-        <Col>
-          {children}
-        </Col>
+        <Col>{`蜻蜓FM ${name}`}</Col>
+        <Col>{children}</Col>
       </Row>
     </Layout.Header>
   );

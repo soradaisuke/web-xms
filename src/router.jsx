@@ -12,7 +12,7 @@ import Breadcrumb from './components/Breadcrumb';
 import 'moment/locale/zh-cn';
 import './router.less';
 
-const { Footer, Content } = Layout;
+const { Content } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
   <div className="dynamic-loading">

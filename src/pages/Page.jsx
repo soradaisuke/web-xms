@@ -24,7 +24,7 @@ class Page extends React.PureComponent {
     errorMessage: '',
     isError: false,
     isLoading: false,
-    user: null,
+    user: null
   };
 
   renderContent() {
@@ -53,7 +53,9 @@ class Page extends React.PureComponent {
 
     return (
       <div className="watermark">
-        {range(100).map(i => <div key={i}>{i %2 === 0 ? '蜻蜓FM' : name}</div>)}
+        {range(100).map(i => (
+          <div key={i}>{i % 2 === 0 ? '蜻蜓FM' : name}</div>
+        ))}
       </div>
     );
   }
