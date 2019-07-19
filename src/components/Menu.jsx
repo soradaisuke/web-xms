@@ -48,7 +48,6 @@ class NavMenu extends React.PureComponent {
     const { routes } = this.props;
     return (
       <Menu
-        theme="dark"
         mode="inline"
         selectedKeys={selectedKeys}
         defaultOpenKeys={openKeys}

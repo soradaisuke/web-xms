@@ -1,17 +1,18 @@
 import React from 'react';
 import { Route, Switch, Router, Redirect } from 'dva/router';
 import { filter, find, map, forEach } from 'lodash';
-import { Layout, Spin, LocaleProvider } from 'antd';
+import { Layout, Spin, LocaleProvider, Row, Col, Affix } from 'antd';
 import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import Menu from './components/Menu';
 import User from './components/User';
+import Header from './components/Header';
 import Breadcrumb from './components/Breadcrumb';
 import 'moment/locale/zh-cn';
 import './router.less';
 
-const { Header, Footer, Sider } = Layout;
+const { Footer, Content } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
   <div className="dynamic-loading">
@@ -111,23 +112,27 @@ function RouterConfig({ history, app, user }) {
     <LocaleProvider locale={zhCN}>
       <Router history={history}>
         <Layout className="xms-layout">
-          <Header>
-            {name}
+          <Header name={name}>
             <User />
           </Header>
-          <Layout>
-            <Sider width="9.6rem">
-              <Menu routes={routes} />
-            </Sider>
-            <Layout className="content-layout">
-              <Switch>
-                {map(routes, route => renderRoute(route))}
-                {!homeRoute && firstAvaliableNonHomeRoutePath ? (
-                  <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
-                ) : null}
-              </Switch>
-              <Footer>©2011-2019 qingting.fm All Rights Reserved.</Footer>
-            </Layout>
+          <Layout className="xms-main-layout">
+            <Row>
+              <Col lg={3} xl={3} xxl={3}>
+                <Affix>
+                  <Menu routes={routes} />
+                </Affix>
+              </Col>
+              <Col lg={21} xl={21} xxl={21}>
+                <Content className="xms-content">
+                  <Switch>
+                    {map(routes, route => renderRoute(route))}
+                    {!homeRoute && firstAvaliableNonHomeRoutePath ? (
+                      <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
+                    ) : null}
+                  </Switch>
+                </Content>
+              </Col>
+            </Row>
           </Layout>
         </Layout>
       </Router>

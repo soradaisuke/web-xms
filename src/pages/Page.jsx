@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Immutable from 'immutable';
+import { connect } from 'dva';
+import { range } from 'lodash';
 import { Alert, Spin } from 'antd';
 
-export default class Page extends React.PureComponent {
+class Page extends React.PureComponent {
   static displayName = 'Page';
 
   static propTypes = {
@@ -11,7 +14,8 @@ export default class Page extends React.PureComponent {
     className: PropTypes.string,
     errorMessage: PropTypes.string,
     isError: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    user: PropTypes.instanceOf(Immutable.Map)
   };
 
   static defaultProps = {
@@ -19,7 +23,8 @@ export default class Page extends React.PureComponent {
     className: '',
     errorMessage: '',
     isError: false,
-    isLoading: false
+    isLoading: false,
+    user: null,
   };
 
   renderContent() {
@@ -42,13 +47,31 @@ export default class Page extends React.PureComponent {
     );
   }
 
+  renderBackground() {
+    const { user } = this.props;
+    const name = user ? user.get('nickname') : '蜻蜓FM';
+
+    return (
+      <div className="watermark">
+        {range(100).map(i => <div key={i}>{i %2 === 0 ? '蜻蜓FM' : name}</div>)}
+      </div>
+    );
+  }
+
   render() {
     const { className } = this.props;
 
     return (
       <div className={classNames('xms-page', className)}>
+        {this.renderBackground()}
         {this.renderContent()}
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(Page);
