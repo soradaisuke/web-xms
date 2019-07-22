@@ -57,25 +57,18 @@ body {
 
           .xms-page {
             position: relative;
+            overflow: hidden;
 
             .watermark {
               .flex-row-container();
 
               position: absolute;
-              left: 0;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              flex-wrap: wrap;
-              overflow: hidden;
-
-              div {
-                width: 200px;
-                height: 100px;
-                font-size: 14px;
-                color: rgba(0, 0, 0, 0.15);
-                transform: rotate(45deg);
-              }
+              left: -50%;
+              top: -50%;
+              width: 200%;
+              height: 200%;
+              transform: rotate(45deg);
+              transform-origin: center;
             }
 
             .ant-card {
