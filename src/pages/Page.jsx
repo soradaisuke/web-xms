@@ -48,8 +48,18 @@ class Page extends React.PureComponent {
 
   renderBackground() {
     const { user } = this.props;
-    const name = user ? user.get('nickname') : '蜻蜓FM';
-    const backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='150px'><text x='0' y='10' fill='rgba(0, 0, 0, 0.15)' font-size='16'>${name}</text></svg>")`;
+
+    let watermark = '蜻蜓FM';
+    if (user) {
+      watermark = user.get('nickname') || '';
+
+      const phone = user.get('phone');
+
+      if (phone && phone.length >= 4) {
+        watermark = `${watermark}${phone.substr(phone.length - 4, 4)}`;
+      }
+    }
+    const backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='150px'><text x='50%' y='50%' fill='rgba(0, 0, 0, 0.2)' font-size='16'>${watermark}</text></svg>")`;
 
     return <div className="watermark" style={{ backgroundImage }} />;
   }

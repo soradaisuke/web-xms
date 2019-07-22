@@ -335,6 +335,7 @@ class RecordsPage extends React.PureComponent {
         dataIndex={column.getKey()}
         key={column.getKey()}
         width={column.getTableWidth()}
+        fixed={column.getTableFixed()}
         sorter={column.canSortInTable()}
         sortDirections={column.getTableSortDirections().toArray()}
         sortOrder={
@@ -342,6 +343,7 @@ class RecordsPage extends React.PureComponent {
             ? `${split(sort, ' ')[1]}end`
             : false
         }
+        scroll={{ x: 1200, y: 300 }}
         render={(value, record) => {
           const children = column.renderInTable({ value, record });
           const editAction = actions.getEditAction();

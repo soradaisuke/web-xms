@@ -144,6 +144,10 @@ export default class Column {
     return this.config.getIn(['table', 'width'], undefined);
   }
 
+  getTableFixed() {
+    return this.config.getIn(['table', 'fixed']);
+  }
+
   canFilterInTable() {
     return this.config.getIn(['table', 'filter']);
   }
