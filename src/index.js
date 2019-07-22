@@ -1,7 +1,7 @@
 export default from './app';
 
 export dynamic from 'dva/dynamic';
-export { Link } from 'dva/router';
+export { Link } from 'react-router-dom';
 
 export Column from './schema';
 export Action from './actions';

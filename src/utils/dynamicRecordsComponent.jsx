@@ -2,7 +2,7 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import { withRouter } from 'dva/router';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
