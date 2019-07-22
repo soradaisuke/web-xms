@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import { connect } from 'dva';
-import { range } from 'lodash';
 import { Alert, Spin } from 'antd';
 
 class Page extends React.PureComponent {
@@ -50,14 +49,9 @@ class Page extends React.PureComponent {
   renderBackground() {
     const { user } = this.props;
     const name = user ? user.get('nickname') : '蜻蜓FM';
+    const backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='150px'><text x='0' y='10' fill='rgba(0, 0, 0, 0.15)' font-size='16'>${name}</text></svg>")`;
 
-    return (
-      <div className="watermark">
-        {range(100).map(i => (
-          <div key={i}>{i % 2 === 0 ? '蜻蜓FM' : name}</div>
-        ))}
-      </div>
-    );
+    return <div className="watermark" style={{ backgroundImage }} />;
   }
 
   render() {
