@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Router, Redirect } from 'dva/router';
+import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, LocaleProvider, Row, Col, Affix } from 'antd';
 import { connect } from 'dva';
