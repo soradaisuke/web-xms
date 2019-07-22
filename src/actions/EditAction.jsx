@@ -20,4 +20,9 @@ export default class EditAction extends Action {
   getHandler({ edit }) {
     return this.config.get('handler', edit);
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  checkVisibility() {
+    return true;
+  }
 }

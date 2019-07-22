@@ -68,6 +68,11 @@ export default class Action {
     return this.config.get('columns');
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  checkVisibility() {
+    return false;
+  }
+
   isVisible(user) {
     const invisible = this.config.get('invisible');
     if (isFunction(invisible)) {
@@ -104,6 +109,7 @@ export default class Action {
           key={this.getTitle()}
           record={record}
           records={records}
+          checkVisibility={this.checkVisibility()}
           onOk={body =>
             onClick({ data: { body }, loadingMessage: null, throwError: true })
           }

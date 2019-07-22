@@ -8,13 +8,14 @@ export default class RecordLink extends React.PureComponent {
   static displayName = 'RecordLink';
 
   static propTypes = {
-    record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+    record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     children: PropTypes.node
   };
 
   static defaultProps = {
-    children: null
+    children: null,
+    record: null
   };
 
   getUrl() {

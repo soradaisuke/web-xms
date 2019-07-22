@@ -28,6 +28,7 @@ class RecordModal extends React.PureComponent {
       resetFields: PropTypes.func.isRequired
     }).isRequired,
     onOk: PropTypes.func.isRequired,
+    checkVisibility: PropTypes.bool,
     user: PropTypes.instanceOf(Immutable.Map),
     columns: PropTypes.instanceOf(Immutable.List),
     record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -35,6 +36,7 @@ class RecordModal extends React.PureComponent {
   };
 
   static defaultProps = {
+    checkVisibility: true,
     columns: Immutable.List(),
     record: null,
     records: null,
@@ -77,12 +79,13 @@ class RecordModal extends React.PureComponent {
   }
 
   renderFormItem(column) {
-    const { user, form, record } = this.props;
+    const { user, form, record, checkVisibility } = this.props;
 
     return column.renderInForm({
       user,
       record,
       form,
+      checkVisibility,
       isEdit: this.isEdit()
     });
   }

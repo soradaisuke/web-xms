@@ -415,7 +415,7 @@ export default class Column {
     return null;
   }
 
-  renderInForm({ user, record, form, isEdit }) {
+  renderInForm({ user, record, form, isEdit, checkVisibility }) {
     const { getFieldsValue, getFieldDecorator } = form;
 
     const key = this.getFormKey();
@@ -426,20 +426,21 @@ export default class Column {
       : null;
 
     if (
-      (!isEdit &&
+      checkVisibility &&
+      ((!isEdit &&
         !this.canShowInCreateFrom({
           user,
           record,
           value,
           values
         })) ||
-      (isEdit &&
-        !this.canShowInEditFrom({
-          user,
-          record,
-          value,
-          values
-        }))
+        (isEdit &&
+          !this.canShowInEditFrom({
+            user,
+            record,
+            value,
+            values
+          })))
     ) {
       return null;
     }
