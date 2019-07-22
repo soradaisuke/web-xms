@@ -40,7 +40,8 @@ export default class ActivatorModal extends React.PureComponent {
 
   hideModalHandler = () => {
     this.setState({
-      visible: false
+      visible: false,
+      confirmLoading: false
     });
     const { onVisibleChange } = this.props;
     if (onVisibleChange) {
@@ -62,7 +63,7 @@ export default class ActivatorModal extends React.PureComponent {
         //
       }
 
-      this.setState({ confirmLoading: true });
+      this.setState({ confirmLoading: false });
     } else {
       this.hideModalHandler();
     }

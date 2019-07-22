@@ -326,6 +326,8 @@ class RecordsPage extends React.PureComponent {
         filterProps.filteredValue = filteredValue;
         filterProps.filterDropdown = column.renderFilterDropDown;
       }
+
+      filterProps.parentFilteredValue = parentFilteredValue;
     }
 
     return (
@@ -343,9 +345,12 @@ class RecordsPage extends React.PureComponent {
             ? `${split(sort, ' ')[1]}end`
             : false
         }
-        scroll={{ x: 1200, y: 300 }}
         render={(value, record) => {
-          const children = column.renderInTable({ value, record });
+          const children = column.renderInTable({
+            value,
+            record,
+            ...filterProps
+          });
           const editAction = actions.getEditAction();
           if (column.canShowEditInTable() && editAction) {
             const action = this.renderAction(editAction, { record, column });
@@ -529,6 +534,9 @@ class RecordsPage extends React.PureComponent {
             rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
             pagination={false}
+            scroll={
+              table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : null
+            }
             onChange={(pagination, filters, sorter) =>
               this.onChange(pagination, filters, sorter, columns)
             }

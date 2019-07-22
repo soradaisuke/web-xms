@@ -8,7 +8,6 @@ export Action from './actions';
 
 export request from './services/request';
 export Page from './pages/Page';
-export DataType from './constants/DataType';
 export ActivatorModal from './components/ActivatorModal';
 export Tags from './components/FormItems/Tags';
 export UploadImage from './components/FormItems/UploadImage';

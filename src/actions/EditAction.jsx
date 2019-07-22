@@ -16,4 +16,8 @@ export default class EditAction extends Action {
   getColumns({ table }) {
     return this.config.get('columns', table.getColumns());
   }
+
+  getHandler({ edit }) {
+    return this.config.get('handler', edit);
+  }
 }

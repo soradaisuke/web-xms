@@ -9,6 +9,7 @@ export default class Table {
     this.findFixedSortOrder();
     this.findDefaultFilter();
     this.findCascadeColumn();
+    this.calculateScrollWidth();
   }
 
   findPrimaryKey() {
@@ -71,6 +72,17 @@ export default class Table {
     });
   }
 
+  calculateScrollWidth() {
+    let scrollWidth = 0;
+    this.columns.forEach(c => {
+      if (c.getTableWidth() > 0) {
+        scrollWidth += c.getTableWidth();
+      }
+    });
+
+    this.scrollWidth = scrollWidth > 0 ? scrollWidth * 1.2 : 0;
+  }
+
   getColumns() {
     return this.columns;
   }
@@ -89,5 +101,9 @@ export default class Table {
 
   getDefaultFilter() {
     return this.defaultFilter;
+  }
+
+  getScrollWidth() {
+    return this.scrollWidth;
   }
 }

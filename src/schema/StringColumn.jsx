@@ -10,6 +10,11 @@ export default class StringColumn extends Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  formatFormSubmitValue(v) {
+    return v || '';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   canRenderFilterDropDown() {
     return true;
   }

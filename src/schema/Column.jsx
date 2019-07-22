@@ -71,27 +71,34 @@ export default class Column {
 
   // table
 
-  getTableTitle({ filtered, filteredValue }) {
+  getTableTitle({ filtered, filteredValue, parentFilteredValue }) {
     if (filtered) {
       if (this.canFilterRangeInTable()) {
         return `${this.getTitle()}（${this.renderInTableValueDefault({
-          value: get(filteredValue, '[0][0]')
+          value: get(filteredValue, '[0][0]'),
+          parentFilteredValue
         }) || ''} ~ ${this.renderInTableValueDefault({
-          value: get(filteredValue, '[0][1]')
+          value: get(filteredValue, '[0][1]'),
+          parentFilteredValue
         }) || ''}）`;
       }
       if (this.canFilterMultipleInTable()) {
         return `${this.getTitle()}（${join(
           map(
             filteredValue,
-            v => this.renderInTableValueDefault({ value: v }) || ''
+            v =>
+              this.renderInTableValueDefault({
+                value: v,
+                parentFilteredValue
+              }) || ''
           ),
           '，'
         )}）`;
       }
 
       return `${this.getTitle()}（${this.renderInTableValueDefault({
-        value: filteredValue[0]
+        value: filteredValue[0],
+        parentFilteredValue
       }) || ''}）`;
     }
 
@@ -197,10 +204,10 @@ export default class Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value }) {
-    const valueOptions = this.getValueOptions();
-    if (valueOptions) {
-      const option = valueOptions.find(o => o.get('value') === value);
+  renderInTableValueDefault({ value, parentFilteredValue }) {
+    const filters = this.getFilters(parentFilteredValue);
+    if (filters) {
+      const option = filters.find(o => o.get('value') === value);
       if (option) {
         return option.get('text');
       }
@@ -210,7 +217,7 @@ export default class Column {
     if (maxLines > 0) {
       return (
         <LinesEllipsis
-          text={value}
+          text={value || ''}
           maxLine={maxLines}
           ellipsis="..."
           trimRight
@@ -221,7 +228,7 @@ export default class Column {
     return value;
   }
 
-  renderInTableValue({ value, record }) {
+  renderInTableValue({ value, record, parentFilteredValue }) {
     const render = this.config.getIn(['table', 'render']);
 
     if (isFunction(render)) {
@@ -233,7 +240,11 @@ export default class Column {
         <React.Fragment>
           {map(value, v => (
             <React.Fragment key={v}>
-              {this.renderInTableValueDefault({ value: v })}
+              {this.renderInTableValueDefault({
+                value: v,
+                record,
+                parentFilteredValue
+              })}
               <br />
             </React.Fragment>
           ))}
@@ -241,11 +252,19 @@ export default class Column {
       );
     }
 
-    return this.renderInTableValueDefault({ value, record });
+    return this.renderInTableValueDefault({
+      value,
+      record,
+      parentFilteredValue
+    });
   }
 
-  renderInTable({ value, record }) {
-    const children = this.renderInTableValue({ value, record });
+  renderInTable({ value, record, parentFilteredValue }) {
+    const children = this.renderInTableValue({
+      value,
+      record,
+      parentFilteredValue
+    });
     const link = this.getTableLink();
 
     if (link) {
@@ -344,6 +363,12 @@ export default class Column {
     );
   }
 
+  getSearchPlaceholder() {
+    return (
+      this.config.getIn(['form', 'placeholder']) || `搜索${this.getTitle()}`
+    );
+  }
+
   getFormComponentProps() {
     return this.config.getIn(['form', 'componentProps'], Immutable.Map());
   }
@@ -420,18 +445,6 @@ export default class Column {
     }
 
     let children;
-
-    if (
-      this.useValueOptionsInForm() &&
-      (this.getFilters(parentValue) ||
-        this.getValueOptionsRequest() ||
-        this.getFormSearchRequest())
-    ) {
-      children = <TreeSelect column={this} parentValue={parentValue} />;
-    } else {
-      children = this.renderInFormItem({ user });
-    }
-
     let initialValue = this.getFormInitialValue();
 
     if (isEdit) {
@@ -441,6 +454,18 @@ export default class Column {
       } else {
         initialValue = this.formatFormFieldValue(preValue);
       }
+    }
+
+    if (
+      this.useValueOptionsInForm() &&
+      (this.getFilters(parentValue) ||
+        this.getValueOptionsRequest() ||
+        this.getFormSearchRequest())
+    ) {
+      initialValue = initialValue === '' ? null : initialValue;
+      children = <TreeSelect column={this} parentValue={parentValue} />;
+    } else {
+      children = this.renderInFormItem({ user });
     }
 
     return (

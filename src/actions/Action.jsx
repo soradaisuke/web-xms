@@ -153,6 +153,7 @@ export default class Action {
     matchParams,
     create,
     remove,
+    edit,
     table,
     column
   }) {
@@ -186,7 +187,7 @@ export default class Action {
       disabled = isFunction(enable) && !enable(params);
     }
 
-    const handler = this.getHandler({ remove, create });
+    const handler = this.getHandler({ remove, create, edit });
     let children;
 
     if (this.getLink() && !disabled) {
@@ -229,7 +230,7 @@ export default class Action {
           );
         } else {
           promise = handler({
-            params,
+            ...params,
             id: get(record, table.getPrimaryKey()),
             ...data
           });
