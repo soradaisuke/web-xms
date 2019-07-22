@@ -27,6 +27,7 @@
     "query-string": "^5.1.1",
     "react-image-crop": "^6.0.18",
     "react-lazyload": "^2.3.0",
+    "react-lines-ellipsis": "^0.14.1",
     "react-player": "^1.9.3",
     "react-router": "^5.0.1",
     "reselect": "^3.0.1",

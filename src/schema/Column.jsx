@@ -9,6 +9,7 @@ import {
   get
 } from 'lodash';
 import { makeCancelablePromise } from '@qt/web-core';
+import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
 import { Button, Form } from 'antd';
 import RecordLink from '../components/RecordLink';
@@ -148,6 +149,10 @@ export default class Column {
     return this.config.getIn(['table', 'fixed']);
   }
 
+  getTableMaxLines() {
+    return this.config.getIn(['table', 'maxLines']);
+  }
+
   canFilterInTable() {
     return this.config.getIn(['table', 'filter']);
   }
@@ -199,6 +204,19 @@ export default class Column {
       if (option) {
         return option.get('text');
       }
+    }
+
+    const maxLines = this.getTableMaxLines();
+    if (maxLines > 0) {
+      return (
+        <LinesEllipsis
+          text={value}
+          maxLine={maxLines}
+          ellipsis="..."
+          trimRight
+          basedOn="letters"
+        />
+      );
     }
     return value;
   }
