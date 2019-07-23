@@ -1,6 +1,5 @@
 export default from './app';
 
-export dynamic from 'dva/dynamic';
 export Column from './schema';
 export Action from './actions';
 export request from './services/request';
