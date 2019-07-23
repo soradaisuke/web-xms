@@ -32,35 +32,32 @@ class RecordsPage extends React.PureComponent {
   static propTypes = {
     actions: PropTypes.instanceOf(TableActions).isRequired,
     fetch: PropTypes.func.isRequired,
+    edit: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired,
+    create: PropTypes.func.isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
     updatePage: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({}).isRequired
     }).isRequired,
-    create: PropTypes.func,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
     page: PropTypes.number,
     pagesize: PropTypes.number,
-    edit: PropTypes.func,
     inline: PropTypes.bool,
     filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
-    remove: PropTypes.func,
     sort: PropTypes.string,
     total: PropTypes.number,
     user: PropTypes.instanceOf(Immutable.Map)
   };
 
   static defaultProps = {
-    create: null,
     component: null,
     error: null,
     isLoading: false,
-    edit: null,
     filter: {},
-    remove: null,
     records: Immutable.List(),
     page: 1,
     pagesize: 10,

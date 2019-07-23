@@ -35,6 +35,10 @@ export default class TimeColumn extends NumberColumn {
       : '';
   }
 
+  renderInDescriptionDefault({ value }) {
+    return this.renderInTableValueDefault({ value });
+  }
+
   renderFilterDropDownContent = ({
     setSelectedKeys, // eslint-disable-line react/prop-types
     selectedKeys // eslint-disable-line react/prop-types

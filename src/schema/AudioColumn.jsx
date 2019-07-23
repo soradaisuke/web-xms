@@ -14,6 +14,10 @@ export default class AudioColumn extends StringColumn {
     ) : null;
   }
 
+  renderInDescriptionDefault({ value }) {
+    return this.renderInTableValueDefault({ value });
+  }
+
   showPlaybackRate() {
     return this.config.getIn(['table', 'showPlaybackRate']);
   }

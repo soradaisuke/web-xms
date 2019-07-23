@@ -494,6 +494,93 @@ export default class Column {
     );
   }
 
+  // descriptions
+
+  canShowInDescription(user) {
+    const invisible = this.config.getIn(['detail', 'invisible']);
+    if (isFunction(invisible)) {
+      if (!user) {
+        return false;
+      }
+
+      return !invisible({ user });
+    }
+
+    return !invisible;
+  }
+
+  getDescriptionWidth() {
+    return this.config.getIn(['detail', 'width'], undefined);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  renderInDescriptionDefault({ value }) {
+    const filters = this.getFilters();
+    if (filters) {
+      const option = filters.find(o => o.get('value') === value);
+      if (option) {
+        return option.get('text');
+      }
+    }
+
+    const maxLines = this.getTableMaxLines();
+    if (maxLines > 0) {
+      return (
+        <LinesEllipsis
+          text={value || ''}
+          maxLine={maxLines}
+          ellipsis="..."
+          trimRight
+          basedOn="letters"
+        />
+      );
+    }
+    return value;
+  }
+
+  renderInDescriptionValue({ value, record }) {
+    const render = this.config.getIn(['detail', 'render']);
+
+    if (isFunction(render)) {
+      return render({ record });
+    }
+
+    if (isArray(value)) {
+      return (
+        <React.Fragment>
+          {map(value, v => (
+            <React.Fragment key={v}>
+              {this.renderInDescriptionDefault({
+                value: v,
+                record
+              })}
+              <br />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      );
+    }
+
+    return this.renderInDescriptionDefault({
+      value,
+      record
+    });
+  }
+
+  renderInDescription({ value, record }) {
+    const children = this.renderInDescriptionValue({ value, record });
+    const link = this.getTableLink();
+
+    if (link) {
+      return (
+        <RecordLink link={link} record={record}>
+          {children}
+        </RecordLink>
+      );
+    }
+    return children;
+  }
+
   async fetchValueOptions(parentFilteredValue) {
     const valueOptionsRequest = this.getValueOptionsRequest();
 

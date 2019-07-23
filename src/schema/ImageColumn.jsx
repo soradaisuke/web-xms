@@ -15,6 +15,16 @@ export default class ImageColumn extends StringColumn {
     return <img alt="" src={src} style={style} />;
   }
 
+  renderInDescriptionDefault({ value }) {
+    const src = generateUpYunImageUrl(value);
+    const width = this.getDescriptionWidth();
+    const style = width
+      ? { width: isNumber(width) ? `${width}px` : width }
+      : {};
+
+    return <img alt="" src={src} style={style} />;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getFormFiledValuePropName() {
     return 'url';

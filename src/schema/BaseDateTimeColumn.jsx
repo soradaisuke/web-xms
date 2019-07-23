@@ -31,6 +31,10 @@ export default class BaseDateTimeColumn extends StringColumn {
       : '';
   }
 
+  renderInDescriptionDefault({ value }) {
+    return this.renderInTableValueDefault({ value });
+  }
+
   // eslint-disable-next-line class-methods-use-this
   showTime() {
     return false;
