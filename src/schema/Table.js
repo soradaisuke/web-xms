@@ -17,7 +17,7 @@ export default class Table {
 
     if (this.columns.size > 0 && !primaryColumn) {
       console.error('missing primary key');
-    } else {
+    } else if (primaryColumn) {
       this.primaryKey = primaryColumn.getKey();
     }
   }
