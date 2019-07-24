@@ -61,11 +61,15 @@ export default class Action {
   }
 
   getHandlingMessage() {
-    return this.config.get('handlingMessage', '正在保存……');
+    return this.config.get('handlingMessage');
   }
 
   getColumns() {
     return this.config.get('columns');
+  }
+
+  needReload() {
+    return this.config.get('reload');
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -111,7 +115,12 @@ export default class Action {
           records={records}
           checkVisibility={this.checkVisibility()}
           onOk={body =>
-            onClick({ data: { body }, loadingMessage: null, throwError: true })
+            onClick({
+              data: { body },
+              loadingMessage: null,
+              throwError: true,
+              relaod: true
+            })
           }
         >
           <Button {...buttonProps} />
@@ -218,7 +227,8 @@ export default class Action {
     const onClick = ({
       data = {},
       loadingMessage = this.getHandlingMessage(),
-      throwError = false
+      throwError = false,
+      reload = this.needReload()
     } = {}) => {
       if (isFunction(handler)) {
         let promise;
@@ -244,7 +254,8 @@ export default class Action {
         submit({
           promise,
           throwError,
-          loadingMessage
+          loadingMessage,
+          reload
         });
       }
     };

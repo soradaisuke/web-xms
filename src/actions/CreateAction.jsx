@@ -17,6 +17,10 @@ export default class CreateAction extends Action {
     return this.config.get('handler', create);
   }
 
+  getHandlingMessage() {
+    return this.config.get('handlingMessage', '正在保存……');
+  }
+
   getColumns({ table }) {
     return this.config.get('columns', table.getColumns());
   }

@@ -21,6 +21,10 @@ export default class EditAction extends Action {
     return this.config.get('handler', edit);
   }
 
+  getHandlingMessage() {
+    return this.config.get('handlingMessage', '正在保存……');
+  }
+
   // eslint-disable-next-line class-methods-use-this
   checkVisibility() {
     return true;

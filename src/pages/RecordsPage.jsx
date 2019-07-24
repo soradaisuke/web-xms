@@ -7,7 +7,6 @@ import { Table, Pagination, message, Card, Spin, Popover, Icon } from 'antd';
 import {
   split,
   startsWith,
-  isFunction,
   isArray,
   isEqual,
   get,
@@ -185,24 +184,11 @@ class RecordsPage extends React.PureComponent {
     });
   };
 
-  onOrderChange = async (body, diff) => {
-    const { order } = this.props;
-    await this.updateRecord({ promise: order(body, diff) });
-  };
-
-  onCustomGlobalAction = async handler => {
-    if (isFunction(handler)) {
-      const {
-        match: { params: matchParams }
-      } = this.props;
-      await this.updateRecord({ promise: handler(matchParams) });
-    }
-  };
-
   updateRecord = async ({
     promise,
     loadingMessage = '正在保存……',
-    throwError = false
+    throwError = false,
+    reload = false
   }) => {
     let hide;
     if (loadingMessage) {
@@ -223,16 +209,9 @@ class RecordsPage extends React.PureComponent {
         throw e;
       }
     }
-    this.fetch();
-  };
-
-  editRecord = async body => {
-    const { edit, inlineEdit, create, primaryKey } = this.props;
-    const newEdit = edit || inlineEdit;
-    await this.updateRecord({
-      promise: body[primaryKey] && newEdit ? newEdit(body) : create(body),
-      throwError: true
-    });
+    if (reload) {
+      this.fetch();
+    }
   };
 
   fetch = async () => {
