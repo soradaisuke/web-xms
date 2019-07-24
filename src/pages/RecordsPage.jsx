@@ -532,7 +532,7 @@ class RecordsPage extends React.PureComponent {
             rowSelection={rowSelection}
             pagination={false}
             scroll={
-              table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : null
+              table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {}
             }
             onChange={(pagination, filters, sorter) =>
               this.onChange(pagination, filters, sorter, columns)

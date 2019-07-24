@@ -56,7 +56,7 @@ function generateModel({ namespace }, service) {
 }
 
 function generateRecordPage({
-  config: { namespace, api: { path } = {}, actions, table } = {},
+  config: { namespace, api: { path, host } = {}, actions, table } = {},
   component,
   inlineLayout
 }) {
@@ -90,6 +90,10 @@ function generateRecordPage({
       apiPath = path(matchParams);
     } else if (isString(path)) {
       apiPath = path;
+    }
+
+    if (host) {
+      apiPath = `${host}${apiPath}`;
     }
 
     if (apiPath) {
