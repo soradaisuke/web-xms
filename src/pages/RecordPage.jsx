@@ -73,11 +73,7 @@ class RecordPage extends React.PureComponent {
     }
   };
 
-  updateRecord = async ({
-    promise,
-    loadingMessage = '正在保存……',
-    throwError = false
-  }) => {
+  updateRecord = async ({ promise, loadingMessage, throwError = false }) => {
     let hide;
     if (loadingMessage) {
       hide = message.loading(loadingMessage, 0);

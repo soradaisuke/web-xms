@@ -186,7 +186,7 @@ class RecordsPage extends React.PureComponent {
 
   updateRecord = async ({
     promise,
-    loadingMessage = '正在保存……',
+    loadingMessage,
     throwError = false,
     reload = false
   }) => {
