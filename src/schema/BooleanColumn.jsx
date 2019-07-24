@@ -40,7 +40,7 @@ export default class BooleanColumn extends Column {
     return 'checked';
   }
 
-  renderInFormItem() {
+  renderInFormItem({ isEdit }) {
     const options = this.getValueOptions();
     const checkedChildren = options
       .find(option => option.get('value'))
@@ -53,7 +53,7 @@ export default class BooleanColumn extends Column {
       <Switch
         checkedChildren={checkedChildren}
         unCheckedChildren={unCheckedChildren}
-        {...this.getFormComponentProps().toJS()}
+        {...this.getFormComponentProps({ isEdit })}
       />
     );
   }

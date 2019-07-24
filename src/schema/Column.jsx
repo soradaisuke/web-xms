@@ -154,10 +154,13 @@ export default class Column {
   }
 
   getTableFilterComponentProps() {
-    return this.config.getIn(
-      ['table', 'filterComponentProps'],
-      Immutable.Map()
-    );
+    if (!this.tableFilterComponentProps) {
+      this.tableFilterComponentProps = this.config
+        .getIn(['table', 'filterComponentProps'], Immutable.Map())
+        .toJS();
+    }
+
+    return this.tableFilterComponentProps;
   }
 
   getTableWidth() {
@@ -326,6 +329,10 @@ export default class Column {
   );
 
   // form
+  isImmutableInForm() {
+    return this.config.getIn(['form', 'immutable']);
+  }
+
   canShowInCreateFrom({ user, value, values, record }) {
     const creatable = this.config.getIn(['form', 'creatable']);
     if (isFunction(creatable)) {
@@ -381,8 +388,18 @@ export default class Column {
     );
   }
 
-  getFormComponentProps() {
-    return this.config.getIn(['form', 'componentProps'], Immutable.Map());
+  getFormComponentProps({ isEdit }) {
+    if (!this.formComponentProps) {
+      this.formComponentProps = this.config
+        .getIn(['form', 'componentProps'], Immutable.Map())
+        .toJS();
+    }
+
+    if (isEdit) {
+      return { disabled: this.isImmutableInForm(), ...this.formComponentProps };
+    }
+
+    return this.formComponentProps;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -476,9 +493,15 @@ export default class Column {
         this.getFormSearchRequest())
     ) {
       initialValue = initialValue === '' ? null : initialValue;
-      children = <TreeSelect column={this} parentValue={parentValue} />;
+      children = (
+        <TreeSelect
+          {...this.getFormComponentProps({ isEdit })}
+          column={this}
+          parentValue={parentValue}
+        />
+      );
     } else {
-      children = this.renderInFormItem({ user });
+      children = this.renderInFormItem({ user, isEdit });
     }
 
     return (

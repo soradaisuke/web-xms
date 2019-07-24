@@ -54,7 +54,7 @@ export default class BaseDateTimeColumn extends StringColumn {
     if (this.canFilterRangeInTable()) {
       return (
         <RangePicker
-          {...this.getTableFilterComponentProps().toJS()} // eslint-disable-line react/no-this-in-sfc
+          {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
           allowClear={false}
           showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
           format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
@@ -83,7 +83,7 @@ export default class BaseDateTimeColumn extends StringColumn {
     return (
       <React.Fragment>
         <DatePicker
-          {...this.getTableFilterComponentProps().toJS()} // eslint-disable-line react/no-this-in-sfc
+          {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
           showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
           allowClear={false}
           format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
@@ -111,13 +111,13 @@ export default class BaseDateTimeColumn extends StringColumn {
     );
   };
 
-  renderInFormItem() {
+  renderInFormItem({ isEdit }) {
     return (
       <DatePicker
         allowClear
         showTime={this.showTime()}
         format={this.getInTableFormat()}
-        {...this.getFormComponentProps().toJS()}
+        {...this.getFormComponentProps({ isEdit })}
       />
     );
   }

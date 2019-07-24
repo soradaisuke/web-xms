@@ -48,7 +48,7 @@ export default class TimeColumn extends NumberColumn {
       return (
         <div style={{ marginBottom: 8, display: 'block' }}>
           <TimePickerWithConfirm
-            {...this.getTableFilterComponentProps().toJS()} // eslint-disable-line react/no-this-in-sfc
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
             format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
             value={
               !isUndefined(get(selectedKeys, '[0][0]'))
@@ -71,7 +71,7 @@ export default class TimeColumn extends NumberColumn {
           />
           {' ~ '}
           <TimePickerWithConfirm
-            {...this.getTableFilterComponentProps().toJS()} // eslint-disable-line react/no-this-in-sfc
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
             format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
             value={
               !isUndefined(get(selectedKeys, '[0][1]'))
@@ -98,7 +98,7 @@ export default class TimeColumn extends NumberColumn {
 
     return (
       <TimePickerWithConfirm
-        {...this.getTableFilterComponentProps().toJS()} // eslint-disable-line react/no-this-in-sfc
+        {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
         format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
         value={
           selectedKeys.length > 0
@@ -115,8 +115,8 @@ export default class TimeColumn extends NumberColumn {
     );
   };
 
-  renderInFormItem() {
-    return <TimePicker {...this.getFormComponentProps().toJS()} />;
+  renderInFormItem({ isEdit }) {
+    return <TimePicker {...this.getFormComponentProps({ isEdit })} />;
   }
 
   // eslint-disable-next-line class-methods-use-this

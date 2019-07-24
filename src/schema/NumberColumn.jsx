@@ -62,12 +62,12 @@ export default class NumberColumn extends Column {
     );
   };
 
-  renderInFormItem() {
+  renderInFormItem({ isEdit }) {
     return (
       <InputNumber
         style={{ width: '100%' }}
         placeholder={this.getFormPlaceholder()}
-        {...this.getFormComponentProps().toJS()}
+        {...this.getFormComponentProps({ isEdit })}
       />
     );
   }
