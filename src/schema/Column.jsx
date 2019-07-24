@@ -6,7 +6,10 @@ import {
   join,
   map,
   isEqual,
-  get
+  get,
+  find,
+  filter,
+  flatten
 } from 'lodash';
 import { makeCancelablePromise } from '@qt/web-core';
 import LinesEllipsis from 'react-lines-ellipsis';
@@ -18,16 +21,23 @@ import './Column.less';
 
 const FormItem = Form.Item;
 
-function generateValidOptions(options) {
-  if (options && options.size > 0) {
-    return options
-      .filter(o => !o.get('disableInFilter'))
-      .map(o => {
-        return o.set('children', generateValidOptions(o.get('children')));
-      });
+function generateValidOptions(options, disableKey) {
+  if (options && options.length > 0) {
+    return map(filter(options, o => !disableKey || !get(o, disableKey)), o => ({
+      ...o,
+      children: generateValidOptions(o.children)
+    }));
   }
 
   return options;
+}
+
+function generateFilters(options) {
+  return Immutable.Map({
+    normal: generateValidOptions(options),
+    disableInFilter: generateValidOptions(options, 'disableInFilter'),
+    disableInForm: generateValidOptions(options, 'disableInForm')
+  });
 }
 
 export default class Column {
@@ -39,7 +49,7 @@ export default class Column {
 
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
-      this.filters = generateValidOptions(valueOptions);
+      this.filters = generateFilters(valueOptions.toJS());
     } else if (this.getParentKey()) {
       this.filters = Immutable.Map();
     }
@@ -121,20 +131,22 @@ export default class Column {
     return this.config.getIn(['table', 'fixedSortOrder']);
   }
 
-  getFilters(parentFilteredValue) {
+  getFilters(parentFilteredValue, key = 'normal') {
     if (this.getParentKey()) {
       if (isArray(parentFilteredValue)) {
-        const list = Immutable.List(parentFilteredValue);
-        const filters = list.map(v => this.filters.get(v)).filter(v => !!v);
-        if (list.size !== filters.size) {
+        const filters = filter(
+          map(parentFilteredValue, v => this.filters.getIn([v, key])),
+          v => !!v
+        );
+        if (parentFilteredValue.length !== filters.length) {
           return null;
         }
 
-        return filters.flatten(true);
+        return flatten(filters);
       }
-      return this.filters.get(parentFilteredValue);
+      return this.filters.getIn([parentFilteredValue, key]);
     }
-    return this.filters;
+    return this.filters ? this.filters.get(key) : null;
   }
 
   getTableFilterKey() {
@@ -207,9 +219,9 @@ export default class Column {
   renderInTableValueDefault({ value, parentFilteredValue }) {
     const filters = this.getFilters(parentFilteredValue);
     if (filters) {
-      const option = filters.find(o => o.get('value') === value);
+      const option = find(filters, o => o.value === value);
       if (option) {
-        return option.get('text');
+        return option.text;
       }
     }
 
@@ -517,9 +529,9 @@ export default class Column {
   renderInDescriptionDefault({ value }) {
     const filters = this.getFilters();
     if (filters) {
-      const option = filters.find(o => o.get('value') === value);
+      const option = find(filters, o => o.value === value);
       if (option) {
-        return option.get('text');
+        return option.text;
       }
     }
 
@@ -609,10 +621,7 @@ export default class Column {
                   return Promise.resolve(v);
                 }
                 return valueOptionsRequest(v).then(result => {
-                  this.filters = this.filters.set(
-                    v,
-                    generateValidOptions(Immutable.fromJS(result))
-                  );
+                  this.filters = this.filters.set(v, generateFilters(result));
                 });
               })
             ).then(() => {
@@ -622,7 +631,7 @@ export default class Column {
             promise = valueOptionsRequest(parentFilteredValue).then(result => {
               this.filters = this.filters.set(
                 parentFilteredValue,
-                generateValidOptions(Immutable.fromJS(result))
+                generateFilters(result)
               );
               this.activeValueOptionsRequest = null;
             });
@@ -634,7 +643,7 @@ export default class Column {
         }
       } else if (!this.activeValueOptionsRequest) {
         this.activeValueOptionsRequest = valueOptionsRequest().then(result => {
-          this.filters = generateValidOptions(Immutable.fromJS(result));
+          this.filters = generateFilters(result);
           this.activeValueOptionsRequest = null;
         });
 

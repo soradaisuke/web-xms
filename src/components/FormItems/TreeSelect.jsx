@@ -33,10 +33,10 @@ export default class XMSTreeSelect extends React.PureComponent {
     let { treeData } = this.state;
 
     if (!treeData) {
-      const filters = column.getFilters(parentValue);
+      const filters = column.getFilters(parentValue, 'disableInForm');
 
       if (filters) {
-        treeData = filters ? generateTreeData(filters.toJS()) : [];
+        treeData = filters ? generateTreeData(filters) : [];
       } else if (valueOptionsRequest) {
         column
           .fetchValueOptions(parentValue)

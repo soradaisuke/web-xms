@@ -297,9 +297,7 @@ class RecordsPage extends React.PureComponent {
         filteredValue = [];
       }
 
-      let filters = column.getFilters(parentFilteredValue);
-      filters = filters ? filters.toJS() : null;
-
+      const filters = column.getFilters(parentFilteredValue, 'disableInFilter');
       const valueOptionsRequest = column.getValueOptionsRequest();
 
       if (filters) {
