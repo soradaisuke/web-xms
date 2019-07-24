@@ -15,8 +15,8 @@ export default class Table {
   findPrimaryKey() {
     const primaryColumn = this.columns.find(column => column.isPrimaryKey());
 
-    if (!primaryColumn) {
-      throw new Error('missing primary key');
+    if (this.columns.size > 0 && !primaryColumn) {
+      console.error('missing primary key');
     } else {
       this.primaryKey = primaryColumn.getKey();
     }
