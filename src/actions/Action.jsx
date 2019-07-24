@@ -186,20 +186,25 @@ export default class Action {
     }
 
     const enable = this.config.get('enable');
-    const filteredRecords = records
-      ? filter(records, r =>
-          isFunction(enable)
-            ? enable({ ...params, records: null, record: r })
-            : true
-        )
-      : null;
+    let disabled;
+    let filteredRecords;
 
-    let disabled = false;
-
-    if (records) {
-      disabled = filteredRecords && filteredRecords.length === 0;
-    } else {
+    if (this.isMultipleAction() && !this.isRowAction()) {
       disabled = isFunction(enable) && !enable(params);
+    } else {
+      filteredRecords = records
+        ? filter(records, r =>
+            isFunction(enable)
+              ? enable({ ...params, records: null, record: r })
+              : true
+          )
+        : null;
+
+      if (records) {
+        disabled = filteredRecords && filteredRecords.length === 0;
+      } else {
+        disabled = isFunction(enable) && !enable(params);
+      }
     }
 
     const handler = this.getHandler({ remove, create, edit });
@@ -232,7 +237,13 @@ export default class Action {
     } = {}) => {
       if (isFunction(handler)) {
         let promise;
-        if (filteredRecords) {
+
+        if (this.isMultipleAction() && !this.isRowAction()) {
+          promise = handler({
+            ...params,
+            ...data
+          });
+        } else if (filteredRecords) {
           promise = Promise.all(
             map(filteredRecords, r =>
               handler({
@@ -251,6 +262,7 @@ export default class Action {
             ...data
           });
         }
+
         submit({
           promise,
           throwError,
