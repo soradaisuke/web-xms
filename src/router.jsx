@@ -54,12 +54,15 @@ function RouterConfig({ history, app, user }) {
 
   const routes = getValidRoutes(unCheckRoutes, user);
 
-  function renderRoute({ path, routes: subRoutes, component: Component }) {
+  function renderRoute({
+    path,
+    inline,
+    routes: subRoutes,
+    component: Component
+  }) {
     const children = [];
-    if (Component) {
-      const inlineRoutes = subRoutes
-        ? filter(subRoutes, ({ inline }) => inline)
-        : [];
+    if (Component && !inline) {
+      const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
 
       children.push(
         <Route
@@ -75,11 +78,8 @@ function RouterConfig({ history, app, user }) {
         />
       );
     }
-    const nonInlineRoutes = subRoutes
-      ? filter(subRoutes, ({ inline }) => !inline)
-      : [];
-    if (nonInlineRoutes && nonInlineRoutes.length > 0) {
-      return children.concat(nonInlineRoutes.map(route => renderRoute(route)));
+    if (subRoutes && subRoutes.length > 0) {
+      return children.concat(subRoutes.map(route => renderRoute(route)));
     }
 
     return children;

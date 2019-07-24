@@ -8,9 +8,9 @@ import pathToText from '../utils/pathToText';
 function addBreadcrumbItem({ pathname, routes, items, params }) {
   forEach(
     routes,
-    ({ path, component, title, breadcrumb, routes: childRoutes }) => {
+    ({ path, component, title, inline, breadcrumb, routes: childRoutes }) => {
       if (matchPath(pathname, { path })) {
-        if (component) {
+        if (component && !inline) {
           let breadcrumbTitle;
 
           if (isFunction(breadcrumb)) {
