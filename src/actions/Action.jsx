@@ -52,6 +52,15 @@ export default class Action {
     return this.config.getIn(['confirm', 'content']);
   }
 
+  getConfirmComponentProps() {
+    if (!this.confirmComponentProps) {
+      this.confirmComponentProps = this.config
+        .getIn(['confirm', 'componentProps'], Immutable.Map())
+        .toJS();
+    }
+    return this.confirmComponentProps;
+  }
+
   getLink() {
     return this.config.get('link');
   }
@@ -139,6 +148,7 @@ export default class Action {
     if (confirmType === 'pop' && !buttonProps.disabled) {
       return (
         <Popconfirm
+          {...this.getConfirmComponentProps()}
           key={this.getTitle()}
           title={isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle}
           onConfirm={onClick}
@@ -152,6 +162,7 @@ export default class Action {
     if (confirmTitle) {
       click = () =>
         modalConfirm({
+          ...this.getConfirmComponentProps(),
           title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
           content: isFunction(confirmContent)
             ? confirmContent(params)
