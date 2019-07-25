@@ -119,7 +119,7 @@ export default class Action {
               data: { body },
               loadingMessage: null,
               throwError: true,
-              relaod: true
+              reload: true
             })
           }
         >
