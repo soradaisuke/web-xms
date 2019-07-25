@@ -537,7 +537,11 @@ class RecordsPage extends React.PureComponent {
   render() {
     const { component: Component, error, inline } = this.props;
     return (
-      <Page isError={!!error} errorMessage={error ? error.message : ''}>
+      <Page
+        isError={!!error}
+        errorMessage={error ? error.message : ''}
+        showWatermark={!inline}
+      >
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>
             <Component />

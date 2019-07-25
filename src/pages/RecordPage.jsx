@@ -243,6 +243,7 @@ class RecordPage extends React.PureComponent {
         isLoading={isLoading}
         isError={!!error}
         errorMessage={error ? error.message : ''}
+        showWatermark={!inline}
       >
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>

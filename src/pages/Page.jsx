@@ -14,7 +14,8 @@ class Page extends React.PureComponent {
     errorMessage: PropTypes.string,
     isError: PropTypes.bool,
     isLoading: PropTypes.bool,
-    user: PropTypes.instanceOf(Immutable.Map)
+    user: PropTypes.instanceOf(Immutable.Map),
+    showWatermark: PropTypes.bool
   };
 
   static defaultProps = {
@@ -23,7 +24,8 @@ class Page extends React.PureComponent {
     errorMessage: '',
     isError: false,
     isLoading: false,
-    user: null
+    user: null,
+    showWatermark: true
   };
 
   renderContent() {
@@ -65,11 +67,11 @@ class Page extends React.PureComponent {
   }
 
   render() {
-    const { className } = this.props;
+    const { className, showWatermark } = this.props;
 
     return (
       <div className={classNames('xms-page', className)}>
-        {this.renderBackground()}
+        {showWatermark && this.renderBackground()}
         {this.renderContent()}
       </div>
     );
