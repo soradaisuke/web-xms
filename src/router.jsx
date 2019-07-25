@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
-import { Layout, Spin, LocaleProvider, Row, Col, Affix } from 'antd';
+import { Layout, Spin, LocaleProvider, Row, Affix } from 'antd';
 import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -116,22 +116,18 @@ function RouterConfig({ history, app, user }) {
             <User />
           </Header>
           <Layout className="xms-main-layout">
-            <Row>
-              <Col lg={3} xl={3} xxl={3}>
-                <Affix>
-                  <Menu routes={routes} />
-                </Affix>
-              </Col>
-              <Col lg={21} xl={21} xxl={21}>
-                <Content className="xms-content">
-                  <Switch>
-                    {map(routes, route => renderRoute(route))}
-                    {!homeRoute && firstAvaliableNonHomeRoutePath ? (
-                      <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
-                    ) : null}
-                  </Switch>
-                </Content>
-              </Col>
+            <Row type="flex">
+              <Affix>
+                <Menu routes={routes} />
+              </Affix>
+              <Content className="xms-content">
+                <Switch>
+                  {map(routes, route => renderRoute(route))}
+                  {!homeRoute && firstAvaliableNonHomeRoutePath ? (
+                    <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
+                  ) : null}
+                </Switch>
+              </Content>
             </Row>
           </Layout>
         </Layout>
