@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
-import { Layout, Spin, LocaleProvider, Affix } from 'antd';
+import { Layout, Spin, LocaleProvider, Affix, BackTop } from 'antd';
 import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -128,6 +128,9 @@ function RouterConfig({ history, app, user }) {
               </Switch>
             </Content>
           </Layout>
+          <BackTop>
+            <div className="ant-back-top-inner">UP</div>
+          </BackTop>
         </Layout>
       </Router>
     </LocaleProvider>
