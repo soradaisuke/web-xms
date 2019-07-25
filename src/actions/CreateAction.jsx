@@ -29,4 +29,9 @@ export default class CreateAction extends Action {
   checkVisibility() {
     return true;
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  canHandleGlobal() {
+    return false;
+  }
 }

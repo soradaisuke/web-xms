@@ -90,6 +90,10 @@ export default class Action {
     return !invisible;
   }
 
+  canHandleGlobal() {
+    return this.isMultipleAction() && !this.isRowAction();
+  }
+
   renderInteral({
     record,
     records,
@@ -189,7 +193,7 @@ export default class Action {
     let disabled;
     let filteredRecords;
 
-    if (this.isMultipleAction() && !this.isRowAction()) {
+    if (this.canHandleGlobal()) {
       disabled = isFunction(enable) && !enable(params);
     } else {
       filteredRecords = records
@@ -238,7 +242,7 @@ export default class Action {
       if (isFunction(handler)) {
         let promise;
 
-        if (this.isMultipleAction() && !this.isRowAction()) {
+        if (this.canHandleGlobal()) {
           promise = handler({
             ...params,
             ...data

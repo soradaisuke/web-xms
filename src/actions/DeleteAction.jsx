@@ -32,4 +32,9 @@ export default class DeleteAction extends Action {
   getHandlingMessage() {
     return this.config.get('handlingMessage', '正在删除……');
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  canHandleGlobal() {
+    return false;
+  }
 }
