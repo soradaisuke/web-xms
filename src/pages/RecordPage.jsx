@@ -21,6 +21,7 @@ class RecordPage extends React.PureComponent {
     match: PropTypes.shape({
       params: PropTypes.shape({}).isRequired
     }).isRequired,
+    bordered: PropTypes.bool,
     table: PropTypes.instanceOf(TableType),
     actions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
@@ -40,6 +41,7 @@ class RecordPage extends React.PureComponent {
 
   static defaultProps = {
     actions: null,
+    bordered: false,
     table: null,
     component: null,
     routes: [],
@@ -163,7 +165,7 @@ class RecordPage extends React.PureComponent {
   }
 
   renderContent() {
-    const { record, inline, table } = this.props;
+    const { record, inline, table, bordered } = this.props;
 
     if (!record || !table) {
       return null;
@@ -175,7 +177,7 @@ class RecordPage extends React.PureComponent {
         className={classNames('content-card', inline ? 'inline' : '')}
       >
         <Descriptions
-          bordered
+          bordered={bordered}
           column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
         >
           {table.getColumns().map(column => this.renderDescriptionItem(column))}
