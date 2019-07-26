@@ -35,7 +35,7 @@ class RecordPage extends React.PureComponent {
       })
     ),
     inline: PropTypes.bool,
-    inlineLayout: PropTypes.oneOf(['card', 'tab', 'collapse']),
+    layout: PropTypes.oneOf(['card', 'tab', 'collapse']),
     user: PropTypes.instanceOf(Immutable.Map)
   };
 
@@ -46,7 +46,7 @@ class RecordPage extends React.PureComponent {
     component: null,
     routes: [],
     inline: false,
-    inlineLayout: 'card',
+    layout: 'card',
     user: null,
     fetch: null,
     remove: null,
@@ -188,9 +188,9 @@ class RecordPage extends React.PureComponent {
   }
 
   renderRoutes() {
-    const { routes, inlineLayout, inline } = this.props;
+    const { routes, layout, inline } = this.props;
     if (routes && routes.length) {
-      switch (inlineLayout) {
+      switch (layout) {
         case 'collapse':
           return (
             <Card

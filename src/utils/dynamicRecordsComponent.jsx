@@ -114,8 +114,7 @@ function generateRecordsPage(
     api: { host, path, fetchFixedFilter, createDefaultBody },
     namespace,
     actions,
-    table,
-    bordered
+    table
   },
   component
 ) {
@@ -129,7 +128,6 @@ function generateRecordsPage(
           component={component}
           table={table}
           actions={actions}
-          bordered={bordered}
         />
       );
     }

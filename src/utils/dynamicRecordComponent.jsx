@@ -55,11 +55,10 @@ function generateModel({ namespace }, service) {
   };
 }
 
-function generateRecordPage({
-  config: { namespace, api: { path, host } = {}, actions, table } = {},
-  component,
-  inlineLayout
-}) {
+function generateRecordPage(
+  { namespace, api: { path, host } = {}, actions, table, bordered, layout },
+  component
+) {
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -67,10 +66,11 @@ function generateRecordPage({
       return (
         <RecordPage
           {...this.props}
-          inlineLayout={inlineLayout}
+          layout={layout}
           component={component}
           table={table}
           actions={actions}
+          bordered={bordered}
         />
       );
     }
@@ -127,29 +127,18 @@ function generateRecordPage({
   );
 }
 
-function generateDynamicRecordComponent({
-  app,
-  config,
-  component,
-  inlineLayout
-}) {
+function generateDynamicRecordComponent({ app, config, component }) {
   const service = generateService(config);
   const model = generateModel(config, service);
 
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () =>
-      Promise.resolve(generateRecordPage({ config, component, inlineLayout }))
+    component: () => Promise.resolve(generateRecordPage(config, component))
   });
 }
 
-export default function dynamicRecordComponent({
-  app,
-  config,
-  component,
-  inlineLayout
-}) {
+export default function dynamicRecordComponent({ app, config, component }) {
   if (!app) {
     throw new Error('dynamicRecordComponent: app is required');
   }
@@ -160,7 +149,6 @@ export default function dynamicRecordComponent({
   return generateDynamicRecordComponent({
     app,
     config,
-    component,
-    inlineLayout
+    component
   });
 }
