@@ -128,9 +128,7 @@ function RouterConfig({ history, app, user }) {
               </Switch>
             </Content>
           </Layout>
-          <BackTop>
-            <div className="ant-back-top-inner">UP</div>
-          </BackTop>
+          <BackTop />
         </Layout>
       </Router>
     </LocaleProvider>
