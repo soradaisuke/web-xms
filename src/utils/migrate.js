@@ -21,7 +21,13 @@ export function migrateRouteApi({ defaultFilter, ...other } = {}) {
   return { ...newApi, ...other };
 }
 
-export function migrateConfig({ type, api, schema, inlineWidgetType,  ...other } = {}) {
+export function migrateConfig({
+  type,
+  api,
+  schema,
+  inlineWidgetType,
+  ...other
+} = {}) {
   let newType = type;
   if (type === 'group') {
     console.error("route.config.type 'group' is deprecated, please use 'list'");
@@ -37,7 +43,13 @@ export function migrateConfig({ type, api, schema, inlineWidgetType,  ...other }
     );
   }
 
-  return { type: newType, api: migrateRouteApi(api), table: schema, layout: inlineWidgetType, ...other };
+  return {
+    type: newType,
+    api: migrateRouteApi(api),
+    table: schema,
+    layout: inlineWidgetType,
+    ...other
+  };
 }
 
 export function migrateRoute({ component, config, ...other } = {}) {

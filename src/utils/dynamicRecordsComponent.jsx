@@ -123,7 +123,7 @@ function getQuery({ namespace, inline, search }) {
   if (inline) {
     try {
       queries = JSON.parse(decodeURIComponent(queries[namespace]));
-    } catch(e) {
+    } catch (e) {
       queries = {};
     }
   }
@@ -168,7 +168,11 @@ function generateRecordsPage(
   );
 
   const mapStateToProps = (state, props) => {
-    const queries = getQuery({ namespace, inline, search: props.location.search });
+    const queries = getQuery({
+      namespace,
+      inline,
+      search: props.location.search
+    });
 
     return {
       filter: filterSelector(queries),
@@ -215,17 +219,28 @@ function generateRecordsPage(
 
     const props = {
       fetch: async ({ page, pagesize, sort, filter = {} }) => {
-        const queries = getQuery({ namespace, inline, search: location.search });
+        const queries = getQuery({
+          namespace,
+          inline,
+          search: location.search
+        });
 
         if (
           (table.getFixedSortOrder() && table.getFixedSortOrder() !== sort) ||
           ((table.getDefaultSortOrder() || table.getDefaultFilter()) &&
             (!queries || Object.keys(queries).length === 0))
         ) {
-          const uri = generateUri(window.location.href, generateQuery({ namespace, inline, query: {
-            filter: JSON.stringify(table.getDefaultFilter() || {}),
-            sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
-          }}));
+          const uri = generateUri(
+            window.location.href,
+            generateQuery({
+              namespace,
+              inline,
+              query: {
+                filter: JSON.stringify(table.getDefaultFilter() || {}),
+                sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
+              }
+            })
+          );
           history.replace(
             uri.href.substring(uri.origin.length, uri.href.length)
           );
@@ -257,9 +272,12 @@ function generateRecordsPage(
           filter: isUndefined(filter) ? filter : JSON.stringify(filter)
         };
         forEach(newQuery, (v, key) => {
-          if (isUndefined(v) || v == '') delete newQuery[key];
+          if (isUndefined(v) || v === '') delete newQuery[key];
         });
-        const uri = generateUri(window.location.href, generateQuery({ namespace, inline, query: newQuery }));
+        const uri = generateUri(
+          window.location.href,
+          generateQuery({ namespace, inline, query: newQuery })
+        );
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
       },
       create: async ({ body }) =>
@@ -294,11 +312,17 @@ function generateDynamicRecordsComponent({ app, config, component, inline }) {
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage(config, component, inline))
+    component: () =>
+      Promise.resolve(generateRecordsPage(config, component, inline))
   });
 }
 
-export default function dynamicRecordsComponent({ app, config, component, inline }) {
+export default function dynamicRecordsComponent({
+  app,
+  config,
+  component,
+  inline
+}) {
   if (!app) {
     throw new Error('dynamicRecordsComponent: app is required');
   }
