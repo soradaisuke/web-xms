@@ -52,7 +52,7 @@ export default function processRoutes({ app, routes }) {
 
       const route = migrateRoute(r, app);
 
-      const { config = {}, path, models, inlineLayout } = route;
+      const { config = {}, path, models, inline } = route;
       let { component } = route;
 
       if (isElement(component)) {
@@ -71,13 +71,13 @@ export default function processRoutes({ app, routes }) {
         component = dynamicRecordsComponent({
           app,
           component,
+          inline,
           config: processListConfig({ config, path })
         });
       } else {
         component = dynamicRecordComponent({
           app,
           component,
-          inlineLayout,
           config: processSingleConfig({ config, path })
         });
       }

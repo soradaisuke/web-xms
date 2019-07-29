@@ -21,7 +21,7 @@ export function migrateRouteApi({ defaultFilter, ...other } = {}) {
   return { ...newApi, ...other };
 }
 
-export function migrateConfig({ type, api, schema, ...other } = {}) {
+export function migrateConfig({ type, api, schema, inlineWidgetType,  ...other } = {}) {
   let newType = type;
   if (type === 'group') {
     console.error("route.config.type 'group' is deprecated, please use 'list'");
@@ -31,7 +31,13 @@ export function migrateConfig({ type, api, schema, ...other } = {}) {
     console.error('route.config.schema is deprecated, please use table');
   }
 
-  return { type: newType, api: migrateRouteApi(api), table: schema, ...other };
+  if (inlineWidgetType) {
+    console.error(
+      'route.config.inlineWidgetType is deprecated, please use route.config.layout'
+    );
+  }
+
+  return { type: newType, api: migrateRouteApi(api), table: schema, layout: inlineWidgetType, ...other };
 }
 
 export function migrateRoute({ component, config, ...other } = {}) {
@@ -45,18 +51,7 @@ export function migrateRoute({ component, config, ...other } = {}) {
     newRoute = { component };
   }
 
-  const newConfig = migrateConfig(config);
-
-  if (newConfig && newConfig.inlineWidgetType) {
-    console.error(
-      'route.config.inlineWidgetType is deprecated, please use route.inlineLayout'
-    );
-    newRoute = { ...newRoute, inlineLayout: newConfig.inlineWidgetType };
-  }
-
-  newRoute = { config: newConfig, ...newRoute, ...other };
-
-  return newRoute;
+  return { config: migrateConfig(config), ...newRoute, ...other };
 }
 
 export function migrateColumn({ visibility, ...other }) {
