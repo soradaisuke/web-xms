@@ -25,6 +25,7 @@ export default class StringColumn extends Column {
     confirm // eslint-disable-line react/prop-types
   }) => (
     <Input
+      {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
       value={selectedKeys[0]}
       onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
       onPressEnter={confirm}

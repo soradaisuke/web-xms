@@ -24,6 +24,7 @@ export default class NumberColumn extends Column {
       return (
         <div style={{ marginBottom: 8, display: 'block' }}>
           <InputNumber
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
             value={get(selectedKeys, '[0][0]')}
             onChange={value => {
               let newValue = [];
@@ -37,6 +38,7 @@ export default class NumberColumn extends Column {
           />
           {' ~ '}
           <InputNumber
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
             value={get(selectedKeys, '[0][1]')}
             onChange={value => {
               let newValue = [];
@@ -54,6 +56,7 @@ export default class NumberColumn extends Column {
 
     return (
       <InputNumber
+        {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
         value={selectedKeys[0]}
         onChange={value => setSelectedKeys([value])}
         onPressEnter={confirm}
