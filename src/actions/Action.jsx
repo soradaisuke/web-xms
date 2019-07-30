@@ -197,7 +197,7 @@ export default class Action {
     };
 
     if (isFunction(render)) {
-      return render({ ...params, confirm });
+      return render({ ...params, reload: confirm });
     }
 
     const enable = this.config.get('enable');
