@@ -222,6 +222,10 @@ export default class Action {
       }
     }
 
+    if (disabled && this.isRowAction() && record) {
+      return null;
+    }
+
     const handler = this.getHandler({ remove, create, edit });
     let children;
 

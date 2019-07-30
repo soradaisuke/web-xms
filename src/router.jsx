@@ -128,7 +128,9 @@ function RouterConfig({ history, app, user }) {
               </Switch>
             </Content>
           </Layout>
-          <BackTop target={() => document.getElementsByClassName('xms-content')[0]} />
+          <BackTop
+            target={() => document.getElementsByClassName('xms-content')[0]}
+          />
         </Layout>
       </Router>
     </LocaleProvider>
