@@ -531,14 +531,14 @@ export default class Column {
 
   // descriptions
 
-  canShowInDescription(user) {
+  canShowInDescription({ user, record }) {
     const invisible = this.config.getIn(['detail', 'invisible']);
     if (isFunction(invisible)) {
       if (!user) {
         return false;
       }
 
-      return !invisible({ user });
+      return !invisible({ user, record });
     }
 
     return !invisible;

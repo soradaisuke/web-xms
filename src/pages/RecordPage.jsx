@@ -150,7 +150,7 @@ class RecordPage extends React.PureComponent {
   renderDescriptionItem(column) {
     const { user, record } = this.props;
 
-    if (!column.canShowInDescription(user)) {
+    if (!column.canShowInDescription({ user, record })) {
       return null;
     }
 
