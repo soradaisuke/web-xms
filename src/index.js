@@ -7,10 +7,10 @@ export history from './utils/history';
 export Group from './components/Group';
 export ActivatorModal from './components/ActivatorModal';
 export Page from './pages/Page';
+export DatePickerWithPresets from './components/DatePickerWithPresets';
 
 // export Tags from './components/FormItems/Tags';
 // export UploadImage from './components/FormItems/UploadImage';
-// export DatePickerWithPresets from './components/DatePickerWithPresets';
 // export textToPath from './utils/textToPath';
 // export AudioPlayer from './components/Common/AudioPlayer';
 // export CommonArray from './components/FormItems/CommonArray';
