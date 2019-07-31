@@ -495,8 +495,6 @@ class RecordsPage extends React.PureComponent {
       .getColumns()
       .filter(column => column.canShowInTable(user));
 
-    console.log(dataSource, table.getPrimaryKey());
-
     return (
       <React.Fragment>
         {this.renderFilterGroup()}

@@ -136,7 +136,8 @@ function generateRecordsPage(
     api: { host, path, fetchFixedFilter, createDefaultBody },
     namespace,
     actions,
-    table
+    table,
+    pagesize: ps = 10
   },
   component,
   inline
@@ -177,7 +178,7 @@ function generateRecordsPage(
     return {
       filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
-      pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
+      pagesize: queries.pagesize ? toInteger(queries.pagesize) : ps,
       records: state[namespace].get('records'),
       sort: queries.sort || '',
       total: state[namespace].get('total'),
