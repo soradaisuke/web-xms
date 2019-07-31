@@ -525,7 +525,7 @@ class RecordsPage extends React.PureComponent {
             className="ant-table-pagination"
             total={total}
             current={page}
-            pagesize={pagesize}
+            pageSize={pagesize}
             onChange={this.onChangePage}
             onShowSizeChange={this.onChangePage}
           />
