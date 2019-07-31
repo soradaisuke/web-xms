@@ -53,30 +53,48 @@ export default class BaseDateTimeColumn extends StringColumn {
     // eslint-disable-next-line react/no-this-in-sfc
     if (this.canFilterRangeInTable()) {
       return (
-        <RangePicker
-          {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
-          allowClear={false}
-          showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
-          format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
-          value={[
-            !isUndefined(get(selectedKeys, '[0][0]'))
-              ? moment(get(selectedKeys, '[0][0]'))
-              : null,
-            !isUndefined(get(selectedKeys, '[0][1]'))
-              ? moment(get(selectedKeys, '[0][1]'))
-              : null
-          ]}
-          // ranges={ranges}
-          onChange={newDate =>
-            setSelectedKeys([
-              [
-                this.formatFilterValue(newDate[0]), // eslint-disable-line react/no-this-in-sfc
-                this.formatFilterValue(newDate[1]) // eslint-disable-line react/no-this-in-sfc
-              ]
-            ])
-          }
-          style={{ marginBottom: 8, display: 'block' }}
-        />
+        <React.Fragment>
+          <RangePicker
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
+            allowClear={false}
+            showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
+            format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
+            value={[
+              !isUndefined(get(selectedKeys, '[0][0]'))
+                ? moment(get(selectedKeys, '[0][0]'))
+                : null,
+              !isUndefined(get(selectedKeys, '[0][1]'))
+                ? moment(get(selectedKeys, '[0][1]'))
+                : null
+            ]}
+            // ranges={ranges}
+            onChange={newDate =>
+              setSelectedKeys([
+                [
+                  this.formatFilterValue(newDate[0]), // eslint-disable-line react/no-this-in-sfc
+                  this.formatFilterValue(newDate[1]) // eslint-disable-line react/no-this-in-sfc
+                ]
+              ])
+            }
+            style={{ marginBottom: 8, display: 'block' }}
+          />
+          <div>
+            {// eslint-disable-next-line react/no-this-in-sfc
+            this.getTableFilterPresets().map(preset => (
+              <Tag
+                style={{ marginBottom: 8 }}
+                color="blue"
+                key={preset.get('text')}
+                onClick={() => {
+                  setSelectedKeys([preset.get('value')]);
+                  confirm();
+                }}
+              >
+                {preset.get('text')}
+              </Tag>
+            ))}
+          </div>
+        </React.Fragment>
       );
     }
 
