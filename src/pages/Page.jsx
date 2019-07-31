@@ -25,7 +25,7 @@ class Page extends React.PureComponent {
     isError: false,
     isLoading: false,
     user: null,
-    showWatermark: true
+    showWatermark: false
   };
 
   renderContent() {
