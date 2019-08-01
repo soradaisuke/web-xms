@@ -52,7 +52,9 @@ class RecordModal extends React.PureComponent {
           const formatValues = {};
           forEach(values, (value, key) => {
             const column = columns.find(c => c.getFormKey() === key);
-            set(formatValues, key, column.formatFormSubmitValue(value));
+            if (column) {
+              set(formatValues, key, column.formatFormSubmitValue(value));
+            }
           });
           await onOk(formatValues);
           resolve();

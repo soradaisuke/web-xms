@@ -100,7 +100,7 @@ class RecordPage extends React.PureComponent {
 
   onChangeTabs = () => {
     const { history } = this.props;
-    history.push(window.location.pathname);
+    history.replace(window.location.pathname);
   };
 
   renderAction(action) {
