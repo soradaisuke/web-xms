@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import { Tabs, Card, Collapse, Descriptions, message } from 'antd';
-import { map, filter, get } from 'lodash';
+import { map, filter, get, reduce } from 'lodash';
 import classNames from 'classnames';
 import TableType from '../schema/Table';
 import Page from './Page';
@@ -187,9 +187,9 @@ class RecordPage extends React.PureComponent {
     );
   }
 
-  renderRoutes() {
-    const { routes, layout, inline } = this.props;
-    if (routes && routes.length) {
+  renderRouteChunk(chunk) {
+    const { layout, inline } = this.props;
+    if (chunk && chunk.length) {
       switch (layout) {
         case 'collapse':
           return (
@@ -197,7 +197,7 @@ class RecordPage extends React.PureComponent {
               className={classNames('content-card', inline ? 'inline' : '')}
             >
               <Collapse>
-                {map(routes, ({ component: Component, path, title = '' }) => (
+                {map(chunk, ({ component: Component, path, title = '' }) => (
                   <Panel header={title} key={path}>
                     <Component inline />
                   </Panel>
@@ -211,7 +211,7 @@ class RecordPage extends React.PureComponent {
               className={classNames('content-card', inline ? 'inline' : '')}
             >
               <Tabs onChange={this.onChangeTabs}>
-                {map(routes, ({ component: Component, path, title = '' }) => (
+                {map(chunk, ({ component: Component, path, title = '' }) => (
                   <TabPane tab={title} key={path}>
                     <Component inline />
                   </TabPane>
@@ -221,7 +221,7 @@ class RecordPage extends React.PureComponent {
           );
         case 'card':
         default:
-          return map(routes, ({ component: Component, path, title = '' }) => (
+          return map(chunk, ({ component: Component, path, title = '' }) => (
             <Card
               key={path}
               title={title}
@@ -231,6 +231,36 @@ class RecordPage extends React.PureComponent {
             </Card>
           ));
       }
+    }
+
+    return null;
+  }
+
+  renderRoutes() {
+    const { routes, layout } = this.props;
+    if (routes && routes.length) {
+      return map(
+        reduce(
+          routes,
+          (result, route) => {
+            if (result.length === 0) {
+              result.push([route]);
+            } else {
+              const routeLayout = route.layout || layout;
+              const last = result[result.length - 1];
+              const lastLayout = last[0].layout || layout;
+              if (routeLayout === lastLayout) {
+                last.push(route);
+              } else {
+                result.push([route]);
+              }
+            }
+            return result;
+          },
+          []
+        ),
+        chunk => this.renderRouteChunk(chunk)
+      );
     }
 
     return null;
