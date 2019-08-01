@@ -137,7 +137,8 @@ function generateRecordsPage(
     namespace,
     actions,
     table,
-    pagesize: ps = 10
+    defaultPageSize = 10,
+    paginationComponentProps = {}
   },
   component,
   inline
@@ -176,9 +177,12 @@ function generateRecordsPage(
     });
 
     return {
+      paginationComponentProps,
       filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
-      pagesize: queries.pagesize ? toInteger(queries.pagesize) : ps,
+      pagesize: queries.pagesize
+        ? toInteger(queries.pagesize)
+        : defaultPageSize,
       records: state[namespace].get('records'),
       sort: queries.sort || '',
       total: state[namespace].get('total'),

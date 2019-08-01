@@ -49,7 +49,8 @@ class RecordsPage extends React.PureComponent {
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
-    user: PropTypes.instanceOf(Immutable.Map)
+    user: PropTypes.instanceOf(Immutable.Map),
+    paginationComponentProps: PropTypes.object // eslint-disable-line react/forbid-prop-types
   };
 
   static defaultProps = {
@@ -63,7 +64,8 @@ class RecordsPage extends React.PureComponent {
     sort: '',
     total: 0,
     inline: false,
-    user: null
+    user: null,
+    paginationComponentProps: {}
   };
 
   static showTotal(total, range) {
@@ -476,7 +478,8 @@ class RecordsPage extends React.PureComponent {
       table,
       isLoading,
       user,
-      actions
+      actions,
+      paginationComponentProps
     } = this.props;
 
     const multipleActions = actions
@@ -522,6 +525,7 @@ class RecordsPage extends React.PureComponent {
             showQuickJumper
             showSizeChanger
             showTotal={RecordsPage.showTotal}
+            {...paginationComponentProps}
             className="ant-table-pagination"
             total={total}
             current={page}
