@@ -190,10 +190,13 @@ class RecordPage extends React.PureComponent {
   renderRouteChunk(chunk) {
     const { layout, inline } = this.props;
     if (chunk && chunk.length) {
-      switch (layout) {
+      const chunkLayout = chunk[0].layout || layout;
+
+      switch (chunkLayout) {
         case 'collapse':
           return (
             <Card
+              key={chunk[0].path}
               className={classNames('content-card', inline ? 'inline' : '')}
             >
               <Collapse>
@@ -208,6 +211,7 @@ class RecordPage extends React.PureComponent {
         case 'tab':
           return (
             <Card
+              key={chunk[0].path}
               className={classNames('content-card', inline ? 'inline' : '')}
             >
               <Tabs onChange={this.onChangeTabs}>
