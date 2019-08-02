@@ -38,8 +38,8 @@ const TYPES = {
 const generateTreeData = filters => {
   if (!isArray(filters)) return null;
   return map(filters, ({ value, text, children, ...item }) => ({
-    value: isBoolean(value) ? String(value) : value,
-    key: isBoolean(value) ? String(value) : value,
+    value: isBoolean(value) || isNumber(value) ? String(value) : value,
+    key: isBoolean(value) || isNumber(value) ? String(value) : value,
     title: text,
     children: generateTreeData(children),
     ...item
