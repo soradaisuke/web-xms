@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.13.4](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.3...v1.13.4) (2019-08-02)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix form里的多选框值为0的时候无法match到对应项 ([f293e7b](https://git2.qingtingfm.com/zhibo/xms/commit/f293e7b))
+
+
+
 ### [1.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.2...v1.13.3) (2019-07-18)
 
 
