@@ -17,11 +17,11 @@ export default class XMSTreeSelect extends React.PureComponent {
   state = {};
 
   onSearch = debounce(value => {
-    const { column } = this.props;
+    const { column, parentValue } = this.props;
     const searchRequest = column.getFormSearchRequest();
 
     if (searchRequest) {
-      searchRequest(value).then(filters =>
+      searchRequest(value, parentValue).then(filters =>
         this.setState({ treeData: generateTreeData(filters) })
       );
     }
