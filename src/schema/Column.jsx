@@ -510,12 +510,13 @@ export default class Column {
         {getFieldDecorator(key, {
           initialValue,
           validateFirst: true,
-          onChange: this.childColumn
-            ? () =>
-                form.setFieldsValue({
-                  [this.childColumn.getFormKey()]: undefined
-                })
-            : null,
+          onChange:
+            this.childColumn && !this.canSelectMutipleInForm()
+              ? () =>
+                  form.setFieldsValue({
+                    [this.childColumn.getFormKey()]: undefined
+                  })
+              : null,
           rules: [
             {
               required: this.isRequiredInForm(),
