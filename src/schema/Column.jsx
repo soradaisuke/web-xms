@@ -511,7 +511,7 @@ export default class Column {
           initialValue,
           validateFirst: true,
           onChange:
-            this.childColumn && !this.canSelectMutipleInForm()
+            this.childColumn && !this.childColumn.canSelectMutipleInForm()
               ? () =>
                   form.setFieldsValue({
                     [this.childColumn.getFormKey()]: undefined
