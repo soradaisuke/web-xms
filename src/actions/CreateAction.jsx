@@ -22,7 +22,7 @@ export default class CreateAction extends Action {
   }
 
   getColumns({ table }) {
-    return this.config.get('columns', table.getColumns());
+    return this.columns || table.getColumns();
   }
 
   // eslint-disable-next-line class-methods-use-this

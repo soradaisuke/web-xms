@@ -11,8 +11,10 @@ export default class Action {
   constructor(config = {}) {
     this.config = Immutable.fromJS(config);
 
-    this.columns = Immutable.List(config.columns || []);
-    this.findCascadeColumn();
+    if (config.columns) {
+      this.columns = Immutable.List(config.columns);
+      this.findCascadeColumn();
+    }
   }
 
   findCascadeColumn() {
@@ -91,7 +93,7 @@ export default class Action {
   }
 
   getColumns() {
-    return this.config.get('columns');
+    return this.columns;
   }
 
   needReload() {
