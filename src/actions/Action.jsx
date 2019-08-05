@@ -10,6 +10,23 @@ const { confirm: modalConfirm } = Modal;
 export default class Action {
   constructor(config = {}) {
     this.config = Immutable.fromJS(config);
+
+    this.columns = Immutable.List(config.columns || []);
+    this.findCascadeColumn();
+  }
+
+  findCascadeColumn() {
+    this.columns.forEach(column => {
+      const parentKey = column.getParentKey();
+      if (parentKey) {
+        const parentColumn = this.columns.find(c => c.getKey() === parentKey);
+        if (parentColumn) {
+          // eslint-disable-next-line no-param-reassign
+          column.parentColumn = parentColumn;
+          parentColumn.childColumn = column;
+        }
+      }
+    });
   }
 
   isRowAction() {
