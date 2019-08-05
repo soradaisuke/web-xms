@@ -259,7 +259,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderColumn(column) {
-    const { sort, filter, actions } = this.props;
+    const { sort, filter, actions, user } = this.props;
 
     const filterProps = {};
 
@@ -325,6 +325,7 @@ class RecordsPage extends React.PureComponent {
           const children = column.renderInTable({
             value,
             record,
+            user,
             ...filterProps
           });
           const editAction = actions.getEditAction();
@@ -502,7 +503,7 @@ class RecordsPage extends React.PureComponent {
       <React.Fragment>
         {this.renderFilterGroup()}
         {this.renderGlobalActions()}
-        <Group title="详情">
+        <Group title="列表">
           {this.renderMultipleActions(multipleActions)}
           <Table
             bordered

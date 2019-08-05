@@ -243,11 +243,11 @@ export default class Column {
     return value;
   }
 
-  renderInTableValue({ value, record, parentFilteredValue }) {
+  renderInTableValue({ value, record, user, parentFilteredValue }) {
     const render = this.config.getIn(['table', 'render']);
 
     if (isFunction(render)) {
-      return render({ value, record });
+      return render({ value, record, user });
     }
 
     if (isArray(value)) {
@@ -274,10 +274,11 @@ export default class Column {
     });
   }
 
-  renderInTable({ value, record, parentFilteredValue }) {
+  renderInTable({ value, record, user, parentFilteredValue }) {
     const children = this.renderInTableValue({
       value,
       record,
+      user,
       parentFilteredValue
     });
     const link = this.getTableLink();
