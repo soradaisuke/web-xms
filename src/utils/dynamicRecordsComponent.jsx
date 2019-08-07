@@ -236,7 +236,10 @@ function generateRecordsPage(
             (!queries || Object.keys(queries).length === 0))
         ) {
           const uri = generateUri(
-            window.location.href,
+            window.location.href.substring(
+              0,
+              window.location.href.length - window.location.search.length
+            ),
             generateQuery({
               namespace,
               inline,
