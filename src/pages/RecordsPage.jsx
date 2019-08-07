@@ -14,6 +14,7 @@ import {
   unset,
   isUndefined,
   isNull,
+  cloneDeep,
   filter as filterFunc
 } from 'lodash';
 import TableType from '../schema/Table';
@@ -126,7 +127,7 @@ class RecordsPage extends React.PureComponent {
   onChange = (pagination, filters, sorter, columns, onlyFilters = false) => {
     const { page, pagesize, updatePage, sort, filter } = this.props;
 
-    const newFilter = { ...filter };
+    const newFilter = cloneDeep(filter);
     columns.forEach(column => {
       if (column.canFilterInTable()) {
         unset(newFilter, column.getTableFilterKey());
@@ -172,9 +173,13 @@ class RecordsPage extends React.PureComponent {
         newSort = '';
       }
 
-      if (sort !== newSort || !isEqual(filter, newFilter)) {
+      if (sort !== newSort) {
         newPage = 1;
       }
+    }
+
+    if (!isEqual(filter, newFilter)) {
+      newPage = 1;
     }
 
     updatePage({

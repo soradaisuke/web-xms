@@ -283,7 +283,10 @@ function generateRecordsPage(
           if (isUndefined(v) || v === '') delete newQuery[key];
         });
         const uri = generateUri(
-          window.location.href,
+          window.location.href.substring(
+            0,
+            window.location.href.length - window.location.search.length
+          ),
           generateQuery({ namespace, inline, query: newQuery })
         );
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
