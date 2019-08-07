@@ -11,10 +11,9 @@ import {
   isEqual,
   get,
   set,
+  unset,
   isUndefined,
   isNull,
-  forEach,
-  findIndex,
   filter as filterFunc
 } from 'lodash';
 import TableType from '../schema/Table';
@@ -130,7 +129,7 @@ class RecordsPage extends React.PureComponent {
     const newFilter = { ...filter };
     columns.forEach(column => {
       if (column.canFilterInTable()) {
-        delete newFilter[column.getTableFilterKey()];
+        unset(newFilter, column.getTableFilterKey());
 
         if (column.parentColumn) {
           let parentFilteredValue = filters[column.parentColumn.getKey()];
@@ -225,38 +224,6 @@ class RecordsPage extends React.PureComponent {
       filter
     });
   };
-
-  onClickQuery = () => {
-    const { filter, updatePage } = this.props;
-    const { filterGroup, filterInGroupTableKeys } = this.state;
-
-    forEach(filter, (_, key) => {
-      if (filterInGroupTableKeys[key]) {
-        delete filter[key];
-      }
-    });
-    forEach(filterGroup, (v, key) => {
-      const hasValidValue = arr =>
-        findIndex(arr, item => item === 0 || item) !== -1;
-
-      if ((isArray(v) && !hasValidValue(v)) || (v !== 0 && !v)) {
-        delete filterGroup[key];
-      }
-    });
-
-    updatePage({
-      filter: { ...filter, ...filterGroup }
-    });
-  };
-
-  onClickReset = () => {
-    this.setState({ filterGroup: {} });
-  };
-
-  hasAddButton() {
-    const { create, hasCreateNew } = this.props;
-    return !!create || hasCreateNew;
-  }
 
   renderColumn(column) {
     const { sort, filter, actions, user } = this.props;
