@@ -42,7 +42,11 @@ function addBreadcrumbItem({ pathname, routes, items, params }) {
             params
           });
         }
+
+        return false;
       }
+
+      return true;
     }
   );
 }
