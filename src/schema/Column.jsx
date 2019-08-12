@@ -403,6 +403,10 @@ export default class Column {
     return this.formComponentProps;
   }
 
+  getFormRadioOptions() {
+    return this.config.getIn(['form', 'radioOptions'], Immutable.List());
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getFormDefaultRules() {
     return [];
