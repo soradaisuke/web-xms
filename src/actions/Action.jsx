@@ -224,7 +224,9 @@ export default class Action {
     let filteredRecords;
 
     if (this.canHandleGlobal()) {
-      disabled = isFunction(enable) && !enable(params);
+      disabled =
+        (records && records.length === 0) ||
+        (isFunction(enable) && !enable(params));
     } else {
       filteredRecords = records
         ? filter(records, r =>
