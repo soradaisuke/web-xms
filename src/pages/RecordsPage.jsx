@@ -409,36 +409,31 @@ class RecordsPage extends React.PureComponent {
     ) : null;
   }
 
-  renderGlobalActions() {
+  renderGlobalActions(multipleActions) {
     const { actions, user } = this.props;
     const globalActions = actions
       .getGlobalActions()
       .filter(action => action.isVisible(user));
 
-    if (globalActions.size === 0) {
-      return null;
-    }
-
-    return (
-      <Group title="操作">
-        <div className="actions">
-          {globalActions.map(action => this.renderAction(action))}
-        </div>
-      </Group>
-    );
-  }
-
-  renderMultipleActions(multipleActions) {
-    if (multipleActions.size === 0) {
+    if (
+      globalActions.size === 0 &&
+      (!multipleActions || multipleActions.size === 0)
+    ) {
       return null;
     }
 
     const { selectedRows: records } = this.state;
 
     return (
-      <div className="actions">
-        {multipleActions.map(action => this.renderAction(action, { records }))}
-      </div>
+      <Group title="操作">
+        <div className="actions">
+          {globalActions.map(action => this.renderAction(action))}
+          {multipleActions &&
+            multipleActions.map(action =>
+              this.renderAction(action, { records })
+            )}
+        </div>
+      </Group>
     );
   }
 
@@ -474,9 +469,8 @@ class RecordsPage extends React.PureComponent {
     return (
       <React.Fragment>
         {this.renderFilterGroup()}
-        {this.renderGlobalActions()}
+        {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
-          {this.renderMultipleActions(multipleActions)}
           <Table
             bordered
             loading={isLoading}
