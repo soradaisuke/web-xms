@@ -14,6 +14,10 @@ export default class NumberColumn extends Column {
     return true;
   }
 
+  getFilterIcon() {
+    return this.canFilterRangeInTable() ? 'filter' : 'search';
+  }
+
   renderFilterDropDownContent = ({
     setSelectedKeys, // eslint-disable-line react/prop-types
     selectedKeys, // eslint-disable-line react/prop-types

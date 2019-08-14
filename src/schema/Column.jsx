@@ -209,6 +209,11 @@ export default class Column {
     return false;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getFilterIcon() {
+    return 'filter';
+  }
+
   useValueOptionsInTable() {
     return this.config.getIn(['table', 'useValueOptions']);
   }

@@ -19,6 +19,11 @@ export default class StringColumn extends Column {
     return true;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getFilterIcon() {
+    return 'search';
+  }
+
   renderFilterDropDownContent = ({
     setSelectedKeys, // eslint-disable-line react/prop-types
     selectedKeys, // eslint-disable-line react/prop-types

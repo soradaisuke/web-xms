@@ -273,6 +273,12 @@ class RecordsPage extends React.PureComponent {
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
         filterProps.filterDropdown = column.renderFilterDropDown;
+        filterProps.filterIcon = filtered => (
+          <Icon
+            type={column.getFilterIcon()}
+            style={{ color: filtered ? '#1890ff' : undefined }}
+          />
+        );
       }
 
       filterProps.parentFilteredValue = parentFilteredValue;
