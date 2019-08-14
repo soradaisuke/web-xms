@@ -333,19 +333,17 @@ class RecordsPage extends React.PureComponent {
     }
 
     return (
-      <Group title="筛选">
-        <Table
-          bordered
-          className="filters-table"
-          rowKey={table.getPrimaryKey()}
-          pagination={false}
-          onChange={(pagination, filters, sorter) =>
-            this.onChange(pagination, filters, sorter, columns, true)
-          }
-        >
-          {columns.map(column => this.renderColumn(column))}
-        </Table>
-      </Group>
+      <Table
+        bordered
+        className="filters-table"
+        rowKey={table.getPrimaryKey()}
+        pagination={false}
+        onChange={(pagination, filters, sorter) =>
+          this.onChange(pagination, filters, sorter, columns, true)
+        }
+      >
+        {columns.map(column => this.renderColumn(column))}
+      </Table>
     );
   }
 
@@ -468,9 +466,9 @@ class RecordsPage extends React.PureComponent {
 
     return (
       <React.Fragment>
-        {this.renderFilterGroup()}
         {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
+          {this.renderFilterGroup()}
           <Table
             bordered
             loading={isLoading}
