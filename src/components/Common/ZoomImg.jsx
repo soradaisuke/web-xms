@@ -5,7 +5,7 @@ import { Img } from '@qt/react-core';
 import { generateUpYunImageUrl } from '@qt/web-core';
 import { Col, Slider, Switch } from 'antd';
 import ActivatorModal from '../ActivatorModal';
-import Styles from './ZoomImg.less';
+import './ZoomImg.less';
 
 export default class ZoomImg extends React.PureComponent {
   static displayName = 'ZoomImg';
@@ -62,7 +62,10 @@ export default class ZoomImg extends React.PureComponent {
     } = this.props;
     const { zoomValue, isLeftRightFlip, isTopDownFlip } = this.state;
     const children = (
-      <Img src={src} className={classNames(imgClassName, Styles.img)} />
+      <Img
+        src={src}
+        className={classNames(imgClassName, 'zoom-img-activator')}
+      />
     );
     let flip = '';
     if (isLeftRightFlip) {
@@ -81,7 +84,7 @@ export default class ZoomImg extends React.PureComponent {
             <Switch
               checkedChildren="左右翻转"
               unCheckedChildren="左右不翻转"
-              className={Styles.switch}
+              className="zoom-switch"
               checked={isLeftRightFlip}
               onChange={this.onChangeLeftRightFlip}
             />
@@ -90,17 +93,17 @@ export default class ZoomImg extends React.PureComponent {
             <Switch
               checkedChildren="上下翻转"
               unCheckedChildren="上下不翻转"
-              className={Styles.switch}
+              className="zoom-switch"
               checked={isTopDownFlip}
               onChange={this.onChangeTopDownFlip}
             />
           )}
           <div
-            className={Styles.zoomImgWrapper}
+            className="zoom-img-wrapper"
             style={{ height: `${window.innerHeight - 300}px` }}
           >
             <div
-              className={Styles.zoomImg}
+              className="zoom-img"
               style={{
                 width: `${100 * zoomValue}%`,
                 height: `${100 * zoomValue}%`,
