@@ -63,43 +63,41 @@ class NavMenu extends React.PureComponent {
       <div
         className={classNames('xms-side-menu', collapsed ? 'collapsed' : '')}
       >
+        <Menu
+          className="xms-menu"
+          mode="inline"
+          selectedKeys={selectedKeys}
+          defaultOpenKeys={openKeys}
+        >
+          {validMenues(routes).map(({ path, title, routes: childRoutes }) => {
+            const subMenus = validMenues(childRoutes).map(
+              ({ path: subPath, title: childTitle }) => (
+                <Menu.Item key={subPath}>
+                  <Link to={subPath}>{childTitle}</Link>
+                </Menu.Item>
+              )
+            );
+
+            if (subMenus.length > 0) {
+              return (
+                <SubMenu key={path} title={title}>
+                  {subMenus}
+                </SubMenu>
+              );
+            }
+
+            return (
+              <Menu.Item key={path}>
+                <Link to={path}>{title}</Link>
+              </Menu.Item>
+            );
+          })}
+        </Menu>
         <Icon
           className="xms-collapse"
           type={`double-${collapsed ? 'right' : 'left'}`}
           onClick={this.onClickCollapse}
         />
-        {!collapsed && (
-          <Menu
-            className="xms-menu"
-            mode="inline"
-            selectedKeys={selectedKeys}
-            defaultOpenKeys={openKeys}
-          >
-            {validMenues(routes).map(({ path, title, routes: childRoutes }) => {
-              const subMenus = validMenues(childRoutes).map(
-                ({ path: subPath, title: childTitle }) => (
-                  <Menu.Item key={subPath}>
-                    <Link to={subPath}>{childTitle}</Link>
-                  </Menu.Item>
-                )
-              );
-
-              if (subMenus.length > 0) {
-                return (
-                  <SubMenu key={path} title={title}>
-                    {subMenus}
-                  </SubMenu>
-                );
-              }
-
-              return (
-                <Menu.Item key={path}>
-                  <Link to={path}>{title}</Link>
-                </Menu.Item>
-              );
-            })}
-          </Menu>
-        )}
       </div>
     );
   }

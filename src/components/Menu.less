@@ -1,6 +1,12 @@
 .xms-side-menu {
   position: relative;
   min-width: 128px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+
+  &:hover {
+    overflow-y: auto;
+  }
 
   &.collapsed {
     width: 24px;
@@ -8,10 +14,11 @@
   }
 
   .xms-collapse {
-    position: absolute;
-    right: 4px;
+    position: relative;
+    left: 100%;
     bottom: -20px;
     z-index: 1;
+    transform: translate(-100%, 0);
 
     svg {
       width: 16px;
