@@ -26,7 +26,7 @@ export default class BaseDateTimeColumn extends StringColumn {
 
   // eslint-disable-next-line class-methods-use-this
   renderInTableValueDefault({ value }) {
-    return moment(value).isValid()
+    return value && moment(value).isValid()
       ? moment(value).format(this.getInTableFormat())
       : '';
   }

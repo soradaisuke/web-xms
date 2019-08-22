@@ -10,6 +10,7 @@ export Page from './pages/Page';
 export DatePickerWithPresets from './components/DatePickerWithPresets';
 export textToPath from './utils/textToPath';
 export UploadImage from './components/FormItems/UploadImage';
+export ZoomImg from './components/Common/ZoomImg';
 
 // export Tags from './components/FormItems/Tags';
 // export AudioPlayer from './components/Common/AudioPlayer';
