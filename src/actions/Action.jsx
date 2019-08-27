@@ -170,6 +170,7 @@ export default class Action {
           {...this.getConfirmComponentProps()}
           key={this.getTitle()}
           title={isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle}
+          getPopupContainer={triggerNode => triggerNode.parentNode}
           onConfirm={onClick}
         >
           <Button {...buttonProps} />
