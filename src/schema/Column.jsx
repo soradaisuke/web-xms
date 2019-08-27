@@ -381,6 +381,10 @@ export default class Column {
     return this.config.getIn(['form', 'initialValue']);
   }
 
+  getFormGenerateInitialValue() {
+    return this.config.getIn(['form', 'generateInitialValue']);
+  }
+
   getFormPlaceholder(select = false) {
     return (
       this.config.getIn(['form', 'placeholder']) ||
@@ -486,14 +490,19 @@ export default class Column {
 
     let children;
     let initialValue = this.getFormInitialValue();
+    const generateInitialValue = this.getFormGenerateInitialValue();
 
     if (isEdit) {
-      const preValue = get(record, key);
-      if (isArray(preValue)) {
+      const preValue = get(record, this.getKey());
+      if (isFunction(generateInitialValue)) {
+        initialValue = generateInitialValue({ value: preValue });
+      } else if (isArray(preValue)) {
         initialValue = map(preValue, v => this.formatFormFieldValue(v));
       } else {
         initialValue = this.formatFormFieldValue(preValue);
       }
+    } else if (isFunction(generateInitialValue)) {
+      initialValue = generateInitialValue({ value: null });
     }
 
     if (
