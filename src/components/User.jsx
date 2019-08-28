@@ -3,18 +3,13 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { Avatar, Menu, Dropdown, Icon } from 'antd';
 import { connect } from 'dva';
-import { generateUri } from '@qt/web-core';
 import { ClickableDiv } from '@qt/react-core';
 import Cookie from 'js-cookie';
 import './User.less';
 
 function onClickLogOut() {
   Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
-  window.location.replace(
-    generateUri('//entry.qingtingfm.com/v1/sso/login.html', {
-      return_url: generateUri(window.location.href, { auth: 1 })
-    }).href
-  );
+  window.location.reload();
 }
 
 const menu = (

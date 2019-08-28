@@ -6,10 +6,10 @@ import history from './utils/history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';
-import { migrateApi } from './utils/migrate';
 import defaultConfig from './defaultConfig';
 import router from './router';
 import audio from './models/audio';
+import loginRoute from './routes/login';
 
 export default function xms(config = {}) {
   const app = dva({
@@ -24,16 +24,19 @@ export default function xms(config = {}) {
 
   app.config = merge(defaultConfig, config);
   const { routes = [], api = {} } = config;
-  const { host = window.location.host, auth } = migrateApi(api);
+  const { host = window.location.host, auth, login } = api;
   if (host) {
     request.setHost(host);
+  }
+  if (login) {
+    routes.push(loginRoute);
   }
   try {
     if (auth) {
       if (window.location.host.indexOf('qingtingfm.com') === -1) {
         throw new Error('域名必须是*.qingtingfm.com');
       }
-      app.model(generateUserModel(auth));
+      app.model(generateUserModel(auth, login));
     }
     app.model(audio);
     app.routes = processRoutes({ app, routes });

@@ -1,13 +1,3 @@
-export function migrateApi({ login, ...other } = {}) {
-  if (login) {
-    console.error('api.logint is deprecated, please use api.auth');
-  }
-  return {
-    auth: login,
-    ...other
-  };
-}
-
 export function migrateRouteApi({ defaultFilter, ...other } = {}) {
   let newApi = {};
 

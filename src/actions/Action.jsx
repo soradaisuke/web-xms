@@ -25,7 +25,9 @@ export default class Action {
         if (parentColumn) {
           // eslint-disable-next-line no-param-reassign
           column.parentColumn = parentColumn;
-          parentColumn.childColumn = column;
+          parentColumn.childColumn = (parentColumn.childColumn || []).concat(
+            column
+          );
         }
       }
     });

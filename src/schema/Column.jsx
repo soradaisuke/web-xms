@@ -9,6 +9,7 @@ import {
   get,
   find,
   filter,
+  forEach,
   flatten
 } from 'lodash';
 import { makeCancelablePromise } from '@qt/web-core';
@@ -47,12 +48,7 @@ export default class Column {
       key: isArray(config.key) ? join(config.key, '.') : config.key
     });
 
-    const valueOptions = this.getValueOptions();
-    if (valueOptions) {
-      this.filters = generateFilters(valueOptions.toJS());
-    } else if (this.getParentKey()) {
-      this.filters = Immutable.Map();
-    }
+    this.resetFilters();
   }
 
   getKey() {
@@ -144,7 +140,9 @@ export default class Column {
 
         return flatten(filters);
       }
-      return this.filters.getIn([parentFilteredValue, key]);
+      return this.filters
+        ? this.filters.getIn([parentFilteredValue, key])
+        : null;
     }
     return this.filters ? this.filters.get(key) : null;
   }
@@ -173,6 +171,15 @@ export default class Column {
 
   getTableMaxLines() {
     return this.config.getIn(['table', 'maxLines']);
+  }
+
+  resetFilters() {
+    const valueOptions = this.getValueOptions();
+    if (valueOptions) {
+      this.filters = generateFilters(valueOptions.toJS());
+    } else if (this.getParentKey()) {
+      this.filters = Immutable.Map();
+    }
   }
 
   canFilterInTable() {
@@ -528,20 +535,24 @@ export default class Column {
         {getFieldDecorator(key, {
           initialValue,
           validateFirst: true,
-          onChange:
-            this.childColumn && !this.childColumn.canSelectMutipleInForm()
-              ? () =>
-                  form.setFieldsValue({
-                    [this.childColumn.getFormKey()]: undefined
-                  })
-              : null,
+          onChange: this.childColumn
+            ? () => {
+                forEach(this.childColumn, childColumn => {
+                  if (!childColumn.canSelectMutipleInForm()) {
+                    form.setFieldsValue({
+                      [childColumn.getFormKey()]: undefined
+                    });
+                  }
+                });
+              }
+            : null,
           rules: [
             {
               required: this.isRequiredInForm(),
               message: `${this.getTitle()}不能为空`
             },
             ...this.getFormDefaultRules(),
-            ...this.getFormRules().toArray()
+            ...this.getFormRules().toJS()
           ],
           valuePropName: this.getFormFiledValuePropName()
         })(children)}

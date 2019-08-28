@@ -81,6 +81,10 @@ class RecordsPage extends React.PureComponent {
       selectedRowKeys: [],
       selectedRows: []
     };
+
+    props.table.columns.forEach(column => {
+      column.resetFilters();
+    });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
