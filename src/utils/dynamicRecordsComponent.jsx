@@ -13,6 +13,7 @@ import {
   isString,
   forEach,
   toInteger,
+  size,
   isUndefined
 } from 'lodash';
 import { generateUri } from '@qt/web-core';
@@ -133,7 +134,7 @@ function getQuery({ namespace, inline, search }) {
 
 function generateRecordsPage(
   {
-    api: { host, path, fetchFixedFilter, createDefaultBody },
+    api: { host, path, fetchFixedFilter, createDefaultBody, defaultFilter },
     namespace,
     actions,
     table,
@@ -222,6 +223,13 @@ function generateRecordsPage(
       apiPath = `${host}${apiPath}`;
     }
 
+    let apiDefaultFilter;
+    if (isFunction(defaultFilter)) {
+      apiDefaultFilter = defaultFilter(matchParams);
+    } else if (isPlainObject(defaultFilter)) {
+      apiDefaultFilter = defaultFilter;
+    }
+
     const props = {
       fetch: async ({ page, pagesize, sort, filter = {} }) => {
         const queries = getQuery({
@@ -232,7 +240,9 @@ function generateRecordsPage(
 
         if (
           (table.getFixedSortOrder() && table.getFixedSortOrder() !== sort) ||
-          ((table.getDefaultSortOrder() || table.getDefaultFilter()) &&
+          ((table.getDefaultSortOrder() ||
+            table.getDefaultFilter() ||
+            (apiDefaultFilter && size(apiDefaultFilter))) &&
             (!queries || Object.keys(queries).length === 0))
         ) {
           const uri = generateUri(
@@ -244,7 +254,10 @@ function generateRecordsPage(
               namespace,
               inline,
               query: {
-                filter: JSON.stringify(table.getDefaultFilter() || {}),
+                filter: JSON.stringify({
+                  ...(table.getDefaultFilter() || {}),
+                  ...apiDefaultFilter
+                }),
                 sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
               }
             })

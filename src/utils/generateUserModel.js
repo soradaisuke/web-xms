@@ -13,8 +13,15 @@ function generateService(auth, login) {
   return {
     auth: async () => request.get(auth),
     login: login
-      ? async ({ account, password }) =>
-          request.post(login, { body: { email: account, password } })
+      ? async ({ account, password }) => {
+          const body = new FormData();
+          body.append('email', account);
+          body.append('password', password);
+          return request.post(login, {
+            body: new URLSearchParams(body),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+          });
+        }
       : null
   };
 }
@@ -71,7 +78,11 @@ export default function generateUserModel(auth, login) {
         { call }
       ) {
         if (login) {
-          yield call(service.login, { account, password });
+          try {
+            yield call(service.login, { account, password });
+          } catch (e) {
+            throw e;
+          }
         }
       }
     },

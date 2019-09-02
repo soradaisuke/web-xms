@@ -1,16 +1,3 @@
-export function migrateRouteApi({ defaultFilter, ...other } = {}) {
-  let newApi = {};
-
-  if (defaultFilter) {
-    console.error(
-      'route.api.defaultFilter is deprecated, please use route.api.fetchFixedFilter'
-    );
-    newApi = { fetchFixedFilter: defaultFilter };
-  }
-
-  return { ...newApi, ...other };
-}
-
 export function migrateConfig({
   type,
   api,
@@ -34,8 +21,8 @@ export function migrateConfig({
   }
 
   return {
+    api,
     type: newType,
-    api: migrateRouteApi(api),
     table: schema,
     layout: inlineWidgetType,
     ...other

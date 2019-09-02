@@ -177,7 +177,7 @@ export default class Column {
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
       this.filters = generateFilters(valueOptions.toJS());
-    } else if (this.getParentKey()) {
+    } else {
       this.filters = Immutable.Map();
     }
   }
