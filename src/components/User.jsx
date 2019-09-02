@@ -8,7 +8,11 @@ import Cookie from 'js-cookie';
 import './User.less';
 
 function onClickLogOut() {
-  Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
+  if (window.location.host.indexOf('qingtingfm.com') === -1) {
+    Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
+  } else {
+    Cookie.remove('sso_token', { domain: '.qingting.fm' });
+  }
   window.location.reload();
 }
 
