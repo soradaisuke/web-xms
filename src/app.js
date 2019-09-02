@@ -33,8 +33,11 @@ export default function xms(config = {}) {
   }
   try {
     if (auth) {
-      if (window.location.host.indexOf('qingtingfm.com') === -1) {
+      if (window.location.host.indexOf('qingtingfm.com') === -1 && !login) {
         throw new Error('域名必须是*.qingtingfm.com');
+      }
+      if (window.location.host.indexOf('qingting.fm') === -1 && login) {
+        throw new Error('域名必须是*.qingting.fm');
       }
       app.model(generateUserModel(auth, login));
     }

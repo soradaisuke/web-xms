@@ -1,3 +1,27 @@
+export function migrateRouteApi({
+  fetchFixedFilter,
+  createDefaultBody,
+  ...other
+} = {}) {
+  let newApi = {};
+
+  if (fetchFixedFilter) {
+    console.error(
+      'route.api.fetchFixedFilter is deprecated, please use route.api.fixedFilter'
+    );
+    newApi = { fixedFilter: fetchFixedFilter };
+  }
+
+  if (createDefaultBody) {
+    console.error(
+      'route.api.createDefaultBody is deprecated, please use route.api.defaultBody'
+    );
+    newApi = { ...newApi, defaultBody: createDefaultBody };
+  }
+
+  return { ...newApi, ...other };
+}
+
 export function migrateConfig({
   type,
   api,
@@ -21,7 +45,7 @@ export function migrateConfig({
   }
 
   return {
-    api,
+    api: migrateRouteApi(api),
     type: newType,
     table: schema,
     layout: inlineWidgetType,
