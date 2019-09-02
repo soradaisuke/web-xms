@@ -134,7 +134,7 @@ function getQuery({ namespace, inline, search }) {
 
 function generateRecordsPage(
   {
-    api: { host, path, fetchFixedFilter, createDefaultBody, defaultFilter },
+    api: { host, path, fixedFilter, defaultBody, defaultFilter },
     namespace,
     actions,
     table,
@@ -200,17 +200,17 @@ function generateRecordsPage(
     } = ownProps;
 
     let fetchApiFixedFilter = {};
-    if (isFunction(fetchFixedFilter)) {
-      fetchApiFixedFilter = fetchFixedFilter(matchParams);
-    } else if (isPlainObject(fetchFixedFilter)) {
-      fetchApiFixedFilter = fetchFixedFilter;
+    if (isFunction(fixedFilter)) {
+      fetchApiFixedFilter = fixedFilter(matchParams);
+    } else if (isPlainObject(fixedFilter)) {
+      fetchApiFixedFilter = fixedFilter;
     }
 
     let createApiDefaultBody = {};
-    if (isFunction(createDefaultBody)) {
-      createApiDefaultBody = createDefaultBody(matchParams);
-    } else if (isPlainObject(createDefaultBody)) {
-      createApiDefaultBody = createDefaultBody;
+    if (isFunction(defaultBody)) {
+      createApiDefaultBody = defaultBody(matchParams);
+    } else if (isPlainObject(defaultBody)) {
+      createApiDefaultBody = defaultBody;
     }
 
     let apiPath = '';
