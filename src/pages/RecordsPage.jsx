@@ -21,6 +21,7 @@ import TableType from '../schema/Table';
 import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
+import showError from '../utils/showError';
 import './RecordsPage.less';
 
 const { Column } = Table;
@@ -214,7 +215,7 @@ class RecordsPage extends React.PureComponent {
       if (hide) {
         hide();
       }
-      message.error(e.message);
+      showError(e.message);
       if (throwError) {
         throw e;
       }

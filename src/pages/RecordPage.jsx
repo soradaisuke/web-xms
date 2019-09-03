@@ -7,6 +7,7 @@ import { map, filter, get, reduce } from 'lodash';
 import classNames from 'classnames';
 import TableType from '../schema/Table';
 import Page from './Page';
+import showError from '../utils/showError';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
@@ -90,7 +91,7 @@ class RecordPage extends React.PureComponent {
       if (hide) {
         hide();
       }
-      message.error(e.message);
+      showError(e.message);
       if (throwError) {
         throw e;
       }

@@ -4,8 +4,9 @@ import shortId from 'shortid';
 import { uploadImage, generateDeviceId } from '@qt/web-core';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { Upload, Icon, Col, Row, Modal, message } from 'antd';
+import { Upload, Icon, Col, Row, Modal } from 'antd';
 import getImageSize from '../../utils/getImageSize';
+import showError from '../../utils/showError';
 
 export default class UploadImage extends React.PureComponent {
   static displayName = 'UploadImage';
@@ -192,7 +193,7 @@ export default class UploadImage extends React.PureComponent {
       });
       this.setCropState({ cropVisible: false });
     } catch (e) {
-      message.error(e.message || e);
+      showError(e.message || e, '上传失败');
       this.setState({
         imageLoading: false
       });
@@ -248,7 +249,7 @@ export default class UploadImage extends React.PureComponent {
           });
         })
         .catch(e => {
-          message.error(e);
+          showError(e);
           this.setCropState({ fileLoading: false });
         });
     } else {
@@ -262,9 +263,9 @@ export default class UploadImage extends React.PureComponent {
     const isPNG = file.type === 'image/png';
     const isLtMaxSize = file.size / 1024 / 1024 <= fileMaxSize;
     if (!(isJPG || isPNG)) {
-      message.error('文件格式要求是JPEG/JPG或PNG');
+      showError('文件格式要求是JPEG/JPG或PNG');
     } else if (!isLtMaxSize) {
-      message.error(`图片大小超过限制（${fileMaxSize}MB）`);
+      showError(`图片大小超过限制（${fileMaxSize}MB）`);
     }
 
     return (isJPG || isPNG) && isLtMaxSize;

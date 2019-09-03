@@ -1,7 +1,6 @@
 import dva from 'dva';
 import createLoading from 'dva-loading';
 import { merge } from 'lodash';
-import { message } from 'antd';
 import history from './utils/history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
@@ -10,13 +9,13 @@ import defaultConfig from './defaultConfig';
 import router from './router';
 import audio from './models/audio';
 import loginRoute from './routes/login';
+import showError from './utils/showError';
 
 export default function xms(config = {}) {
   const app = dva({
     history,
     onError(err) {
-      console.error(err.message);
-      message.error(err.message);
+      showError(err.message);
     }
   });
 
@@ -45,8 +44,7 @@ export default function xms(config = {}) {
     app.routes = processRoutes({ app, routes });
     app.router(router);
   } catch (err) {
-    console.error(err);
-    message.error(err.message);
+    showError(err.message);
   }
 
   const appStart = app.start;
