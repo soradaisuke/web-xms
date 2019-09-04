@@ -58,7 +58,11 @@ export default function processRoutes({ app, routes }) {
       if (isElement(component)) {
         throw new Error(`${path}: component can not be React.Element`);
       } else if (isComponent(component)) {
-        // keep
+        component = dynamic({
+          component: () => Promise.resolve(component),
+          models,
+          app
+        });
       } else if (isFunction(component)) {
         component = dynamic({
           component,
