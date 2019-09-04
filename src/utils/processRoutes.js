@@ -74,7 +74,7 @@ export default function processRoutes({ app, routes }) {
           inline,
           config: processListConfig({ config, path })
         });
-      } else if (!!component || !!config) {
+      } else if (!!component || config.type === 'detail') {
         component = dynamicRecordComponent({
           app,
           component,

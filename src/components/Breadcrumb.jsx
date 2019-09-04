@@ -10,7 +10,7 @@ function addBreadcrumbItem({ pathname, routes, items, params }) {
     routes,
     ({ path, component, title, inline, breadcrumb, routes: childRoutes }) => {
       if (matchPath(pathname, { path })) {
-        if (component && !inline) {
+        if ((title || breadcrumb) && !inline) {
           let breadcrumbTitle;
 
           if (isFunction(breadcrumb)) {
@@ -19,17 +19,23 @@ function addBreadcrumbItem({ pathname, routes, items, params }) {
             breadcrumbTitle = breadcrumb;
           }
 
+          breadcrumbTitle = pathToText(breadcrumbTitle) || title;
+
           items.push(
             <Breadcrumb.Item key={path}>
-              <NavLink
-                exact
-                to={join(
-                  take(split(pathname, '/'), split(path, '/').length),
-                  '/'
-                )}
-              >
-                {pathToText(breadcrumbTitle) || title}
-              </NavLink>
+              {
+                component ? (
+                  <NavLink
+                    exact
+                    to={join(
+                      take(split(pathname, '/'), split(path, '/').length),
+                      '/'
+                    )}
+                  >
+                    {breadcrumbTitle}
+                  </NavLink>
+                ) : breadcrumbTitle
+              }
             </Breadcrumb.Item>
           );
         }

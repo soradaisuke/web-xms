@@ -38,6 +38,26 @@ const selector = createSelector(
   }
 );
 
+function renderMenus(routes) {
+  return validMenues(routes).map(({ path, title, routes: childRoutes }) => {
+    const subRoutes = validMenues(childRoutes);
+
+    if (subRoutes.length > 0) {
+      return (
+        <SubMenu key={path} title={title}>
+          {renderMenus(subRoutes)}
+        </SubMenu>
+      );
+    }
+
+    return (
+      <Menu.Item key={path}>
+        <Link to={path}>{title}</Link>
+      </Menu.Item>
+    );
+  });
+}
+
 class NavMenu extends React.PureComponent {
   static propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
@@ -69,29 +89,7 @@ class NavMenu extends React.PureComponent {
           selectedKeys={selectedKeys}
           defaultOpenKeys={openKeys}
         >
-          {validMenues(routes).map(({ path, title, routes: childRoutes }) => {
-            const subMenus = validMenues(childRoutes).map(
-              ({ path: subPath, title: childTitle }) => (
-                <Menu.Item key={subPath}>
-                  <Link to={subPath}>{childTitle}</Link>
-                </Menu.Item>
-              )
-            );
-
-            if (subMenus.length > 0) {
-              return (
-                <SubMenu key={path} title={title}>
-                  {subMenus}
-                </SubMenu>
-              );
-            }
-
-            return (
-              <Menu.Item key={path}>
-                <Link to={path}>{title}</Link>
-              </Menu.Item>
-            );
-          })}
+          {renderMenus(routes)}
         </Menu>
         <Icon
           className="xms-collapse"

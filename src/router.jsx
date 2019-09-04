@@ -57,11 +57,13 @@ function RouterConfig({ history, app, user }) {
   function renderRoute({
     path,
     inline,
+    title,
+    breadcrumb,
     routes: subRoutes,
     component: Component
   }) {
     const children = [];
-    if (Component && !inline) {
+    if ((title || breadcrumb) && !inline) {
       const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
 
       children.push(
@@ -72,7 +74,7 @@ function RouterConfig({ history, app, user }) {
           render={() => (
             <React.Fragment>
               <Breadcrumb routes={routes} />
-              <Component routes={inlineRoutes} />
+              {!!Component && <Component routes={inlineRoutes} />}
             </React.Fragment>
           )}
         />
