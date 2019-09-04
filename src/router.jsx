@@ -120,7 +120,7 @@ function RouterConfig({ history, app, user }) {
             <Content className="xms-content">
               <Switch>
                 {map(routes, route => renderRoute(route))}
-                {!homeRoute && firstAvaliableNonHomeRoutePath ? (
+                {user && !homeRoute && firstAvaliableNonHomeRoutePath ? (
                   <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
                 ) : null}
               </Switch>
