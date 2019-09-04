@@ -229,6 +229,7 @@ ref获得节点后可以调用的方法有
 | sort | 排序配置<br />true：支持升序和降序排序<br />asc：支持升序排序<br />desc：支持降序排序<br />object配置见[sort](#sort) | bool/string(asc, desc)/object | - |
 | defaultSort | 该属性作为该列表的默认排序及默认排序类型 | string(asc, desc) | - |
 | search | 是否支持用该属性模糊搜索 | bool | false |
+| autoCompleteRequest | 搜索时自动完成获取选项的函数 | Function(value, cb(newOptions)) | - |
 | imageSize | 图片大小，{width}x{height} | string | 100x100 |
 | renderValue | 自定义函数，获取展示值 | Function(value, record) | - |
 | filters | 该属性的所有过滤信息，支持函数动态获取，返回格式也需要是object[]，见[filters](#filters)<br />type为DATE或DATETIME的时候为预设的date，text为预设按钮的文字，value会经过moment转换，预设见[antd的DatePicker.RangePicker的ranges](https://ant.design/components/date-picker-cn/#RangePicker)<br />例如：非rangeFilter的fitlers:[{ text: '永久', value: '9999-12-31' }]<br />rangeFilter的fitlers:[{ text: '最近7天', value: [moment.subtract(6, 'days'), moment()] }] | object[]/Function(currentFiler) | [] |

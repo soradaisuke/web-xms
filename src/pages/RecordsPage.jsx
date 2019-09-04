@@ -13,6 +13,7 @@ import {
   Input,
   message,
   Modal,
+  AutoComplete,
   Card,
   Col,
   Row
@@ -34,6 +35,8 @@ import {
   join,
   forEach,
   findIndex,
+  isString,
+  debounce,
   zipObjectDeep
 } from 'lodash';
 import { generateUpYunImageUrl } from 'web-core';
@@ -158,7 +161,8 @@ class RecordsPage extends React.PureComponent {
       dataSource: [],
       selectedRowKeys: [],
       selectedRows: [],
-      inputSearch: {}
+      inputSearch: {},
+      searchOptions: {}
     };
   }
 
@@ -171,6 +175,19 @@ class RecordsPage extends React.PureComponent {
     }
 
     return null;
+  }
+
+  static renderAutoCompleteOptions(options) {
+    if (!isArray(options)) return null;
+    return options.map(option =>
+      isString(option) ? (
+        <AutoComplete.Option key={option} text={option} value={option}>
+          <span title={option}>{option}</span>
+        </AutoComplete.Option>
+      ) : (
+        option
+      )
+    );
   }
 
   componentDidMount() {
@@ -331,6 +348,26 @@ class RecordsPage extends React.PureComponent {
       } = this.props;
       await this.updateRecord({ promise: handler(matchParams) });
     }
+  };
+
+  onAutoCompleteInputChange = debounce(
+    ({ value, autoCompleteRequest, mapKey }) => {
+      autoCompleteRequest(value, newOptions =>
+        this.setState({ searchOptions: { [mapKey]: newOptions } })
+      );
+    },
+    400
+  );
+
+  changeAutoCompleteInputSearch = ({ definition, value }) => {
+    this.setState({
+      inputSearch: { [definition.mapKey]: value }
+    });
+    this.onAutoCompleteInputChange({
+      value,
+      autoCompleteRequest: definition.autoCompleteRequest,
+      mapKey: definition.mapKey
+    });
   };
 
   updateRecord = async ({
@@ -672,7 +709,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderSearchGroup() {
-    const { inputSearch } = this.state;
+    const { inputSearch, searchOptions } = this.state;
     const { searchFields, search } = this.props;
 
     if (!searchFields || searchFields.length === 0) {
@@ -685,19 +722,45 @@ class RecordsPage extends React.PureComponent {
           <Row gutter={20} key={join(map(definitions, ({ mapKey }) => mapKey))}>
             {definitions.map(definition => (
               <Col span={4} key={definition.mapKey}>
-                <Search
-                  defaultValue={search[definition.mapKey]}
-                  placeholder={definition.title}
-                  value={inputSearch[definition.mapKey]}
-                  onSearch={value => this.onSearch(definition, value)}
-                  onChange={e =>
-                    this.setState({
-                      inputSearch: { [definition.mapKey]: e.target.value }
-                    })
-                  }
-                  style={{ width: '100%' }}
-                  enterButton
-                />
+                {isFunction(definition.autoCompleteRequest) ? (
+                  <AutoComplete
+                    defaultActiveFirstOption={false}
+                    style={{ width: '100%' }}
+                    dataSource={RecordsPage.renderAutoCompleteOptions(
+                      searchOptions[definition.mapKey]
+                    )}
+                    onChange={value =>
+                      this.changeAutoCompleteInputSearch({ definition, value })
+                    }
+                    onSelect={value =>
+                      this.changeAutoCompleteInputSearch({ definition, value })
+                    }
+                    optionLabelProp="value"
+                  >
+                    <Search
+                      defaultValue={search[definition.mapKey]}
+                      placeholder={definition.title}
+                      onSearch={value => this.onSearch(definition, value)}
+                      value={inputSearch[definition.mapKey]}
+                      style={{ width: '100%' }}
+                      enterButton
+                    />
+                  </AutoComplete>
+                ) : (
+                  <Search
+                    defaultValue={search[definition.mapKey]}
+                    placeholder={definition.title}
+                    value={inputSearch[definition.mapKey]}
+                    onSearch={value => this.onSearch(definition, value)}
+                    onChange={e =>
+                      this.setState({
+                        inputSearch: { [definition.mapKey]: e.target.value }
+                      })
+                    }
+                    style={{ width: '100%' }}
+                    enterButton
+                  />
+                )}
               </Col>
             ))}
           </Row>
