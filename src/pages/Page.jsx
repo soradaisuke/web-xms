@@ -53,7 +53,7 @@ class Page extends React.PureComponent {
 
     let watermark = '蜻蜓FM';
     if (user) {
-      watermark = user.get('nickname') || '';
+      watermark = `${watermark} ${user.get('nickname') || ''}`;
 
       const phone = user.get('phone');
 

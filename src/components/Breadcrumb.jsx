@@ -23,19 +23,19 @@ function addBreadcrumbItem({ pathname, routes, items, params }) {
 
           items.push(
             <Breadcrumb.Item key={path}>
-              {
-                component ? (
-                  <NavLink
-                    exact
-                    to={join(
-                      take(split(pathname, '/'), split(path, '/').length),
-                      '/'
-                    )}
-                  >
-                    {breadcrumbTitle}
-                  </NavLink>
-                ) : breadcrumbTitle
-              }
+              {component ? (
+                <NavLink
+                  exact
+                  to={join(
+                    take(split(pathname, '/'), split(path, '/').length),
+                    '/'
+                  )}
+                >
+                  {breadcrumbTitle}
+                </NavLink>
+              ) : (
+                breadcrumbTitle
+              )}
             </Breadcrumb.Item>
           );
         }
