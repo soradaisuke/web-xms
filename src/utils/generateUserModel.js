@@ -1,17 +1,19 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
+import Cookie from 'js-cookie';
 import { generateUri, isProduction } from '@qt/web-core';
 import request from '../services/request';
 
 const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;
 
-function generateService(auth, login) {
+function generateService({ auth, login, logout }) {
   if (!auth) {
     throw new Error('auth of api is required');
   }
 
   return {
     auth: async () => request.get(auth),
+    logout: logout ? async () => request.get(logout) : null,
     login: login
       ? async ({ account, password }) => {
           const body = new FormData();
@@ -26,8 +28,8 @@ function generateService(auth, login) {
   };
 }
 
-export default function generateUserModel(auth, login) {
-  const service = generateService(auth, login);
+export default function generateUserModel({ auth, login, logout }) {
+  const service = generateService({ auth, login, logout });
 
   return {
     namespace: 'user',
@@ -69,6 +71,20 @@ export default function generateUserModel(auth, login) {
           } else {
             throw e;
           }
+        }
+      },
+      *logout(_, { call }) {
+        try {
+          if (logout) {
+            yield call(service.logout);
+          } else if (window.location.host.indexOf('qingtingfm.com') === -1) {
+            Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
+          } else {
+            Cookie.remove('sso_token', { domain: '.qingting.fm' });
+          }
+          window.location.reload();
+        } catch (e) {
+          throw e;
         }
       },
       *login(

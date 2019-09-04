@@ -23,7 +23,7 @@ export default function xms(config = {}) {
 
   app.config = merge(defaultConfig, config);
   const { routes = [], api = {} } = config;
-  const { host = window.location.host, auth, login } = api;
+  const { host = window.location.host, auth, login, logout } = api;
   if (host) {
     request.setHost(host);
   }
@@ -38,7 +38,7 @@ export default function xms(config = {}) {
       if (window.location.host.indexOf('qingting.fm') === -1 && login) {
         throw new Error('域名必须是*.qingting.fm');
       }
-      app.model(generateUserModel(auth, login));
+      app.model(generateUserModel({ auth, login, logout }));
     }
     app.model(audio);
     app.routes = processRoutes({ app, routes });
