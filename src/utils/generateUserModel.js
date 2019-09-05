@@ -82,7 +82,7 @@ export default function generateUserModel({ auth, login, logout }) {
           } else {
             Cookie.remove('sso_token', { domain: '.qingting.fm' });
           }
-          window.location.reload();
+          window.location.replace(window.location.origin);
         } catch (e) {
           throw e;
         }
