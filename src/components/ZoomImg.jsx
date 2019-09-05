@@ -57,7 +57,11 @@ export default class ZoomImg extends React.PureComponent {
 
   onClickRotateLeft = () => {
     const { rotate } = this.state;
-    this.setState({ rotate: (rotate - 90) % 360 });
+    let newRotate = (rotate - 90) % 360;
+    if (newRotate < 0) {
+      newRotate += 360;
+    }
+    this.setState({ rotate: newRotate });
   };
 
   onClickRotateRight = () => {
