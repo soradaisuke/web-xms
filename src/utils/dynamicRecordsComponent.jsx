@@ -96,13 +96,13 @@ function generateModel({ namespace, table }, service) {
         { type: 'takeLatest' }
       ],
       remove: function* modelRemove({ payload: { path, id } }, { call }) {
-        yield call(service.remove, { path, id });
+        return yield call(service.remove, { path, id });
       },
       create: function* modelCreate({ payload: { path, body } }, { call }) {
-        yield call(service.create, { path, body });
+        return yield call(service.create, { path, body });
       },
       edit: function* modelEdit({ payload: { path, id, body } }, { call }) {
-        yield call(service.edit, { path, id, body });
+        return yield call(service.edit, { path, id, body });
       }
     }
   };

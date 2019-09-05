@@ -15,6 +15,7 @@ import {
   isUndefined,
   isNull,
   cloneDeep,
+  isFunction,
   filter as filterFunc
 } from 'lodash';
 import TableType from '../schema/Table';
@@ -199,7 +200,8 @@ class RecordsPage extends React.PureComponent {
     promise,
     loadingMessage,
     throwError = false,
-    reload = false
+    reload = false,
+    onComplete
   }) => {
     let hide;
     if (loadingMessage) {
@@ -207,9 +209,12 @@ class RecordsPage extends React.PureComponent {
     }
 
     try {
-      await promise;
+      const result = await promise;
       if (hide) {
         hide();
+      }
+      if (isFunction(onComplete)) {
+        onComplete({ result });
       }
     } catch (e) {
       if (hide) {

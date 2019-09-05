@@ -98,6 +98,10 @@ export default class Action {
     return this.columns;
   }
 
+  getOnComplete() {
+    return this.config.get('onComplete');
+  }
+
   needReload() {
     return this.config.get('reload');
   }
@@ -310,7 +314,8 @@ export default class Action {
           promise,
           throwError,
           loadingMessage,
-          reload
+          reload,
+          onComplete: this.getOnComplete()
         });
       }
     };
