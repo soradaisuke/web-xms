@@ -63,7 +63,7 @@ function RouterConfig({ history, app, user }) {
     component: Component
   }) {
     const children = [];
-    if ((title || breadcrumb) && !inline) {
+    if ((title || breadcrumb || Component) && !inline) {
       const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
 
       children.push(
