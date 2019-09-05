@@ -81,14 +81,13 @@ export default class ZoomImg extends React.PureComponent {
         className={classNames(imgClassName, 'zoom-img-activator')}
       />
     );
-    let format = '';
-    if (isLeftRightFlip) {
-      format = '/flip/left,right';
-    } else if (isTopDownFlip) {
-      format = '/flip/top,down';
-    }
 
-    format = `${format}/rotate/${rotate}`;
+    let format = rotate > 0 ? `/rotate/${rotate}` : '';
+    if (isLeftRightFlip) {
+      format = `${format}/flip/left,right`;
+    } else if (isTopDownFlip) {
+      format = `${format}/flip/top,down`;
+    }
 
     return (
       <ActivatorModal
