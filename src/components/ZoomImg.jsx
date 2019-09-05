@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Img } from '@qt/react-core';
 import { generateUpYunImageUrl } from '@qt/web-core';
-import { Col, Slider, Switch } from 'antd';
-import ActivatorModal from '../ActivatorModal';
+import { Col, Slider, Switch, Button } from 'antd';
+import ActivatorModal from './ActivatorModal';
 import './ZoomImg.less';
 
 export default class ZoomImg extends React.PureComponent {
@@ -15,7 +15,8 @@ export default class ZoomImg extends React.PureComponent {
     imgClassName: PropTypes.string,
     modalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     showLeftRightFlip: PropTypes.bool,
-    showTopDownFlip: PropTypes.bool
+    showTopDownFlip: PropTypes.bool,
+    showRotate: PropTypes.bool
   };
 
   static defaultProps = {
@@ -23,13 +24,15 @@ export default class ZoomImg extends React.PureComponent {
     imgClassName: '',
     modalWidth: '',
     showLeftRightFlip: false,
-    showTopDownFlip: false
+    showTopDownFlip: false,
+    showRotate: false
   };
 
   state = {
     zoomValue: 1,
     isLeftRightFlip: false,
-    isTopDownFlip: false
+    isTopDownFlip: false,
+    rotate: 0
   };
 
   changeZoomValue = zoomValue => {
@@ -52,27 +55,40 @@ export default class ZoomImg extends React.PureComponent {
     });
   };
 
+  onClickRotateLeft = () => {
+    const { rotate } = this.state;
+    this.setState({ rotate: (rotate - 90) % 360 });
+  };
+
+  onClickRotateRight = () => {
+    const { rotate } = this.state;
+    this.setState({ rotate: (rotate + 90) % 360 });
+  };
+
   render() {
     const {
       src,
       showLeftRightFlip,
       showTopDownFlip,
+      showRotate,
       modalWidth,
       imgClassName
     } = this.props;
-    const { zoomValue, isLeftRightFlip, isTopDownFlip } = this.state;
+    const { zoomValue, isLeftRightFlip, isTopDownFlip, rotate } = this.state;
     const children = (
       <Img
         src={src}
         className={classNames(imgClassName, 'zoom-img-activator')}
       />
     );
-    let flip = '';
+    let format = '';
     if (isLeftRightFlip) {
-      flip = '/flip/left,right';
+      format = '/flip/left,right';
     } else if (isTopDownFlip) {
-      flip = '/flip/top,down';
+      format = '/flip/top,down';
     }
+
+    format = `${format}/rotate/${rotate}`;
 
     return (
       <ActivatorModal
@@ -84,7 +100,7 @@ export default class ZoomImg extends React.PureComponent {
             <Switch
               checkedChildren="左右翻转"
               unCheckedChildren="左右不翻转"
-              className="zoom-switch"
+              className="action"
               checked={isLeftRightFlip}
               onChange={this.onChangeLeftRightFlip}
             />
@@ -93,10 +109,28 @@ export default class ZoomImg extends React.PureComponent {
             <Switch
               checkedChildren="上下翻转"
               unCheckedChildren="上下不翻转"
-              className="zoom-switch"
+              className="action"
               checked={isTopDownFlip}
               onChange={this.onChangeTopDownFlip}
             />
+          )}
+          {showRotate && (
+            <>
+              <Button
+                className="action"
+                type="primary"
+                shape="circle"
+                icon="undo"
+                onClick={this.onClickRotateLeft}
+              />
+              <Button
+                className="action"
+                type="primary"
+                shape="circle"
+                icon="redo"
+                onClick={this.onClickRotateRight}
+              />
+            </>
           )}
           <div
             className="zoom-img-wrapper"
@@ -107,7 +141,7 @@ export default class ZoomImg extends React.PureComponent {
               style={{
                 width: `${100 * zoomValue}%`,
                 height: `${100 * zoomValue}%`,
-                backgroundImage: `url(${generateUpYunImageUrl(src, flip)})`
+                backgroundImage: `url(${generateUpYunImageUrl(src, format)})`
               }}
             />
           </div>
