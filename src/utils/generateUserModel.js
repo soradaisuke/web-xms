@@ -77,7 +77,7 @@ export default function generateUserModel({ auth, login, logout }) {
         try {
           if (logout) {
             yield call(service.logout);
-          } else if (window.location.host.indexOf('qingtingfm.com') === -1) {
+          } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
             Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
           } else {
             Cookie.remove('sso_token', { domain: '.qingting.fm' });
