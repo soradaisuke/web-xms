@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.4...v1.14.0) (2019-09-06)
+
+
+### Bug Fixes
+
+* **COPYRIGHT-414:** 可选填的数字类型不填的时候会报错 ([0f4cc93](https://git2.qingtingfm.com/zhibo/xms/commit/0f4cc93))
+
+
+### Features
+
+* **NoTicket:** 列表搜索支持autoComplete ([4abdfc2](https://git2.qingtingfm.com/zhibo/xms/commit/4abdfc2))
+
 ### [1.13.4](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.3...v1.13.4) (2019-08-02)
 
 
