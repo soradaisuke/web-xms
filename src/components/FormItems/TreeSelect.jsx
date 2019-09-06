@@ -1,6 +1,7 @@
 import React from 'react';
 import { isArray, map, debounce } from 'lodash';
 import { TreeSelect, Radio } from 'antd';
+import './TreeSelect.less';
 
 const generateTreeData = filters => {
   if (!isArray(filters)) return null;
@@ -29,6 +30,10 @@ export default class XMSTreeSelect extends React.PureComponent {
   }
 
   onSearch = debounce(value => {
+    if (value === '') {
+      return;
+    }
+
     const { column, parentValue } = this.props;
     const { radioValue } = this.state;
     const searchRequest = column.getFormSearchRequest();
@@ -89,6 +94,7 @@ export default class XMSTreeSelect extends React.PureComponent {
         {this.renderRadioOptions()}
         <TreeSelect
           {...props}
+          className="xms-tree-select"
           allowClear
           showSearch
           treeCheckable={column.canSelectMutipleInForm()}
