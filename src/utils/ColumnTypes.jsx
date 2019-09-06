@@ -169,16 +169,18 @@ class PrimitiveColumnType extends BaseColumnType {
     return null;
   }
 
-  getFormRules() {
+  getFormRules({ optional }) {
     // eslint-disable-next-line class-methods-use-this
     switch (this.primitiveType) {
       case TYPES.NUMBER:
-        return [
-          {
-            type: 'number',
-            message: '格式不正确，要求为数字'
-          }
-        ];
+        return optional
+          ? []
+          : [
+              {
+                type: 'number',
+                message: '格式不正确，要求为数字'
+              }
+            ];
       case TYPES.STRING:
         return [
           {
