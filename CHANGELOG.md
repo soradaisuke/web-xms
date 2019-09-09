@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.14.0...v1.14.1) (2019-09-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix ‘\’ in textToPath ([bfd09c3](https://git2.qingtingfm.com/zhibo/xms/commit/bfd09c3))
+
 ## [1.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.4...v1.14.0) (2019-09-06)
 
 
