@@ -5,6 +5,7 @@ const translateSlashes = replace(/\//g, '{slashes}');
 const translatePercent = replace(/%/g, '{percent}');
 const translateHash = replace(/#/g, '{hash}');
 const translateQuestionMark = replace(/\?/g, '{qmark}');
+const translateBackslash = replace(/\\/g, '{bslash}');
 
 function translatePatterns(text) {
   let result = text;
@@ -23,5 +24,6 @@ export default flow(
   translatePatterns,
   translatePercent,
   translateHash,
-  translateQuestionMark
+  translateQuestionMark,
+  translateBackslash
 );
