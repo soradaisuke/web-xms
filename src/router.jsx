@@ -49,8 +49,10 @@ function getValidRoutes(routes, user) {
 function RouterConfig({ history, app, user }) {
   const {
     routes: unCheckRoutes,
-    config: { name }
+    config: { name, api = {} }
   } = app;
+
+  const { auth } = api;
 
   const routes = getValidRoutes(unCheckRoutes, user);
 
@@ -122,7 +124,9 @@ function RouterConfig({ history, app, user }) {
             <Content className="xms-content">
               <Switch>
                 {map(routes, route => renderRoute(route))}
-                {user && !homeRoute && firstAvaliableNonHomeRoutePath ? (
+                {(!auth || !!user) &&
+                !homeRoute &&
+                firstAvaliableNonHomeRoutePath ? (
                   <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
                 ) : null}
               </Switch>
