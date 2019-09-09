@@ -399,9 +399,10 @@ export default class Column {
     );
   }
 
-  getSearchPlaceholder() {
+  getFormSearchPlaceholder() {
     return (
-      this.config.getIn(['form', 'placeholder']) || `搜索${this.getTitle()}`
+      this.config.getIn(['form', 'searchPlaceholder']) ||
+      `搜索${this.getTitle()}`
     );
   }
 
