@@ -1,5 +1,5 @@
 import React from 'react';
-import { startsWith, isFunction } from 'lodash';
+import { startsWith, isFunction, filter } from 'lodash';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
@@ -52,7 +52,8 @@ export default function processRoutes({ app, routes }) {
 
       const route = migrateRoute(r, app);
 
-      const { config = {}, path, models, inline } = route;
+      const { config = {}, path, models, inline, routes: subRoutes } = route;
+      const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
       let { component } = route;
 
       if (isElement(component)) {
@@ -74,7 +75,11 @@ export default function processRoutes({ app, routes }) {
           inline,
           config: processListConfig({ config, path })
         });
-      } else if (!!component || config.type === 'detail') {
+      } else if (
+        !!component ||
+        inlineRoutes.length > 0 ||
+        config.type === 'detail'
+      ) {
         component = dynamicRecordComponent({
           app,
           component,
