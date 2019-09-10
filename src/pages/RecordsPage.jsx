@@ -268,6 +268,18 @@ class RecordsPage extends React.PureComponent {
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
         filterProps.filterMultiple = column.canFilterMultipleInTable();
+        if (column.canFilterTreeInTable()) {
+          filterProps.filterDropdown = column.getRenderFilterTree({
+            filters,
+            parentValue: parentFilteredValue
+          });
+          filterProps.filterIcon = filtered => (
+            <Icon
+              type="filter"
+              style={{ color: filtered ? '#1890ff' : undefined }}
+            />
+          );
+        }
       } else if (valueOptionsRequest) {
         if (
           (isArray(parentFilteredValue) && parentFilteredValue.length > 0) ||
@@ -532,7 +544,10 @@ class RecordsPage extends React.PureComponent {
             <Component />
           </Card>
         ) : null}
-        <Card className={classNames('content-card', inline ? 'inline' : '')}>
+        <Card
+          className={classNames('content-card', inline ? 'inline' : '')}
+          style={{ minHeight: '600px' }}
+        >
           {this.renderContent()}
         </Card>
       </Page>

@@ -1,20 +1,19 @@
 import React from 'react';
-import { isArray, map, debounce } from 'lodash';
+import PropTypes from 'prop-types';
+import { debounce } from 'lodash';
 import { TreeSelect, Radio } from 'antd';
+import generateTreeData from '../../utils/generateTreeData';
 import './TreeSelect.less';
 
-const generateTreeData = filters => {
-  if (!isArray(filters)) return null;
-  return map(filters, ({ value, text, children, ...item }) => ({
-    value,
-    key: value,
-    title: text,
-    children: generateTreeData(children),
-    ...item
-  }));
-};
-
 export default class XMSTreeSelect extends React.PureComponent {
+  static propTypes = {
+    parentValue: PropTypes.any // eslint-disable-line react/forbid-prop-types
+  };
+
+  static defaultProps = {
+    parentValue: null
+  };
+
   constructor(props) {
     super(props);
 

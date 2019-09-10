@@ -16,8 +16,10 @@ import { makeCancelablePromise } from '@qt/web-core';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
 import { Button, Form } from 'antd';
+import generateTreeData from '../utils/generateTreeData';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
+import TreeFilter from '../components/TreeFilter';
 import './Column.less';
 
 const FormItem = Form.Item;
@@ -110,7 +112,7 @@ export default class Column {
         }) || ''}）`;
       }
       if (this.canFilterMultipleInTable()) {
-        if (filteredValue.length > 5) {
+        if (filteredValue.length > 3) {
           return `${this.getTitle()}（已选${filteredValue.length}个）`;
         }
         return `${this.getTitle()}（${join(
@@ -208,6 +210,10 @@ export default class Column {
 
   canFilterInTable() {
     return this.config.getIn(['table', 'filter']);
+  }
+
+  canFilterTreeInTable() {
+    return this.config.getIn(['table', 'filterTree']);
   }
 
   canFilterMultipleInTable() {
@@ -362,6 +368,40 @@ export default class Column {
       </div>
     </div>
   );
+
+  // eslint-disable-next-line class-methods-use-this
+  getRenderFilterTree({ filters, parentValue }) {
+    return ({
+      setSelectedKeys, // eslint-disable-line react/prop-types
+      selectedKeys, // eslint-disable-line react/prop-types
+      confirm, // eslint-disable-line react/prop-types
+      clearFilters // eslint-disable-line react/prop-types
+    }) => (
+      <div style={{ padding: 8 }}>
+        <TreeFilter
+          column={this}
+          parentValue={parentValue}
+          selectedKeys={selectedKeys}
+          setSelectedKeys={setSelectedKeys}
+          treeData={generateTreeData(filters)}
+        />
+        <div className="filter-dropdown-button-wrapper">
+          <Button
+            type="primary"
+            onClick={confirm}
+            icon="search"
+            size="small"
+            style={{ width: 90, marginRight: 8 }}
+          >
+            搜索
+          </Button>
+          <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
+            重置
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   // form
   isImmutableInForm() {
