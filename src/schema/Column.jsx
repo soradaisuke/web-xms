@@ -106,10 +106,10 @@ export default class Column {
         return `${this.getTitle()}（${this.renderInTableValueDefault({
           value: get(filteredValue, '[0][0]'),
           parentFilteredValue
-        }) || ''} ~ ${this.renderInTableValueDefault({
+        })} ~ ${this.renderInTableValueDefault({
           value: get(filteredValue, '[0][1]'),
           parentFilteredValue
-        }) || ''}）`;
+        })}）`;
       }
       if (this.canFilterMultipleInTable()) {
         if (filteredValue.length > 3) {
