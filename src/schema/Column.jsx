@@ -41,6 +41,27 @@ function generateFilters(options) {
   });
 }
 
+function findOption(options, value) {
+  if (!options) {
+    return null;
+  }
+
+  let option;
+
+  forEach(options, o => {
+    if (o.value === value) {
+      option = o;
+    }
+    if (!option) {
+      option = findOption(o.children, value);
+    }
+
+    return !option;
+  });
+
+  return option;
+}
+
 export default class Column {
   constructor(config = {}) {
     this.config = Immutable.fromJS({
@@ -233,11 +254,9 @@ export default class Column {
   // eslint-disable-next-line class-methods-use-this
   renderInTableValueDefault({ value, parentFilteredValue }) {
     const filters = this.getFilters(parentFilteredValue);
-    if (filters) {
-      const option = find(filters, o => o.value === value);
-      if (option) {
-        return option.text;
-      }
+    const option = findOption(filters, value);
+    if (option) {
+      return option.text;
     }
 
     const maxLines = this.getTableMaxLines();
