@@ -110,6 +110,9 @@ export default class Column {
         }) || ''}）`;
       }
       if (this.canFilterMultipleInTable()) {
+        if (filteredValue.length > 5) {
+          return `${this.getTitle()}（已选${filteredValue.length}个）`;
+        }
         return `${this.getTitle()}（${join(
           map(
             filteredValue,

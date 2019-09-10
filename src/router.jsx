@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
-import { Layout, Spin, LocaleProvider, BackTop } from 'antd';
+import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
 import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -113,7 +113,7 @@ function RouterConfig({ history, app, user }) {
   forEach(routes, r => findFirstAvaliableNonHomeRoute(r));
 
   return (
-    <LocaleProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN}>
       <Router history={history}>
         <Layout className="xms-layout">
           <Header name={name}>
@@ -137,7 +137,7 @@ function RouterConfig({ history, app, user }) {
           />
         </Layout>
       </Router>
-    </LocaleProvider>
+    </ConfigProvider>
   );
 }
 
