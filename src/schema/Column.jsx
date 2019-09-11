@@ -478,6 +478,10 @@ export default class Column {
     return this.config.getIn(['form', 'radioOptions'], Immutable.List());
   }
 
+  getFormHint() {
+    return this.config.getIn(['form', 'hint']);
+  }
+
   // eslint-disable-next-line class-methods-use-this
   getFormDefaultRules() {
     return [];
@@ -586,7 +590,7 @@ export default class Column {
     }
 
     return (
-      <FormItem key={key} label={this.getTitle()}>
+      <FormItem key={key} label={this.getTitle()} extra={this.getFormHint()}>
         {getFieldDecorator(key, {
           initialValue,
           validateFirst: true,
