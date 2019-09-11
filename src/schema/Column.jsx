@@ -411,10 +411,6 @@ export default class Column {
   canShowInCreateFrom({ user, value, values, record }) {
     const creatable = this.config.getIn(['form', 'creatable']);
     if (isFunction(creatable)) {
-      if (!user) {
-        return false;
-      }
-
       return creatable({ user, value, values, record });
     }
 
@@ -424,10 +420,6 @@ export default class Column {
   canShowInEditFrom({ user, value, values, record }) {
     const creatable = this.config.getIn(['form', 'editable']);
     if (isFunction(creatable)) {
-      if (!user) {
-        return false;
-      }
-
       return creatable({ user, value, values, record });
     }
 
