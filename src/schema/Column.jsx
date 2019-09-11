@@ -663,7 +663,7 @@ export default class Column {
     const render = this.config.getIn(['detail', 'render']);
 
     if (isFunction(render)) {
-      return render({ record });
+      return render({ value, record });
     }
 
     if (isArray(value)) {
