@@ -15,7 +15,7 @@ export default function xms(config = {}) {
   const app = dva({
     history,
     onError(err) {
-      showError(err.message);
+      console.log(err.message);
     }
   });
 
