@@ -315,7 +315,11 @@ function generateRecordsPage(
       edit: async ({ id, body }) =>
         dispatch({
           type: `${namespace}/edit`,
-          payload: { path: apiPath, id, body }
+          payload: {
+            path: apiPath,
+            id,
+            body: { ...createApiDefaultBody, ...body }
+          }
         })
     };
 
