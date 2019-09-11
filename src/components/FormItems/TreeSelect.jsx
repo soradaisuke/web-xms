@@ -101,7 +101,7 @@ export default class XMSTreeSelect extends React.PureComponent {
           placeholder={column.getFormPlaceholder(true)}
           searchPlaceholder={column.getFormSearchPlaceholder()}
           treeData={treeData}
-          filterTreeNode={!column.getFormSearchRequest()}
+          filterTreeNode={column.getFormSearchRequest() ? false : null}
           onSearch={this.onSearch}
         />
       </React.Fragment>
