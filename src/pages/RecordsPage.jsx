@@ -473,6 +473,7 @@ class RecordsPage extends React.PureComponent {
       isLoading,
       user,
       actions,
+      tableScroll,
       paginationComponentProps
     } = this.props;
 
@@ -492,6 +493,9 @@ class RecordsPage extends React.PureComponent {
       .getColumns()
       .filter(column => column.canShowInTable(user));
 
+    const defaultTableScroll =
+      table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
+
     return (
       <React.Fragment>
         {this.renderGlobalActions(multipleActions)}
@@ -504,9 +508,7 @@ class RecordsPage extends React.PureComponent {
             rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
             pagination={false}
-            scroll={
-              table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {}
-            }
+            scroll={tableScroll || defaultTableScroll}
             onChange={(pagination, filters, sorter) =>
               this.onChange(pagination, filters, sorter, columns)
             }

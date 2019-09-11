@@ -139,6 +139,7 @@ function generateRecordsPage(
     actions,
     table,
     defaultPageSize = 10,
+    tableScroll,
     paginationComponentProps = {}
   },
   component,
@@ -154,6 +155,7 @@ function generateRecordsPage(
           component={component}
           table={table}
           actions={actions}
+          tableScroll={tableScroll}
         />
       );
     }
