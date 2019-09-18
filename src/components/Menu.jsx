@@ -12,27 +12,27 @@ const { SubMenu } = Menu;
 
 const validMenues = filter(({ title, inline }) => !!title && !inline);
 
+function findNextKey({ pathname, routes, selectedKeys, openKeys }) {
+  forEach(routes, route => {
+    if (matchPath(pathname, { path: route.path })) {
+      selectedKeys.push(route.path);
+
+      const subMenues = validMenues(route.routes);
+      if (subMenues.length > 0) {
+        openKeys.push(route.path);
+
+        findNextKey({ pathname, routes: subMenues, selectedKeys, openKeys });
+      }
+    }
+  });
+}
+
 const selector = createSelector(
   [props => props.location.pathname, props => props.routes],
   (pathname, routes) => {
     const selectedKeys = [];
     const openKeys = [];
-    forEach(routes, route => {
-      if (matchPath(pathname, { path: route.path })) {
-        const subMenues = validMenues(route.routes);
-        if (subMenues.length > 0) {
-          openKeys.push(route.path);
-
-          forEach(subMenues, childRoute => {
-            if (matchPath(pathname, { path: childRoute.path })) {
-              selectedKeys.push(childRoute.path);
-            }
-          });
-        } else {
-          selectedKeys.push(route.path);
-        }
-      }
-    });
+    findNextKey({ pathname, routes, selectedKeys, openKeys });
 
     return { selectedKeys, openKeys };
   }

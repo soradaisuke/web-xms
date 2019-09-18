@@ -120,7 +120,7 @@ function RouterConfig({ history, app, user }) {
             <User />
           </Header>
           <Layout className="xms-main-layout">
-            <Menu routes={routes} />
+            {(!auth || !!user) && <Menu routes={routes} />}
             <Content className="xms-content">
               <Switch>
                 {map(routes, route => renderRoute(route))}
