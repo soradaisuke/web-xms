@@ -100,7 +100,7 @@ export default class Column {
 
   // table
 
-  getTableTitle({ filtered, filteredValue, parentFilteredValue }) {
+  getTableTitle({ filtered, filteredValue, parentFilteredValue } = {}) {
     if (filtered) {
       if (this.canFilterRangeInTable()) {
         return `${this.getTitle()}（${this.renderInTableValueDefault({
