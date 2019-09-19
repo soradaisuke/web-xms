@@ -311,7 +311,7 @@ class RecordsPage extends React.PureComponent {
         {...filterProps}
         title={column.getTableTitle(filterProps)}
         dataIndex={column.getKey()}
-        key={column.getKey()}
+        key={`${column.getKey()}${column.getTableTitle()}`}
         width={column.getTableWidth()}
         fixed={column.getTableFixed()}
         sorter={column.canSortInTable()}
