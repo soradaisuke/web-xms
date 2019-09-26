@@ -55,6 +55,12 @@ export default class Table {
           ? valueOptions.map(option => option.get('value')).toArray()
           : valueOptions.getIn([0, 'value']);
       }
+      if (column.getTableFilterDefault()) {
+        this.defaultFilter = this.defaultFilter || {};
+        this.defaultFilter[
+          column.getTableFilterKey()
+        ] = column.getTableFilterDefault();
+      }
     });
   }
 

@@ -187,6 +187,14 @@ export default class Column {
     return this.tableFilterComponentProps;
   }
 
+  getTableFilterDefault() {
+    return this.config.getIn(['table', 'filterDefault']);
+  }
+
+  getTableFilterRequired() {
+    return this.config.getIn(['table', 'filterRequired']);
+  }
+
   getTableWidth() {
     return this.config.getIn(['table', 'width'], undefined);
   }

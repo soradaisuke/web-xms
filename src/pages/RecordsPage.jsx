@@ -165,6 +165,13 @@ class RecordsPage extends React.PureComponent {
             set(newFilter, column.getTableFilterKey(), value[0]);
           }
         }
+        if (column.getTableFilterRequired() && column.getTableFilterDefault()) {
+          set(
+            newFilter,
+            column.getTableFilterKey(),
+            column.getTableFilterDefault()
+          );
+        }
       }
       return true;
     });
