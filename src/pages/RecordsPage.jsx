@@ -165,7 +165,11 @@ class RecordsPage extends React.PureComponent {
             set(newFilter, column.getTableFilterKey(), value[0]);
           }
         }
-        if (column.getTableFilterRequired() && column.getTableFilterDefault()) {
+        if (
+          isUndefined(get(newFilter, column.getTableFilterKey())) &&
+          column.getTableFilterRequired() &&
+          column.getTableFilterDefault()
+        ) {
           set(
             newFilter,
             column.getTableFilterKey(),
