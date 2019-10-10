@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isBoolean, isFunction } from 'lodash';
 import { Modal } from 'antd';
+import showError from '../utils/showError';
 
 export default class ActivatorModal extends React.PureComponent {
   static displayName = 'ActivatorModal';
@@ -60,7 +61,7 @@ export default class ActivatorModal extends React.PureComponent {
           this.hideModalHandler();
         }
       } catch (e) {
-        //
+        showError(e.message);
       }
 
       this.setState({ confirmLoading: false });
