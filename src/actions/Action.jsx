@@ -222,10 +222,6 @@ export default class Action {
       id: get(record, table.getPrimaryKey())
     };
 
-    if (isFunction(render)) {
-      return render({ ...params, reload: confirm });
-    }
-
     const enable = this.config.get('enable');
     let disabled;
     let filteredRecords;
@@ -252,6 +248,10 @@ export default class Action {
 
     if (disabled && this.isRowAction() && record) {
       return null;
+    }
+
+    if (isFunction(render)) {
+      return render({ ...params, reload: confirm });
     }
 
     const handler = this.getHandler({ remove, create, edit });
