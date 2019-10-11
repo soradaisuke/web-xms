@@ -646,6 +646,10 @@ export default class Column {
     return this.config.getIn(['detail', 'width'], undefined);
   }
 
+  getDescriptionLink() {
+    return this.config.getIn(['detail', 'link']);
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderInDescriptionDefault({ value }) {
     const filters = this.getFilters();
@@ -702,7 +706,7 @@ export default class Column {
 
   renderInDescription({ value, record }) {
     const children = this.renderInDescriptionValue({ value, record });
-    const link = this.getTableLink();
+    const link = this.getDescriptionLink();
 
     if (link) {
       return (
