@@ -399,11 +399,11 @@ export default class Column {
           <Button
             type="primary"
             onClick={confirm}
-            icon="search"
+            icon="filter"
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
-            搜索
+            筛选
           </Button>
           <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
             重置
