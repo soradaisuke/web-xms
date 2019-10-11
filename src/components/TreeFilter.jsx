@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Tree } from 'antd';
+import { Tree, Input } from 'antd';
 import { map } from 'lodash';
 import generateTreeData from '../utils/generateTreeData';
 import './TreeFilter.less';
+
+const { Search } = Input;
 
 export default class TreeFilter extends React.PureComponent {
   static propTypes = {
@@ -21,6 +23,18 @@ export default class TreeFilter extends React.PureComponent {
   onCheck = checkedKeys => {
     const { setSelectedKeys, column } = this.props;
     setSelectedKeys(map(checkedKeys, key => column.formatFilterValue(key)));
+  };
+
+  onSearch = async value => {
+    const { column } = this.props;
+    const tableFilterSearchRequest = column.getTableFilterSearchRequest();
+
+    if (tableFilterSearchRequest) {
+      const filters = await tableFilterSearchRequest(value);
+      this.setState({
+        treeData: generateTreeData(filters)
+      });
+    }
   };
 
   render() {
@@ -54,6 +68,19 @@ export default class TreeFilter extends React.PureComponent {
     } else {
       props.selectedKeys = map(selectedKeys, key => String(key));
       props.onSelect = this.onCheck;
+    }
+
+    if (column.getTableFilterSearchRequest()) {
+      return (
+        <>
+          <Search
+            placeholder={`请输入${column.getTitle()}`}
+            onSearch={this.onSearch}
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+          />
+          <Tree {...props} />
+        </>
+      );
     }
 
     return <Tree {...props} />;

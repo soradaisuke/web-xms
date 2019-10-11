@@ -16,7 +16,6 @@ import { makeCancelablePromise } from '@qt/web-core';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
 import { Button, Form } from 'antd';
-import generateTreeData from '../utils/generateTreeData';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
 import TreeFilter from '../components/TreeFilter';
@@ -207,6 +206,10 @@ export default class Column {
     return this.config.getIn(['table', 'maxLines']);
   }
 
+  getTableFilterSearchRequest() {
+    return this.config.getIn(['table', 'filterSearchRequest']);
+  }
+
   resetFilters() {
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
@@ -378,7 +381,7 @@ export default class Column {
   );
 
   // eslint-disable-next-line class-methods-use-this
-  getRenderFilterTree({ filters, parentValue }) {
+  getRenderFilterTree({ parentValue }) {
     return ({
       setSelectedKeys, // eslint-disable-line react/prop-types
       selectedKeys, // eslint-disable-line react/prop-types
@@ -391,7 +394,6 @@ export default class Column {
           parentValue={parentValue}
           selectedKeys={selectedKeys}
           setSelectedKeys={setSelectedKeys}
-          treeData={generateTreeData(filters)}
         />
         <div className="filter-dropdown-button-wrapper">
           <Button

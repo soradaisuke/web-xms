@@ -274,14 +274,16 @@ class RecordsPage extends React.PureComponent {
       const filters = column.getFilters(parentFilteredValue, 'disableInFilter');
       const valueOptionsRequest = column.getValueOptionsRequest();
 
-      if (filters) {
+      if (filters || column.getTableFilterSearchRequest()) {
         filterProps.filters = filters;
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
         filterProps.filterMultiple = column.canFilterMultipleInTable();
-        if (column.canFilterTreeInTable()) {
+        if (
+          column.canFilterTreeInTable() ||
+          column.getTableFilterSearchRequest()
+        ) {
           filterProps.filterDropdown = column.getRenderFilterTree({
-            filters,
             parentValue: parentFilteredValue
           });
           filterProps.filterIcon = filtered => (
