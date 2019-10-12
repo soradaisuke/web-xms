@@ -382,6 +382,7 @@ class RecordsPage extends React.PureComponent {
         onChange={(pagination, filters, sorter) =>
           this.onChange(pagination, filters, sorter, columns, true)
         }
+        scroll={{}}
       >
         {columns.map(column => this.renderColumn(column))}
       </Table>
@@ -437,7 +438,6 @@ class RecordsPage extends React.PureComponent {
         title="操作"
         key="action"
         render={(
-          text,
           record // eslint-disable-line react/jsx-no-bind
         ) => (
           <div className="actions">
