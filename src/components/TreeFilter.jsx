@@ -74,6 +74,7 @@ export default class TreeFilter extends React.PureComponent {
       return (
         <>
           <Search
+            enterButton
             placeholder={`请输入${column.getTitle()}`}
             onSearch={this.onSearch}
             style={{ width: 188, marginBottom: 8, display: 'block' }}
