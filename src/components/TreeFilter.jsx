@@ -26,11 +26,12 @@ export default class TreeFilter extends React.PureComponent {
   };
 
   onSearch = async value => {
-    const { column } = this.props;
+    const { column, parentValue } = this.props;
     const tableFilterSearchRequest = column.getTableFilterSearchRequest();
 
     if (tableFilterSearchRequest) {
-      const filters = await tableFilterSearchRequest(value);
+      await column.fetchSearchValueOptions(value);
+      const filters = column.getFilters(parentValue, 'search');
       this.setState({
         treeData: generateTreeData(filters)
       });

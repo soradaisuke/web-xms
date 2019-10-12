@@ -273,7 +273,10 @@ export default class Column {
 
   // eslint-disable-next-line class-methods-use-this
   renderInTableValueDefault({ value, parentFilteredValue }) {
-    const filters = this.getFilters(parentFilteredValue);
+    const filters = this.getFilters(
+      parentFilteredValue,
+      this.getTableFilterSearchRequest() ? 'search' : 'normal'
+    );
     const option = findOption(filters, value);
     if (option) {
       return option.text;
@@ -720,7 +723,7 @@ export default class Column {
     return children;
   }
 
-  async fetchValueOptions(parentFilteredValue) {
+  fetchValueOptions(parentFilteredValue) {
     const valueOptionsRequest = this.getValueOptionsRequest();
 
     if (valueOptionsRequest) {
@@ -775,6 +778,25 @@ export default class Column {
         });
 
         return this.activeValueOptionsRequest;
+      }
+    }
+
+    return Promise.reject();
+  }
+
+  fetchSearchValueOptions(value) {
+    const filterSearchRequest = this.getTableFilterSearchRequest();
+
+    if (filterSearchRequest) {
+      if (!this.activefilterSearchRequest) {
+        this.activefilterSearchRequest = filterSearchRequest(value).then(
+          result => {
+            this.filters = this.filters.set('search', result);
+            this.activefilterSearchRequest = null;
+          }
+        );
+
+        return this.activefilterSearchRequest;
       }
     }
 
