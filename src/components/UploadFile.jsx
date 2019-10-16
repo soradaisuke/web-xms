@@ -23,10 +23,10 @@ class UploadFile extends React.PureComponent {
     loading: false
   };
 
-  postFileUrl = async url => {
+  postFileUrl = async (url, file) => {
     const { postFileUrl } = this.props;
     try {
-      await makeCancelablePromise(postFileUrl(url));
+      await makeCancelablePromise(postFileUrl(url, file));
       this.setState({ loading: false });
       message.info('上传文件成功');
     } catch (err) {
