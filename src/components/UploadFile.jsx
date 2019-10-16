@@ -46,7 +46,7 @@ class UploadFile extends React.PureComponent {
       uploadFile(options.file, { ssoToken: user ? user.get('sso_token') : '' })
     ).then(
       url => {
-        this.postFileUrl(url);
+        this.postFileUrl(url, options.file);
       },
       err => {
         message.error(err.message);
