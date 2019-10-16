@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-125](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-124...v2.0.0-beta-125) (2019-10-16)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复file没有传回来 ([9a0746a](https://git2.qingtingfm.com/zhibo/xms/commits/9a0746a))
+
+
+
 # [2.0.0-beta-124](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-123...v2.0.0-beta-124) (2019-10-16)
 
 
