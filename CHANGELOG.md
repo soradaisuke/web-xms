@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-126](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-125...v2.0.0-beta-126) (2019-10-17)
+
+
+### Bug Fixes
+
+* **NoTicket:** 使UploadFile支持antd的props ([19ccad4](https://git2.qingtingfm.com/zhibo/xms/commits/19ccad4))
+
+
+
 # [2.0.0-beta-125](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-124...v2.0.0-beta-125) (2019-10-16)
 
 
