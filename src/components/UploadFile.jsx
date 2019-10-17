@@ -8,14 +8,15 @@ class UploadFile extends React.PureComponent {
   static displayName = 'UploadFile';
 
   static propTypes = {
-    title: PropTypes.string.isRequired,
-    postFileUrl: PropTypes.func.isRequired,
+    afterUpload: PropTypes.func.isRequired,
+    title: PropTypes.string,
     user: PropTypes.shape({
       get: PropTypes.func
     })
   };
 
   static defaultProps = {
+    title: '上传',
     user: null
   };
 
@@ -23,12 +24,12 @@ class UploadFile extends React.PureComponent {
     loading: false
   };
 
-  postFileUrl = async (url, file) => {
-    const { postFileUrl } = this.props;
+  afterUpload = async (url, file) => {
+    const { afterUpload } = this.props;
     try {
-      await makeCancelablePromise(postFileUrl(url, file));
+      await makeCancelablePromise(afterUpload(url, file));
       this.setState({ loading: false });
-      message.info('上传文件成功');
+      message.info('上传成功');
     } catch (err) {
       message.error(err.message);
       if (!err.canceled) {
@@ -37,7 +38,7 @@ class UploadFile extends React.PureComponent {
     }
   };
 
-  upload = options => {
+  customRequest = options => {
     const { user } = this.props;
     this.setState({
       loading: true
@@ -46,7 +47,7 @@ class UploadFile extends React.PureComponent {
       uploadFile(options.file, { ssoToken: user ? user.get('sso_token') : '' })
     ).then(
       url => {
-        this.postFileUrl(url, options.file);
+        this.afterUpload(url, options.file);
       },
       err => {
         message.error(err.message);
@@ -62,9 +63,9 @@ class UploadFile extends React.PureComponent {
     const { title } = this.props;
     return (
       <Upload
-        accept=".csv, .xls, .xlsx"
-        customRequest={this.upload}
+        customRequest={this.customRequest}
         showUploadList={false}
+        {...this.props}
       >
         <Button type="primary" loading={loading}>
           <Icon type="upload" />
