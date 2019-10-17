@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-128](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-127...v2.0.0-beta-128) (2019-10-17)
+
+
+### Bug Fixes
+
+* **NoTicket:** 更新ZoomImg css ([5818b3b](https://git2.qingtingfm.com/zhibo/xms/commits/5818b3b))
+
+
+### Features
+
+* **NoTicket:** 支持自定义上传文件名 ([8339f66](https://git2.qingtingfm.com/zhibo/xms/commits/8339f66))
+
+
+
 # [2.0.0-beta-127](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-126...v2.0.0-beta-127) (2019-10-17)
 
 
