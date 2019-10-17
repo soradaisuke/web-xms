@@ -9,6 +9,7 @@ class UploadFile extends React.PureComponent {
 
   static propTypes = {
     afterUpload: PropTypes.func.isRequired,
+    generateFileName: PropTypes.func,
     title: PropTypes.string,
     user: PropTypes.shape({
       get: PropTypes.func
@@ -16,6 +17,7 @@ class UploadFile extends React.PureComponent {
   };
 
   static defaultProps = {
+    generateFileName: null,
     title: '上传',
     user: null
   };
@@ -39,12 +41,16 @@ class UploadFile extends React.PureComponent {
   };
 
   customRequest = options => {
-    const { user } = this.props;
+    const { user, generateFileName } = this.props;
     this.setState({
       loading: true
     });
+
     makeCancelablePromise(
-      uploadFile(options.file, { ssoToken: user ? user.get('sso_token') : '' })
+      uploadFile(options.file, {
+        ssoToken: user ? user.get('sso_token') : '',
+        fileName: generateFileName ? generateFileName(options.file) : null
+      })
     ).then(
       url => {
         this.afterUpload(url, options.file);
