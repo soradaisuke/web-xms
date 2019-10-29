@@ -62,9 +62,9 @@ export default class ActivatorModal extends React.PureComponent {
         }
       } catch (e) {
         showError(e.message);
+      } finally {
+        this.setState({ confirmLoading: false });
       }
-
-      this.setState({ confirmLoading: false });
     } else {
       this.hideModalHandler();
     }
