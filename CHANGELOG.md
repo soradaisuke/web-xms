@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-130](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-129...v2.0.0-beta-130) (2019-10-30)
+
+
+### Bug Fixes
+
+* **NoTicket:** 新建（编辑）modal填写错误时点确定后确定按钮一直是loading状态 ([200a127](https://git2.qingtingfm.com/zhibo/xms/commits/200a127))
+
+
+
 # [2.0.0-beta-129](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-128...v2.0.0-beta-129) (2019-10-17)
 
 
