@@ -50,7 +50,7 @@ function findOption(options, value) {
   let option;
 
   forEach(options, o => {
-    if (o.value === value) {
+    if (isEqual(o.value, value)) {
       option = o;
     }
     if (!option) {
