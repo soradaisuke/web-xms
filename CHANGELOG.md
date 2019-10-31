@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-131](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-130...v2.0.0-beta-131) (2019-10-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 使用lodash判断两个值是否相等 ([45df701](https://git2.qingtingfm.com/zhibo/xms/commits/45df701))
+
+
+
 # [2.0.0-beta-130](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-129...v2.0.0-beta-130) (2019-10-30)
 
 
