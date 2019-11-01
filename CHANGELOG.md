@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-135](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-134...v2.0.0-beta-135) (2019-11-01)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复TreeSelect展示 ([451b8e8](https://git2.qingtingfm.com/zhibo/xms/commits/451b8e8))
+
+
+
 # [2.0.0-beta-134](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-133...v2.0.0-beta-134) (2019-11-01)
 
 
