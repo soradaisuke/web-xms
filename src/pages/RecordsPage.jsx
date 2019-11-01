@@ -264,7 +264,10 @@ class RecordsPage extends React.PureComponent {
       let filteredValue = get(filter, column.getTableFilterKey());
 
       if (!isUndefined(filteredValue)) {
-        if (column.canFilterRangeInTable() || !isArray(filteredValue)) {
+        if (
+          column.canFilterRangeInTable() ||
+          !column.canFilterMultipleInTable()
+        ) {
           filteredValue = [filteredValue];
         }
       } else {

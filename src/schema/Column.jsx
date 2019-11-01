@@ -128,7 +128,7 @@ export default class Column {
       }
 
       return `${this.getTitle()}（${this.renderInTableValueDefault({
-        value: filteredValue.length === 1 ? filteredValue[0] : filteredValue,
+        value: filteredValue[0],
         parentFilteredValue
       }) || ''}）`;
     }
