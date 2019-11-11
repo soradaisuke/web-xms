@@ -72,7 +72,7 @@
   },
   "peerDependencies": {
     "@qt/react-core": "^2.0.3",
-    "@qt/web-core": "^2.1.1",
+    "@qt/web-core": "^2.1.2",
     "antd": "^3.23.1",
     "dva": "^2.6.0-beta.6",
     "dva-loading": "^3.0.6",
