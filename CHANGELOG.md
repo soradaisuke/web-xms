@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-137](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-136...v2.0.0-beta-137) (2019-11-12)
+
+
+### Bug Fixes
+
+* **NoTicket:** typo ([5304c0c](https://git2.qingtingfm.com/zhibo/xms/commits/5304c0c))
+* **NoTicket:** update peerDependencies ([1d1a423](https://git2.qingtingfm.com/zhibo/xms/commits/1d1a423))
+
+
+
 # [2.0.0-beta-136](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-135...v2.0.0-beta-136) (2019-11-11)
 
 
