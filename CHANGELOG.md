@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-138](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-137...v2.0.0-beta-138) (2019-11-13)
+
+
+### Features
+
+* **NoTicket:** 支持传递props给RecordModal ([eafb06e](https://git2.qingtingfm.com/zhibo/xms/commits/eafb06e))
+
+
+
 # [2.0.0-beta-137](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-136...v2.0.0-beta-137) (2019-11-12)
 
 
