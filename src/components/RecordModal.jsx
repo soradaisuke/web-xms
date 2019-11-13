@@ -97,6 +97,7 @@ class RecordModal extends React.PureComponent {
 
     return (
       <ActivatorModal
+        {...this.props}
         activator={children}
         title={this.isEdit() ? '编辑' : '添加'}
         onOk={this.onOk}

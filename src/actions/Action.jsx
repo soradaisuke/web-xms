@@ -102,6 +102,15 @@ export default class Action {
     return this.config.get('onComplete');
   }
 
+  getModalComponentProps() {
+    if (!this.modalComponentProps) {
+      this.modalComponentProps = this.config
+        .get('modalComponentProps', Immutable.Map())
+        .toJS();
+    }
+    return this.modalComponentProps;
+  }
+
   needReload() {
     return this.config.get('reload');
   }
@@ -147,6 +156,7 @@ export default class Action {
     if (columns) {
       return (
         <RecordModal
+          {...this.getModalComponentProps()}
           columns={columns}
           key={this.getTitle()}
           record={record}
