@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [2.0.0-beta-139](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-138...v2.0.0-beta-139) (2019-11-19)
+
+
+### Features
+
+* **NoTicket:** 支持bool类型表格内编辑 ([a289068](https://git2.qingtingfm.com/zhibo/xms/commits/a289068))
+
+
+
 # [2.0.0-beta-138](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-137...v2.0.0-beta-138) (2019-11-13)
 
 
