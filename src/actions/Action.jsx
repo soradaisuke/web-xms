@@ -221,7 +221,8 @@ export default class Action {
     remove,
     edit,
     table,
-    column
+    column,
+    inline
   }) {
     const render = this.config.get('render');
     const params = {
@@ -330,6 +331,10 @@ export default class Action {
       }
     };
 
+    if (inline) {
+      return this.renderInline({ column, record, onClick });
+    }
+
     return this.renderInteral({
       record,
       records,
@@ -339,5 +344,10 @@ export default class Action {
       column,
       onClick
     });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  renderInline() {
+    return null;
   }
 }

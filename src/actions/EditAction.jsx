@@ -34,4 +34,9 @@ export default class EditAction extends Action {
   canHandleGlobal() {
     return false;
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  renderInline({ record, column, onClick } = {}) {
+    return column.renderInlineEdit({ record, onClick });
+  }
 }

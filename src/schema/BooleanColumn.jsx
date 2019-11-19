@@ -1,6 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import { Switch } from 'antd';
+import { get } from 'lodash';
 import Column from './Column';
 
 export default class BooleanColumn extends Column {
@@ -40,7 +41,25 @@ export default class BooleanColumn extends Column {
     return 'checked';
   }
 
-  renderInFormItem({ isEdit }) {
+  // eslint-disable-next-line class-methods-use-this
+  renderInlineEdit({ onClick, record }) {
+    return this.renderInFormItem({
+      isEdit: true,
+      props: {
+        checked: get(record, this.getKey()),
+        onChange: value => {
+          onClick({
+            data: { body: { [this.getFormKey()]: value } },
+            loadingMessage: '正在保存……',
+            throwError: true,
+            reload: true
+          });
+        }
+      }
+    });
+  }
+
+  renderInFormItem({ isEdit, props = {} } = {}) {
     const options = this.getValueOptions();
     const checkedChildren = options
       .find(option => option.get('value'))
@@ -54,6 +73,7 @@ export default class BooleanColumn extends Column {
         checkedChildren={checkedChildren}
         unCheckedChildren={unCheckedChildren}
         {...this.getFormComponentProps({ isEdit })}
+        {...props}
       />
     );
   }

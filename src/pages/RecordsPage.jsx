@@ -346,7 +346,15 @@ class RecordsPage extends React.PureComponent {
           });
           const editAction = actions.getEditAction();
           if (column.canShowEditInTable() && editAction) {
-            const action = this.renderAction(editAction, { record, column });
+            let action = this.renderAction(editAction, {
+              record,
+              column,
+              inline: true
+            });
+            if (action) {
+              return action;
+            }
+            action = this.renderAction(editAction, { record, column });
             if (action) {
               return (
                 <React.Fragment>
@@ -392,7 +400,7 @@ class RecordsPage extends React.PureComponent {
     );
   }
 
-  renderAction(action, { record, records, column } = {}) {
+  renderAction(action, { record, records, column, inline } = {}) {
     const {
       user,
       remove,
@@ -403,6 +411,7 @@ class RecordsPage extends React.PureComponent {
     } = this.props;
 
     let props = {
+      inline,
       user,
       matchParams,
       remove,

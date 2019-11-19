@@ -802,4 +802,9 @@ export default class Column {
 
     return Promise.reject();
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  renderInlineEdit() {
+    return null;
+  }
 }
