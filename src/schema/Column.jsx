@@ -439,7 +439,7 @@ export default class Column {
     return creatable;
   }
 
-  canShowEditInTable() {
+  canInlineEdit() {
     return this.config.getIn(['form', 'inlineEdit']);
   }
 

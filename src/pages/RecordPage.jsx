@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import { Tabs, Card, Collapse, Descriptions, message } from 'antd';
-import { map, filter, get, reduce } from 'lodash';
+import { map, filter, get, reduce, find } from 'lodash';
 import classNames from 'classnames';
 import TableType from '../schema/Table';
+import EditAction from '../actions/EditAction';
 import Page from './Page';
 import showError from '../utils/showError';
 
@@ -104,7 +105,7 @@ class RecordPage extends React.PureComponent {
     history.replace(window.location.pathname);
   };
 
-  renderAction(action) {
+  renderAction(action, { column, inline } = {}) {
     const {
       user,
       remove,
@@ -121,6 +122,8 @@ class RecordPage extends React.PureComponent {
       edit,
       table,
       record,
+      inline,
+      column,
       confirm: this.fetch,
       submit: this.updateRecord
     };
@@ -149,18 +152,32 @@ class RecordPage extends React.PureComponent {
   }
 
   renderDescriptionItem(column) {
-    const { user, record } = this.props;
+    const { user, record, actions } = this.props;
 
     if (!column.canShowInDescription({ user, record })) {
       return null;
     }
 
+    let children = column.renderInDescription({
+      record,
+      value: get(record, column.getKey())
+    });
+
+    const editAction = find(actions, action => action instanceof EditAction);
+    if (column.canInlineEdit() && editAction) {
+      const action = this.renderAction(editAction, {
+        record,
+        column,
+        inline: true
+      });
+      if (action) {
+        children = action;
+      }
+    }
+
     return (
       <Descriptions.Item label={column.getTitle()} key={column.getKey()}>
-        {column.renderInDescription({
-          record,
-          value: get(record, column.getKey())
-        })}
+        {children}
       </Descriptions.Item>
     );
   }

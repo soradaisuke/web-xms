@@ -345,7 +345,7 @@ class RecordsPage extends React.PureComponent {
             ...filterProps
           });
           const editAction = actions.getEditAction();
-          if (column.canShowEditInTable() && editAction) {
+          if (column.canInlineEdit() && editAction) {
             let action = this.renderAction(editAction, {
               record,
               column,
