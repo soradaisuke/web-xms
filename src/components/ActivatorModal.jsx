@@ -51,7 +51,11 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   onOk = async () => {
+    const { confirmLoading } = this.state;
     const { onOk } = this.props;
+    if (confirmLoading) {
+      return;
+    }
 
     if (onOk) {
       this.setState({ confirmLoading: true });
