@@ -1,6 +1,13 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [2.0.0-beta-141](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-140...v2.0.0-beta-141) (2019-12-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** 新建（编辑）点击快的话会发多个请求 ([22b7d0e](https://git2.qingtingfm.com/zhibo/xms/commit/22b7d0e17a822a83f56a1db42377bce4802f6668))
 
 # [2.0.0-beta-140](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-139...v2.0.0-beta-140) (2019-11-21)
 
