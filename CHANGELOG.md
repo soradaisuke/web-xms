@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-142](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-141...v2.0.0-beta-142) (2019-12-10)
+
+
+### Bug Fixes
+
+* **NoTicket:** table.filterRequired为非布尔值时是未筛选时的默认值 ([fe6deac](https://git2.qingtingfm.com/zhibo/xms/commit/fe6deac256c8f042e1b0cdac4bcab27b1cb38c84))
+
 ## [2.0.0-beta-141](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-140...v2.0.0-beta-141) (2019-12-09)
 
 
