@@ -16,6 +16,7 @@ import {
   isNull,
   cloneDeep,
   isFunction,
+  isBoolean,
   filter as filterFunc
 } from 'lodash';
 import TableType from '../schema/Table';
@@ -165,16 +166,15 @@ class RecordsPage extends React.PureComponent {
             set(newFilter, column.getTableFilterKey(), value[0]);
           }
         }
+        const fixedFilterValue = isBoolean(column.getTableFilterRequired())
+          ? column.getTableFilterDefault()
+          : column.getTableFilterRequired();
         if (
           isUndefined(get(newFilter, column.getTableFilterKey())) &&
           column.getTableFilterRequired() &&
-          column.getTableFilterDefault()
+          fixedFilterValue
         ) {
-          set(
-            newFilter,
-            column.getTableFilterKey(),
-            column.getTableFilterDefault()
-          );
+          set(newFilter, column.getTableFilterKey(), fixedFilterValue);
         }
       }
       return true;
