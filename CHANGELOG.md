@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-143](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-142...v2.0.0-beta-143) (2019-12-11)
+
+
+### Features
+
+* **NoTicket:** generateInitialValue的参数增加parentValue ([3a62ebc](https://git2.qingtingfm.com/zhibo/xms/commit/3a62ebcf35403e49bdf4fd341c3ee8f302ad9f59))
+
 ## [2.0.0-beta-142](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-141...v2.0.0-beta-142) (2019-12-10)
 
 
