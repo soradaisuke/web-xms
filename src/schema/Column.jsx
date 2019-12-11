@@ -574,14 +574,14 @@ export default class Column {
     if (isEdit) {
       const preValue = get(record, this.getKey());
       if (isFunction(generateInitialValue)) {
-        initialValue = generateInitialValue({ value: preValue });
+        initialValue = generateInitialValue({ value: preValue, parentValue });
       } else if (isArray(preValue)) {
         initialValue = map(preValue, v => this.formatFormFieldValue(v));
       } else {
         initialValue = this.formatFormFieldValue(preValue);
       }
     } else if (isFunction(generateInitialValue)) {
-      initialValue = generateInitialValue({ value: null });
+      initialValue = generateInitialValue({ value: null, parentValue });
     }
 
     if (
