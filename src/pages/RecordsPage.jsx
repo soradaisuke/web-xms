@@ -3,7 +3,17 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
-import { Table, Pagination, message, Card, Spin, Popover, Icon } from 'antd';
+import {
+  Table,
+  Pagination,
+  message,
+  Card,
+  Spin,
+  Popover,
+  Icon,
+  Button,
+  Popconfirm
+} from 'antd';
 import {
   split,
   startsWith,
@@ -249,6 +259,11 @@ class RecordsPage extends React.PureComponent {
       sort,
       filter
     });
+  };
+
+  resetFilters = () => {
+    const { updatePage, page, pagesize, sort } = this.props;
+    updatePage({ page, pagesize, sort });
   };
 
   renderColumn(column) {
@@ -521,11 +536,23 @@ class RecordsPage extends React.PureComponent {
     const defaultTableScroll =
       table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
 
+    const hasFilter = table.hasFilter();
+
     return (
       <React.Fragment>
         {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
           {this.renderFilterGroup()}
+          {hasFilter && (
+            <Popconfirm
+              title="确认重置全部筛选项?"
+              onConfirm={this.resetFilters}
+            >
+              <Button type="primary" style={{ marginBottom: '1rem' }}>
+                重置
+              </Button>
+            </Popconfirm>
+          )}
           <Table
             bordered
             loading={isLoading}

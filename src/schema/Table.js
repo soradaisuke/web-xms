@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import { findIndex } from 'lodash';
 
 export default class Table {
   constructor(columns = []) {
@@ -10,6 +11,7 @@ export default class Table {
     this.findDefaultFilter();
     this.findCascadeColumn();
     this.calculateScrollWidth();
+    this.findHasFilter();
   }
 
   findPrimaryKey() {
@@ -92,6 +94,11 @@ export default class Table {
     this.scrollWidth = scrollWidth > 0 ? scrollWidth * 1.2 : 0;
   }
 
+  findHasFilter() {
+    this.hasFilter =
+      findIndex(this.columns, column => column.canFilterInTable()) !== -1;
+  }
+
   getColumns() {
     return this.columns;
   }
@@ -114,5 +121,9 @@ export default class Table {
 
   getScrollWidth() {
     return this.scrollWidth;
+  }
+
+  hasFilter() {
+    return this.hasFilter;
   }
 }
