@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-144](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-143...v2.0.0-beta-144) (2019-12-17)
+
+
+### Features
+
+* **LIV-5131:** 增加重置筛选项按钮 ([99aa111](https://git2.qingtingfm.com/zhibo/xms/commit/99aa11111a4259c3d9bc1652c2b186632a8f0f22))
+
 ## [2.0.0-beta-143](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-142...v2.0.0-beta-143) (2019-12-11)
 
 
