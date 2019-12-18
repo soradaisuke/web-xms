@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-145](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-144...v2.0.0-beta-145) (2019-12-18)
+
+
+### Features
+
+* **LIV-5290:** 支持平铺筛选项 ([69d69d8](https://git2.qingtingfm.com/zhibo/xms/commit/69d69d8142bf1fe2c293f9026de438d60249c372))
+
+
+### Bug Fixes
+
+* **NoTicket:** 报错table.hasfilter is not a function ([b454be2](https://git2.qingtingfm.com/zhibo/xms/commit/b454be223e1b3ddb338e40337bb9a46b37434a03))
+
 ## [2.0.0-beta-144](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-143...v2.0.0-beta-144) (2019-12-17)
 
 
