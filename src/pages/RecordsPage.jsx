@@ -12,13 +12,17 @@ import {
   Popover,
   Icon,
   Button,
-  Popconfirm
+  Popconfirm,
+  Row,
+  Radio,
+  Checkbox
 } from 'antd';
 import {
   split,
   startsWith,
   isArray,
   isEqual,
+  size,
   get,
   set,
   unset,
@@ -388,12 +392,117 @@ class RecordsPage extends React.PureComponent {
     );
   }
 
+  renderExpandFilters(column) {
+    const { filter, pagesize, sort, updatePage } = this.props;
+
+    const parentFilteredValue = column.parentColumn
+      ? get(filter, column.parentColumn.getTableFilterKey())
+      : null;
+
+    const filteredValue = get(filter, column.getTableFilterKey());
+
+    const filters = column.getFilters(parentFilteredValue, 'disableInFilter');
+    const valueOptionsRequest = column.getValueOptionsRequest();
+    const filterMultiple = column.canFilterMultipleInTable();
+
+    if (
+      !filters &&
+      !column.getTableFilterSearchRequest() &&
+      valueOptionsRequest
+    ) {
+      if (
+        (isArray(parentFilteredValue) && parentFilteredValue.length > 0) ||
+        !isUndefined(parentFilteredValue)
+      ) {
+        column
+          .fetchValueOptions(parentFilteredValue)
+          .then(() => this.forceUpdate())
+          .catch(() => {});
+      }
+    }
+
+    const options = filters
+      ? filters.map(({ value, text: label }) => ({ value, label }))
+      : [];
+    const FilterComponent = filterMultiple ? Checkbox.Group : Radio.Group;
+    let fixedFilterValue = isBoolean(column.getTableFilterRequired())
+      ? column.getTableFilterDefault()
+      : column.getTableFilterRequired();
+    if (fixedFilterValue && isFunction(fixedFilterValue.toJS)) {
+      fixedFilterValue = fixedFilterValue.toJS();
+    }
+
+    return (
+      <Row type="flex" align="middle" style={{ marginBottom: '1rem' }}>
+        {`${column.getTitle()}：`}
+        <FilterComponent
+          buttonStyle="solid"
+          options={filterMultiple ? options : null}
+          value={filteredValue}
+          onChange={e => {
+            let value;
+            if (filterMultiple) {
+              value = e;
+            } else {
+              value = e.target.value; // eslint-disable-line prefer-destructuring
+            }
+            const newFilter = cloneDeep(filter);
+            if (
+              (isUndefined(value) || (isArray(value) && !size(value))) &&
+              column.getTableFilterRequired() &&
+              fixedFilterValue
+            ) {
+              value = fixedFilterValue;
+            }
+            unset(newFilter, column.getTableFilterKey());
+            updatePage({
+              page: 1,
+              pagesize,
+              sort,
+              filter: {
+                ...newFilter,
+                [column.getTableFilterKey()]: value
+              }
+            });
+          }}
+        >
+          {!filterMultiple &&
+            [{ value: fixedFilterValue, label: '全部' }, ...options].map(
+              ({ label, value }) => (
+                <Radio.Button value={value}>{label}</Radio.Button>
+              )
+            )}
+        </FilterComponent>
+      </Row>
+    );
+  }
+
+  renderExpandFilterGroup() {
+    const { table, user } = this.props;
+    const columns = table
+      .getColumns()
+      .filter(
+        column =>
+          !column.canShowInTable(user) &&
+          column.canFilterInTable() &&
+          column.expandFilter()
+      );
+    if (columns.size === 0) {
+      return null;
+    }
+
+    return columns.map(column => this.renderExpandFilters(column));
+  }
+
   renderFilterGroup() {
     const { table, user } = this.props;
     const columns = table
       .getColumns()
       .filter(
-        column => !column.canShowInTable(user) && column.canFilterInTable()
+        column =>
+          !column.canShowInTable(user) &&
+          column.canFilterInTable() &&
+          !column.expandFilter()
       );
     if (columns.size === 0) {
       return null;
@@ -542,6 +651,7 @@ class RecordsPage extends React.PureComponent {
       <React.Fragment>
         {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
+          {this.renderExpandFilterGroup()}
           {this.renderFilterGroup()}
           {hasFilter && (
             <Popconfirm
