@@ -123,7 +123,7 @@ export default class Table {
     return this.scrollWidth;
   }
 
-  hasFilter() {
+  getHasFilter() {
     return this.hasFilter;
   }
 }

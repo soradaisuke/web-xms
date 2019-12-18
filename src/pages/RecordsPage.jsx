@@ -536,7 +536,7 @@ class RecordsPage extends React.PureComponent {
     const defaultTableScroll =
       table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
 
-    const hasFilter = table.hasFilter();
+    const hasFilter = table.getHasFilter();
 
     return (
       <React.Fragment>
