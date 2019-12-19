@@ -2,6 +2,69 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-147](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-146...v2.0.0-beta-147) (2019-12-19)
+
+### [1.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.14.0...v1.14.1) (2019-09-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix ‘\’ in textToPath ([bfd09c3](https://git2.qingtingfm.com/zhibo/xms/commit/bfd09c30b56993b07362f2f69106bd0ea1fb13d2))
+
+## [1.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.4...v1.14.0) (2019-09-06)
+
+
+### Features
+
+* **NoTicket:** 列表搜索支持autoComplete ([4abdfc2](https://git2.qingtingfm.com/zhibo/xms/commit/4abdfc287db1c5afc7173b708184e40f067b28c6))
+
+
+### Bug Fixes
+
+* **COPYRIGHT-414:** 可选填的数字类型不填的时候会报错 ([0f4cc93](https://git2.qingtingfm.com/zhibo/xms/commit/0f4cc936500211977240a64c321be4e620f88eda))
+
+### [1.13.4](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.3...v1.13.4) (2019-08-02)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix form里的多选框值为0的时候无法match到对应项 ([f293e7b](https://git2.qingtingfm.com/zhibo/xms/commit/f293e7b21c98141343c0f318d18db3add6c15ba7))
+
+### [1.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.2...v1.13.3) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** select里value是bool的false的时候无法clear ([e3c00ba](https://git2.qingtingfm.com/zhibo/xms/commit/e3c00ba1c99b33a00c7f4a5d6cd33128d8624da1))
+
+### [1.13.2](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.1...v1.13.2) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 筛选条件判断错误 ([74948ce](https://git2.qingtingfm.com/zhibo/xms/commit/74948ceedbfd640d126598b852701ed01a8ec503))
+
+### [1.13.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.0...v1.13.1) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 筛选为bool类型时值为false被错误清空 ([f867656](https://git2.qingtingfm.com/zhibo/xms/commit/f8676568fa7b790418ffc29563bbe198fff1a85e))
+
+## [1.13.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.12.0...v1.13.0) (2019-07-03)
+
+
+### Features
+
+* **NoTicket:** 支持列表页的schema的fixed配置 ([00fc2c1](https://git2.qingtingfm.com/zhibo/xms/commit/00fc2c1221333f6f00524f5d3bb96472d8c59c9f))
+
+## [1.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.11.0...v1.12.0) (2019-06-28)
+
+
+### Features
+
+* **LIV-2937:** search的mapKey支持将属性的路径解析成object ([33a6758](https://git2.qingtingfm.com/zhibo/xms/commit/33a67585d7ff8eef1002eaac49c56507c0458cd8))
+
 ## [2.0.0-beta-146](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-145...v2.0.0-beta-146) (2019-12-19)
 
 
