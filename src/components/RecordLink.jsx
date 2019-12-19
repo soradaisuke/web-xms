@@ -1,58 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isFunction } from 'lodash';
+import { isFunction, startsWith } from 'lodash';
 import textToPath from '../utils/textToPath';
 
 export default class RecordLink extends React.PureComponent {
   static displayName = 'RecordLink';
 
   static propTypes = {
-    record: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    link: PropTypes.shape({
-      url: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-      type: PropTypes.oneOf(['relative', 'absolute', 'external'])
-    }).isRequired,
+    link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+    record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     children: PropTypes.node
   };
 
   static defaultProps = {
-    children: null
+    children: null,
+    record: null
   };
 
   getUrl() {
-    const {
-      link: { url },
-      record
-    } = this.props;
-
-    if (isFunction(url)) {
-      return textToPath(url(record));
-    }
-
-    return textToPath();
-  }
-
-  getLink() {
     const { link, record } = this.props;
 
-    if (link === true) {
-      return `${window.location.pathname}/${record.id}`;
+    if (isFunction(link)) {
+      return textToPath(link(record));
     }
 
-    switch (link.type) {
-      case 'absolute':
-        return this.getUrl();
-      case 'relative':
-      default:
-        return `${window.location.pathname}/${this.getUrl()}`;
-    }
+    return textToPath(link);
   }
 
   render() {
-    const { children, link } = this.props;
+    const { children } = this.props;
+    let url = this.getUrl();
 
-    if (link.type === 'external') {
+    if (startsWith(url, 'http')) {
       return (
         <a href={this.getUrl()} rel="noopener noreferrer" target="_blank">
           {children}
@@ -60,6 +40,10 @@ export default class RecordLink extends React.PureComponent {
       );
     }
 
-    return <Link to={this.getLink()}>{children}</Link>;
+    if (!startsWith(url, '/')) {
+      url = `${window.location.pathname}/${url}`;
+    }
+
+    return <Link to={url}>{children}</Link>;
   }
 }

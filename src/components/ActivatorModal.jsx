@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isBoolean } from 'lodash';
+import { isBoolean, isFunction } from 'lodash';
 import { Modal } from 'antd';
+import showError from '../utils/showError';
 
 export default class ActivatorModal extends React.PureComponent {
   static displayName = 'ActivatorModal';
@@ -20,7 +21,8 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   state = {
-    visible: false
+    visible: false,
+    confirmLoading: false
   };
 
   showModalHandler = e => {
@@ -39,7 +41,8 @@ export default class ActivatorModal extends React.PureComponent {
 
   hideModalHandler = () => {
     this.setState({
-      visible: false
+      visible: false,
+      confirmLoading: false
     });
     const { onVisibleChange } = this.props;
     if (onVisibleChange) {
@@ -48,12 +51,23 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   onOk = async () => {
+    const { confirmLoading } = this.state;
     const { onOk } = this.props;
+    if (confirmLoading) {
+      return;
+    }
 
     if (onOk) {
-      const hide = await onOk();
-      if (!isBoolean(hide) || hide) {
-        this.hideModalHandler();
+      this.setState({ confirmLoading: true });
+      try {
+        const hide = await onOk();
+        if (!isBoolean(hide) || hide) {
+          this.hideModalHandler();
+        }
+      } catch (e) {
+        showError(e.message);
+      } finally {
+        this.setState({ confirmLoading: false });
       }
     } else {
       this.hideModalHandler();
@@ -74,8 +88,8 @@ export default class ActivatorModal extends React.PureComponent {
   };
 
   render() {
-    const { activator } = this.props;
-    const { visible } = this.state;
+    const { activator, children, ...props } = this.props;
+    const { visible, confirmLoading } = this.state;
 
     return (
       <span>
@@ -88,11 +102,14 @@ export default class ActivatorModal extends React.PureComponent {
           {activator}
         </span>
         <Modal
-          {...this.props}
+          {...props}
+          confirmLoading={confirmLoading}
           visible={visible}
           onOk={this.onOk}
           onCancel={this.onCancel}
-        />
+        >
+          {isFunction(children) ? children() : children}
+        </Modal>
       </span>
     );
   }

@@ -1,21 +1,43 @@
-import { startsWith, isPlainObject } from 'lodash';
+import React from 'react';
+import { startsWith, isFunction, filter } from 'lodash';
 import dynamic from 'dva/dynamic';
 import dynamicRecordsComponent from './dynamicRecordsComponent';
 import dynamicRecordComponent from './dynamicRecordComponent';
-import processGroupConfig from './processGroupConfig';
+import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
+import { migrateRoute } from './migrate';
 
-function valiadateRoute({ path, component, config, routes }, prefix = '/') {
+function isClassComponent(component) {
+  return (
+    typeof component === 'function' &&
+    component.prototype &&
+    !!component.prototype.isReactComponent
+  );
+}
+
+// Ensure compatability with transformed code
+function isFunctionComponent(component) {
+  return (
+    typeof component === 'function' &&
+    String(component).includes('return') &&
+    String(component).includes('.createElement')
+  );
+}
+
+function isComponent(component) {
+  return isClassComponent(component) || isFunctionComponent(component);
+}
+
+function isElement(typeElement) {
+  return React.isValidElement(typeElement);
+}
+
+function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
-    throw new Error('valiadateRoute: path is required');
+    throw new Error(`${prefix}: path is required`);
   }
   if (!startsWith(path, prefix)) {
-    throw new Error(`valiadateRoute: path ${path} must start with ${prefix}`);
-  }
-  if (!component && !config && (!routes || routes.length === 0)) {
-    throw new Error(
-      `valiadateRoute: path ${path} must have component or config or routes`
-    );
+    throw new Error(`${path}: path must start with ${prefix}`);
   }
 }
 
@@ -25,26 +47,39 @@ export default function processRoutes({ app, routes }) {
       return rs;
     }
 
-    return (rs || []).map(route => {
-      valiadateRoute(route, prefix);
+    return (rs || []).map(r => {
+      valiadateRoute(r, prefix);
 
-      const { config, path } = route;
+      const route = migrateRoute(r, app);
+
+      const { config = {}, path, models, inline, routes: subRoutes } = route;
+      const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
       let { component } = route;
 
-      if (isPlainObject(component)) {
+      if (isElement(component)) {
+        throw new Error(`${path}: component can not be React.Element`);
+      } else if (isComponent(component)) {
+        // keep
+      } else if (isFunction(component)) {
         component = dynamic({
-          ...component,
+          component,
+          models,
           app
         });
       }
 
-      if (config && config.type === 'group') {
+      if (config.type === 'list') {
         component = dynamicRecordsComponent({
           app,
           component,
-          config: processGroupConfig({ config, path })
+          inline,
+          config: processListConfig({ config, path })
         });
-      } else if ((config && config.type === 'single') || !!component) {
+      } else if (
+        !!component ||
+        inlineRoutes.length > 0 ||
+        config.type === 'detail'
+      ) {
         component = dynamicRecordComponent({
           app,
           component,

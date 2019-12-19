@@ -1,24 +1,35 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
-import { generateUri, isProduction } from 'web-core';
+import Cookie from 'js-cookie';
+import { generateUri, isProduction } from '@qt/web-core';
 import request from '../services/request';
 
-const ENTRY_HOST = `//entry${isProduction() ? '' : '.staging'}.qingtingfm.com`;
+const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;
 
-function generateService(login) {
-  if (!login) {
-    throw new Error(
-      'generateUserModel generateService: login path is required'
-    );
+function generateService({ auth, login, logout }) {
+  if (!auth) {
+    throw new Error('auth of api is required');
   }
 
   return {
-    login: async () => request.get(login)
+    auth: async () => request.get(auth),
+    logout: logout ? async () => request.get(logout) : null,
+    login: login
+      ? async ({ account, password }) => {
+          const body = new FormData();
+          body.append('email', account);
+          body.append('password', password);
+          return request.post(login, {
+            body: new URLSearchParams(body),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+          });
+        }
+      : null
   };
 }
 
-export default function generateUserModel(login) {
-  const service = generateService(login);
+export default function generateUserModel({ auth, login, logout }) {
+  const service = generateService({ auth, login, logout });
 
   return {
     namespace: 'user',
@@ -34,13 +45,25 @@ export default function generateUserModel(login) {
       }
     },
     effects: {
-      *login(_, { call, put }) {
+      *auth(_, { call, put }) {
+        const queries = parse(window.location.search);
+        const path = window.location.pathname;
         try {
-          const user = yield call(service.login);
-          yield put({ type: 'save', payload: { user } });
+          if (!login || path !== '/login') {
+            const user = yield call(service.auth);
+            yield put({ type: 'save', payload: { user } });
+          }
         } catch (e) {
-          const queries = parse(window.location.search);
-          if (!queries || queries.auth !== '1') {
+          if (login) {
+            if (path !== '/login' && (!queries || queries.auth !== '1')) {
+              const loginUrl = generateUri(`${window.location.origin}/login`, {
+                return_url: generateUri(window.location.href, { auth: 1 })
+              });
+              window.location.replace(loginUrl);
+            } else {
+              throw e;
+            }
+          } else if (!queries || queries.auth !== '1') {
             const loginUrl = generateUri(`${ENTRY_HOST}/v1/sso/login.html`, {
               return_url: generateUri(window.location.href, { auth: 1 })
             });
@@ -49,11 +72,39 @@ export default function generateUserModel(login) {
             throw e;
           }
         }
+      },
+      *logout(_, { call }) {
+        try {
+          if (logout) {
+            yield call(service.logout);
+          } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
+            Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
+          } else {
+            Cookie.remove('sso_token', { domain: '.qingting.fm' });
+          }
+          window.location.replace(window.location.origin);
+        } catch (e) {
+          throw e;
+        }
+      },
+      *login(
+        {
+          payload: { account, password }
+        },
+        { call }
+      ) {
+        if (login) {
+          try {
+            yield call(service.login, { account, password });
+          } catch (e) {
+            throw e;
+          }
+        }
       }
     },
     subscriptions: {
       setup({ dispatch }) {
-        dispatch({ type: 'login' });
+        dispatch({ type: 'auth' });
       }
     }
   };

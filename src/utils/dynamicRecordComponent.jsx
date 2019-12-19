@@ -1,17 +1,20 @@
 /* eslint-disable react/no-multi-comp */
 import dynamic from 'dva/dynamic';
-import Immutable from 'immutable';
 import React from 'react';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'dva';
 import { upperFirst, isFunction, isString } from 'lodash';
 import request from '../services/request';
 import RecordPage from '../pages/RecordPage';
 
-function generateService() {
-  return {
-    fetch: async ({ id }) => request.get(id)
+function generateService({ api: { fetch } = {} }) {
+  const service = {
+    fetch: async ({ path }) => (fetch ? fetch({ path }) : request.get(path)),
+    remove: async ({ path }) => request.remove(path),
+    edit: async ({ path, body }) => request.put(path, { body })
   };
+
+  return service;
 }
 
 function generateModel({ namespace }, service) {
@@ -31,25 +34,29 @@ function generateModel({ namespace }, service) {
           payload: { record }
         }
       ) {
-        return Immutable.fromJS(record);
+        return record;
       }
     },
     effects: {
-      *fetch(
-        {
-          payload: { id }
+      fetch: [
+        function* fetch({ payload: { path } }, { call, put }) {
+          const record = yield call(service.fetch, { path });
+          yield put({ type: 'save', payload: { record } });
         },
-        { call, put }
-      ) {
-        const record = yield call(service.fetch, { id });
-        yield put({ type: 'save', payload: { record } });
+        { type: 'takeLatest' }
+      ],
+      remove: function* modelRemove({ payload: { path } }, { call }) {
+        yield call(service.remove, { path });
+      },
+      edit: function* modelEdit({ payload: { path, body } }, { call }) {
+        yield call(service.edit, { path, body });
       }
     }
   };
 }
 
 function generateRecordPage(
-  { namespace, inlineWidgetType, api: { path } = {} },
+  { namespace, api: { path, host } = {}, actions, table, bordered, layout },
   component
 ) {
   class Page extends React.PureComponent {
@@ -59,17 +66,24 @@ function generateRecordPage(
       return (
         <RecordPage
           {...this.props}
-          inlineWidgetType={inlineWidgetType}
+          layout={layout}
           component={component}
+          table={table}
+          actions={actions}
+          bordered={bordered}
         />
       );
     }
   }
 
-  const mapStateToProps = (state, props) => {
+  const mapStateToProps = state => ({
+    record: state[namespace]
+  });
+
+  const mapDispatchToProps = (dispatch, ownProps) => {
     const {
       match: { params: matchParams }
-    } = props;
+    } = ownProps;
 
     let apiPath = '';
     if (isFunction(path)) {
@@ -78,16 +92,32 @@ function generateRecordPage(
       apiPath = path;
     }
 
-    return {
-      record: state[namespace],
-      recordId: apiPath
-    };
-  };
+    if (host) {
+      apiPath = `${host}${apiPath}`;
+    }
 
-  const mapDispatchToProps = dispatch => ({
-    fetch: async ({ id }) =>
-      dispatch({ type: `${namespace}/fetch`, payload: { id } })
-  });
+    if (apiPath) {
+      return {
+        fetch: async () =>
+          dispatch({
+            type: `${namespace}/fetch`,
+            payload: { path: apiPath }
+          }),
+        remove: async () =>
+          dispatch({
+            type: `${namespace}/remove`,
+            payload: { path: apiPath }
+          }),
+        edit: async ({ body }) =>
+          dispatch({
+            type: `${namespace}/edit`,
+            payload: { path: apiPath, body }
+          })
+      };
+    }
+
+    return {};
+  };
 
   return withRouter(
     connect(
@@ -116,19 +146,9 @@ export default function dynamicRecordComponent({ app, config, component }) {
     throw new Error('dynamicRecordComponent: config is required');
   }
 
-  if (isFunction(config)) {
-    return dynamic({
-      app,
-      resolve: () =>
-        config().then(c =>
-          generateDynamicRecordComponent({
-            app,
-            config: c.default || c,
-            component
-          })
-        )
-    });
-  }
-
-  return generateDynamicRecordComponent({ app, config, component });
+  return generateDynamicRecordComponent({
+    app,
+    config,
+    component
+  });
 }

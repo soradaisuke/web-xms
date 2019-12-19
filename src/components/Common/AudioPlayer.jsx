@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import Player from 'react-player';
 import classNames from 'classnames';
 import { Button, Slider, Radio } from 'antd';
-import { formatDuration } from 'web-core';
-import { ClickableDiv } from 'react-core';
+import { formatDuration } from '@qt/web-core';
+import { ClickableDiv } from '@qt/react-core';
 import './AudioPlayer.less';
 
 export default class AudioPlayer extends React.PureComponent {

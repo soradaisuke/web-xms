@@ -2,7 +2,7 @@
 import dynamic from 'dva/dynamic';
 import Immutable from 'immutable';
 import React from 'react';
-import { withRouter } from 'dva/router';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'dva';
 import { createSelector } from 'reselect';
 import { parse } from 'query-string';
@@ -13,40 +13,35 @@ import {
   isString,
   forEach,
   toInteger,
-  get,
-  findIndex,
+  size,
   isUndefined
 } from 'lodash';
-import { generateUri } from 'web-core';
-import ColumnTypes from './ColumnTypes';
+import { generateUri } from '@qt/web-core';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 
-function generateService({ actions, primaryKey }) {
+function generateService({ api: { fetch } = {} }) {
   const service = {
-    fetch: async ({ path, ...params }) => request.get(path, { params })
+    fetch: async ({ path, page, pagesize, filter, order }) =>
+      fetch
+        ? fetch({ path, query: { page, pagesize, filter, order } })
+        : request.get(path, {
+            params: {
+              page,
+              pagesize,
+              order,
+              filter: JSON.stringify(filter)
+            }
+          }),
+    remove: async ({ path, id }) => request.remove(`${path}/${id}`),
+    create: async ({ path, body }) => request.post(`${path}`, { body }),
+    edit: async ({ path, id, body }) => request.put(`${path}/${id}`, { body })
   };
-
-  forEach(actions, action => {
-    if (action === 'create') {
-      service.create = async ({ path, body }) =>
-        request.post(`${path}`, { body });
-    } else if (action === 'edit' || action === 'inlineEdit') {
-      service.edit = async ({ path, body }) =>
-        request.put(`${path}/${get(body, primaryKey)}`, { body });
-    } else if (action === 'remove') {
-      service.remove = async ({ path, body }) =>
-        request.remove(`${path}/${get(body, primaryKey)}`);
-    } else if (action === 'order') {
-      service.order = async ({ path, body }) =>
-        request.put(`${path}/${get(body, primaryKey)}`, { body });
-    }
-  });
 
   return service;
 }
 
-function generateModel({ namespace, actions, schema, orderKey }, service) {
+function generateModel({ namespace, table }, service) {
   if (!namespace) {
     throw new Error('dynamicRecords generateModel: namespace is required');
   }
@@ -54,7 +49,7 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
   const model = {
     namespace,
     state: Immutable.fromJS({
-      schema,
+      table,
       records: [],
       total: 0,
       error: null
@@ -68,34 +63,6 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
       ) {
         return state.merge(Immutable.fromJS({ records, total }));
       },
-      saveFilters(
-        state,
-        {
-          payload: { filters, index }
-        }
-      ) {
-        return state.set(
-          'schema',
-          state
-            .get('schema')
-            .setIn([index, 'filters'], filters)
-            .setIn(
-              [index, 'enabledFilters'],
-              filters.filter(({ disabled }) => !disabled)
-            )
-        );
-      },
-      saveModalFilters(
-        state,
-        {
-          payload: { filters, index }
-        }
-      ) {
-        return state.set(
-          'schema',
-          state.get('schema').setIn([index, 'modalFilters'], filters)
-        );
-      },
       saveError(
         state,
         {
@@ -108,31 +75,17 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
     effects: {
       fetch: [
         function* fetch(
-          { payload: { path, page, pagesize, sort, search = {}, filter = {} } },
+          { payload: { path, page, pagesize, sort, filter = {} } },
           { call, put }
         ) {
           yield put({ type: 'saveError', payload: { error: null } });
-          const currentFiler = { ...filter, ...search };
-
-          for (let i = 0; i < schema.length; i += 1) {
-            if (isFunction(schema[i].filters)) {
-              yield put({
-                type: 'getFilters',
-                payload: {
-                  index: i,
-                  filtersFunc: schema[i].filters,
-                  currentFiler
-                }
-              });
-            }
-          }
 
           try {
             const { items: records, total } = yield call(service.fetch, {
               path,
               page,
               pagesize,
-              filter: JSON.stringify(currentFiler),
+              filter,
               order: sort
             });
             yield put({ type: 'save', payload: { total, records } });
@@ -142,93 +95,56 @@ function generateModel({ namespace, actions, schema, orderKey }, service) {
         },
         { type: 'takeLatest' }
       ],
-      *getFilters(
-        {
-          payload: { index, filtersFunc, currentFiler }
-        },
-        { call, put }
-      ) {
-        const filters = yield call(filtersFunc, currentFiler);
-        yield put({ type: 'saveFilters', payload: { index, filters } });
+      remove: function* modelRemove({ payload: { path, id } }, { call }) {
+        return yield call(service.remove, { path, id });
       },
-      *updateModalFilters(
-        {
-          payload: { mapKey, formFieldsValue }
-        },
-        { call, put }
-      ) {
-        const index = findIndex(schema, ({ mapKey: mk }) => mk === mapKey);
-        const targetSchema = schema[index];
-        if (targetSchema && isFunction(targetSchema.filters)) {
-          const filters = yield call(targetSchema.filters, formFieldsValue);
-          yield put({ type: 'saveModalFilters', payload: { index, filters } });
-        }
+      create: function* modelCreate({ payload: { path, body } }, { call }) {
+        return yield call(service.create, { path, body });
+      },
+      edit: function* modelEdit({ payload: { path, id, body } }, { call }) {
+        return yield call(service.edit, { path, id, body });
       }
     }
   };
 
-  forEach(actions, action => {
-    if (action === 'create') {
-      model.effects.create = function* modelCreate(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.create, { path, body });
-      };
-    } else if (action === 'edit' || action === 'inlineEdit') {
-      model.effects.edit = function* modelEdit(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.edit, { path, body });
-      };
-    } else if (action === 'remove') {
-      model.effects.remove = function* modelRemove(
-        { payload: { path, body } },
-        { call }
-      ) {
-        yield call(service.remove, { path, body });
-      };
-    } else if (action === 'order') {
-      model.effects.order = function* modelOrder(
-        { payload: { path, body, diff } },
-        { call }
-      ) {
-        yield call(service.order, {
-          path,
-          body: { ...body, [orderKey]: body[orderKey] + diff }
-        });
-      };
-    }
-  });
-
   return model;
+}
+
+function generateQuery({ namespace, inline, query }) {
+  if (inline) {
+    return { [namespace]: encodeURIComponent(JSON.stringify(query)) };
+  }
+
+  return query;
+}
+
+function getQuery({ namespace, inline, search }) {
+  let queries = parse(search);
+
+  if (inline) {
+    try {
+      queries = JSON.parse(decodeURIComponent(queries[namespace]));
+    } catch (e) {
+      queries = {};
+    }
+  }
+
+  return queries;
 }
 
 function generateRecordsPage(
   {
-    api: { host, path, defaultFilter },
+    api: { host, path, fixedFilter, defaultBody, defaultFilter },
     namespace,
     actions,
-    primaryKey,
-    searchFields,
-    fixedSort,
-    defaultSort,
-    schema,
-    defaultFilter: defaultFilterQuery
+    table,
+    defaultPageSize = 10,
+    tableScroll,
+    paginationComponentProps = {}
   },
-  component
+  component,
+  inline
 ) {
-  const customActions = actions.filter(action => isPlainObject(action));
-  const customGlobalActions = customActions.filter(
-    ({ global, multiple }) => global && !multiple
-  );
-  const customMultipleActions = customActions.filter(
-    ({ multiple }) => multiple
-  );
-  const customRowActions = customActions.filter(({ global }) => !global);
-  const customMultipleEdits = schema.filter(({ multipleEdit }) => multipleEdit);
-
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -237,13 +153,9 @@ function generateRecordsPage(
         <RecordsPage
           {...this.props}
           component={component}
-          primaryKey={primaryKey}
-          customGlobalActions={customGlobalActions}
-          customMultipleActions={customMultipleActions}
-          customRowActions={customRowActions}
-          searchFields={searchFields}
-          defaultFilter={defaultFilterQuery}
-          customMultipleEdits={customMultipleEdits}
+          table={table}
+          actions={actions}
+          tableScroll={tableScroll}
         />
       );
     }
@@ -260,48 +172,21 @@ function generateRecordsPage(
     }
   );
 
-  const searchSelector = createSelector(
-    [queries => queries.search],
-    search => {
-      try {
-        return JSON.parse(search);
-      } catch (e) {
-        return {};
-      }
-    }
-  );
-
-  const schemaSelector = createSelector(
-    [state => state[namespace].get('schema')],
-    sche => sche.toJS()
-  );
-
-  const filterInGroupSchemas = createSelector(
-    [state => state[namespace].get('schema')],
-    sche => {
-      const schemas = sche.toJS();
-      return schemas.filter(
-        ({ type, canFilter, visibility, filterTree }) =>
-          canFilter &&
-          (type === ColumnTypes.date ||
-            type === ColumnTypes.datetime ||
-            type === ColumnTypes.number ||
-            !(visibility && visibility.table) ||
-            filterTree)
-      );
-    }
-  );
-
   const mapStateToProps = (state, props) => {
-    const queries = parse(props.location.search);
+    const queries = getQuery({
+      namespace,
+      inline,
+      search: props.location.search
+    });
+
     return {
+      paginationComponentProps,
       filter: filterSelector(queries),
       page: queries.page ? toInteger(queries.page) : 1,
-      pagesize: queries.pagesize ? toInteger(queries.pagesize) : 10,
+      pagesize: queries.pagesize
+        ? toInteger(queries.pagesize)
+        : defaultPageSize,
       records: state[namespace].get('records'),
-      schema: schemaSelector(state),
-      filterInGroupSchemas: filterInGroupSchemas(state),
-      search: searchSelector(queries) || {},
       sort: queries.sort || '',
       total: state[namespace].get('total'),
       isLoading: state.loading.effects[`${namespace}/fetch`],
@@ -316,11 +201,18 @@ function generateRecordsPage(
       location
     } = ownProps;
 
-    let apiDefaultFilter = {};
-    if (isFunction(defaultFilter)) {
-      apiDefaultFilter = defaultFilter(matchParams);
-    } else if (isPlainObject(defaultFilter)) {
-      apiDefaultFilter = defaultFilter;
+    let fetchApiFixedFilter = {};
+    if (isFunction(fixedFilter)) {
+      fetchApiFixedFilter = fixedFilter(matchParams);
+    } else if (isPlainObject(fixedFilter)) {
+      fetchApiFixedFilter = fixedFilter;
+    }
+
+    let createApiDefaultBody = {};
+    if (isFunction(defaultBody)) {
+      createApiDefaultBody = defaultBody(matchParams);
+    } else if (isPlainObject(defaultBody)) {
+      createApiDefaultBody = defaultBody;
     }
 
     let apiPath = '';
@@ -333,19 +225,45 @@ function generateRecordsPage(
       apiPath = `${host}${apiPath}`;
     }
 
+    let apiDefaultFilter;
+    if (isFunction(defaultFilter)) {
+      apiDefaultFilter = defaultFilter(matchParams);
+    } else if (isPlainObject(defaultFilter)) {
+      apiDefaultFilter = defaultFilter;
+    }
+
     const props = {
-      fetch: async ({ page, pagesize, sort, search, filter = {} }) => {
-        const queries = parse(location.search);
+      fetch: async ({ page, pagesize, sort, filter = {} }) => {
+        const queries = getQuery({
+          namespace,
+          inline,
+          search: location.search
+        });
 
         if (
-          (fixedSort && fixedSort !== sort) ||
-          ((defaultSort || defaultFilterQuery) &&
+          (table.getFixedSortOrder() && table.getFixedSortOrder() !== sort) ||
+          ((table.getDefaultSortOrder() ||
+            table.getDefaultFilter() ||
+            (apiDefaultFilter && size(apiDefaultFilter))) &&
             (!queries || Object.keys(queries).length === 0))
         ) {
-          const uri = generateUri(window.location.href, {
-            filter: JSON.stringify(defaultFilterQuery),
-            sort: fixedSort || defaultSort
-          });
+          const uri = generateUri(
+            window.location.href.substring(
+              0,
+              window.location.href.length - window.location.search.length
+            ),
+            generateQuery({
+              namespace,
+              inline,
+              query: {
+                filter: JSON.stringify({
+                  ...(table.getDefaultFilter() || {}),
+                  ...apiDefaultFilter
+                }),
+                sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
+              }
+            })
+          );
           history.replace(
             uri.href.substring(uri.origin.length, uri.href.length)
           );
@@ -359,65 +277,53 @@ function generateRecordsPage(
             page,
             pagesize,
             sort,
-            search,
-            filter: { ...filter, ...apiDefaultFilter },
+            filter: { ...filter, ...fetchApiFixedFilter },
             path: apiPath
           }
         });
       },
-      updateModalFilters: async (mapKey, formFieldsValue) =>
+      remove: async ({ id }) =>
         dispatch({
-          type: `${namespace}/updateModalFilters`,
-          payload: {
-            mapKey,
-            formFieldsValue
-          }
+          type: `${namespace}/remove`,
+          payload: { path: apiPath, id }
         }),
-      updatePage: async ({ page, pagesize, sort, search, filter }) => {
+      updatePage: async ({ page, pagesize, sort, filter }) => {
         const newQuery = {
           page,
           pagesize,
           sort,
-          filter: isUndefined(filter) ? filter : JSON.stringify(filter),
-          search: isUndefined(search) ? search : JSON.stringify(search)
+          filter: isUndefined(filter) ? filter : JSON.stringify(filter)
         };
         forEach(newQuery, (v, key) => {
-          if (isUndefined(v)) delete newQuery[key];
+          if (isUndefined(v) || v === '') delete newQuery[key];
         });
-        const uri = generateUri(window.location.href, newQuery);
+        const uri = generateUri(
+          window.location.href.substring(
+            0,
+            window.location.href.length - window.location.search.length
+          ),
+          generateQuery({ namespace, inline, query: newQuery })
+        );
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
-      }
+      },
+      create: async ({ body }) =>
+        dispatch({
+          type: `${namespace}/create`,
+          payload: {
+            path: apiPath,
+            body: { ...createApiDefaultBody, ...body }
+          }
+        }),
+      edit: async ({ id, body }) =>
+        dispatch({
+          type: `${namespace}/edit`,
+          payload: {
+            path: apiPath,
+            id,
+            body: { ...createApiDefaultBody, ...body }
+          }
+        })
     };
-
-    forEach(actions, action => {
-      if (action === 'create') {
-        props.create = async body =>
-          dispatch({
-            type: `${namespace}/create`,
-            payload: { path: apiPath, body: { ...body, ...apiDefaultFilter } }
-          });
-      } else if (action === 'edit' || action === 'inlineEdit') {
-        props[action] = async body =>
-          dispatch({
-            type: `${namespace}/edit`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'remove') {
-        props.remove = async body =>
-          dispatch({
-            type: `${namespace}/remove`,
-            payload: { path: apiPath, body }
-          });
-      } else if (action === 'order') {
-        props.order = async (body, diff) =>
-          dispatch({
-            type: `${namespace}/order`,
-            payload: { path: apiPath, body, diff }
-          });
-      } else if (action === 'create_in_new_page') {
-        props.hasCreateNew = true;
-      }
-    });
 
     return props;
   };
@@ -430,17 +336,23 @@ function generateRecordsPage(
   );
 }
 
-function generateDynamicRecordsComponent({ app, config, component }) {
+function generateDynamicRecordsComponent({ app, config, component, inline }) {
   const service = generateService(config);
   const model = generateModel(config, service);
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordsPage(config, component))
+    component: () =>
+      Promise.resolve(generateRecordsPage(config, component, inline))
   });
 }
 
-export default function dynamicRecordsComponent({ app, config, component }) {
+export default function dynamicRecordsComponent({
+  app,
+  config,
+  component,
+  inline
+}) {
   if (!app) {
     throw new Error('dynamicRecordsComponent: app is required');
   }
@@ -448,19 +360,5 @@ export default function dynamicRecordsComponent({ app, config, component }) {
     throw new Error('dynamicRecordsComponent: config is required');
   }
 
-  if (isFunction(config)) {
-    return dynamic({
-      app,
-      resolve: () =>
-        config().then(c =>
-          generateDynamicRecordsComponent({
-            app,
-            config: c.default || c,
-            component
-          })
-        )
-    });
-  }
-
-  return generateDynamicRecordsComponent({ app, config, component });
+  return generateDynamicRecordsComponent({ app, config, component, inline });
 }

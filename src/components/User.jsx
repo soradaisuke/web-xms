@@ -3,30 +3,12 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { Avatar, Menu, Dropdown, Icon } from 'antd';
 import { connect } from 'dva';
-import { generateUri } from 'web-core';
-import { ClickableDiv } from 'react-core';
-import Cookie from 'js-cookie';
+import { ClickableDiv } from '@qt/react-core';
 import './User.less';
-
-function onClickLogOut() {
-  Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
-  window.location.replace(
-    generateUri('//entry.qingtingfm.com/v1/sso/login.html', {
-      return_url: generateUri(window.location.href, { auth: 1 })
-    }).href
-  );
-}
-
-const menu = (
-  <Menu>
-    <Menu.Item>
-      <ClickableDiv onClick={onClickLogOut}>退出登录</ClickableDiv>
-    </Menu.Item>
-  </Menu>
-);
 
 class User extends React.PureComponent {
   static propTypes = {
+    logout: PropTypes.func.isRequired,
     user: PropTypes.instanceOf(Immutable.Map)
   };
 
@@ -35,14 +17,22 @@ class User extends React.PureComponent {
   };
 
   render() {
-    const { user } = this.props;
+    const { user, logout } = this.props;
 
     if (!user) {
       return null;
     }
 
     return (
-      <Dropdown overlay={menu}>
+      <Dropdown
+        overlay={
+          <Menu>
+            <Menu.Item>
+              <ClickableDiv onClick={logout}>退出登录</ClickableDiv>
+            </Menu.Item>
+          </Menu>
+        }
+      >
         <div className="user-wrapper">
           <Avatar className="avatar" src={user.get('avatar')} icon="user" />
           {user.get('nickname')}
@@ -57,4 +47,14 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps)(User);
+const mapDispatchToProps = dispatch => ({
+  logout: async () =>
+    dispatch({
+      type: 'user/logout'
+    })
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(User);

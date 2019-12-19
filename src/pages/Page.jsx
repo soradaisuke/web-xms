@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import Immutable from 'immutable';
+import { connect } from 'dva';
 import { Alert, Spin } from 'antd';
 
-export default class Page extends React.PureComponent {
+class Page extends React.PureComponent {
   static displayName = 'Page';
 
   static propTypes = {
@@ -11,7 +13,9 @@ export default class Page extends React.PureComponent {
     className: PropTypes.string,
     errorMessage: PropTypes.string,
     isError: PropTypes.bool,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
+    user: PropTypes.instanceOf(Immutable.Map),
+    showWatermark: PropTypes.bool
   };
 
   static defaultProps = {
@@ -19,7 +23,9 @@ export default class Page extends React.PureComponent {
     className: '',
     errorMessage: '',
     isError: false,
-    isLoading: false
+    isLoading: false,
+    user: null,
+    showWatermark: false
   };
 
   renderContent() {
@@ -42,13 +48,38 @@ export default class Page extends React.PureComponent {
     );
   }
 
+  renderBackground() {
+    const { user } = this.props;
+
+    let watermark = '蜻蜓FM';
+    if (user) {
+      watermark = `${watermark} ${user.get('nickname') || ''}`;
+
+      const phone = user.get('phone');
+
+      if (phone && phone.length >= 4) {
+        watermark = `${watermark}${phone.substr(phone.length - 4, 4)}`;
+      }
+    }
+    const backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='150px' width='300px'><text x='50%' y='50%' fill='rgba(0, 0, 0, 0.1)' font-size='16'>${watermark}</text></svg>")`;
+
+    return <div className="watermark" style={{ backgroundImage }} />;
+  }
+
   render() {
-    const { className } = this.props;
+    const { className, showWatermark } = this.props;
 
     return (
       <div className={classNames('xms-page', className)}>
+        {showWatermark && this.renderBackground()}
         {this.renderContent()}
       </div>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(Page);
