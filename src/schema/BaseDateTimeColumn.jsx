@@ -55,10 +55,10 @@ export default class BaseDateTimeColumn extends StringColumn {
       return (
         <React.Fragment>
           <RangePicker
-            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
-            allowClear={false}
             showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
             format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
+            {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
+            allowClear={false}
             value={[
               !isUndefined(get(selectedKeys, '[0][0]'))
                 ? moment(get(selectedKeys, '[0][0]'))
@@ -101,10 +101,10 @@ export default class BaseDateTimeColumn extends StringColumn {
     return (
       <React.Fragment>
         <DatePicker
-          {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
           showTime={this.showTime()} // eslint-disable-line react/no-this-in-sfc
-          allowClear={false}
           format={this.getInTableFormat()} // eslint-disable-line react/no-this-in-sfc
+          {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
+          allowClear={false}
           value={selectedKeys.length > 0 ? moment(selectedKeys[0]) : null}
           onChange={v => setSelectedKeys([this.formatFilterValue(v)])} // eslint-disable-line react/no-this-in-sfc
           style={{ width: 188, marginBottom: 8, display: 'block' }}
