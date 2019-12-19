@@ -2,6 +2,85 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-148](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-140...v2.0.0-beta-148) (2019-12-19)
+
+
+### Features
+
+* **LIV-5131:** 增加重置筛选项按钮 ([99aa111](https://git2.qingtingfm.com/zhibo/xms/commit/99aa11111a4259c3d9bc1652c2b186632a8f0f22))
+* **LIV-5290:** 支持平铺筛选项 ([69d69d8](https://git2.qingtingfm.com/zhibo/xms/commit/69d69d8142bf1fe2c293f9026de438d60249c372))
+* **NoTicket:** DateTime里的filterComponentProps 里设置的format和showTime优先级高于默认值 ([fac8fac](https://git2.qingtingfm.com/zhibo/xms/commit/fac8fac79b1ec0ed9dde44f5db4796bc0c5f14f8))
+* **NoTicket:** generateInitialValue的参数增加parentValue ([3a62ebc](https://git2.qingtingfm.com/zhibo/xms/commit/3a62ebcf35403e49bdf4fd341c3ee8f302ad9f59))
+
+
+### Bug Fixes
+
+* **NoTicket:** table.filterRequired为非布尔值时是未筛选时的默认值 ([fe6deac](https://git2.qingtingfm.com/zhibo/xms/commit/fe6deac256c8f042e1b0cdac4bcab27b1cb38c84))
+* **NoTicket:** tab类型的列表切换时不重置filter；tab类型的列表在有默认filter的列表时会陷入死循环 ([34d3431](https://git2.qingtingfm.com/zhibo/xms/commit/34d34310891132f093886b1485654ccba179ee7f))
+* **NoTicket:** 报错table.hasfilter is not a function ([b454be2](https://git2.qingtingfm.com/zhibo/xms/commit/b454be223e1b3ddb338e40337bb9a46b37434a03))
+* **NoTicket:** 新建（编辑）点击快的话会发多个请求 ([22b7d0e](https://git2.qingtingfm.com/zhibo/xms/commit/22b7d0e17a822a83f56a1db42377bce4802f6668))
+
+### [1.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.14.0...v1.14.1) (2019-09-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix ‘\’ in textToPath ([bfd09c3](https://git2.qingtingfm.com/zhibo/xms/commit/bfd09c30b56993b07362f2f69106bd0ea1fb13d2))
+
+## [1.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.4...v1.14.0) (2019-09-06)
+
+
+### Features
+
+* **NoTicket:** 列表搜索支持autoComplete ([4abdfc2](https://git2.qingtingfm.com/zhibo/xms/commit/4abdfc287db1c5afc7173b708184e40f067b28c6))
+
+
+### Bug Fixes
+
+* **COPYRIGHT-414:** 可选填的数字类型不填的时候会报错 ([0f4cc93](https://git2.qingtingfm.com/zhibo/xms/commit/0f4cc936500211977240a64c321be4e620f88eda))
+
+### [1.13.4](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.3...v1.13.4) (2019-08-02)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix form里的多选框值为0的时候无法match到对应项 ([f293e7b](https://git2.qingtingfm.com/zhibo/xms/commit/f293e7b21c98141343c0f318d18db3add6c15ba7))
+
+### [1.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.2...v1.13.3) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** select里value是bool的false的时候无法clear ([e3c00ba](https://git2.qingtingfm.com/zhibo/xms/commit/e3c00ba1c99b33a00c7f4a5d6cd33128d8624da1))
+
+### [1.13.2](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.1...v1.13.2) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 筛选条件判断错误 ([74948ce](https://git2.qingtingfm.com/zhibo/xms/commit/74948ceedbfd640d126598b852701ed01a8ec503))
+
+### [1.13.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.13.0...v1.13.1) (2019-07-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 筛选为bool类型时值为false被错误清空 ([f867656](https://git2.qingtingfm.com/zhibo/xms/commit/f8676568fa7b790418ffc29563bbe198fff1a85e))
+
+## [1.13.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.12.0...v1.13.0) (2019-07-03)
+
+
+### Features
+
+* **NoTicket:** 支持列表页的schema的fixed配置 ([00fc2c1](https://git2.qingtingfm.com/zhibo/xms/commit/00fc2c1221333f6f00524f5d3bb96472d8c59c9f))
+
+## [1.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v1.11.0...v1.12.0) (2019-06-28)
+
+
+### Features
+
+* **LIV-2937:** search的mapKey支持将属性的路径解析成object ([33a6758](https://git2.qingtingfm.com/zhibo/xms/commit/33a67585d7ff8eef1002eaac49c56507c0458cd8))
+
 ## [2.0.0-beta-147](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-146...v2.0.0-beta-147) (2019-12-19)
 
 ### [1.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v1.14.0...v1.14.1) (2019-09-09)
