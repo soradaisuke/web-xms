@@ -234,6 +234,7 @@ function generateRecordsPage(
 
     const props = {
       fetch: async ({ page, pagesize, sort, filter = {} }) => {
+        const preQueries = parse(location.search);
         const queries = getQuery({
           namespace,
           inline,
@@ -252,17 +253,20 @@ function generateRecordsPage(
               0,
               window.location.href.length - window.location.search.length
             ),
-            generateQuery({
-              namespace,
-              inline,
-              query: {
-                filter: JSON.stringify({
-                  ...(table.getDefaultFilter() || {}),
-                  ...apiDefaultFilter
-                }),
-                sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
-              }
-            })
+            {
+              ...preQueries,
+              ...generateQuery({
+                namespace,
+                inline,
+                query: {
+                  filter: JSON.stringify({
+                    ...(table.getDefaultFilter() || {}),
+                    ...apiDefaultFilter
+                  }),
+                  sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
+                }
+              })
+            }
           );
           history.replace(
             uri.href.substring(uri.origin.length, uri.href.length)

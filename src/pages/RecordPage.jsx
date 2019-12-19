@@ -100,11 +100,6 @@ class RecordPage extends React.PureComponent {
     this.fetch();
   };
 
-  onChangeTabs = () => {
-    const { history } = this.props;
-    history.replace(window.location.pathname);
-  };
-
   renderAction(action, { column, inline } = {}) {
     const {
       user,
@@ -232,7 +227,7 @@ class RecordPage extends React.PureComponent {
               key={chunk[0].path}
               className={classNames('content-card', inline ? 'inline' : '')}
             >
-              <Tabs onChange={this.onChangeTabs}>
+              <Tabs>
                 {map(chunk, ({ component: Component, path, title = '' }) => (
                   <TabPane tab={title} key={path}>
                     <Component inline />
