@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta-146](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-145...v2.0.0-beta-146) (2019-12-19)
+
+
+### Features
+
+* **NoTicket:** DateTime里的filterComponentProps 里设置的format和showTime优先级高于默认值 ([fac8fac](https://git2.qingtingfm.com/zhibo/xms/commit/fac8fac79b1ec0ed9dde44f5db4796bc0c5f14f8))
+
 ## [2.0.0-beta-145](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-144...v2.0.0-beta-145) (2019-12-18)
 
 
