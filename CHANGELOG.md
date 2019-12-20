@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-148...v2.0.1) (2019-12-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** 列表里的图片宽度应是指定列宽度减去table列自带的padding ([1aff034](https://git2.qingtingfm.com/zhibo/xms/commit/1aff034b011f021b12a9af3a0bc427393a152cf1))
+
 ## [2.0.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-148...v2.0.0) (2019-12-20)
 
 ## [2.0.0-beta-148](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-140...v2.0.0-beta-148) (2019-12-19)
