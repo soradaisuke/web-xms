@@ -9,7 +9,7 @@ export default class ImageColumn extends StringColumn {
     const src = generateUpYunImageUrl(value);
     const width = this.getTableWidth();
     const style = width
-      ? { width: isNumber(width) ? `${width}px` : width }
+      ? { width: isNumber(width) ? `${width - 32}px` : width }
       : {};
 
     return <img alt="" src={src} style={style} />;
@@ -19,7 +19,7 @@ export default class ImageColumn extends StringColumn {
     const src = generateUpYunImageUrl(value);
     const width = this.getDescriptionWidth();
     const style = width
-      ? { width: isNumber(width) ? `${width}px` : width }
+      ? { width: isNumber(width) ? `${width - 48}px` : width }
       : {};
 
     return <img alt="" src={src} style={style} />;
