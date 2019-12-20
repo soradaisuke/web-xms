@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-148...v2.0.0) (2019-12-20)
+
 ## [2.0.0-beta-148](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-140...v2.0.0-beta-148) (2019-12-19)
 
 
