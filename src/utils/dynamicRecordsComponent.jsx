@@ -301,12 +301,16 @@ function generateRecordsPage(
         forEach(newQuery, (v, key) => {
           if (isUndefined(v) || v === '') delete newQuery[key];
         });
+        const preQueries = parse(window.location.search);
         const uri = generateUri(
           window.location.href.substring(
             0,
             window.location.href.length - window.location.search.length
           ),
-          generateQuery({ namespace, inline, query: newQuery })
+          {
+            ...preQueries,
+            ...generateQuery({ namespace, inline, query: newQuery })
+          }
         );
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
       },
