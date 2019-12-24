@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.1...v2.0.2) (2019-12-24)
+
+
+### Bug Fixes
+
+* **NoTicket:** inline的tab的table在tab切换的时候会发多余的请求 ([e9f026a](https://git2.qingtingfm.com/zhibo/xms/commit/e9f026aad2534b8feedcaf0cf253be0249dad1aa))
+
 ### [2.0.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.0-beta-148...v2.0.1) (2019-12-20)
 
 
