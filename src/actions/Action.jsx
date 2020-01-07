@@ -159,6 +159,7 @@ export default class Action {
           {...this.getModalComponentProps()}
           columns={columns}
           key={this.getTitle()}
+          title={this.getTitle()}
           record={record}
           records={records}
           checkVisibility={this.checkVisibility()}

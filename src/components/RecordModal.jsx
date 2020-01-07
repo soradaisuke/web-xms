@@ -31,11 +31,13 @@ class RecordModal extends React.PureComponent {
     checkVisibility: PropTypes.bool,
     user: PropTypes.instanceOf(Immutable.Map),
     columns: PropTypes.instanceOf(Immutable.List),
+    title: PropTypes.string,
     record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     records: PropTypes.array // eslint-disable-line react/forbid-prop-types
   };
 
   static defaultProps = {
+    title: '',
     checkVisibility: true,
     columns: Immutable.List(),
     record: null,
@@ -93,13 +95,14 @@ class RecordModal extends React.PureComponent {
   }
 
   render() {
-    const { children, columns } = this.props;
+    const { children, columns, title } = this.props;
+    const defaultTitle = this.isEdit() ? '编辑' : '添加';
 
     return (
       <ActivatorModal
         {...this.props}
         activator={children}
-        title={this.isEdit() ? '编辑' : '添加'}
+        title={title || defaultTitle}
         onOk={this.onOk}
         onVisibleChange={this.onVisibleChange}
       >
