@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.2...v2.0.3) (2020-01-07)
+
+
+### Bug Fixes
+
+* **NoTicket:** action的title优先使用配置的title ([5b7fe9d](https://git2.qingtingfm.com/zhibo/xms/commit/5b7fe9d61d9d633510c3adea89046a28492f4403))
+
 ### [2.0.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.1...v2.0.2) (2019-12-24)
 
 
