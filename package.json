@@ -9,7 +9,7 @@
   "author": "Yang Zheng",
   "license": "ISC",
   "scripts": {
-    "build": "rm -rf lib && npm run fix-code && npm run fix-style && babel -d lib/ src/ --copy-files",
+    "build": "rm -rf lib && babel -d lib/ src/ --copy-files",
     "fix-code": "eslint --fix 'src/**/*.{js,jsx}'",
     "fix-style": "stylelint --fix --syntax less 'src/**/*.less'"
   },
