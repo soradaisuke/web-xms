@@ -1,4 +1,8 @@
 include:
   - project: 'bj-libs/qt-gitlab-runner'
     ref: master
+    file: '/ymls/common.yml'
+    
+  - project: 'bj-libs/qt-gitlab-runner'
+    ref: master
     file: '/ymls/node.yml'
