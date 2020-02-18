@@ -604,7 +604,9 @@ export default class Column {
       );
     } else {
       const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
-      children = renderInFormItem ? renderInFormItem() : this.renderInFormItem({ user, isEdit });
+      children = renderInFormItem
+        ? renderInFormItem()
+        : this.renderInFormItem({ user, isEdit });
     }
 
     return (

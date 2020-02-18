@@ -12,7 +12,7 @@ export textToPath from './utils/textToPath';
 export UploadImage from './components/FormItems/UploadImage';
 export UploadFile from './components/UploadFile';
 export ZoomImg from './components/ZoomImg';
-export TableTransfer from './components/TableTransfer'
+export TableTransfer from './components/TableTransfer';
 
 // export Tags from './components/FormItems/Tags';
 // export AudioPlayer from './components/Common/AudioPlayer';
