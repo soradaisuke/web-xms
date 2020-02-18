@@ -603,7 +603,8 @@ export default class Column {
         />
       );
     } else {
-      children = this.renderInFormItem({ user, isEdit });
+      const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
+      children = renderInFormItem ? renderInFormItem() : this.renderInFormItem({ user, isEdit });
     }
 
     return (
