@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.1.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.1.0...v2.1.1) (2020-02-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** eslint error ([2ec3a0d](https://git2.qingtingfm.com/zhibo/xms/commit/2ec3a0dc8422eed9e774c217ea73cde290ff5951))
+
 ## [2.1.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.3...v2.1.0) (2020-02-18)
 
 
