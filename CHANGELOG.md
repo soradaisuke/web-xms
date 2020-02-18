@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.3...v2.1.0) (2020-02-18)
+
+
+### Features
+
+* **NBA-990:** XMS增加TableTransfer ([95aaa6b](https://git2.qingtingfm.com/zhibo/xms/commit/95aaa6bda95d8306f8135e07e76c6d00db1bc2c9))
+* **NBA-991:** XMS支持自定义renderInFormItem ([9c2b8aa](https://git2.qingtingfm.com/zhibo/xms/commit/9c2b8aa6d2abc439804f350448501a55e0645887))
+
 ### [2.0.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.0.2...v2.0.3) (2020-01-07)
 
 
