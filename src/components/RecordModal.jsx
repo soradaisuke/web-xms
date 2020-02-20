@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
-import { forEach, set } from 'lodash';
+import { forEach, set, isFunction } from 'lodash';
 import ActivatorModal from './ActivatorModal';
 
 const formItemLayout = {
@@ -55,7 +55,12 @@ class RecordModal extends React.PureComponent {
           forEach(values, (value, key) => {
             const column = columns.find(c => c.getFormKey() === key);
             if (column) {
-              set(formatValues, key, column.formatFormSubmitValue(value));
+              const generateSubmitValue = column.getFormGenerateSubmitValue();
+              if (generateSubmitValue && isFunction(generateSubmitValue)) {
+                set(formatValues, key, generateSubmitValue(value));
+              } else {
+                set(formatValues, key, column.formatFormSubmitValue(value));
+              }
             }
           });
           await onOk(formatValues);

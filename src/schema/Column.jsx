@@ -459,6 +459,10 @@ export default class Column {
     return this.config.getIn(['form', 'initialValue']);
   }
 
+  getFormGenerateSubmitValue() {
+    return this.config.getIn(['form', 'generateSubmitValue']);
+  }
+
   getFormGenerateInitialValue() {
     return this.config.getIn(['form', 'generateInitialValue']);
   }
