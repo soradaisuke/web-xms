@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.1.1...v2.2.0) (2020-02-20)
+
+
+### Features
+
+* **LIV-5491:** XMS增加formatSubmitValue ([2b36296](https://git2.qingtingfm.com/zhibo/xms/commit/2b3629691522bd44f38e6eaf537f9da109cb1dd4))
+
 ### [2.1.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.1.0...v2.1.1) (2020-02-18)
 
 
