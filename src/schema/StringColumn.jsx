@@ -1,6 +1,6 @@
 import React from 'react';
-import { toString, isUndefined } from 'lodash';
-import { Input } from 'antd';
+import { toString, isUndefined, map } from 'lodash';
+import { Input, Select } from 'antd';
 import Column from './Column';
 
 export default class StringColumn extends Column {
@@ -11,6 +11,9 @@ export default class StringColumn extends Column {
 
   // eslint-disable-next-line class-methods-use-this
   formatFormSubmitValue(v) {
+    if (this.canSelectMutipleInForm()) {
+      return map(v, item => item || '');
+    }
     return v || '';
   }
 
@@ -39,6 +42,16 @@ export default class StringColumn extends Column {
   );
 
   renderInFormItem({ isEdit }) {
+    if (this.canSelectMutipleInForm()) {
+      return (
+        <Select
+          style={{ width: '100%' }}
+          mode="tags"
+          placeholder={this.getFormPlaceholder()}
+          {...this.getFormComponentProps({ isEdit })}
+        />
+      );
+    }
     return (
       <Input
         style={{ width: '100%' }}

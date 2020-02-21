@@ -1,12 +1,21 @@
 import React from 'react';
-import { toNumber, isNaN, get, set } from 'lodash';
-import { InputNumber } from 'antd';
+import { toNumber, isNaN, get, set, map } from 'lodash';
+import { InputNumber, Select } from 'antd';
 import Column from './Column';
 
 export default class NumberColumn extends Column {
   // eslint-disable-next-line class-methods-use-this
   formatFilterValue(v) {
     return !isNaN(toNumber(v)) ? toNumber(v) : v;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  formatFormSubmitValue(v) {
+    const formatNumber = n => (!isNaN(toNumber(n)) ? toNumber(n) : n);
+    if (this.canSelectMutipleInForm()) {
+      return map(v, item => formatNumber(item));
+    }
+    return formatNumber(v);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -70,6 +79,16 @@ export default class NumberColumn extends Column {
   };
 
   renderInFormItem({ isEdit }) {
+    if (this.canSelectMutipleInForm()) {
+      return (
+        <Select
+          style={{ width: '100%' }}
+          mode="tags"
+          placeholder={this.getFormPlaceholder()}
+          {...this.getFormComponentProps({ isEdit })}
+        />
+      );
+    }
     return (
       <InputNumber
         style={{ width: '100%' }}
