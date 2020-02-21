@@ -613,6 +613,9 @@ export default class Column {
         : this.renderInFormItem({ user, isEdit });
     }
 
+    const rules = isFunction(this.getFormRules())
+      ? this.getFormRules()({ user, record, value, values })
+      : this.getFormRules().toJS();
     return (
       <FormItem key={key} label={this.getTitle()} extra={this.getFormHint()}>
         {getFieldDecorator(key, {
@@ -635,7 +638,7 @@ export default class Column {
               message: `${this.getTitle()}不能为空`
             },
             ...this.getFormDefaultRules(),
-            ...this.getFormRules().toJS()
+            ...rules
           ],
           valuePropName: this.getFormFiledValuePropName()
         })(children)}
