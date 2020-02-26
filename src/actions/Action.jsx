@@ -288,7 +288,7 @@ export default class Action {
       className: 'action-button'
     };
 
-    const onClick = ({
+    const onClick = async ({
       data = {},
       loadingMessage = this.getHandlingMessage(),
       throwError = false,
@@ -322,7 +322,7 @@ export default class Action {
           });
         }
 
-        submit({
+        await submit({
           promise,
           throwError,
           loadingMessage,
