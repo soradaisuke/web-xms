@@ -63,8 +63,12 @@ class RecordModal extends React.PureComponent {
               }
             }
           });
-          await onOk(formatValues);
-          resolve();
+          try {
+            await onOk(formatValues);
+          } catch (e) {
+            resolve(false);
+          }
+          resolve(true);
         } else {
           reject();
         }
