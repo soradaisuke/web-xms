@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.2.0...v2.3.0) (2020-02-26)
+
+
+### Features
+
+* **LIV-5492:** XMS支持Select的Tag Mode(Column.String和Column.Number) ([302fb3f](https://git2.qingtingfm.com/zhibo/xms/commit/302fb3f4433fe7508c86910a424b66815807ecad))
+* **LIV-5496:** XMS的form里的rules配置支持函数 ([72c757a](https://git2.qingtingfm.com/zhibo/xms/commit/72c757a53e7701d58505e88ea83a7415075bf9aa))
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复添加编辑弹窗出错时不该关闭 ([bfade41](https://git2.qingtingfm.com/zhibo/xms/commit/bfade41b8bac60ddc95d6e418d0d3fd8b4e1f1aa))
+
 ## [2.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.1.1...v2.2.0) (2020-02-20)
 
 
