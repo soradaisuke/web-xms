@@ -48,7 +48,7 @@ class RecordModal extends React.PureComponent {
   onOk = async () => {
     const { form, onOk, columns } = this.props;
 
-    await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       form.validateFields(async (err, values) => {
         if (!err) {
           const formatValues = {};
