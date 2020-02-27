@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.3.2...v2.3.3) (2020-02-27)
+
+
+### Bug Fixes
+
+* **NoTicket:** 非fetch请求忽略queries ([2f66c5e](https://git2.qingtingfm.com/zhibo/xms/commit/2f66c5e5de146b3e65131bd88ca0fc5fbc760c5c))
+
 ### [2.3.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.3.1...v2.3.2) (2020-02-26)
 
 
