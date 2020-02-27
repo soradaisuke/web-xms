@@ -14,7 +14,8 @@ import {
   forEach,
   toInteger,
   size,
-  isUndefined
+  isUndefined,
+  split
 } from 'lodash';
 import { generateUri } from '@qt/web-core';
 import request from '../services/request';
@@ -33,9 +34,12 @@ function generateService({ api: { fetch } = {} }) {
               filter: JSON.stringify(filter)
             }
           }),
-    remove: async ({ path, id }) => request.remove(`${path}/${id}`),
-    create: async ({ path, body }) => request.post(`${path}`, { body }),
-    edit: async ({ path, id, body }) => request.put(`${path}/${id}`, { body })
+    remove: async ({ path, id }) =>
+      request.remove(`${split(path, '?')[0]}/${id}`),
+    create: async ({ path, body }) =>
+      request.post(`${split(path, '?')[0]}`, { body }),
+    edit: async ({ path, id, body }) =>
+      request.put(`${split(path, '?')[0]}/${id}`, { body })
   };
 
   return service;
