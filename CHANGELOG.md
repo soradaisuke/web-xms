@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.3.3...v2.4.0) (2020-02-28)
+
+
+### Features
+
+* **NoTicket:** renderInFormItem增加传递参数{ user, isEdit, value, values, record } ([383dcac](https://git2.qingtingfm.com/zhibo/xms/commit/383dcac8e07bd274c556cf13063c6bba359b6ef9))
+
 ### [2.3.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.3.2...v2.3.3) (2020-02-27)
 
 
