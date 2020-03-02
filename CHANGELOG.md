@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.4.0...v2.5.0) (2020-03-02)
+
+
+### Features
+
+* **LIV-5572:** XMS支持选择TextArea ([3b3c815](https://git2.qingtingfm.com/zhibo/xms/commit/3b3c815c8429f76bbcdf93afbf6d74bf6a4e0d11))
+
+
+### Bug Fixes
+
+* **NoTicket:** 由于支持 renderInFormItem ，Object的 formatFormFieldValue 应该是原始数据 ([32cb29e](https://git2.qingtingfm.com/zhibo/xms/commit/32cb29eb2fdba79dabe1cff767d5fb968736cca6))
+
 ## [2.4.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.3.3...v2.4.0) (2020-02-28)
 
 
