@@ -4,6 +4,10 @@ import { Input, Select } from 'antd';
 import Column from './Column';
 
 export default class StringColumn extends Column {
+  getFormMultipleLine() {
+    return this.config.getIn(['form', 'multipleLine']);
+  }
+
   // eslint-disable-next-line class-methods-use-this
   formatFilterValue(v) {
     return isUndefined(v) ? v : toString(v);
@@ -47,6 +51,15 @@ export default class StringColumn extends Column {
         <Select
           style={{ width: '100%' }}
           mode="tags"
+          placeholder={this.getFormPlaceholder()}
+          {...this.getFormComponentProps({ isEdit })}
+        />
+      );
+    }
+    if (this.getFormMultipleLine()) {
+      return (
+        <Input.TextArea
+          style={{ width: '100%' }}
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({ isEdit })}
         />
