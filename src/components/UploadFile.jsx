@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { uploadFile, makeCancelablePromise } from '@qt/web-core';
+import { makeCancelablePromise } from '@qt/web-core';
 import { Upload, Icon, message, Button } from 'antd';
+import { wrappedUploadFile as uploadFile } from '../utils/uploadFile';
 
 class UploadFile extends React.PureComponent {
   static displayName = 'UploadFile';

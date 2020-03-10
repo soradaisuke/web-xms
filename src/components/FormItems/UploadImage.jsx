@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
-import { uploadImage, generateDeviceId } from '@qt/web-core';
+import { generateDeviceId } from '@qt/web-core';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Upload, Icon, Col, Row, Modal } from 'antd';
+import { wrappedUploadImage as uploadImage } from '../../utils/uploadFile';
 import getImageSize from '../../utils/getImageSize';
 import showError from '../../utils/showError';
 
