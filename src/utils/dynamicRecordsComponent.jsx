@@ -303,7 +303,9 @@ function generateRecordsPage(
           filter: isUndefined(filter) ? filter : JSON.stringify(filter)
         };
         forEach(newQuery, (v, key) => {
-          if (isUndefined(v) || v === '') delete newQuery[key];
+          if (key !== 'sort' && (isUndefined(v) || v === '')) {
+            delete newQuery[key];
+          }
         });
         const preQueries = parse(window.location.search);
         const uri = generateUri(
