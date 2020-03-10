@@ -1,4 +1,4 @@
-import { split, includes } from 'lodash';
+import { split, includes, drop, join } from 'lodash';
 import shortid from 'shortid';
 import { isProduction } from '@qt/env';
 import { uploadFile, uploadImage } from '@qt/web-core';
@@ -15,7 +15,7 @@ function generateFileName(file) {
   if (names.length === 1) {
     [, postfix] = file.type.split('/');
   } else {
-    postfix = names[names.length - 1];
+    postfix = join(drop(names, '.'));
   }
 
   return `${Date.now()}_${shortid.generate()}.${postfix}`;
