@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.0...v2.5.1) (2020-03-10)
+
+
+### Bug Fixes
+
+* **NoTicket:** sort为空时无法切换 ([22dbc9a](https://git2.qingtingfm.com/zhibo/xms/commit/22dbc9a433b113d892b49ce83f1a84be621bd44f))
+* **NoTicket:** 修复土拨鼠上传图片 ([bd7e991](https://git2.qingtingfm.com/zhibo/xms/commit/bd7e991d591619af6f7e7670d5fe86b232014048))
+
 ## [2.5.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.4.0...v2.5.0) (2020-03-02)
 
 
