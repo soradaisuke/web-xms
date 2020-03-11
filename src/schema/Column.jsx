@@ -93,8 +93,11 @@ export default class Column {
     return this.config.get('parentKey');
   }
 
-  expandFilter() {
-    return this.config.getIn(['table', 'expandFilter']);
+  canFilterExpand() {
+    return (
+      this.config.getIn(['table', 'filterExpandable']) ||
+      this.config.getIn(['table', 'expandFilter'])
+    );
   }
 
   isPrimaryKey() {

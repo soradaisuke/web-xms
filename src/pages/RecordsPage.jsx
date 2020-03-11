@@ -486,7 +486,7 @@ class RecordsPage extends React.PureComponent {
         column =>
           !column.canShowInTable(user) &&
           column.canFilterInTable() &&
-          column.expandFilter()
+          column.canFilterExpand()
       );
     if (columns.size === 0) {
       return null;
@@ -503,7 +503,7 @@ class RecordsPage extends React.PureComponent {
         column =>
           !column.canShowInTable(user) &&
           column.canFilterInTable() &&
-          !column.expandFilter()
+          !column.canFilterExpand()
       );
     if (columns.size === 0) {
       return null;
