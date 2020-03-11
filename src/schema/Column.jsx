@@ -21,6 +21,8 @@ import TreeSelect from '../components/FormItems/TreeSelect';
 import TreeFilter from '../components/TreeFilter';
 import './Column.less';
 
+export const DEFAULT_GROUP_NAME = '其它筛选项';
+
 const FormItem = Form.Item;
 
 function generateValidOptions(options, disableKey) {
@@ -211,6 +213,10 @@ export default class Column {
 
   getTableMaxLines() {
     return this.config.getIn(['table', 'maxLines']);
+  }
+
+  getFilterGroup() {
+    return this.config.getIn(['table', 'filterGroup'], DEFAULT_GROUP_NAME);
   }
 
   getTableFilterSearchRequest() {

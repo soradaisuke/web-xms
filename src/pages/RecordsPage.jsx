@@ -15,7 +15,8 @@ import {
   Popconfirm,
   Row,
   Radio,
-  Checkbox
+  Checkbox,
+  Col
 } from 'antd';
 import {
   split,
@@ -23,6 +24,7 @@ import {
   isArray,
   isEqual,
   size,
+  map,
   get,
   set,
   unset,
@@ -30,6 +32,7 @@ import {
   isNull,
   cloneDeep,
   isFunction,
+  groupBy,
   isBoolean,
   filter as filterFunc
 } from 'lodash';
@@ -39,6 +42,7 @@ import Group from '../components/Group';
 import Page from './Page';
 import showError from '../utils/showError';
 import './RecordsPage.less';
+import { DEFAULT_GROUP_NAME } from '../schema/Column';
 
 const { Column } = Table;
 
@@ -498,8 +502,7 @@ class RecordsPage extends React.PureComponent {
     if (columns.size === 0) {
       return null;
     }
-
-    return (
+    const renderFilterGroupTable = filterColumns => (
       <Table
         bordered
         className="filters-table"
@@ -510,9 +513,24 @@ class RecordsPage extends React.PureComponent {
         }
         scroll={{}}
       >
-        {columns.map(column => this.renderColumn(column))}
+        {filterColumns.map(column => this.renderColumn(column))}
       </Table>
     );
+    const groupedColumns = groupBy(columns.toArray(), column =>
+      column.getFilterGroup()
+    );
+
+    if (size(groupedColumns) === 1) {
+      return renderFilterGroupTable(groupedColumns[DEFAULT_GROUP_NAME]);
+    }
+    return map(groupedColumns, (iColumns, groupName) => (
+      <Row key={groupName} type="flex">
+        <Col className="filter-group-name">{groupName}</Col>
+        <Col style={{ flex: 1 }}>
+          {renderFilterGroupTable(iColumns, groupName)}
+        </Col>
+      </Row>
+    ));
   }
 
   renderAction(action, { record, records, column, inline } = {}) {
