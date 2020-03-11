@@ -144,11 +144,17 @@ function generateRecordsPage(
     table,
     defaultPageSize = 10,
     tableScroll,
+    tableComponentProps = {},
     paginationComponentProps = {}
   },
   component,
   inline
 ) {
+  if (tableScroll) {
+    console.error(
+      "'config.tableScroll' is deprecated, please use 'config.tableComponentProps: { scroll }'"
+    );
+  }
   class Page extends React.PureComponent {
     static displayName = `${upperFirst(namespace)}Page`;
 
@@ -158,6 +164,7 @@ function generateRecordsPage(
           {...this.props}
           component={component}
           table={table}
+          tableComponentProps={tableComponentProps}
           actions={actions}
           tableScroll={tableScroll}
         />

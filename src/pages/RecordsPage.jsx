@@ -53,6 +53,7 @@ class RecordsPage extends React.PureComponent {
     create: PropTypes.func.isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
     updatePage: PropTypes.func.isRequired,
+    tableComponentProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     match: PropTypes.shape({
       params: PropTypes.shape({}).isRequired
     }).isRequired,
@@ -623,6 +624,7 @@ class RecordsPage extends React.PureComponent {
       user,
       actions,
       tableScroll,
+      tableComponentProps,
       paginationComponentProps
     } = this.props;
 
@@ -646,7 +648,6 @@ class RecordsPage extends React.PureComponent {
       table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
 
     const hasFilter = table.getHasFilter();
-
     return (
       <React.Fragment>
         {this.renderGlobalActions(multipleActions)}
@@ -665,12 +666,13 @@ class RecordsPage extends React.PureComponent {
           )}
           <Table
             bordered
+            scroll={tableScroll || defaultTableScroll}
+            {...tableComponentProps}
             loading={isLoading}
             dataSource={dataSource}
             rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
             pagination={false}
-            scroll={tableScroll || defaultTableScroll}
             onChange={(pagination, filters, sorter) =>
               this.onChange(pagination, filters, sorter, columns)
             }
