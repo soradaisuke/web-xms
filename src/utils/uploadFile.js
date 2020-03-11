@@ -15,7 +15,7 @@ function generateFileName(file) {
   if (names.length === 1) {
     [, postfix] = file.type.split('/');
   } else {
-    postfix = join(drop(names, '.'));
+    postfix = join(drop(names), '.');
   }
 
   return `${Date.now()}_${shortid.generate()}.${postfix}`;
