@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.5.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.2...v2.5.3) (2020-03-11)
+
+
+### Features
+
+* **QTDP-10:** XMS增加filterOutside ([368c77c](https://git2.qingtingfm.com/zhibo/xms/commit/368c77c661ad931691488735c1230dabf7222581))
+* **QTDP-6:** XMS支持传入table的props ([d412a9d](https://git2.qingtingfm.com/zhibo/xms/commit/d412a9da83b44882ce31faff2e5b9e98a88e84b7))
+* **QTDP-8:** xms的expandFilter改为filterExpandable ([686ee92](https://git2.qingtingfm.com/zhibo/xms/commit/686ee92603c9f97b86843ccf06948746700d8ad5))
+
 ### [2.5.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.1...v2.5.2) (2020-03-10)
 
 
