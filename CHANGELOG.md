@@ -1,8 +1,17 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [2.5.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.2...v2.5.3) (2020-03-11)
+## [2.5.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.3...v2.5.4) (2020-03-11)
+
+
+### Bug Fixes
+
+* **TBS-55:** 修复XMS上传文件后缀名 ([45bdf3a](https://git2.qingtingfm.com/zhibo/xms/commits/45bdf3ae6e93184b2f049051e6d8f76d32c17c06))
+
+
+
+## [2.5.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.2...v2.5.3) (2020-03-11)
 
 
 ### Features
