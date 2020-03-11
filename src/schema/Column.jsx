@@ -226,6 +226,30 @@ export default class Column {
     }
   }
 
+  isFilterOutside() {
+    return this.config.getIn(['table', 'filterOutside']);
+  }
+
+  shouldRenderTableFilter(user) {
+    return (
+      this.canFilterInTable() &&
+      !this.shouldRenderOutsideFilter(user) &&
+      !this.shouldRenderExpandFilter()
+    );
+  }
+
+  shouldRenderOutsideFilter(user) {
+    return (
+      this.canFilterInTable() &&
+      !this.canFilterExpand() &&
+      (this.isFilterOutside() || !this.canShowInTable(user))
+    );
+  }
+
+  shouldRenderExpandFilter() {
+    return this.canFilterInTable() && this.canFilterExpand();
+  }
+
   canFilterInTable() {
     return this.config.getIn(['table', 'filter']);
   }

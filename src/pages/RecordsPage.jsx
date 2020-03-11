@@ -271,12 +271,12 @@ class RecordsPage extends React.PureComponent {
     updatePage({ page, pagesize, sort });
   };
 
-  renderColumn(column) {
+  renderColumn(column, shouldRenderTableFilter = true) {
     const { sort, filter, actions, user } = this.props;
 
     const filterProps = {};
 
-    if (column.canFilterInTable()) {
+    if (column.canFilterInTable() && shouldRenderTableFilter) {
       const parentFilteredValue = column.parentColumn
         ? get(filter, column.parentColumn.getTableFilterKey())
         : null;
@@ -479,15 +479,10 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderExpandFilterGroup() {
-    const { table, user } = this.props;
+    const { table } = this.props;
     const columns = table
       .getColumns()
-      .filter(
-        column =>
-          !column.canShowInTable(user) &&
-          column.canFilterInTable() &&
-          column.canFilterExpand()
-      );
+      .filter(column => column.shouldRenderExpandFilter());
     if (columns.size === 0) {
       return null;
     }
@@ -499,12 +494,7 @@ class RecordsPage extends React.PureComponent {
     const { table, user } = this.props;
     const columns = table
       .getColumns()
-      .filter(
-        column =>
-          !column.canShowInTable(user) &&
-          column.canFilterInTable() &&
-          !column.canFilterExpand()
-      );
+      .filter(column => column.shouldRenderOutsideFilter(user));
     if (columns.size === 0) {
       return null;
     }
@@ -677,7 +667,9 @@ class RecordsPage extends React.PureComponent {
               this.onChange(pagination, filters, sorter, columns)
             }
           >
-            {columns.map(column => this.renderColumn(column))}
+            {columns.map(column =>
+              this.renderColumn(column, column.shouldRenderTableFilter(user))
+            )}
             {this.renderRowActions()}
           </Table>
           <Pagination
