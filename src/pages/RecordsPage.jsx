@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import {
   split,
+  forEach,
   startsWith,
   isArray,
   isEqual,
@@ -64,6 +65,7 @@ class RecordsPage extends React.PureComponent {
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
+    filterGroupTrigger: PropTypes.bool,
     page: PropTypes.number,
     pagesize: PropTypes.number,
     inline: PropTypes.bool,
@@ -79,6 +81,7 @@ class RecordsPage extends React.PureComponent {
     component: null,
     error: null,
     isLoading: false,
+    filterGroupTrigger: false,
     filter: {},
     records: Immutable.List(),
     page: 1,
@@ -101,6 +104,7 @@ class RecordsPage extends React.PureComponent {
       records: Immutable.List(),
       dataSource: [],
       selectedRowKeys: [],
+      pendingFilter: {},
       selectedRows: []
     };
 
@@ -140,6 +144,12 @@ class RecordsPage extends React.PureComponent {
     this.setState({ selectedRowKeys, selectedRows });
   };
 
+  resetPendingFilter = () => {
+    this.setState({
+      pendingFilter: {}
+    });
+  };
+
   onChangePage = (page, pagesize) => {
     const { updatePage, sort, filter } = this.props;
     updatePage({
@@ -150,12 +160,21 @@ class RecordsPage extends React.PureComponent {
     });
   };
 
-  onChange = (pagination, filters, sorter, columns, onlyFilters = false) => {
+  onChange = ({
+    filters,
+    sorter,
+    columns,
+    onlyFilters = false,
+    isChangeTriggeredFilter = false
+  }) => {
     const { page, pagesize, updatePage, sort, filter } = this.props;
+    const { pendingFilter } = this.state;
 
-    const newFilter = cloneDeep(filter);
+    const newFilter = isChangeTriggeredFilter
+      ? cloneDeep(pendingFilter)
+      : cloneDeep(filter);
     columns.forEach(column => {
-      if (column.canFilterInTable()) {
+      if (isChangeTriggeredFilter || column.shouldRenderTableFilter()) {
         unset(newFilter, column.getTableFilterKey());
 
         if (column.parentColumn) {
@@ -184,6 +203,8 @@ class RecordsPage extends React.PureComponent {
           } else if (!isUndefined(value[0]) && !isNull(value[0])) {
             set(newFilter, column.getTableFilterKey(), value[0]);
           }
+        } else if (isChangeTriggeredFilter) {
+          set(newFilter, column.getTableFilterKey(), null);
         }
         const fixedFilterValue = isBoolean(column.getTableFilterRequired())
           ? column.getTableFilterDefault()
@@ -218,12 +239,18 @@ class RecordsPage extends React.PureComponent {
       newPage = 1;
     }
 
-    updatePage({
-      page: newPage,
-      pagesize,
-      sort: newSort,
-      filter: newFilter
-    });
+    if (isChangeTriggeredFilter) {
+      this.setState({
+        pendingFilter: newFilter
+      });
+    } else {
+      updatePage({
+        page: newPage,
+        pagesize,
+        sort: newSort,
+        filter: newFilter
+      });
+    }
   };
 
   updateRecord = async ({
@@ -262,6 +289,7 @@ class RecordsPage extends React.PureComponent {
 
   fetch = async () => {
     const { fetch, page, pagesize, sort, filter } = this.props;
+
     fetch({
       page,
       pagesize,
@@ -275,10 +303,34 @@ class RecordsPage extends React.PureComponent {
     updatePage({ page, pagesize, sort });
   };
 
+  onClickFilterGroupSearch = () => {
+    const { pagesize, updatePage, sort, filter } = this.props;
+    const { pendingFilter } = this.state;
+    const newFilter = { ...filter, ...pendingFilter };
+    forEach(newFilter, (v, k) => (!v && v !== 0 ? unset(newFilter, k) : null));
+    updatePage({
+      page: 1,
+      pagesize,
+      sort,
+      filter: newFilter
+    });
+    this.resetPendingFilter();
+  };
+
   renderColumn(column, shouldRenderTableFilter = true) {
-    const { sort, filter, actions, user } = this.props;
+    const {
+      sort,
+      filter: propsFilter,
+      actions,
+      user,
+      filterGroupTrigger
+    } = this.props;
+    const { pendingFilter } = this.state;
+    const filter = { ...propsFilter, ...pendingFilter };
 
     const filterProps = {};
+    const isAutoTrigger =
+      !column.shouldRenderOutsideFilter() || !filterGroupTrigger;
 
     if (column.canFilterInTable() && shouldRenderTableFilter) {
       const parentFilteredValue = column.parentColumn
@@ -287,7 +339,7 @@ class RecordsPage extends React.PureComponent {
 
       let filteredValue = get(filter, column.getTableFilterKey());
 
-      if (!isUndefined(filteredValue)) {
+      if (filteredValue || filteredValue === 0) {
         if (
           column.canFilterRangeInTable() ||
           !column.canFilterMultipleInTable()
@@ -303,7 +355,9 @@ class RecordsPage extends React.PureComponent {
 
       if (filters || column.getTableFilterSearchRequest()) {
         filterProps.filters = filters;
-        filterProps.filtered = !!filteredValue.length;
+        filterProps.filtered =
+          !!filteredValue.length &&
+          !(filteredValue.length === 1 && filteredValue[0] === null);
         filterProps.filteredValue = filteredValue;
         filterProps.filterMultiple = column.canFilterMultipleInTable();
         if (
@@ -311,7 +365,8 @@ class RecordsPage extends React.PureComponent {
           column.getTableFilterSearchRequest()
         ) {
           filterProps.filterDropdown = column.getRenderFilterTree({
-            parentValue: parentFilteredValue
+            parentValue: parentFilteredValue,
+            isAutoTrigger
           });
           filterProps.filterIcon = filtered => (
             <Icon
@@ -334,7 +389,11 @@ class RecordsPage extends React.PureComponent {
       } else if (column.canRenderFilterDropDown()) {
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
-        filterProps.filterDropdown = column.renderFilterDropDown;
+        filterProps.filterDropdown = dropDownParams =>
+          column.renderFilterDropDown({
+            ...dropDownParams,
+            isAutoTrigger
+          });
         filterProps.filterIcon = filtered => (
           <Icon
             type={column.getFilterIcon()}
@@ -495,7 +554,7 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderFilterGroup() {
-    const { table, user } = this.props;
+    const { table, user, filterGroupTrigger } = this.props;
     const columns = table
       .getColumns()
       .filter(column => column.shouldRenderOutsideFilter(user));
@@ -509,7 +568,14 @@ class RecordsPage extends React.PureComponent {
         rowKey={table.getPrimaryKey()}
         pagination={false}
         onChange={(pagination, filters, sorter) =>
-          this.onChange(pagination, filters, sorter, columns, true)
+          this.onChange({
+            pagination,
+            filters,
+            sorter,
+            columns,
+            onlyFilter: true,
+            isChangeTriggeredFilter: filterGroupTrigger
+          })
         }
         scroll={{}}
       >
@@ -519,18 +585,34 @@ class RecordsPage extends React.PureComponent {
     const groupedColumns = groupBy(columns.toArray(), column =>
       column.getFilterGroup()
     );
+    let resultComponents = [];
 
     if (size(groupedColumns) === 1) {
-      return renderFilterGroupTable(groupedColumns[DEFAULT_GROUP_NAME]);
+      resultComponents.push(
+        renderFilterGroupTable(groupedColumns[DEFAULT_GROUP_NAME])
+      );
+    } else {
+      resultComponents = map(groupedColumns, (iColumns, groupName) => (
+        <Row key={groupName} type="flex">
+          <Col className="filter-group-name">{groupName}</Col>
+          <Col style={{ flex: 1 }}>
+            {renderFilterGroupTable(iColumns, groupName)}
+          </Col>
+        </Row>
+      ));
     }
-    return map(groupedColumns, (iColumns, groupName) => (
-      <Row key={groupName} type="flex">
-        <Col className="filter-group-name">{groupName}</Col>
-        <Col style={{ flex: 1 }}>
-          {renderFilterGroupTable(iColumns, groupName)}
-        </Col>
-      </Row>
-    ));
+    if (filterGroupTrigger) {
+      resultComponents.push(
+        <Button
+          type="primary"
+          style={{ marginBottom: '0.5rem' }}
+          onClick={this.onClickFilterGroupSearch}
+        >
+          搜索
+        </Button>
+      );
+    }
+    return resultComponents;
   }
 
   renderAction(action, { record, records, column, inline } = {}) {
@@ -682,7 +764,7 @@ class RecordsPage extends React.PureComponent {
             rowSelection={rowSelection}
             pagination={false}
             onChange={(pagination, filters, sorter) =>
-              this.onChange(pagination, filters, sorter, columns)
+              this.onChange({ pagination, filters, sorter, columns })
             }
           >
             {columns.map(column =>

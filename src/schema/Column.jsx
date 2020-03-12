@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
   isArray,
@@ -109,6 +110,12 @@ export default class Column {
   // table
 
   getTableTitle({ filtered, filteredValue, parentFilteredValue }) {
+    if (
+      !filteredValue ||
+      !filteredValue.length ||
+      (filteredValue.length === 1 && filteredValue[0] === null)
+    )
+      return this.getTitle();
     if (filtered) {
       if (this.canFilterRangeInTable()) {
         return `${this.getTitle()}（${this.renderInTableValueDefault({
@@ -390,10 +397,11 @@ export default class Column {
   }
 
   renderFilterDropDown = ({
-    setSelectedKeys, // eslint-disable-line react/prop-types
-    selectedKeys, // eslint-disable-line react/prop-types
-    confirm, // eslint-disable-line react/prop-types
-    clearFilters // eslint-disable-line react/prop-types
+    setSelectedKeys,
+    selectedKeys,
+    confirm,
+    clearFilters,
+    isAutoTrigger
   }) => (
     <div style={{ padding: 8 }}>
       {// eslint-disable-next-line react/no-this-in-sfc
@@ -411,7 +419,7 @@ export default class Column {
           size="small"
           style={{ width: 90, marginRight: 8 }}
         >
-          搜索
+          {!isAutoTrigger ? '确定' : '搜索'}
         </Button>
         <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
           重置
@@ -423,10 +431,11 @@ export default class Column {
   // eslint-disable-next-line class-methods-use-this
   getRenderFilterTree({ parentValue }) {
     return ({
-      setSelectedKeys, // eslint-disable-line react/prop-types
-      selectedKeys, // eslint-disable-line react/prop-types
-      confirm, // eslint-disable-line react/prop-types
-      clearFilters // eslint-disable-line react/prop-types
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      isAutoTrigger
     }) => (
       <div style={{ padding: 8 }}>
         <TreeFilter
@@ -443,7 +452,7 @@ export default class Column {
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
-            筛选
+            {isAutoTrigger ? '筛选' : '确定'}
           </Button>
           <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
             重置

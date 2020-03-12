@@ -144,6 +144,7 @@ function generateRecordsPage(
     table,
     defaultPageSize = 10,
     tableScroll,
+    filterGroupTrigger,
     tableComponentProps = {},
     paginationComponentProps = {}
   },
@@ -162,6 +163,7 @@ function generateRecordsPage(
       return (
         <RecordsPage
           {...this.props}
+          filterGroupTrigger={filterGroupTrigger}
           component={component}
           table={table}
           tableComponentProps={tableComponentProps}
