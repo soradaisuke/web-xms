@@ -1,6 +1,18 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [2.5.5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.4...v2.5.5) (2020-03-13)
+
+
+### Features
+
+* **QTDP-11:** xms支持filterGroup ([75b6f1d](https://git2.qingtingfm.com/zhibo/xms/commit/75b6f1dc889c1cdf7f9b7b9b11b78064b463e951))
+
+
+### Bug Fixes
+
+* **NoTicket:** 土拨鼠生产环境上传 ([8190386](https://git2.qingtingfm.com/zhibo/xms/commit/81903860ca104ac4f36870977cd4d095f7848de4))
 
 ## [2.5.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.3...v2.5.4) (2020-03-11)
 
