@@ -27,7 +27,7 @@ function uploadToAliyun(file, { fileName, ssoToken }) {
   return request
     .post(`${uploadHost}/intra/v1/sts_token`, {
       params: {
-        app_id: 'tuboshudev',
+        app_id: isProduction ? 'tuboshu' : 'tuboshudev',
         sso_token: ssoToken
       },
       body: {
