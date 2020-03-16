@@ -28,6 +28,7 @@ import {
   map,
   get,
   set,
+  values,
   unset,
   isUndefined,
   isNull,
@@ -43,7 +44,6 @@ import Group from '../components/Group';
 import Page from './Page';
 import showError from '../utils/showError';
 import './RecordsPage.less';
-import { DEFAULT_GROUP_NAME } from '../schema/Column';
 
 const { Column } = Table;
 
@@ -186,7 +186,10 @@ class RecordsPage extends React.PureComponent {
           if (
             !isEqual(
               parentFilteredValue,
-              get(filter, column.parentColumn.getTableFilterKey())
+              get(
+                isChangeTriggeredFilter ? pendingFilter : filter,
+                column.parentColumn.getTableFilterKey()
+              )
             )
           ) {
             return true;
@@ -377,7 +380,9 @@ class RecordsPage extends React.PureComponent {
         }
       } else if (valueOptionsRequest) {
         if (
-          (isArray(parentFilteredValue) && parentFilteredValue.length > 0) ||
+          (isArray(parentFilteredValue) &&
+            parentFilteredValue.length > 0 &&
+            parentFilteredValue[0] !== null) ||
           !isUndefined(parentFilteredValue)
         ) {
           filterProps.filterDropdown = () => <Spin style={{ width: '100%' }} />;
@@ -558,6 +563,15 @@ class RecordsPage extends React.PureComponent {
     const columns = table
       .getColumns()
       .filter(column => column.shouldRenderOutsideFilter(user));
+    const searchButton = (
+      <Button
+        type="primary"
+        style={{ marginBottom: '0.5rem' }}
+        onClick={this.onClickFilterGroupSearch}
+      >
+        搜索
+      </Button>
+    );
     if (columns.size === 0) {
       return null;
     }
@@ -572,7 +586,7 @@ class RecordsPage extends React.PureComponent {
             pagination,
             filters,
             sorter,
-            columns,
+            columns: filterColumns,
             onlyFilter: true,
             isChangeTriggeredFilter: filterGroupTrigger
           })
@@ -585,34 +599,29 @@ class RecordsPage extends React.PureComponent {
     const groupedColumns = groupBy(columns.toArray(), column =>
       column.getFilterGroup()
     );
-    let resultComponents = [];
 
     if (size(groupedColumns) === 1) {
-      resultComponents.push(
-        renderFilterGroupTable(groupedColumns[DEFAULT_GROUP_NAME])
+      return (
+        <>
+          {renderFilterGroupTable(values(groupedColumns)[0])}
+          {searchButton}
+        </>
       );
-    } else {
-      resultComponents = map(groupedColumns, (iColumns, groupName) => (
-        <Row key={groupName} type="flex">
-          <Col className="filter-group-name">{groupName}</Col>
-          <Col style={{ flex: 1 }}>
-            {renderFilterGroupTable(iColumns, groupName)}
-          </Col>
+    }
+    return (
+      <>
+        {map(groupedColumns, (iColumns, groupName) => (
+          <Row key={groupName} type="flex">
+            <Col className="filter-group-name">{groupName}</Col>
+            <Col style={{ flex: 1 }}>{renderFilterGroupTable(iColumns)}</Col>
+          </Row>
+        ))}
+        <Row key="button" type="flex">
+          <Col className="filter-group-name" />
+          <Col style={{ flex: 1 }}>{searchButton}</Col>
         </Row>
-      ));
-    }
-    if (filterGroupTrigger) {
-      resultComponents.push(
-        <Button
-          type="primary"
-          style={{ marginBottom: '0.5rem' }}
-          onClick={this.onClickFilterGroupSearch}
-        >
-          搜索
-        </Button>
-      );
-    }
-    return resultComponents;
+      </>
+    );
   }
 
   renderAction(action, { record, records, column, inline } = {}) {
