@@ -105,7 +105,12 @@ class RecordsPage extends React.PureComponent {
       dataSource: [],
       selectedRowKeys: [],
       pendingFilter: {},
-      selectedRows: []
+      selectedCustomizeMap: props.table.getDefaultSelectedCustomizeMap(),
+      selectedRows: [],
+      defaultTableScroll:
+        props.table.getScrollWidth() > 0
+          ? { x: props.table.getScrollWidth() }
+          : {}
     };
 
     props.table.columns.forEach(column => {
@@ -128,8 +133,9 @@ class RecordsPage extends React.PureComponent {
     this.fetch();
   }
 
-  componentDidUpdate(prevProps) {
-    const { pagesize, page, sort, filter } = this.props;
+  componentDidUpdate(prevProps, prevState) {
+    const { pagesize, page, sort, filter, table, user } = this.props;
+    const { selectedCustomizeMap } = this.state;
     if (
       prevProps.pagesize !== pagesize ||
       prevProps.page !== page ||
@@ -137,6 +143,14 @@ class RecordsPage extends React.PureComponent {
       !isEqual(prevProps.filter, filter)
     ) {
       this.fetch();
+    }
+    if (prevState.selectedCustomizeMap !== selectedCustomizeMap) {
+      table.calculateScrollWidth({ user, selectedCustomizeMap });
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        defaultTableScroll:
+          table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {}
+      });
     }
   }
 
@@ -320,6 +334,12 @@ class RecordsPage extends React.PureComponent {
     this.resetPendingFilter();
   };
 
+  onChangeSelectedCustomizeMap = selectedCustomizeMap => {
+    this.setState({
+      selectedCustomizeMap
+    });
+  };
+
   renderColumn(column, shouldRenderTableFilter = true) {
     const {
       sort,
@@ -328,7 +348,7 @@ class RecordsPage extends React.PureComponent {
       user,
       filterGroupTrigger
     } = this.props;
-    const { pendingFilter } = this.state;
+    const { pendingFilter, selectedCustomizeMap } = this.state;
     const filter = { ...propsFilter, ...pendingFilter };
 
     const filterProps = {};
@@ -430,6 +450,7 @@ class RecordsPage extends React.PureComponent {
             value,
             record,
             user,
+            selectedCustomizeMap,
             ...filterProps
           });
           const editAction = actions.getEditAction();
@@ -633,8 +654,9 @@ class RecordsPage extends React.PureComponent {
       table,
       match: { params: matchParams }
     } = this.props;
-
+    const { selectedCustomizeMap } = this.state;
     let props = {
+      selectedCustomizeMap,
       inline,
       user,
       matchParams,
@@ -643,6 +665,8 @@ class RecordsPage extends React.PureComponent {
       create,
       table,
       column,
+      onChangeSelectedCustomizeMap: this.onChangeSelectedCustomizeMap,
+      defaultSelectedCustomizeMap: table.getDefaultSelectedCustomizeMap(),
       confirm: this.fetch,
       submit: this.updateRecord
     };
@@ -713,7 +737,12 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderContent() {
-    const { dataSource, selectedRowKeys } = this.state;
+    const {
+      dataSource,
+      selectedRowKeys,
+      selectedCustomizeMap,
+      defaultTableScroll
+    } = this.state;
     const {
       total,
       page,
@@ -741,11 +770,7 @@ class RecordsPage extends React.PureComponent {
 
     const columns = table
       .getColumns()
-      .filter(column => column.canShowInTable(user));
-
-    const defaultTableScroll =
-      table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
-
+      .filter(column => column.canShowInTable({ user, selectedCustomizeMap }));
     const hasFilter = table.getHasFilter();
     return (
       <React.Fragment>

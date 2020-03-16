@@ -212,6 +212,9 @@ export default class Action {
   }
 
   render({
+    selectedCustomizeMap,
+    onChangeSelectedCustomizeMap,
+    defaultSelectedCustomizeMap,
     record,
     records,
     user,
@@ -337,6 +340,9 @@ export default class Action {
     }
 
     return this.renderInteral({
+      selectedCustomizeMap,
+      onChangeSelectedCustomizeMap,
+      defaultSelectedCustomizeMap,
       record,
       records,
       table,

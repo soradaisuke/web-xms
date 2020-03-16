@@ -10,7 +10,7 @@
   "license": "ISC",
   "scripts": {
     "build": "rm -rf lib && babel -d lib/ src/ --copy-files",
-    "fix-code": "eslint --fix 'src/**/*.{js,jsx}'",
+    "fix-code": "./node_modules/eslint/bin/eslint.js --fix 'src/**/*.{js,jsx}'",
     "fix-style": "stylelint --fix --syntax less 'src/**/*.less'"
   },
   "main": "lib/index.js",

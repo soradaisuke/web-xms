@@ -103,6 +103,18 @@ export default class Column {
     );
   }
 
+  isCustomize() {
+    return !!this.config.getIn(['table', 'customize']);
+  }
+
+  isCustomizeDefaultSelected() {
+    return !!this.config.getIn(['table', 'customizeDefaultSelected']);
+  }
+
+  expandFilter() {
+    return this.config.getIn(['table', 'expandFilter']);
+  }
+
   isPrimaryKey() {
     return this.config.get('primaryKey');
   }
@@ -246,7 +258,7 @@ export default class Column {
   shouldRenderTableFilter(user) {
     return (
       this.canFilterInTable() &&
-      !this.shouldRenderOutsideFilter(user) &&
+      !this.shouldRenderOutsideFilter({ user }) &&
       !this.shouldRenderExpandFilter()
     );
   }
@@ -255,7 +267,7 @@ export default class Column {
     return (
       this.canFilterInTable() &&
       !this.canFilterExpand() &&
-      (this.isFilterOutside() || !this.canShowInTable(user))
+      (this.isFilterOutside() || !this.canShowInTable({ user }))
     );
   }
 
@@ -283,8 +295,15 @@ export default class Column {
     return this.getTableSortDirections().size > 0;
   }
 
-  canShowInTable(user) {
+  canShowInTable({ user, selectedCustomizeMap }) {
     const invisible = this.config.getIn(['table', 'invisible']);
+    const customizeColumnCanShow =
+      !this.isCustomize() ||
+      !selectedCustomizeMap ||
+      selectedCustomizeMap.get(this.getKey());
+
+    if (!customizeColumnCanShow) return false;
+
     if (isFunction(invisible)) {
       if (!user) {
         return false;

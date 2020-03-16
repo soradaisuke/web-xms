@@ -4,14 +4,38 @@ import { findIndex } from 'lodash';
 export default class Table {
   constructor(columns = []) {
     this.columns = Immutable.List(columns);
-
+    this.generateCustomize();
     this.findPrimaryKey();
     this.findDefaultSortOrder();
     this.findFixedSortOrder();
     this.findDefaultFilter();
     this.findCascadeColumn();
-    this.calculateScrollWidth();
+    this.calculateScrollWidth({
+      selectedCustomizeMap: this.getDefaultSelectedCustomizeMap()
+    });
     this.findHasFilter();
+  }
+
+  generateCustomize() {
+    this.defaultSelectedCustomizeMap = Immutable.Map({});
+    this.customizeColumns = [];
+    this.columns.forEach(column => {
+      if (column.isCustomize()) {
+        this.defaultSelectedCustomizeMap = this.defaultSelectedCustomizeMap.set(
+          column.getKey(),
+          column.isCustomizeDefaultSelected()
+        );
+        this.customizeColumns.push(column);
+      }
+    });
+  }
+
+  getDefaultSelectedCustomizeMap() {
+    return this.defaultSelectedCustomizeMap;
+  }
+
+  getCustomizeColumns() {
+    return this.customizeColumns;
   }
 
   findPrimaryKey() {
@@ -83,14 +107,16 @@ export default class Table {
     });
   }
 
-  calculateScrollWidth() {
+  calculateScrollWidth({ user, selectedCustomizeMap } = {}) {
     let scrollWidth = 0;
     this.columns.forEach(c => {
-      if (c.getTableWidth() > 0) {
+      if (
+        c.getTableWidth() > 0 &&
+        c.canShowInTable({ user, selectedCustomizeMap })
+      ) {
         scrollWidth += c.getTableWidth();
       }
     });
-
     this.scrollWidth = scrollWidth > 0 ? scrollWidth * 1.2 : 0;
   }
 
