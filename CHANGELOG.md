@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.1...v2.6.2) (2020-03-16)
+
+
+### Bug Fixes
+
+* **NoTicket:** filterGroupTrigger在点过一次搜索后改变parent选项会导致children筛选项选择错误 ([af02e69](https://git2.qingtingfm.com/zhibo/xms/commit/af02e69f0380a8943ca068a4ab5f137bdaf9ab67))
+
 ### [2.6.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.0...v2.6.1) (2020-03-16)
 
 
