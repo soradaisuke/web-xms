@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.0...v2.6.1) (2020-03-16)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix filterGroupFilter & UI ([8903f8f](https://git2.qingtingfm.com/zhibo/xms/commit/8903f8fc64e8b7a2c3d1bf3aa184b7a6b6f17077))
+
 ## [2.6.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.5.5...v2.6.0) (2020-03-13)
 
 
