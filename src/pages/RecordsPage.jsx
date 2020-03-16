@@ -187,11 +187,12 @@ class RecordsPage extends React.PureComponent {
             !isEqual(
               parentFilteredValue,
               get(
-                isChangeTriggeredFilter ? pendingFilter : filter,
+                { ...filter, ...pendingFilter },
                 column.parentColumn.getTableFilterKey()
               )
             )
           ) {
+            set(newFilter, column.getTableFilterKey(), null);
             return true;
           }
         }
