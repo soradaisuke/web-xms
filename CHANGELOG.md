@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.2...v2.6.3) (2020-03-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** 区分土拨鼠和蜻蜓后台 ([0deb27f](https://git2.qingtingfm.com/zhibo/xms/commit/0deb27f8e759c507202c52c8a76ca27ebc06cc1f))
+
 ### [2.6.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.1...v2.6.2) (2020-03-16)
 
 
