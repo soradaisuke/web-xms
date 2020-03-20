@@ -1,9 +1,10 @@
-import { split, includes, drop, join } from 'lodash';
+import { split, drop, join } from 'lodash';
 import shortid from 'shortid';
 import { isProduction } from '@qt/env';
 import { uploadFile, uploadImage } from '@qt/web-core';
 import OSS from 'ali-oss';
 import request from '../services/request';
+import isTuboshu from './isTuboshu';
 
 const uploadHost = `//cloud-upload.${
   isProduction ? '' : 'staging.'
@@ -58,7 +59,7 @@ function uploadToAliyun(file, { fileName, ssoToken }) {
 }
 
 export function wrappedUploadFile(file, { fileName, ssoToken }) {
-  if (includes(window.location.host, 'tuboshu')) {
+  if (isTuboshu) {
     return uploadToAliyun(file, { fileName, ssoToken });
   }
   return uploadFile(file, { fileName, ssoToken });
@@ -68,7 +69,7 @@ export function wrappedUploadImage(
   file,
   { ssoToken, bucket, upYunSyncPreprocessor, deviceId }
 ) {
-  if (includes(window.location.host, 'tuboshu')) {
+  if (isTuboshu) {
     return uploadToAliyun(file, { ssoToken });
   }
   return uploadImage(file, {

@@ -1,13 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Layout, Row, Col } from 'antd';
+import isTuboshu from '../utils/isTuboshu';
 import './Header.less';
 
 function Header({ name, children }) {
   return (
-    <Layout.Header className="xms-header">
+    <Layout.Header
+      className={classNames('xms-header', isTuboshu ? 'tuboshu' : '')}
+    >
       <Row align="middle" type="flex">
-        <Col>{`蜻蜓FM ${name}`}</Col>
+        <Col>{`${isTuboshu ? '土拨鼠' : '蜻蜓FM'} ${name}`}</Col>
         <Col>{children}</Col>
       </Row>
     </Layout.Header>
