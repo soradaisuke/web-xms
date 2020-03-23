@@ -174,7 +174,11 @@ class RecordsPage extends React.PureComponent {
       ? cloneDeep(pendingFilter)
       : cloneDeep(filter);
     columns.forEach(column => {
-      if (isChangeTriggeredFilter || column.shouldRenderTableFilter()) {
+      if (
+        isChangeTriggeredFilter ||
+        column.shouldRenderTableFilter() ||
+        (!isChangeTriggeredFilter && column.shouldRenderOutsideFilter())
+      ) {
         unset(newFilter, column.getTableFilterKey());
 
         if (column.parentColumn) {
@@ -605,7 +609,7 @@ class RecordsPage extends React.PureComponent {
       return (
         <>
           {renderFilterGroupTable(values(groupedColumns)[0])}
-          {searchButton}
+          {filterGroupTrigger && searchButton}
         </>
       );
     }
@@ -617,10 +621,12 @@ class RecordsPage extends React.PureComponent {
             <Col style={{ flex: 1 }}>{renderFilterGroupTable(iColumns)}</Col>
           </Row>
         ))}
-        <Row key="button" type="flex">
-          <Col className="filter-group-name" />
-          <Col style={{ flex: 1 }}>{searchButton}</Col>
-        </Row>
+        {filterGroupTrigger && (
+          <Row key="button" type="flex">
+            <Col className="filter-group-name" />
+            <Col style={{ flex: 1 }}>{searchButton}</Col>
+          </Row>
+        )}
       </>
     );
   }
