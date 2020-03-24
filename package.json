@@ -19,7 +19,7 @@
     "ali-oss": "^6.5.1",
     "classnames": "^2.2.6",
     "history": "^4.9.0",
-    "js-cookie": "^2.2.0",
+    "js-cookie": "^v3.0.0-rc.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "prop-types": "^15.7.2",
