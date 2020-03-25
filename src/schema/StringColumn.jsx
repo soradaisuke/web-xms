@@ -45,10 +45,16 @@ export default class StringColumn extends Column {
     />
   );
 
-  renderInFormItem({ isEdit }) {
+  // eslint-disable-next-line class-methods-use-this
+  canShowFormItemInEditableTable() {
+    return true;
+  }
+
+  renderInFormItem({ isEdit, formComponentProps = {} }) {
     if (this.canSelectMutipleInForm()) {
       return (
         <Select
+          {...formComponentProps}
           style={{ width: '100%' }}
           mode="tags"
           placeholder={this.getFormPlaceholder()}
@@ -59,6 +65,7 @@ export default class StringColumn extends Column {
     if (this.getFormMultipleLine()) {
       return (
         <Input.TextArea
+          {...formComponentProps}
           style={{ width: '100%' }}
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({ isEdit })}
@@ -67,6 +74,7 @@ export default class StringColumn extends Column {
     }
     return (
       <Input
+        {...formComponentProps}
         style={{ width: '100%' }}
         placeholder={this.getFormPlaceholder()}
         {...this.getFormComponentProps({ isEdit })}

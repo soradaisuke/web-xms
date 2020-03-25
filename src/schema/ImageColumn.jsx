@@ -30,6 +30,11 @@ export default class ImageColumn extends StringColumn {
     return 'url';
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  canShowFormItemInEditableTable() {
+    return false;
+  }
+
   renderInFormItem({ user, isEdit }) {
     return (
       <UploadImage

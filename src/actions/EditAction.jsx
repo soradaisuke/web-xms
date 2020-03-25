@@ -1,3 +1,4 @@
+import { isFunction, get } from 'lodash';
 import Action from './Action';
 
 export default class EditAction extends Action {
@@ -33,6 +34,20 @@ export default class EditAction extends Action {
   // eslint-disable-next-line class-methods-use-this
   canHandleGlobal() {
     return false;
+  }
+
+  isDisabled({ user, record, records, matchParams, table }) {
+    const enable = this.config.get('enable');
+    return (
+      isFunction(enable) &&
+      !enable({
+        record,
+        records,
+        user,
+        matchParams,
+        id: get(record, table.getPrimaryKey())
+      })
+    );
   }
 
   // eslint-disable-next-line class-methods-use-this

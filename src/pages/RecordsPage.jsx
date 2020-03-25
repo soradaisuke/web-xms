@@ -38,6 +38,8 @@ import {
   isBoolean,
   filter as filterFunc
 } from 'lodash';
+import EditableTableCell from '../components/EditableTableCell';
+import EditableTableRow from '../components/EditableTableRow';
 import TableType from '../schema/Table';
 import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
@@ -330,7 +332,10 @@ class RecordsPage extends React.PureComponent {
       sort,
       filter: propsFilter,
       actions,
+      table,
+      edit,
       user,
+      match: { params: matchParams },
       filterGroupTrigger
     } = this.props;
     const { pendingFilter } = this.state;
@@ -414,6 +419,7 @@ class RecordsPage extends React.PureComponent {
 
       filterProps.parentFilteredValue = parentFilteredValue;
     }
+    const editAction = actions.getEditAction();
 
     return (
       <Column
@@ -425,6 +431,36 @@ class RecordsPage extends React.PureComponent {
         fixed={column.getTableFixed()}
         sorter={column.canSortInTable()}
         sortDirections={column.getTableSortDirections().toArray()}
+        onCell={
+          column.canShowFormItemInEditableTable() && column.canInlineEdit()
+            ? record => ({
+                record,
+                column,
+                table,
+                user,
+                submit:
+                  editAction.isVisible() &&
+                  isFunction(editAction.isDisabled) &&
+                  !editAction.isDisabled({
+                    user,
+                    record,
+                    table,
+                    matchParams
+                  })
+                    ? body =>
+                        this.updateRecord({
+                          promise: editAction.getHandler({ edit })({
+                            id: get(record, table.getPrimaryKey()),
+                            body
+                          }),
+                          throwError: true,
+                          reload: true,
+                          loadingMessage: editAction.getHandlingMessage()
+                        })
+                    : null
+              })
+            : null
+        }
         sortOrder={
           sort && startsWith(sort, `${column.getKey()} `)
             ? `${split(sort, ' ')[1]}end`
@@ -437,7 +473,6 @@ class RecordsPage extends React.PureComponent {
             user,
             ...filterProps
           });
-          const editAction = actions.getEditAction();
           if (column.canInlineEdit() && editAction) {
             let action = this.renderAction(editAction, {
               record,
@@ -448,7 +483,7 @@ class RecordsPage extends React.PureComponent {
               return action;
             }
             action = this.renderAction(editAction, { record, column });
-            if (action) {
+            if (action && !column.canShowFormItemInEditableTable()) {
               return (
                 <React.Fragment>
                   {children}
@@ -459,7 +494,6 @@ class RecordsPage extends React.PureComponent {
               );
             }
           }
-
           return children;
         }}
       />
@@ -772,6 +806,13 @@ class RecordsPage extends React.PureComponent {
           )}
           <Table
             bordered
+            components={{
+              body: {
+                row: EditableTableRow,
+                cell: EditableTableCell
+              }
+            }}
+            rowClassName={() => 'editable-row'}
             scroll={tableScroll || defaultTableScroll}
             {...tableComponentProps}
             loading={isLoading}

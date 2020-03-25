@@ -129,6 +129,11 @@ export default class BaseDateTimeColumn extends StringColumn {
     );
   };
 
+  // eslint-disable-next-line class-methods-use-this
+  canShowFormItemInEditableTable() {
+    return false;
+  }
+
   renderInFormItem({ isEdit }) {
     return (
       <DatePicker

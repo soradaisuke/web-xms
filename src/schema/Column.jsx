@@ -297,6 +297,11 @@ export default class Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  canShowFormItemInEditableTable() {
+    return false;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   canRenderFilterDropDown() {
     return false;
   }
@@ -587,7 +592,15 @@ export default class Column {
     return null;
   }
 
-  renderInForm({ user, record, form, isEdit, checkVisibility }) {
+  renderInForm({
+    hideFormLabel,
+    user,
+    record,
+    form,
+    isEdit,
+    checkVisibility,
+    formComponentProps
+  }) {
     const { getFieldsValue, getFieldDecorator } = form;
 
     const key = this.getFormKey();
@@ -652,14 +665,18 @@ export default class Column {
       const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
       children = renderInFormItem
         ? renderInFormItem({ user, isEdit, value, values, record })
-        : this.renderInFormItem({ user, isEdit });
+        : this.renderInFormItem({ user, isEdit, formComponentProps });
     }
 
     const rules = isFunction(this.getFormRules())
       ? this.getFormRules()({ user, record, value, values })
       : this.getFormRules().toJS();
     return (
-      <FormItem key={key} label={this.getTitle()} extra={this.getFormHint()}>
+      <FormItem
+        key={key}
+        label={hideFormLabel ? '' : this.getTitle()}
+        extra={this.getFormHint()}
+      >
         {getFieldDecorator(key, {
           initialValue,
           validateFirst: true,
