@@ -818,10 +818,7 @@ class RecordsPage extends React.PureComponent {
             <Component />
           </Card>
         ) : null}
-        <Card
-          className={classNames('content-card', inline ? 'inline' : '')}
-          style={{ minHeight: '600px' }}
-        >
+        <Card className={classNames('content-card', inline ? 'inline' : '')}>
           {this.renderContent()}
         </Card>
       </Page>
