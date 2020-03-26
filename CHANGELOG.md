@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.6.6](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.5...v2.6.6) (2020-03-26)
+
+
+### Bug Fixes
+
+* **NoTicket:** 去掉card 的min-height ([dcba502](https://git2.qingtingfm.com/zhibo/xms/commit/dcba502bb9d354ec2b98818e3c97611a815cda5a))
+
 ### [2.6.5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.4...v2.6.5) (2020-03-24)
 
 ### [2.6.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.3...v2.6.4) (2020-03-24)
