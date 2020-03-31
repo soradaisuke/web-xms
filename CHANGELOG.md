@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.6...v2.7.0) (2020-03-31)
+
+
+### Features
+
+* **NoTicket:** table的render方法传入relaod ([39962f7](https://git2.qingtingfm.com/zhibo/xms/commit/39962f7e43bf9b5c35952e814babb829fc95fbb7))
+* **QTLIVE-114:** 带单元格编辑功能的表格 ([aff3d02](https://git2.qingtingfm.com/zhibo/xms/commit/aff3d02b816108798d792b70b82553143e348fc8))
+
 ### [2.6.6](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.5...v2.6.6) (2020-03-26)
 
 
