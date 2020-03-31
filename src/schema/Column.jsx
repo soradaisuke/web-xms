@@ -346,11 +346,11 @@ export default class Column {
     return value;
   }
 
-  renderInTableValue({ value, record, user, parentFilteredValue }) {
+  renderInTableValue({ value, record, user, reload, parentFilteredValue }) {
     const render = this.config.getIn(['table', 'render']);
 
     if (isFunction(render)) {
-      return render({ value, record, user });
+      return render({ value, record, user, reload });
     }
 
     if (isArray(value)) {
@@ -377,11 +377,12 @@ export default class Column {
     });
   }
 
-  renderInTable({ value, record, user, parentFilteredValue }) {
+  renderInTable({ value, record, user, reload, parentFilteredValue }) {
     const children = this.renderInTableValue({
       value,
       record,
       user,
+      reload,
       parentFilteredValue
     });
     const link = this.getTableLink();

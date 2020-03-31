@@ -471,6 +471,7 @@ class RecordsPage extends React.PureComponent {
             value,
             record,
             user,
+            reload: this.fetch,
             ...filterProps
           });
           if (column.canInlineEdit() && editAction) {
