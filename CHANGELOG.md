@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.2...v2.7.3) (2020-04-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** bool类型的在筛选为false的时候表格title无法正确显示筛选值 ([0166a81](https://git2.qingtingfm.com/zhibo/xms/commit/0166a81c76a33a411b28dd2020a56fbb12deaf72))
+
 ### [2.7.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.1...v2.7.2) (2020-04-03)
 
 
