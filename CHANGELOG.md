@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.0...v2.7.1) (2020-04-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** filterTrigger时表格外filter里有parentKey依赖时导致表格内排序点了报错 ([82c4a57](https://git2.qingtingfm.com/zhibo/xms/commit/82c4a570bc4a1fab9ee04d4209b2cfa55266e670))
+
 ## [2.7.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.6.6...v2.7.0) (2020-03-31)
 
 
