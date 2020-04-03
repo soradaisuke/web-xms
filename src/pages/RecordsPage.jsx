@@ -352,7 +352,7 @@ class RecordsPage extends React.PureComponent {
 
       let filteredValue = get(filter, column.getTableFilterKey());
 
-      if (filteredValue || filteredValue === 0) {
+      if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
         if (
           column.canFilterRangeInTable() ||
           !column.canFilterMultipleInTable()
