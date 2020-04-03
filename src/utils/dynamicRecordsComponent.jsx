@@ -14,6 +14,7 @@ import {
   forEach,
   toInteger,
   size,
+  isBoolean,
   isUndefined,
   split
 } from 'lodash';
@@ -307,7 +308,7 @@ function generateRecordsPage(
       updatePage: async ({ page, pagesize, sort, filter }) => {
         const newFilter = { ...(filter || {}) };
         forEach(newFilter, (v, key) => {
-          if (!v && v !== 0) {
+          if (!v && v !== 0 && !isBoolean(v)) {
             delete newFilter[key];
           }
         });
