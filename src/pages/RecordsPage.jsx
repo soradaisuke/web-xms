@@ -20,7 +20,6 @@ import {
 } from 'antd';
 import {
   split,
-  forEach,
   startsWith,
   isArray,
   isEqual,
@@ -185,9 +184,11 @@ class RecordsPage extends React.PureComponent {
 
         if (column.parentColumn) {
           let parentFilteredValue = filters[column.parentColumn.getKey()];
-          parentFilteredValue = column.parentColumn.canFilterMultipleInTable()
-            ? parentFilteredValue
-            : parentFilteredValue[0];
+          parentFilteredValue =
+            column.parentColumn.canFilterMultipleInTable() ||
+            !parentFilteredValue
+              ? parentFilteredValue
+              : parentFilteredValue[0];
 
           if (
             !isEqual(
@@ -317,7 +318,6 @@ class RecordsPage extends React.PureComponent {
     const { pagesize, updatePage, sort, filter } = this.props;
     const { pendingFilter } = this.state;
     const newFilter = { ...filter, ...pendingFilter };
-    forEach(newFilter, (v, k) => (!v && v !== 0 ? unset(newFilter, k) : null));
     updatePage({
       page: 1,
       pagesize,

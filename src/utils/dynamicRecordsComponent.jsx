@@ -305,11 +305,17 @@ function generateRecordsPage(
           payload: { path: apiPath, id }
         }),
       updatePage: async ({ page, pagesize, sort, filter }) => {
+        const newFilter = { ...(filter || {}) };
+        forEach(newFilter, (v, key) => {
+          if (!v && v !== 0) {
+            delete newFilter[key];
+          }
+        });
         const newQuery = {
           page,
           pagesize,
           sort,
-          filter: isUndefined(filter) ? filter : JSON.stringify(filter)
+          filter: JSON.stringify(newFilter)
         };
         forEach(newQuery, (v, key) => {
           if (key !== 'sort' && (isUndefined(v) || v === '')) {
