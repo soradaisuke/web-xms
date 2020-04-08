@@ -825,7 +825,9 @@ class RecordsPage extends React.PureComponent {
             onChange={(pagination, filters, sorter) =>
               this.onChange({ pagination, filters, sorter, columns })
             }
-            getPopupContainer={() => document.getElementsByClassName('xms-page')[0]}
+            getPopupContainer={() =>
+              document.getElementsByClassName('xms-page')[0]
+            }
           >
             {columns.map(column =>
               this.renderColumn(column, column.shouldRenderTableFilter(user))
