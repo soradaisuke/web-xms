@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.3...v2.7.4) (2020-04-08)
+
+
+### Bug Fixes
+
+* **QTLIVE-394:** 筛选dropdown滚动时没跟随表格 ([e7df0a6](https://git2.qingtingfm.com/zhibo/xms/commit/e7df0a6d16afbc3cc70b7d9bbd75c81f51d7e9b0))
+
 ### [2.7.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.2...v2.7.3) (2020-04-03)
 
 
