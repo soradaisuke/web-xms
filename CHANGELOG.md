@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.4...v2.7.5) (2020-04-08)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix lint ([08c0b60](https://git2.qingtingfm.com/zhibo/xms/commit/08c0b60ef3ec2c9e78163b3a961d84fa822668f5))
+
 ### [2.7.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.3...v2.7.4) (2020-04-08)
 
 
