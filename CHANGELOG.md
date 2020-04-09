@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.6](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.5...v2.7.6) (2020-04-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** fix stylelint ([d47a019](https://git2.qingtingfm.com/zhibo/xms/commit/d47a0198b77b5cc123d0f5fac98fa267b65344fb))
+* **NoTicket:** 水印添加wrapper ([918220f](https://git2.qingtingfm.com/zhibo/xms/commit/918220f56d2d16282445d60dc543aa92a58b451e))
+
 ### [2.7.5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.4...v2.7.5) (2020-04-08)
 
 
