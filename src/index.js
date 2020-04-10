@@ -13,8 +13,8 @@ export UploadImage from './components/FormItems/UploadImage';
 export UploadFile from './components/UploadFile';
 export ZoomImg from './components/ZoomImg';
 export TableTransfer from './components/TableTransfer';
+export AudioPlayer from './components/Common/AudioPlayer';
 
 // export Tags from './components/FormItems/Tags';
-// export AudioPlayer from './components/Common/AudioPlayer';
 // export CommonArray from './components/FormItems/CommonArray';
 // export Select from './components/FormItems/Select';
