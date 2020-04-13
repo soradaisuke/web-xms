@@ -58,7 +58,13 @@ export default class EditableTableCell extends React.PureComponent {
     this.form = form;
     const { children, record, column, user, submit } = this.props;
     const { editing } = this.state;
-    const columnCanEditInTable = column && submit;
+    const columnCanEditInTable =
+      column &&
+      submit &&
+      column.canShowInEditFrom({
+        user,
+        record
+      });
     return editing && columnCanEditInTable && form ? (
       <Form.Item style={{ margin: 0 }}>
         {column.renderInForm({

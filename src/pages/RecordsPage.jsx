@@ -439,6 +439,7 @@ class RecordsPage extends React.PureComponent {
                 table,
                 user,
                 submit:
+                  editAction &&
                   editAction.isVisible() &&
                   isFunction(editAction.isDisabled) &&
                   !editAction.isDisabled({
@@ -474,7 +475,11 @@ class RecordsPage extends React.PureComponent {
             reload: this.fetch,
             ...filterProps
           });
-          if (column.canInlineEdit() && editAction) {
+          if (
+            column.canInlineEdit() &&
+            editAction &&
+            !column.canShowFormItemInEditableTable()
+          ) {
             let action = this.renderAction(editAction, {
               record,
               column,
@@ -484,7 +489,7 @@ class RecordsPage extends React.PureComponent {
               return action;
             }
             action = this.renderAction(editAction, { record, column });
-            if (action && !column.canShowFormItemInEditableTable()) {
+            if (action) {
               return (
                 <React.Fragment>
                   {children}
