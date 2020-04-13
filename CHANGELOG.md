@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.8.0...v2.8.1) (2020-04-13)
+
+
+### Bug Fixes
+
+* **NoTicket:** inlineEdit的cell里应判断editable（func） ([8171cca](https://git2.qingtingfm.com/zhibo/xms/commit/8171ccafbc3d9329f5262c6e3c4e6afdfaf50474))
+
 ## [2.8.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.6...v2.8.0) (2020-04-13)
 
 
