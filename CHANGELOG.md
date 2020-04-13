@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.6...v2.8.0) (2020-04-13)
+
+
+### Features
+
+* **NoTicket:** export AudioPlayer & fix prop error ([c5c96e5](https://git2.qingtingfm.com/zhibo/xms/commit/c5c96e53ad2d1f9bd4f01d082cfb6ddf3da717dd))
+
 ### [2.7.6](https://git2.qingtingfm.com/zhibo/xms/compare/v2.7.5...v2.7.6) (2020-04-09)
 
 
