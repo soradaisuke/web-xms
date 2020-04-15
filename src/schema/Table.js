@@ -1,5 +1,4 @@
 import Immutable from 'immutable';
-import { findIndex } from 'lodash';
 
 export default class Table {
   constructor(columns = []) {
@@ -96,7 +95,7 @@ export default class Table {
 
   findHasFilter() {
     this.hasFilter =
-      findIndex(this.columns, column => column.canFilterInTable()) !== -1;
+      this.columns.findIndex(column => column.canFilterInTable()) !== -1;
   }
 
   getColumns() {

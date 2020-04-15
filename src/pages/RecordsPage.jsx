@@ -311,6 +311,9 @@ class RecordsPage extends React.PureComponent {
 
   resetFilters = () => {
     const { updatePage, page, pagesize, sort } = this.props;
+    this.setState({
+      pendingFilter: {}
+    });
     updatePage({ page, pagesize, sort });
   };
 
@@ -802,14 +805,16 @@ class RecordsPage extends React.PureComponent {
           {this.renderExpandFilterGroup()}
           {this.renderFilterGroup()}
           {hasFilter && (
-            <Popconfirm
-              title="确认重置全部筛选项?"
-              onConfirm={this.resetFilters}
-            >
-              <Button type="primary" style={{ marginBottom: '1rem' }}>
-                重置
-              </Button>
-            </Popconfirm>
+            <Row style={{ marginTop: 10 }}>
+              <Popconfirm
+                title="确认重置全部筛选项?"
+                onConfirm={this.resetFilters}
+              >
+                <Button type="primary" style={{ marginBottom: '1rem' }}>
+                  重置
+                </Button>
+              </Popconfirm>
+            </Row>
           )}
           <Table
             bordered
