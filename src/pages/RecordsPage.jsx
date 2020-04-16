@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import {
   split,
+  mapValues,
   startsWith,
   isArray,
   isEqual,
@@ -35,6 +36,7 @@ import {
   isFunction,
   groupBy,
   isBoolean,
+  isObject,
   filter as filterFunc
 } from 'lodash';
 import EditableTableCell from '../components/EditableTableCell';
@@ -45,6 +47,7 @@ import Group from '../components/Group';
 import Page from './Page';
 import showError from '../utils/showError';
 import './RecordsPage.less';
+import generateTreeData from '../../lib/utils/generateTreeData';
 
 const { Column } = Table;
 
@@ -166,14 +169,15 @@ class RecordsPage extends React.PureComponent {
     sorter,
     columns,
     onlyFilters = false,
+    useFilterKey = false,
     isChangeTriggeredFilter = false
   }) => {
     const { page, pagesize, updatePage, sort, filter } = this.props;
     const { pendingFilter } = this.state;
-
     const newFilter = isChangeTriggeredFilter
       ? cloneDeep(pendingFilter)
       : cloneDeep(filter);
+
     columns.forEach(column => {
       if (
         isChangeTriggeredFilter ||
@@ -183,7 +187,12 @@ class RecordsPage extends React.PureComponent {
         unset(newFilter, column.getTableFilterKey());
 
         if (column.parentColumn) {
-          let parentFilteredValue = filters[column.parentColumn.getKey()];
+          let parentFilteredValue =
+            filters[
+              useFilterKey
+                ? column.parentColumn.getTableFilterKey()
+                : column.parentColumn.getKey()
+            ];
           parentFilteredValue =
             column.parentColumn.canFilterMultipleInTable() ||
             !parentFilteredValue
@@ -203,16 +212,25 @@ class RecordsPage extends React.PureComponent {
             return true;
           }
         }
-        const value = filters[column.getKey()];
+        const value =
+          filters[useFilterKey ? column.getTableFilterKey() : column.getKey()];
         if (value && value.length > 0) {
           if (column.canFilterMultipleInTable()) {
             if (
               filterFunc(value, v => !isUndefined(v) && !isNull(v)).length > 0
             ) {
-              set(newFilter, column.getTableFilterKey(), value);
+              set(
+                newFilter,
+                column.getTableFilterKey(),
+                map(value, v => column.formatFormSubmitValue(v))
+              );
             }
           } else if (!isUndefined(value[0]) && !isNull(value[0])) {
-            set(newFilter, column.getTableFilterKey(), value[0]);
+            set(
+              newFilter,
+              column.getTableFilterKey(),
+              column.formatFormSubmitValue(value[0])
+            );
           }
         } else if (isChangeTriggeredFilter) {
           set(newFilter, column.getTableFilterKey(), null);
@@ -330,7 +348,12 @@ class RecordsPage extends React.PureComponent {
     this.resetPendingFilter();
   };
 
-  renderColumn(column, shouldRenderTableFilter = true) {
+  renderColumn({
+    column,
+    columns,
+    shouldRenderTableFilter = true,
+    renderFilterInTitle = false
+  }) {
     const {
       sort,
       filter: propsFilter,
@@ -343,7 +366,6 @@ class RecordsPage extends React.PureComponent {
     } = this.props;
     const { pendingFilter } = this.state;
     const filter = { ...propsFilter, ...pendingFilter };
-
     const filterProps = {};
     const isAutoTrigger =
       !column.shouldRenderOutsideFilter() || !filterGroupTrigger;
@@ -404,7 +426,7 @@ class RecordsPage extends React.PureComponent {
             .then(() => this.forceUpdate())
             .catch(() => {});
         }
-      } else if (column.canRenderFilterDropDown()) {
+      } else if (column.canRenderFilterDropDown() && !renderFilterInTitle) {
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
         filterProps.filterDropdown = dropDownParams =>
@@ -422,12 +444,54 @@ class RecordsPage extends React.PureComponent {
 
       filterProps.parentFilteredValue = parentFilteredValue;
     }
+    const parentFilteredValue = column.parentColumn
+      ? get(filter, column.parentColumn.getTableFilterKey())
+      : undefined;
     const editAction = actions.getEditAction();
-
+    const filteredValue = get(filter, column.getTableFilterKey());
     return (
       <Column
-        {...filterProps}
-        title={column.getTableTitle(filterProps)}
+        {...(renderFilterInTitle ? {} : filterProps)}
+        title={
+          renderFilterInTitle ? (
+            <Col>
+              <div>{column.getTitle()}</div>
+              {column.renderInForm({
+                isFilter: true,
+                treeData: generateTreeData(filterProps.filters || []),
+                formComponentProps: {
+                  ...column.getTableFilterComponentProps(),
+                  parentValue: parentFilteredValue,
+                  treeCheckable: column.canFilterMultipleInTable(),
+                  value:
+                    isUndefined(filteredValue) || filteredValue === null
+                      ? undefined
+                      : column.formatFormFieldValue(filteredValue),
+                  onChange: v => {
+                    const value =
+                      isObject(v) && isObject(v.target) ? v.target.value : v;
+                    this.onChange({
+                      filters: {
+                        ...mapValues(filter, fv => (isArray(fv) ? fv : [fv])),
+                        [column.getTableFilterKey()]: isUndefined(value)
+                          ? null
+                          : [column.formatFilterValue(value)]
+                      },
+                      columns,
+                      useFilterKey: true,
+                      isChangeTriggeredFilter: filterGroupTrigger
+                    });
+                  },
+                  style: { width: 200 },
+                  getPopupContainer: () =>
+                    document.getElementsByClassName('filters-table')[0]
+                }
+              })}
+            </Col>
+          ) : (
+            column.getTableTitle(filterProps)
+          )
+        }
         dataIndex={column.getKey()}
         key={column.getKey()}
         width={column.getTableWidth()}
@@ -639,10 +703,16 @@ class RecordsPage extends React.PureComponent {
             isChangeTriggeredFilter: filterGroupTrigger
           })
         }
-        scroll={{}}
+        scroll={{ x: true }}
         getPopupContainer={() => document.getElementsByClassName('xms-page')[0]}
       >
-        {filterColumns.map(column => this.renderColumn(column))}
+        {filterColumns.map(column =>
+          this.renderColumn({
+            column,
+            columns: filterColumns,
+            renderFilterInTitle: filterGroupTrigger
+          })
+        )}
       </Table>
     );
     const groupedColumns = groupBy(columns.toArray(), column =>
@@ -840,7 +910,10 @@ class RecordsPage extends React.PureComponent {
             }
           >
             {columns.map(column =>
-              this.renderColumn(column, column.shouldRenderTableFilter(user))
+              this.renderColumn({
+                column,
+                shouldRenderTableFilter: column.shouldRenderTableFilter(user)
+              })
             )}
             {this.renderRowActions()}
           </Table>

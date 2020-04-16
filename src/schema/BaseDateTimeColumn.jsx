@@ -134,13 +134,14 @@ export default class BaseDateTimeColumn extends StringColumn {
     return false;
   }
 
-  renderInFormItem({ isEdit }) {
+  renderInFormItem({ isEdit, formComponentProps = {} }) {
     return (
       <DatePicker
         allowClear
         showTime={this.showTime()}
         format={this.getInTableFormat()}
         {...this.getFormComponentProps({ isEdit })}
+        {...formComponentProps}
       />
     );
   }

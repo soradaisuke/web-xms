@@ -78,7 +78,7 @@ export default class NumberColumn extends Column {
     );
   };
 
-  renderInFormItem({ isEdit }) {
+  renderInFormItem({ isEdit, formComponentProps = {} }) {
     if (this.canSelectMutipleInForm()) {
       return (
         <Select
@@ -86,6 +86,7 @@ export default class NumberColumn extends Column {
           mode="tags"
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({ isEdit })}
+          {...formComponentProps}
         />
       );
     }
@@ -94,6 +95,7 @@ export default class NumberColumn extends Column {
         style={{ width: '100%' }}
         placeholder={this.getFormPlaceholder()}
         {...this.getFormComponentProps({ isEdit })}
+        {...formComponentProps}
       />
     );
   }

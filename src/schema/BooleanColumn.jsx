@@ -45,7 +45,7 @@ export default class BooleanColumn extends Column {
   renderInlineEdit({ onClick, record }) {
     return this.renderInFormItem({
       isEdit: true,
-      props: {
+      formComponentProps: {
         checked: get(record, this.getKey()),
         onChange: value => {
           onClick({
@@ -59,7 +59,7 @@ export default class BooleanColumn extends Column {
     });
   }
 
-  renderInFormItem({ isEdit, props = {} } = {}) {
+  renderInFormItem({ isEdit, formComponentProps = {} } = {}) {
     const options = this.getValueOptions();
     const checkedChildren = options
       .find(option => option.get('value'))
@@ -73,7 +73,7 @@ export default class BooleanColumn extends Column {
         checkedChildren={checkedChildren}
         unCheckedChildren={unCheckedChildren}
         {...this.getFormComponentProps({ isEdit })}
-        {...props}
+        {...formComponentProps}
       />
     );
   }
