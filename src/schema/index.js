@@ -8,6 +8,7 @@ import ImageColumn from './ImageColumn';
 import UrlColumn from './UrlColumn';
 import AudioColumn from './AudioColumn';
 import ObjectColumn from './ObjectColumn';
+import MonthColumn from './MonthColumn';
 
 export default {
   Number: config => new NumberColumn(config),
@@ -16,6 +17,7 @@ export default {
   Date: config => new DateColumn(config),
   DateTime: config => new DateTimeColumn(config),
   Time: config => new TimeColumn(config),
+  Month: config => new MonthColumn(config),
   Image: config => new ImageColumn(config),
   Url: config => new UrlColumn(config),
   Audio: config => new AudioColumn(config),
