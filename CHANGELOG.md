@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.8.1...v2.9.0) (2020-04-20)
+
+
+### Features
+
+* **NoTicket:** 增加Column.Month ([fea727c](https://git2.qingtingfm.com/zhibo/xms/commit/fea727cf1454c4cb25fbe19e64cbbf28c8a822ba))
+
+
+### Bug Fixes
+
+* **QTLIVE-115:** 重置按钮 ([c33c602](https://git2.qingtingfm.com/zhibo/xms/commit/c33c602f6b506695280fe3cfbf27b1157c35e868))
+
 ### [2.8.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.8.0...v2.8.1) (2020-04-13)
 
 
