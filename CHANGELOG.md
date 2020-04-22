@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.10.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.0...v2.10.1) (2020-04-22)
+
+
+### Bug Fixes
+
+* **NoTicket:** export InputModal ([62c3522](https://git2.qingtingfm.com/zhibo/xms/commit/62c3522087c200455b3be8c6b1934f3ec7b0617c))
+
 ## [2.10.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.9.0...v2.10.0) (2020-04-22)
 
 
