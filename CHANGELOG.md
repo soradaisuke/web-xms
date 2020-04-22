@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.9.0...v2.10.0) (2020-04-22)
+
+
+### Features
+
+* **QTLIVE-650:** InputModal ([1715c49](https://git2.qingtingfm.com/zhibo/xms/commit/1715c49026a048b4dc1756c877b57e4616d598ad))
+
 ## [2.9.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.8.1...v2.9.0) (2020-04-20)
 
 
