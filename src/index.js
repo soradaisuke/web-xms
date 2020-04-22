@@ -14,6 +14,7 @@ export UploadFile from './components/UploadFile';
 export ZoomImg from './components/ZoomImg';
 export TableTransfer from './components/TableTransfer';
 export AudioPlayer from './components/Common/AudioPlayer';
+export InputModal from './components/InputModal';
 
 // export Tags from './components/FormItems/Tags';
 // export CommonArray from './components/FormItems/CommonArray';
