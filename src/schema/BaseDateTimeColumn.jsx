@@ -41,8 +41,8 @@ export default class BaseDateTimeColumn extends StringColumn {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  formatFormFieldValue(v) {
-    return moment(v);
+  formatFormFieldValue(value) {
+    return value && moment(value).isValid() ? moment(value) : undefined;
   }
 
   renderFilterDropDownContent = ({
