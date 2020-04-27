@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.10.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.2...v2.10.3) (2020-04-27)
+
+
+### Bug Fixes
+
+* **NoTicket:** 时间格式在编辑时如果api字段返回null会显示invalid time ([57bfef3](https://git2.qingtingfm.com/zhibo/xms/commit/57bfef3225b018388d0481aad2a5985f63a1364f))
+
 ### [2.10.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.1...v2.10.2) (2020-04-27)
 
 
