@@ -21,6 +21,7 @@ import {
 import { generateUri } from '@qt/web-core';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
+import showError from './showError';
 
 function generateService({ api: { fetch } = {} }) {
   const service = {
@@ -56,8 +57,7 @@ function generateModel({ namespace, table }, service) {
     state: Immutable.fromJS({
       table,
       records: [],
-      total: 0,
-      error: null
+      total: 0
     }),
     reducers: {
       save(
@@ -67,14 +67,6 @@ function generateModel({ namespace, table }, service) {
         }
       ) {
         return state.merge(Immutable.fromJS({ records, total }));
-      },
-      saveError(
-        state,
-        {
-          payload: { error }
-        }
-      ) {
-        return state.set('error', error);
       }
     },
     effects: {
@@ -83,8 +75,6 @@ function generateModel({ namespace, table }, service) {
           { payload: { path, page, pagesize, sort, filter = {} } },
           { call, put }
         ) {
-          yield put({ type: 'saveError', payload: { error: null } });
-
           try {
             const { items: records, total } = yield call(service.fetch, {
               path,
@@ -95,7 +85,8 @@ function generateModel({ namespace, table }, service) {
             });
             yield put({ type: 'save', payload: { total, records } });
           } catch (error) {
-            yield put({ type: 'saveError', payload: { error } });
+            yield put({ type: 'save', payload: { total: 0, records: [] } });
+            showError(error.message);
           }
         },
         { type: 'takeLatest' }
@@ -203,8 +194,7 @@ function generateRecordsPage(
       records: state[namespace].get('records'),
       sort: queries.sort || '',
       total: state[namespace].get('total'),
-      isLoading: state.loading.effects[`${namespace}/fetch`],
-      error: state[namespace].get('error')
+      isLoading: state.loading.effects[`${namespace}/fetch`]
     };
   };
 

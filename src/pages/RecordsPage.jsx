@@ -64,7 +64,6 @@ class RecordsPage extends React.PureComponent {
       params: PropTypes.shape({}).isRequired
     }).isRequired,
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-    error: PropTypes.instanceOf(Error),
     isLoading: PropTypes.bool,
     filterGroupTrigger: PropTypes.bool,
     page: PropTypes.number,
@@ -80,7 +79,6 @@ class RecordsPage extends React.PureComponent {
 
   static defaultProps = {
     component: null,
-    error: null,
     isLoading: false,
     filterGroupTrigger: false,
     filter: {},
@@ -862,13 +860,9 @@ class RecordsPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component, error, inline } = this.props;
+    const { component: Component, inline } = this.props;
     return (
-      <Page
-        isError={!!error}
-        errorMessage={error ? error.message : ''}
-        showWatermark={!inline}
-      >
+      <Page showWatermark={!inline}>
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>
             <Component />
