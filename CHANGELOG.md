@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.10.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.1...v2.10.2) (2020-04-27)
+
+
+### Bug Fixes
+
+* **TBS-465:** 用户审核  搜索的字段 没有结果展示空页面  不报错展示 ([6b1eee4](https://git2.qingtingfm.com/zhibo/xms/commit/6b1eee4cff935a2f1468813593f67cfc9799ec00))
+
 ### [2.10.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.0...v2.10.1) (2020-04-22)
 
 
