@@ -215,12 +215,9 @@ class RecordsPage extends React.PureComponent {
         } else if (isChangeTriggeredFilter) {
           set(newFilter, column.getTableFilterKey(), null);
         }
-        const fixedFilterValue = isBoolean(column.getTableFilterRequired())
-          ? column.getTableFilterDefault()
-          : column.getTableFilterRequired();
+        const fixedFilterValue = column.getTableFixedFilterValue();
         if (
           isUndefined(get(newFilter, column.getTableFilterKey())) &&
-          column.getTableFilterRequired() &&
           fixedFilterValue
         ) {
           set(newFilter, column.getTableFilterKey(), fixedFilterValue);
@@ -308,11 +305,27 @@ class RecordsPage extends React.PureComponent {
   };
 
   resetFilters = () => {
-    const { updatePage, page, pagesize, sort } = this.props;
+    const {
+      updatePage,
+      page,
+      pagesize,
+      sort,
+      table: { columns }
+    } = this.props;
     this.setState({
       pendingFilter: {}
     });
-    updatePage({ page, pagesize, sort });
+    const filter = {};
+    columns.forEach(column => {
+      if (!column.canFilterInTable()) {
+        return;
+      }
+      const fixedFilterValue = column.getTableFixedFilterValue();
+      if (fixedFilterValue) {
+        set(filter, column.getTableFilterKey(), fixedFilterValue);
+      }
+    });
+    updatePage({ page, pagesize, sort, filter });
   };
 
   onClickFilterGroupSearch = () => {
@@ -540,12 +553,7 @@ class RecordsPage extends React.PureComponent {
       ? filters.map(({ value, text: label }) => ({ value, label }))
       : [];
     const FilterComponent = filterMultiple ? Checkbox.Group : Radio.Group;
-    let fixedFilterValue = isBoolean(column.getTableFilterRequired())
-      ? column.getTableFilterDefault()
-      : column.getTableFilterRequired();
-    if (fixedFilterValue && isFunction(fixedFilterValue.toJS)) {
-      fixedFilterValue = fixedFilterValue.toJS();
-    }
+    const fixedFilterValue = column.getTableFixedFilterValue();
 
     return (
       <Row type="flex" align="middle" style={{ marginBottom: '1rem' }}>
@@ -564,7 +572,6 @@ class RecordsPage extends React.PureComponent {
             const newFilter = cloneDeep(filter);
             if (
               (isUndefined(value) || (isArray(value) && !size(value))) &&
-              column.getTableFilterRequired() &&
               fixedFilterValue
             ) {
               value = fixedFilterValue;

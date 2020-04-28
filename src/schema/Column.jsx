@@ -11,6 +11,7 @@ import {
   find,
   filter,
   forEach,
+  isBoolean,
   flatten
 } from 'lodash';
 import { makeCancelablePromise } from '@qt/web-core';
@@ -166,6 +167,13 @@ export default class Column {
 
   getTableFixedSortOrder() {
     return this.config.getIn(['table', 'fixedSortOrder']);
+  }
+
+  getTableFixedFilterValue() {
+    const value = isBoolean(this.getTableFilterRequired())
+      ? this.getTableFilterDefault()
+      : this.getTableFilterRequired();
+    return this.getTableFilterRequired() ? value : null;
   }
 
   getFilters(parentFilteredValue, key = 'normal') {
