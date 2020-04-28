@@ -608,16 +608,18 @@ export default class Column {
     form,
     isEdit,
     checkVisibility,
+    isFilter = false,
     formComponentProps
   }) {
-    const { getFieldsValue, getFieldDecorator } = form;
+    const { getFieldsValue, getFieldDecorator } = form || {};
 
     const key = this.getFormKey();
-    const values = getFieldsValue();
+    const values = getFieldsValue ? getFieldsValue() : null;
     const value = get(values, key);
-    const parentValue = this.parentColumn
-      ? get(values, this.parentColumn.getFormKey())
-      : null;
+    const parentValue =
+      this.parentColumn && !isFilter
+        ? get(values, this.parentColumn.getFormKey())
+        : null;
 
     if (
       checkVisibility &&
@@ -668,13 +670,19 @@ export default class Column {
           {...this.getFormComponentProps({ isEdit })}
           column={this}
           parentValue={parentValue}
+          {...formComponentProps}
         />
       );
     } else {
       const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
-      children = renderInFormItem
-        ? renderInFormItem({ user, isEdit, value, values, record })
-        : this.renderInFormItem({ user, isEdit, formComponentProps });
+      children =
+        renderInFormItem && !isFilter
+          ? renderInFormItem({ user, isEdit, value, values, record })
+          : this.renderInFormItem({ user, isEdit, formComponentProps });
+    }
+
+    if (isFilter) {
+      return children;
     }
 
     const rules = isFunction(this.getFormRules())

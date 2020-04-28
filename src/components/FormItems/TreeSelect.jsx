@@ -69,11 +69,17 @@ export default class XMSTreeSelect extends React.PureComponent {
   }
 
   render() {
-    const { column, parentValue, ...props } = this.props;
+    const {
+      column,
+      parentValue,
+      value,
+      treeData: treeDataProps,
+      ...props
+    } = this.props;
     const valueOptionsRequest = column.getValueOptionsRequest();
     let { treeData } = this.state;
 
-    if (!treeData) {
+    if (!treeData && !treeDataProps) {
       const filters = column.getFilters(parentValue, 'disableInForm');
 
       if (filters) {
@@ -86,22 +92,22 @@ export default class XMSTreeSelect extends React.PureComponent {
       }
     }
 
-    treeData = treeData || [];
+    treeData = treeData || treeDataProps || [];
 
     return (
       <React.Fragment>
         {this.renderRadioOptions()}
         <TreeSelect
+          placeholder={column.getFormPlaceholder(true)}
+          searchPlaceholder={column.getFormSearchPlaceholder()}
+          treeCheckable={column.canSelectMutipleInForm()}
+          getPopupContainer={trigger => trigger.parentNode}
           {...props}
           className="xms-tree-select"
           allowClear
           showSearch
-          treeNodeFilterProp="title"
-          treeCheckable={column.canSelectMutipleInForm()}
-          getPopupContainer={trigger => trigger.parentNode}
-          placeholder={column.getFormPlaceholder(true)}
-          searchPlaceholder={column.getFormSearchPlaceholder()}
           treeData={treeData}
+          treeNodeFilterProp="title"
           filterTreeNode={column.getFormSearchRequest() ? false : null}
           onSearch={this.onSearch}
         />

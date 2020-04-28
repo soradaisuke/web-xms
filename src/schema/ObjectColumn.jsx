@@ -17,12 +17,13 @@ export default class ObjectColumn extends Column {
     return JSON.stringify(value);
   }
 
-  renderInFormItem({ isEdit }) {
+  renderInFormItem({ isEdit, formComponentProps = {} }) {
     return (
       <Input
         style={{ width: '100%' }}
         placeholder={this.getFormPlaceholder()}
         {...this.getFormComponentProps({ isEdit })}
+        {...formComponentProps}
       />
     );
   }

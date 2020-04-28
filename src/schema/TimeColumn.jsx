@@ -115,8 +115,13 @@ export default class TimeColumn extends NumberColumn {
     );
   };
 
-  renderInFormItem({ isEdit }) {
-    return <TimePicker {...this.getFormComponentProps({ isEdit })} />;
+  renderInFormItem({ isEdit, formComponentProps = {} }) {
+    return (
+      <TimePicker
+        {...this.getFormComponentProps({ isEdit })}
+        {...formComponentProps}
+      />
+    );
   }
 
   // eslint-disable-next-line class-methods-use-this

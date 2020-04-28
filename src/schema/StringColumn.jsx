@@ -54,8 +54,8 @@ export default class StringColumn extends Column {
     if (this.canSelectMutipleInForm()) {
       return (
         <Select
-          {...formComponentProps}
           style={{ width: '100%' }}
+          {...formComponentProps}
           mode="tags"
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({ isEdit })}
@@ -65,8 +65,8 @@ export default class StringColumn extends Column {
     if (this.getFormMultipleLine()) {
       return (
         <Input.TextArea
-          {...formComponentProps}
           style={{ width: '100%' }}
+          {...formComponentProps}
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({ isEdit })}
         />
@@ -74,8 +74,8 @@ export default class StringColumn extends Column {
     }
     return (
       <Input
-        {...formComponentProps}
         style={{ width: '100%' }}
+        {...formComponentProps}
         placeholder={this.getFormPlaceholder()}
         {...this.getFormComponentProps({ isEdit })}
       />
