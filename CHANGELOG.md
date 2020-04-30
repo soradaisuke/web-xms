@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.11.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.4...v2.11.0) (2020-04-30)
+
+
+### Features
+
+* **QTLIVE-149:** XMS表格外筛选改为Form实现 ([8665c6f](https://git2.qingtingfm.com/zhibo/xms/commit/8665c6fcc708dada95bb3d5cded3710824320998))
+
 ### [2.10.4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.10.3...v2.10.4) (2020-04-29)
 
 
