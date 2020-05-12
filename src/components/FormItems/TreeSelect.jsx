@@ -72,7 +72,6 @@ export default class XMSTreeSelect extends React.PureComponent {
     const {
       column,
       parentValue,
-      value,
       treeData: treeDataProps,
       ...props
     } = this.props;

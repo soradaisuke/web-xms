@@ -523,7 +523,7 @@ class RecordsPage extends React.PureComponent {
                   },
                   style: { width: 200 },
                   getPopupContainer: () =>
-                    document.getElementsByClassName('filters-table')[0]
+                    document.getElementsByClassName('xms-page')[0]
                 }
               })}
             </Col>
