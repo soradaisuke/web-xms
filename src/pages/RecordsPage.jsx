@@ -322,6 +322,8 @@ class RecordsPage extends React.PureComponent {
   fetch = async () => {
     const { fetch, page, pagesize, sort, filter } = this.props;
 
+    this.resetTableState();
+
     fetch({
       page,
       pagesize,
@@ -376,6 +378,16 @@ class RecordsPage extends React.PureComponent {
     });
     this.resetPendingFilter();
   };
+
+  resetTableState() {
+    const { selectedRowKeys, selectedRows } = this.state;
+    if (selectedRowKeys.length || selectedRows.length) {
+      this.setState({
+        selectedRowKeys: [],
+        selectedRows: []
+      });
+    }
+  }
 
   renderColumn({
     column,
@@ -796,7 +808,7 @@ class RecordsPage extends React.PureComponent {
         records,
         submit: async params => {
           await this.updateRecord({ ...params, throwError: true });
-          this.setState({ selectedRowKeys: [], selectedRows: [] });
+          this.resetTableState();
         }
       };
     }
