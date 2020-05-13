@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.11.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.11.1...v2.11.2) (2020-05-13)
+
+
+### Bug Fixes
+
+* **NoTicket:** 新建/编辑表单里初始值错误 & inline页面Tabs类型的filter getPopupContainer错误 ([633f7fb](https://git2.qingtingfm.com/zhibo/xms/commit/633f7fb4d0d79f1ed37c74e8ca6ffa311836a4ef))
+
 ### [2.11.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.11.0...v2.11.1) (2020-05-12)
 
 
