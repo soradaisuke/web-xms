@@ -42,6 +42,11 @@ export default class BooleanColumn extends Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
+    return false;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   renderInlineEdit({ onClick, record }) {
     return this.renderInFormItem({
       isEdit: true,

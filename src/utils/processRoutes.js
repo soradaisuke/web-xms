@@ -6,6 +6,8 @@ import dynamicRecordComponent from './dynamicRecordComponent';
 import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
+import dynamicRecordFormComponent from './dynamicRecordFormPage';
+import processFormConfig from './processFormConfig';
 
 function isClassComponent(component) {
   return (
@@ -53,8 +55,10 @@ export default function processRoutes({ app, routes }) {
       const route = migrateRoute(r, app);
 
       const { config = {}, path, models, inline, routes: subRoutes } = route;
+      const { useFormPage } = config;
       const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
       let { component } = route;
+      let processedConfig = {};
 
       if (isElement(component)) {
         throw new Error(`${path}: component can not be React.Element`);
@@ -69,22 +73,45 @@ export default function processRoutes({ app, routes }) {
       }
 
       if (config.type === 'list') {
+        processedConfig = processListConfig({ config, path });
         component = dynamicRecordsComponent({
           app,
           component,
           inline,
-          config: processListConfig({ config, path })
+          config: processedConfig
         });
       } else if (
         !!component ||
         inlineRoutes.length > 0 ||
         config.type === 'detail'
       ) {
+        processedConfig = processSingleConfig({ config, path });
         component = dynamicRecordComponent({
           app,
           component,
-          config: processSingleConfig({ config, path })
+          config: processedConfig
         });
+      } else if (config.type === 'form') {
+        component = dynamicRecordFormComponent({
+          app,
+          config: processFormConfig({ config, path })
+        });
+      }
+
+      if (useFormPage) {
+        const formPageRoute = {
+          breadcrumb: ({ id }) => (id === 'new' ? '新建' : '编辑'),
+          path: `${path}/:id/edit`,
+          config: {
+            ...processedConfig,
+            type: 'form'
+          }
+        };
+        if (!route.routes) {
+          route.routes = [formPageRoute];
+        } else {
+          route.routes.push(formPageRoute);
+        }
       }
 
       return {

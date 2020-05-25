@@ -3,19 +3,8 @@ import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
-import { forEach, set, isFunction } from 'lodash';
 import ActivatorModal from './ActivatorModal';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
+import RecordForm from './RecordForm';
 
 class RecordModal extends React.PureComponent {
   static displayName = 'RecordModal';
@@ -45,42 +34,21 @@ class RecordModal extends React.PureComponent {
     user: null
   };
 
-  onOk = async () => {
-    const { form, onOk, columns } = this.props;
-
-    return new Promise((resolve, reject) => {
-      form.validateFields(async (err, values) => {
-        if (!err) {
-          const formatValues = {};
-          forEach(values, (value, key) => {
-            const column = columns.find(c => c.getFormKey() === key);
-            if (column) {
-              const generateSubmitValue = column.getFormGenerateSubmitValue();
-              if (generateSubmitValue && isFunction(generateSubmitValue)) {
-                set(formatValues, key, generateSubmitValue(value));
-              } else {
-                set(formatValues, key, column.formatFormSubmitValue(value));
-              }
-            }
-          });
-          try {
-            await onOk(formatValues);
-          } catch (e) {
-            resolve(false);
-          }
-          resolve(true);
-        } else {
-          reject();
-        }
-      });
-    });
+  onOk = () => {
+    if (this.form) {
+      return this.form.onOk();
+    }
+    return Promise.resolve();
   };
 
   onVisibleChange = async visibility => {
-    const { form } = this.props;
-    if (visibility) {
-      await form.resetFields();
+    if (visibility && this.form) {
+      await this.form.reset();
     }
+  };
+
+  onRef = ref => {
+    this.form = ref;
   };
 
   isEdit() {
@@ -91,20 +59,8 @@ class RecordModal extends React.PureComponent {
     );
   }
 
-  renderFormItem(column) {
-    const { user, form, record, checkVisibility } = this.props;
-
-    return column.renderInForm({
-      user,
-      record,
-      form,
-      checkVisibility,
-      isEdit: this.isEdit()
-    });
-  }
-
   render() {
-    const { children, columns, title } = this.props;
+    const { children, title, ...props } = this.props;
     const defaultTitle = this.isEdit() ? '编辑' : '添加';
 
     return (
@@ -115,11 +71,7 @@ class RecordModal extends React.PureComponent {
         onOk={this.onOk}
         onVisibleChange={this.onVisibleChange}
       >
-        {() => (
-          <Form {...formItemLayout} onSubmit={this.okHandler}>
-            {columns.map(column => this.renderFormItem(column))}
-          </Form>
-        )}
+        <RecordForm {...props} onRef={this.onRef} />
       </ActivatorModal>
     );
   }

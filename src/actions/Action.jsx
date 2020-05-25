@@ -167,7 +167,7 @@ export default class Action {
             onClick({
               data: { body },
               loadingMessage: null,
-              throwError: true,
+              throwError: false,
               reload: true
             })
           }

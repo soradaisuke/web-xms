@@ -511,8 +511,16 @@ export default class Column {
     return this.config.getIn(['form', 'key']) || this.getKey();
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  getFormDefaultInitialValue() {
+    return null;
+  }
+
   getFormInitialValue() {
-    return this.config.getIn(['form', 'initialValue']);
+    return (
+      this.config.getIn(['form', 'initialValue']) ||
+      this.getFormDefaultInitialValue()
+    );
   }
 
   getFormGenerateSubmitValue() {
