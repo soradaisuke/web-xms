@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.11.2...v2.12.0) (2020-05-26)
+
+
+### Features
+
+* **QTLIVE-1050:** 新建和编辑支持可配置成页面 ([04bf99f](https://git2.qingtingfm.com/zhibo/xms/commit/04bf99fe81069f02ec365f83ba85875015720a6d))
+
 ### [2.11.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.11.1...v2.11.2) (2020-05-13)
 
 
