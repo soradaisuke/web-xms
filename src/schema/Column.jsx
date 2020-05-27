@@ -17,11 +17,12 @@ import {
 import { makeCancelablePromise } from '@qt/web-core';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
-import { Button, Form } from 'antd';
+import { Button, Form, Radio, Checkbox } from 'antd';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
 import TreeFilter from '../components/TreeFilter';
 import './Column.less';
+import generateAntdOptions from '../utils/generateAntdOptions';
 
 export const DEFAULT_GROUP_NAME = '其它筛选项';
 
@@ -604,6 +605,10 @@ export default class Column {
     return true;
   }
 
+  getFormExpandable() {
+    return this.config.getIn(['form', 'expandable'], false);
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderInFormItem() {
     return null;
@@ -672,15 +677,33 @@ export default class Column {
         this.getValueOptionsRequest() ||
         this.getFormSearchRequest())
     ) {
-      initialValue = initialValue === '' ? null : initialValue;
-      children = (
-        <TreeSelect
-          {...this.getFormComponentProps({ isEdit })}
-          column={this}
-          parentValue={parentValue}
-          {...formComponentProps}
-        />
-      );
+      if (this.getFormExpandable() && this.getFilters(parentValue)) {
+        const Component = this.canSelectMutipleInForm()
+          ? Checkbox.Group
+          : Radio.Group;
+        const options = filter(
+          this.getFilters(parentValue),
+          ({ disableInForm }) => !disableInForm
+        );
+        children = (
+          <Component
+            {...this.getFormComponentProps({ isEdit })}
+            options={generateAntdOptions(options)}
+            buttonStyle="solid"
+            {...formComponentProps}
+          />
+        );
+      } else {
+        initialValue = initialValue === '' ? null : initialValue;
+        children = (
+          <TreeSelect
+            {...this.getFormComponentProps({ isEdit })}
+            column={this}
+            parentValue={parentValue}
+            {...formComponentProps}
+          />
+        );
+      }
     } else {
       const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
       children =
