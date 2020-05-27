@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.12.0...v2.13.0) (2020-05-27)
+
+
+### Features
+
+* **NoTicket:** Column支持form.expandable ([6ca78b1](https://git2.qingtingfm.com/zhibo/xms/commit/6ca78b11a591576b8acfba7cff97055d83281786))
+
 ## [2.12.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.11.2...v2.12.0) (2020-05-26)
 
 
