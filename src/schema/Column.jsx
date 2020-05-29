@@ -478,8 +478,12 @@ export default class Column {
   }
 
   // form
-  isImmutableInForm() {
-    return this.config.getIn(['form', 'immutable']);
+  isImmutableInForm({ user, value, values, record }) {
+    const immutableInForm = this.config.getIn(['form', 'immutable']);
+    if (isFunction(immutableInForm)) {
+      return immutableInForm({ user, value, values, record });
+    }
+    return immutableInForm;
   }
 
   canShowInCreateFrom({ user, value, values, record }) {
@@ -546,7 +550,7 @@ export default class Column {
     );
   }
 
-  getFormComponentProps({ isEdit }) {
+  getFormComponentProps({ isEdit, user, value, values, record }) {
     if (!this.formComponentProps) {
       this.formComponentProps = this.config
         .getIn(['form', 'componentProps'], Immutable.Map())
@@ -554,7 +558,10 @@ export default class Column {
     }
 
     if (isEdit) {
-      return { disabled: this.isImmutableInForm(), ...this.formComponentProps };
+      return {
+        disabled: this.isImmutableInForm({ user, value, values, record }),
+        ...this.formComponentProps
+      };
     }
 
     return this.formComponentProps;
@@ -687,7 +694,13 @@ export default class Column {
         );
         children = (
           <Component
-            {...this.getFormComponentProps({ isEdit })}
+            {...this.getFormComponentProps({
+              isEdit,
+              user,
+              record,
+              value,
+              values
+            })}
             options={generateAntdOptions(options)}
             buttonStyle="solid"
             {...formComponentProps}
@@ -697,7 +710,13 @@ export default class Column {
         initialValue = initialValue === '' ? null : initialValue;
         children = (
           <TreeSelect
-            {...this.getFormComponentProps({ isEdit })}
+            {...this.getFormComponentProps({
+              isEdit,
+              user,
+              record,
+              value,
+              values
+            })}
             column={this}
             parentValue={parentValue}
             {...formComponentProps}

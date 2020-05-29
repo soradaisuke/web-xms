@@ -39,6 +39,9 @@ function generateModel({ namespace }, service) {
         }
       ) {
         return record;
+      },
+      reset() {
+        return null;
       }
     },
     effects: {
@@ -130,6 +133,10 @@ function generateRecordFormPage({
               id: matchParams.id,
               body: { ...createApiDefaultBody, ...body }
             }
+          }),
+        reset: async () =>
+          dispatch({
+            type: `${namespace}/reset`
           })
       };
     }

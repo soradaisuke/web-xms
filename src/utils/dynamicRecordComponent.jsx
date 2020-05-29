@@ -112,6 +112,10 @@ function generateRecordPage(
           dispatch({
             type: `${namespace}/edit`,
             payload: { path: apiPath, body }
+          }),
+        reset: async () =>
+          dispatch({
+            type: `${namespace}/reset`
           })
       };
     }

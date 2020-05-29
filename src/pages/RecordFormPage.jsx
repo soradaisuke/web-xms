@@ -21,6 +21,7 @@ class RecordFormPage extends React.PureComponent {
       params: PropTypes.shape({}).isRequired
     }).isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
+    reset: PropTypes.func,
     renderActions: PropTypes.func,
     fetch: PropTypes.func,
     create: PropTypes.func,
@@ -30,6 +31,7 @@ class RecordFormPage extends React.PureComponent {
   };
 
   static defaultProps = {
+    reset: null,
     user: null,
     renderActions: null,
     fetch: null,
@@ -45,11 +47,14 @@ class RecordFormPage extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { actions } = this.props;
+    const { actions, reset } = this.props;
     const isEdit = this.isEdit();
     this.setState({
       action: isEdit ? actions.getEditAction() : actions.getCreateAction()
     });
+    if (reset) {
+      reset();
+    }
     if (isEdit) {
       this.fetch();
     }
@@ -128,7 +133,7 @@ class RecordFormPage extends React.PureComponent {
   renderActions = () => {
     const { isLoading } = this.state;
     return (
-      <Row type="flex">
+      <Row type="flex" align="middle">
         <Button onClick={this.onClickGoBack}>返回</Button>
         <Button
           className="form-action"
