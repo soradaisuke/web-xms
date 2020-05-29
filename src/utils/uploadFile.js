@@ -23,7 +23,7 @@ function generateFileName(file) {
 }
 
 function uploadToAliyun(file, { fileName, ssoToken }) {
-  const finalFileName = fileName || generateFileName(file);
+  const finalFileName = encodeURIComponent(fileName) || generateFileName(file);
 
   return request
     .post(`${uploadHost}/intra/v1/sts_token`, {
