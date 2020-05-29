@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.0...v2.13.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* **NoTicket:** 编辑新建页面获取数据前先清空之前的；form.immutable支持函数 ([4cb98ab](https://git2.qingtingfm.com/zhibo/xms/commit/4cb98abe56a665492ecaf585754cd9c5f941c9d2))
+* **NoTicket:** 上传文件名带中文时上传后文件无法打开 ([0f6dfa1](https://git2.qingtingfm.com/zhibo/xms/commit/0f6dfa15493229e4f012ea87fd9e2c351cca034a))
+
 ## [2.13.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.12.0...v2.13.0) (2020-05-27)
 
 
