@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.1...v2.13.2) (2020-06-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** 函数的form.immutable不起作用 ([6ed6d7f](https://git2.qingtingfm.com/zhibo/xms/commit/6ed6d7ff5ed4870993bc98a1a3ea01085a1127a0))
+
 ### [2.13.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.0...v2.13.1) (2020-05-29)
 
 
