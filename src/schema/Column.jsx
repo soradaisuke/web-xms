@@ -556,7 +556,6 @@ export default class Column {
         .getIn(['form', 'componentProps'], Immutable.Map())
         .toJS();
     }
-
     if (isEdit) {
       return {
         disabled: this.isImmutableInForm({ user, value, values, record }),
@@ -728,7 +727,14 @@ export default class Column {
       children =
         renderInFormItem && !isFilter
           ? renderInFormItem({ user, isEdit, value, values, record })
-          : this.renderInFormItem({ user, isEdit, formComponentProps });
+          : this.renderInFormItem({
+              user,
+              record,
+              value,
+              values,
+              isEdit,
+              formComponentProps
+            });
     }
 
     if (isFilter) {

@@ -115,10 +115,23 @@ export default class TimeColumn extends NumberColumn {
     );
   };
 
-  renderInFormItem({ isEdit, formComponentProps = {} }) {
+  renderInFormItem({
+    user,
+    record,
+    value,
+    values,
+    isEdit,
+    formComponentProps = {}
+  }) {
     return (
       <TimePicker
-        {...this.getFormComponentProps({ isEdit })}
+        {...this.getFormComponentProps({
+          isEdit,
+          user,
+          record,
+          value,
+          values
+        })}
         {...formComponentProps}
       />
     );

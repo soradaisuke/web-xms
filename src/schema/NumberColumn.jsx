@@ -78,7 +78,14 @@ export default class NumberColumn extends Column {
     );
   };
 
-  renderInFormItem({ isEdit, formComponentProps = {} }) {
+  renderInFormItem({
+    user,
+    record,
+    value,
+    values,
+    isEdit,
+    formComponentProps = {}
+  }) {
     if (this.canSelectMutipleInForm()) {
       return (
         <Select
@@ -94,7 +101,13 @@ export default class NumberColumn extends Column {
       <InputNumber
         style={{ width: '100%' }}
         placeholder={this.getFormPlaceholder()}
-        {...this.getFormComponentProps({ isEdit })}
+        {...this.getFormComponentProps({
+          isEdit,
+          user,
+          record,
+          value,
+          values
+        })}
         {...formComponentProps}
       />
     );

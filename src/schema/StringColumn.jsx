@@ -50,7 +50,14 @@ export default class StringColumn extends Column {
     return true;
   }
 
-  renderInFormItem({ isEdit, formComponentProps = {} }) {
+  renderInFormItem({
+    user,
+    record,
+    value,
+    values,
+    isEdit,
+    formComponentProps = {}
+  }) {
     if (this.canSelectMutipleInForm()) {
       return (
         <Select
@@ -58,7 +65,13 @@ export default class StringColumn extends Column {
           {...formComponentProps}
           mode="tags"
           placeholder={this.getFormPlaceholder()}
-          {...this.getFormComponentProps({ isEdit })}
+          {...this.getFormComponentProps({
+            isEdit,
+            user,
+            record,
+            value,
+            values
+          })}
         />
       );
     }
@@ -68,7 +81,13 @@ export default class StringColumn extends Column {
           style={{ width: '100%' }}
           {...formComponentProps}
           placeholder={this.getFormPlaceholder()}
-          {...this.getFormComponentProps({ isEdit })}
+          {...this.getFormComponentProps({
+            isEdit,
+            user,
+            record,
+            value,
+            values
+          })}
         />
       );
     }
@@ -77,7 +96,13 @@ export default class StringColumn extends Column {
         style={{ width: '100%' }}
         {...formComponentProps}
         placeholder={this.getFormPlaceholder()}
-        {...this.getFormComponentProps({ isEdit })}
+        {...this.getFormComponentProps({
+          isEdit,
+          user,
+          record,
+          value,
+          values
+        })}
       />
     );
   }

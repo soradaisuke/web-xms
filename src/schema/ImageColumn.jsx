@@ -35,11 +35,24 @@ export default class ImageColumn extends StringColumn {
     return false;
   }
 
-  renderInFormItem({ user, isEdit, formComponentProps = {} }) {
+  renderInFormItem({
+    user,
+    record,
+    value,
+    values,
+    isEdit,
+    formComponentProps = {}
+  }) {
     return (
       <UploadImage
         ssoToken={user ? user.get('sso_token') : ''}
-        {...this.getFormComponentProps({ isEdit })}
+        {...this.getFormComponentProps({
+          isEdit,
+          user,
+          record,
+          value,
+          values
+        })}
         {...formComponentProps}
       />
     );

@@ -105,12 +105,20 @@ export default class MonthColumn extends BaseDateTimeColumn {
     );
   };
 
-  renderInFormItem({ isEdit }) {
+  renderInFormItem({
+    user,
+    record,
+    value,
+    values,
+    isEdit,
+    formComponentProps = {}
+  }) {
     return (
       <MonthPicker
         allowClear
         format={this.getInTableFormat()}
-        {...this.getFormComponentProps({ isEdit })}
+        {...this.getFormComponentProps({ isEdit, user, record, value, values })}
+        {...formComponentProps}
       />
     );
   }
