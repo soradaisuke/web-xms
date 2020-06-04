@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.2...v2.13.3) (2020-06-04)
+
+
+### Bug Fixes
+
+* **NoTicket:** request-response的errcode在error的时候也应写入error.code里 ([067966a](https://git2.qingtingfm.com/zhibo/xms/commit/067966a4202c589677ac67281106077af0aa1d0c))
+
 ### [2.13.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.1...v2.13.2) (2020-06-03)
 
 
