@@ -52,8 +52,9 @@ async function generateRequest(path, options = {}) {
       if (response.errcode === 0) {
         return response.data;
       }
-
-      throw new Error(response.errmsg);
+      const error = new Error(response.errmsg);
+      error.code = response.errcode;
+      throw error;
     }
 
     return response;
