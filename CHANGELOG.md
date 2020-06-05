@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.3...v2.14.0-0) (2020-06-05)
+
+
+### Features
+
+* **QTLIVE-1117:** 动态删减FormItem ([17b95d4](https://git2.qingtingfm.com/zhibo/xms/commit/17b95d4b02e7012f7cdd1c5fc3591fd3dce66c62))
+
 ### [2.13.3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.2...v2.13.3) (2020-06-04)
 
 
