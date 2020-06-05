@@ -1,8 +1,12 @@
-.xms-tree-select {
+.xms-tree-select.ant-select {
   display: block;
 
   .ant-select-selection {
     height: auto;
     width: 100%;
+    overflow: hidden;
+    .ant-select-selection-selected-value {
+      float: none;
+    }
   }
 }

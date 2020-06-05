@@ -3,15 +3,17 @@ import { toNumber, isNaN, get, set, map } from 'lodash';
 import { InputNumber, Select } from 'antd';
 import Column from './Column';
 
+// toNumber('') = 0, toNumber(null) = 0, toNumber(undefined) = NAN
+const formatNumber = n => (n && !isNaN(toNumber(n)) ? toNumber(n) : n);
+
 export default class NumberColumn extends Column {
   // eslint-disable-next-line class-methods-use-this
   formatFilterValue(v) {
-    return !isNaN(toNumber(v)) ? toNumber(v) : v;
+    return formatNumber(v);
   }
 
   // eslint-disable-next-line class-methods-use-this
   formatFormSubmitValue(v) {
-    const formatNumber = n => (!isNaN(toNumber(n)) ? toNumber(n) : n);
     if (this.canSelectMutipleInForm()) {
       return map(v, item => formatNumber(item));
     }

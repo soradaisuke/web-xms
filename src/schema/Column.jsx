@@ -588,6 +588,10 @@ export default class Column {
     return this.config.getIn(['form', 'rules'], Immutable.List());
   }
 
+  getFormRenderInFormItem() {
+    return this.config.getIn(['form', 'renderInFormItem']);
+  }
+
   getFormSearchRequest() {
     return this.config.getIn(['form', 'searchRequest']);
   }
@@ -615,9 +619,96 @@ export default class Column {
     return this.config.getIn(['form', 'expandable'], false);
   }
 
+  shouldRenderCommonFormItem(parentValue) {
+    return (
+      this.useValueOptionsInForm() &&
+      (this.getFilters(parentValue) ||
+        this.getValueOptionsRequest() ||
+        this.getFormSearchRequest())
+    );
+  }
+
+  renderCommonFormItem({
+    isEdit,
+    user,
+    record,
+    value,
+    values,
+    parentValue,
+    formComponentProps
+  }) {
+    let children;
+    if (this.getFormExpandable() && this.parentValue(parentValue)) {
+      const Component = this.canSelectMutipleInForm()
+        ? Checkbox.Group
+        : Radio.Group;
+      const options = filter(
+        this.getFilters(parentValue),
+        ({ disableInForm }) => !disableInForm
+      );
+      children = (
+        <Component
+          {...this.getFormComponentProps({
+            isEdit,
+            user,
+            record,
+            value,
+            values
+          })}
+          options={generateAntdOptions(options)}
+          buttonStyle="solid"
+          {...formComponentProps || {}}
+        />
+      );
+    } else {
+      children = (
+        <TreeSelect
+          {...this.getFormComponentProps({
+            isEdit,
+            user,
+            record,
+            value,
+            values
+          })}
+          column={this}
+          parentValue={parentValue}
+          {...formComponentProps || {}}
+        />
+      );
+    }
+    return children;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   renderInFormItem() {
     return null;
+  }
+
+  generateFormInitialValue({ isEdit = false, record = {}, parentValue } = {}) {
+    let initialValue = this.getFormInitialValue();
+    const generateInitialValue = this.getFormGenerateInitialValue();
+
+    if (isEdit) {
+      const preValue = get(record, this.getKey());
+      if (isFunction(generateInitialValue)) {
+        initialValue = generateInitialValue({ value: preValue, parentValue });
+      } else if (isArray(preValue)) {
+        initialValue = map(preValue, v => this.formatFormFieldValue(v));
+      } else {
+        initialValue = this.formatFormFieldValue(preValue);
+      }
+    } else if (isFunction(generateInitialValue)) {
+      initialValue = generateInitialValue({ value: null, parentValue });
+    }
+
+    if (
+      this.shouldRenderCommonFormItem(parentValue) &&
+      (!this.getFormExpandable() || !this.getFilters(parentValue))
+    ) {
+      initialValue = initialValue === '' ? null : initialValue;
+    }
+
+    return initialValue;
   }
 
   renderInForm({
@@ -661,69 +752,24 @@ export default class Column {
     }
 
     let children;
-    let initialValue = this.getFormInitialValue();
-    const generateInitialValue = this.getFormGenerateInitialValue();
+    const initialValue = this.generateFormInitialValue({
+      isEdit,
+      record,
+      parentValue
+    });
 
-    if (isEdit) {
-      const preValue = get(record, this.getKey());
-      if (isFunction(generateInitialValue)) {
-        initialValue = generateInitialValue({ value: preValue, parentValue });
-      } else if (isArray(preValue)) {
-        initialValue = map(preValue, v => this.formatFormFieldValue(v));
-      } else {
-        initialValue = this.formatFormFieldValue(preValue);
-      }
-    } else if (isFunction(generateInitialValue)) {
-      initialValue = generateInitialValue({ value: null, parentValue });
-    }
-
-    if (
-      this.useValueOptionsInForm() &&
-      (this.getFilters(parentValue) ||
-        this.getValueOptionsRequest() ||
-        this.getFormSearchRequest())
-    ) {
-      if (this.getFormExpandable() && this.getFilters(parentValue)) {
-        const Component = this.canSelectMutipleInForm()
-          ? Checkbox.Group
-          : Radio.Group;
-        const options = filter(
-          this.getFilters(parentValue),
-          ({ disableInForm }) => !disableInForm
-        );
-        children = (
-          <Component
-            {...this.getFormComponentProps({
-              isEdit,
-              user,
-              record,
-              value,
-              values
-            })}
-            options={generateAntdOptions(options)}
-            buttonStyle="solid"
-            {...formComponentProps}
-          />
-        );
-      } else {
-        initialValue = initialValue === '' ? null : initialValue;
-        children = (
-          <TreeSelect
-            {...this.getFormComponentProps({
-              isEdit,
-              user,
-              record,
-              value,
-              values
-            })}
-            column={this}
-            parentValue={parentValue}
-            {...formComponentProps}
-          />
-        );
-      }
+    if (this.shouldRenderCommonFormItem(parentValue)) {
+      children = this.renderCommonFormItem({
+        isEdit,
+        user,
+        record,
+        value,
+        values,
+        parentValue,
+        formComponentProps
+      });
     } else {
-      const renderInFormItem = this.config.getIn(['form', 'renderInFormItem']);
+      const renderInFormItem = this.getFormRenderInFormItem();
       children =
         renderInFormItem && !isFilter
           ? renderInFormItem({ user, isEdit, value, values, record })

@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import findCascadeColumn from '../utils/findCascadeColumn';
 
 export default class Table {
   constructor(columns = []) {
@@ -66,20 +67,7 @@ export default class Table {
   }
 
   findCascadeColumn() {
-    this.columns.forEach(column => {
-      const parentKey = column.getParentKey();
-      if (parentKey) {
-        const parentColumn = this.columns.find(c => c.getKey() === parentKey);
-        if (parentColumn) {
-          // eslint-disable-next-line no-param-reassign
-          column.parentColumn = parentColumn;
-
-          parentColumn.childColumn = (parentColumn.childColumn || []).concat(
-            column
-          );
-        }
-      }
-    });
+    findCascadeColumn(this.columns);
   }
 
   calculateScrollWidth() {
