@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-1...v2.14.0-2) (2020-06-08)
+
+
+### Features
+
+* **QTLIVE-1203:** 使用span控制详情页的Descriptions展示 ([54f8720](https://git2.qingtingfm.com/zhibo/xms/commit/54f87208dfd4feffbdb26a144107e3fdedd59a8c))
+
 ## [2.14.0-1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-0...v2.14.0-1) (2020-06-08)
 
 
