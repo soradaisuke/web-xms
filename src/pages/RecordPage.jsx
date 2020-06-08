@@ -211,7 +211,7 @@ class RecordPage extends React.PureComponent {
   }
 
   renderRouteChunk(chunk) {
-    const { layout, inline } = this.props;
+    const { layout, inline, record } = this.props;
     if (chunk && chunk.length) {
       const chunkLayout = chunk[0].layout || layout;
 
@@ -225,7 +225,7 @@ class RecordPage extends React.PureComponent {
               <Collapse>
                 {map(chunk, ({ component: Component, path, title = '' }) => (
                   <Panel header={title} key={path}>
-                    <Component inline />
+                    <Component inline record={record} />
                   </Panel>
                 ))}
               </Collapse>
@@ -240,7 +240,7 @@ class RecordPage extends React.PureComponent {
               <Tabs>
                 {map(chunk, ({ component: Component, path, title = '' }) => (
                   <TabPane tab={title} key={path}>
-                    <Component inline />
+                    <Component inline record={record} />
                   </TabPane>
                 ))}
               </Tabs>
@@ -254,7 +254,7 @@ class RecordPage extends React.PureComponent {
               title={title}
               className={classNames('content-card', inline ? 'inline' : '')}
             >
-              <Component inline />
+              <Component inline record={record} />
             </Card>
           ));
       }
@@ -294,7 +294,7 @@ class RecordPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component, inline } = this.props;
+    const { component: Component, inline, record } = this.props;
     const { isLoading, error } = this.state;
 
     return (
@@ -306,7 +306,7 @@ class RecordPage extends React.PureComponent {
       >
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>
-            <Component />
+            <Component record={record} />
           </Card>
         ) : null}
         {this.renderContent()}

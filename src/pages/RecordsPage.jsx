@@ -967,12 +967,12 @@ class RecordsPage extends React.PureComponent {
   }
 
   render() {
-    const { component: Component, inline } = this.props;
+    const { component: Component, inline, records } = this.props;
     return (
       <Page showWatermark={!inline}>
         {Component ? (
           <Card className={classNames('content-card', inline ? 'inline' : '')}>
-            <Component />
+            <Component records={records} />
           </Card>
         ) : null}
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
