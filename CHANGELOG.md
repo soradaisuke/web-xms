@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-0...v2.14.0-1) (2020-06-08)
+
+
+### Bug Fixes
+
+* **NoTicket:** inline详情页不使用card展示 ([67d8c10](https://git2.qingtingfm.com/zhibo/xms/commit/67d8c10192cb19e61a86d7ff61de57af96777acc))
+
 ## [2.14.0-0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.13.3...v2.14.0-0) (2020-06-05)
 
 
