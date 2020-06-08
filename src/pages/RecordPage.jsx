@@ -184,18 +184,21 @@ class RecordPage extends React.PureComponent {
       return null;
     }
 
-    return (
-      <Card
-        title="详情"
-        className={classNames('content-card', inline ? 'inline' : '')}
+    const children = (
+      <Descriptions
+        bordered={bordered}
+        column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
       >
-        <Descriptions
-          bordered={bordered}
-          column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
-        >
-          {table.getColumns().map(column => this.renderDescriptionItem(column))}
-          {this.renderActions()}
-        </Descriptions>
+        {table.getColumns().map(column => this.renderDescriptionItem(column))}
+        {this.renderActions()}
+      </Descriptions>
+    );
+
+    return inline ? (
+      children
+    ) : (
+      <Card className={classNames('content-card', inline ? 'inline' : '')}>
+        {children}
       </Card>
     );
   }
