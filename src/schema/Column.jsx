@@ -843,6 +843,10 @@ export default class Column {
     return this.config.getIn(['detail', 'width'], undefined);
   }
 
+  getDescriptionSpan() {
+    return this.config.getIn(['detail', 'span'], 1);
+  }
+
   getDescriptionLink() {
     return this.config.getIn(['detail', 'link']);
   }

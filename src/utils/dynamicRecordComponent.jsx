@@ -56,7 +56,15 @@ function generateModel({ namespace }, service) {
 }
 
 function generateRecordPage(
-  { namespace, api: { path, host } = {}, actions, table, bordered, layout },
+  {
+    namespace,
+    api: { path, host } = {},
+    actions,
+    table,
+    bordered,
+    layout,
+    descriptionsColumn
+  },
   component
 ) {
   class Page extends React.PureComponent {
@@ -71,6 +79,7 @@ function generateRecordPage(
           table={table}
           actions={actions}
           bordered={bordered}
+          descriptionsColumn={descriptionsColumn}
         />
       );
     }

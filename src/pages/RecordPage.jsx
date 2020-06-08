@@ -38,6 +38,11 @@ class RecordPage extends React.PureComponent {
     ),
     inline: PropTypes.bool,
     layout: PropTypes.oneOf(['card', 'tab', 'collapse']),
+    // eslint-disable-next-line react/forbid-prop-types
+    descriptionsColumn: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.number
+    ]),
     user: PropTypes.instanceOf(Immutable.Map)
   };
 
@@ -53,7 +58,8 @@ class RecordPage extends React.PureComponent {
     fetch: null,
     remove: null,
     edit: null,
-    record: null
+    record: null,
+    descriptionsColumn: { xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }
   };
 
   state = {
@@ -171,24 +177,25 @@ class RecordPage extends React.PureComponent {
     }
 
     return (
-      <Descriptions.Item label={column.getTitle()} key={column.getKey()}>
+      <Descriptions.Item
+        label={column.getTitle()}
+        key={column.getKey()}
+        span={column.getDescriptionSpan()}
+      >
         {children}
       </Descriptions.Item>
     );
   }
 
   renderContent() {
-    const { record, inline, table, bordered } = this.props;
+    const { record, inline, table, bordered, descriptionsColumn } = this.props;
 
     if (!record || !table) {
       return null;
     }
 
     const children = (
-      <Descriptions
-        bordered={bordered}
-        column={{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }}
-      >
+      <Descriptions bordered={bordered} column={descriptionsColumn}>
         {table.getColumns().map(column => this.renderDescriptionItem(column))}
         {this.renderActions()}
       </Descriptions>
