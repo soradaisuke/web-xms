@@ -14,7 +14,6 @@ import {
   isBoolean,
   flatten
 } from 'lodash';
-import { makeCancelablePromise } from '@qt/web-core';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
 import { Button, Form, Radio, Checkbox } from 'antd';
@@ -74,6 +73,8 @@ export default class Column {
       ...config,
       key: isArray(config.key) ? join(config.key, '.') : config.key
     });
+
+    this.activeValueOptionsRequests = {};
 
     this.resetFilters();
   }
@@ -924,18 +925,11 @@ export default class Column {
 
     if (valueOptionsRequest) {
       if (this.getParentKey()) {
-        if (
-          this.activeValueOptionsRequest &&
-          !isEqual(
-            this.activeValueOptionsRequest.parentFilteredValue,
-            parentFilteredValue
-          )
-        ) {
-          this.activeValueOptionsRequest.cancel();
-          this.activeValueOptionsRequest = null;
+        if (this.activeValueOptionsRequests[parentFilteredValue]) {
+          return this.activeValueOptionsRequests[parentFilteredValue];
         }
         if (
-          !this.activeValueOptionsRequest &&
+          !this.activeValueOptionsRequests[parentFilteredValue] &&
           !isUndefined(parentFilteredValue)
         ) {
           let promise;
@@ -951,7 +945,7 @@ export default class Column {
                 });
               })
             ).then(() => {
-              this.activeValueOptionsRequest = null;
+              this.activeValueOptionsRequests[parentFilteredValue] = null;
             });
           } else {
             promise = valueOptionsRequest(parentFilteredValue).then(result => {
@@ -959,21 +953,24 @@ export default class Column {
                 parentFilteredValue,
                 generateFilters(result)
               );
-              this.activeValueOptionsRequest = null;
+              this.activeValueOptionsRequests[parentFilteredValue] = null;
             });
           }
-          this.activeValueOptionsRequest = makeCancelablePromise(promise);
-          this.activeValueOptionsRequest.parentFilteredValue = parentFilteredValue;
+          this.activeValueOptionsRequests[parentFilteredValue] = promise;
 
-          return this.activeValueOptionsRequest;
+          return this.activeValueOptionsRequests[parentFilteredValue];
         }
-      } else if (!this.activeValueOptionsRequest) {
-        this.activeValueOptionsRequest = valueOptionsRequest().then(result => {
+      } else if (!this.activeValueOptionsRequests[parentFilteredValue]) {
+        this.activeValueOptionsRequests[
+          parentFilteredValue
+        ] = valueOptionsRequest().then(result => {
           this.filters = generateFilters(result);
-          this.activeValueOptionsRequest = null;
+          this.activeValueOptionsRequests[parentFilteredValue] = null;
         });
 
-        return this.activeValueOptionsRequest;
+        return this.activeValueOptionsRequests[parentFilteredValue];
+      } else {
+        return this.activeValueOptionsRequests[parentFilteredValue];
       }
     }
 

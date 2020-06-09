@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import {
   Table,
   Pagination,
-  message,
   Card,
   Spin,
   Popover,
@@ -44,7 +43,7 @@ import TableType from '../schema/Table';
 import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
-import showError from '../utils/showError';
+import visiblePromise from '../utils/visiblePromise';
 import './RecordsPage.less';
 
 const { Column } = Table;
@@ -292,31 +291,19 @@ class RecordsPage extends React.PureComponent {
     reload = false,
     onComplete
   }) => {
-    let hide;
-    if (loadingMessage) {
-      hide = message.loading(loadingMessage, 0);
-    }
-
-    try {
-      const result = await promise;
-      if (hide) {
-        hide();
+    await visiblePromise({
+      promise,
+      loadingMessage,
+      throwError,
+      onComplete: ({ result }) => {
+        if (isFunction(onComplete)) {
+          onComplete({ result });
+        }
+        if (reload) {
+          this.fetch();
+        }
       }
-      if (isFunction(onComplete)) {
-        onComplete({ result });
-      }
-    } catch (e) {
-      if (hide) {
-        hide();
-      }
-      showError(e.message);
-      if (throwError) {
-        throw e;
-      }
-    }
-    if (reload) {
-      this.fetch();
-    }
+    });
   };
 
   fetch = async () => {

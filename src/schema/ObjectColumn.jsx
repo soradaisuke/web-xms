@@ -18,6 +18,14 @@ export default class ObjectColumn extends Column {
     return this.columns;
   }
 
+  resetFilters() {
+    super.resetFilters();
+
+    if (this.columns && this.columns.size) {
+      this.columns.forEach(column => column.resetFilters());
+    }
+  }
+
   // eslint-disable-next-line class-methods-use-this
   formatFormSubmitValue(v) {
     if (isString(v)) {

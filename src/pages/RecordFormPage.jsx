@@ -8,6 +8,7 @@ import Page from './Page';
 import RecordForm from '../components/RecordForm';
 import TableActions from '../actions/TableActions';
 import './RecordsPage.less';
+import visiblePromise from '../utils/visiblePromise';
 
 class RecordFormPage extends React.PureComponent {
   static displayName = 'RecordFormPage';
@@ -82,7 +83,12 @@ class RecordFormPage extends React.PureComponent {
       }
     } = this.props;
     const handler = action.getHandler({ create, edit });
-    return handler({ body, id });
+    return visiblePromise({
+      promise: handler({ body, id }),
+      loadingMessage: action.getHandlingMessage(),
+      successMessage: '保存成功',
+      throwError: true
+    });
   };
 
   onRef = ref => {

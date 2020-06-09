@@ -25,12 +25,6 @@ export default class DynamicItem extends React.PureComponent {
     disabled: false
   };
 
-  constructor(props) {
-    super(props);
-
-    props.columns.forEach(column => column.resetFilters());
-  }
-
   componentDidMount() {
     this.calculateInitialValue();
   }

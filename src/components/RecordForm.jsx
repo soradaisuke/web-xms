@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, message } from 'antd';
+import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
@@ -14,7 +14,6 @@ import {
   keys,
   concat
 } from 'lodash';
-import showError from '../utils/showError';
 
 const formItemLayout = {
   labelCol: {
@@ -126,19 +125,14 @@ class RecordForm extends React.PureComponent {
               }
             }
           });
-          const hide = message.loading('保存中...', 0);
           try {
             if (isFunction(customOnOk)) {
               await customOnOk(formatValues);
             } else {
               await onOk(formatValues);
             }
-            hide();
-            message.success('保存成功');
             resolve(true);
           } catch (e) {
-            hide();
-            showError(e.message);
             resolve(false);
           }
         } else {
