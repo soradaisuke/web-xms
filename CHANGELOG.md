@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-4...v2.14.0-5) (2020-06-09)
+
+
+### Bug Fixes
+
+* **NoTicket:** 页面表单和modal表单显示loading和error行为改成一致；动态增减表单项里的columns的filters错误 ([9abedb5](https://git2.qingtingfm.com/zhibo/xms/commit/9abedb564edb3db72166fda6b3c0c94361e50cce))
+
 ## [2.14.0-4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-3...v2.14.0-4) (2020-06-09)
 
 
