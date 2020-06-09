@@ -133,14 +133,14 @@ class RecordForm extends React.PureComponent {
             } else {
               await onOk(formatValues);
             }
+            hide();
+            message.success('保存成功');
+            resolve(true);
           } catch (e) {
             hide();
             showError(e.message);
             resolve(false);
           }
-          hide();
-          message.success('保存成功');
-          resolve(true);
         } else {
           reject();
         }
