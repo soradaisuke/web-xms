@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-4](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-3...v2.14.0-4) (2020-06-09)
+
+
+### Bug Fixes
+
+* **QTDP-411:** 新建页面提交后后端报错的同时前端提示了“提交成功” ([bba546b](https://git2.qingtingfm.com/zhibo/xms/commit/bba546b37499cd74f1af7ccbbc40e91e0953ee1f))
+
 ## [2.14.0-3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-2...v2.14.0-3) (2020-06-09)
 
 
