@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-3](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-2...v2.14.0-3) (2020-06-09)
+
+
+### Features
+
+* **QTLIVE-1202:** record和records传入自定义组件 ([9ed7b97](https://git2.qingtingfm.com/zhibo/xms/commit/9ed7b97fe94604d5b4fddd16937d002a656cfc28))
+
+
+### Bug Fixes
+
+* **QTDP-401:** 动态formItem UI修改 & form页面操作成功返回上一页 & 创建、编辑操作中提示 & form表单每次都resetFilters ([a43914b](https://git2.qingtingfm.com/zhibo/xms/commit/a43914b8ea232892fc4e9329e63bfa9310c312e0))
+
 ## [2.14.0-2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-1...v2.14.0-2) (2020-06-08)
 
 
