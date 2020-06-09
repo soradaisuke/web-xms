@@ -25,6 +25,12 @@ export default class DynamicItem extends React.PureComponent {
     disabled: false
   };
 
+  constructor(props) {
+    super(props);
+
+    props.columns.forEach(column => column.resetFilters());
+  }
+
   componentDidMount() {
     this.calculateInitialValue();
   }
@@ -94,7 +100,10 @@ export default class DynamicItem extends React.PureComponent {
                   value: columnValue,
                   values: value
                 }),
-              value: get(value, column.getFormKey()),
+              [column.getFormFiledValuePropName()]: get(
+                value,
+                column.getFormKey()
+              ),
               onChange: newValue =>
                 this.onChange({
                   column,
@@ -139,13 +148,14 @@ export default class DynamicItem extends React.PureComponent {
             /* eslint-disable-next-line react/no-array-index-key */
             <Card key={i} className="dynamic-item-card">
               <Popconfirm
-                title="确认重置全部筛选项?"
+                title="确认删除该项?"
+                placement="left"
+                disabled={disabled}
                 onConfirm={() => this.remove(i)}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 <Button
-                  type="danger"
-                  icon="delete"
+                  icon="close"
                   shape="circle"
                   className="dynamic-delete-button"
                   disabled={disabled}
@@ -155,7 +165,7 @@ export default class DynamicItem extends React.PureComponent {
             </Card>
           ))}
         <Button
-          type="primary"
+          type="dashed"
           className="dynamic-add-button"
           onClick={this.add}
           disabled={disabled || size(value) > max}

@@ -111,11 +111,16 @@ class RecordFormPage extends React.PureComponent {
   };
 
   onClickSubmit = () => {
+    const { history } = this.props;
     if (this.form) {
       Modal.confirm({
         title: '确认提交？',
         onOk: () => {
-          this.form.onOk();
+          this.form.onOk().then(isOk => {
+            if (isOk) {
+              history.goBack();
+            }
+          });
         }
       });
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'antd';
+import { Form, message } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import {
@@ -92,6 +92,14 @@ class RecordForm extends React.PureComponent {
     user: null
   };
 
+  constructor(props) {
+    super(props);
+
+    if (props.columns) {
+      props.columns.forEach(column => column.resetFilters());
+    }
+  }
+
   componentDidMount() {
     const { onRef } = this.props;
     if (isFunction(onRef)) {
@@ -118,6 +126,7 @@ class RecordForm extends React.PureComponent {
               }
             }
           });
+          const hide = message.loading('保存中...', 0);
           try {
             if (isFunction(customOnOk)) {
               await customOnOk(formatValues);
@@ -125,9 +134,12 @@ class RecordForm extends React.PureComponent {
               await onOk(formatValues);
             }
           } catch (e) {
+            hide();
             showError(e.message);
             resolve(false);
           }
+          hide();
+          message.success('保存成功');
           resolve(true);
         } else {
           reject();
