@@ -16,7 +16,8 @@ import {
 } from 'lodash';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
-import { Button, Form, Radio, Checkbox } from 'antd';
+import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Radio, Checkbox, Form } from 'antd';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
 import TreeFilter from '../components/TreeFilter';
@@ -29,10 +30,13 @@ const FormItem = Form.Item;
 
 function generateValidOptions(options, disableKey) {
   if (options && options.length > 0) {
-    return map(filter(options, o => !disableKey || !get(o, disableKey)), o => ({
-      ...o,
-      children: generateValidOptions(o.children)
-    }));
+    return map(
+      filter(options, o => !disableKey || !get(o, disableKey)),
+      o => ({
+        ...o,
+        children: generateValidOptions(o.children)
+      })
+    );
   }
 
   return options;
@@ -365,7 +369,7 @@ export default class Column {
 
     if (isArray(value)) {
       return (
-        <React.Fragment>
+        <>
           {map(value, v => (
             <React.Fragment key={v}>
               {this.renderInTableValueDefault({
@@ -376,7 +380,7 @@ export default class Column {
               <br />
             </React.Fragment>
           ))}
-        </React.Fragment>
+        </>
       );
     }
 
@@ -431,7 +435,7 @@ export default class Column {
         <Button
           type="primary"
           onClick={confirm}
-          icon="search"
+          icon={<SearchOutlined />}
           size="small"
           style={{ width: 90, marginRight: 8 }}
         >
@@ -464,7 +468,7 @@ export default class Column {
           <Button
             type="primary"
             onClick={confirm}
-            icon="filter"
+            icon={<FilterOutlined />}
             size="small"
             style={{ width: 90, marginRight: 8 }}
           >
@@ -658,7 +662,7 @@ export default class Column {
           })}
           options={generateAntdOptions(options)}
           buttonStyle="solid"
-          {...formComponentProps || {}}
+          {...(formComponentProps || {})}
         />
       );
     } else {
@@ -673,7 +677,7 @@ export default class Column {
           })}
           column={this}
           parentValue={parentValue}
-          {...formComponentProps || {}}
+          {...(formComponentProps || {})}
         />
       );
     }
@@ -722,7 +726,7 @@ export default class Column {
     isFilter = false,
     formComponentProps
   }) {
-    const { getFieldsValue, getFieldDecorator } = form || {};
+    const { getFieldsValue } = form || {};
 
     const key = this.getFormKey();
     const values = getFieldsValue ? getFieldsValue() : null;
@@ -793,14 +797,14 @@ export default class Column {
       : this.getFormRules().toJS();
     return (
       <FormItem
+        validateFirst
         key={key}
+        name={key}
         label={hideFormLabel ? '' : this.getTitle()}
         extra={this.getFormHint()}
-      >
-        {getFieldDecorator(key, {
-          initialValue,
-          validateFirst: true,
-          onChange: this.childColumn
+        initialValue={initialValue}
+        onChange={
+          this.childColumn
             ? () => {
                 forEach(this.childColumn, childColumn => {
                   if (!childColumn.canSelectMutipleInForm()) {
@@ -810,17 +814,19 @@ export default class Column {
                   }
                 });
               }
-            : null,
-          rules: [
-            {
-              required: this.isRequiredInForm(),
-              message: `${this.getTitle()}不能为空`
-            },
-            ...this.getFormDefaultRules(),
-            ...rules
-          ],
-          valuePropName: this.getFormFiledValuePropName()
-        })(children)}
+            : null
+        }
+        rules={[
+          {
+            required: this.isRequiredInForm(),
+            message: `${this.getTitle()}不能为空`
+          },
+          ...this.getFormDefaultRules(),
+          ...rules
+        ]}
+        valuePropName={this.getFormFiledValuePropName()}
+      >
+        {children}
       </FormItem>
     );
   }
@@ -886,7 +892,7 @@ export default class Column {
 
     if (isArray(value)) {
       return (
-        <React.Fragment>
+        <>
           {map(value, v => (
             <React.Fragment key={v}>
               {this.renderInDescriptionDefault({
@@ -896,7 +902,7 @@ export default class Column {
               <br />
             </React.Fragment>
           ))}
-        </React.Fragment>
+        </>
       );
     }
 

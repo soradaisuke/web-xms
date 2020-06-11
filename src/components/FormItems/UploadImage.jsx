@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
 import { generateDeviceId } from '@qt/web-core';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { Upload, Icon, Col, Row, Modal } from 'antd';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Upload, Col, Row, Modal } from 'antd';
 import { wrappedUploadImage as uploadImage } from '../../utils/uploadFile';
 import getImageSize from '../../utils/getImageSize';
 import showError from '../../utils/showError';
@@ -48,6 +50,7 @@ export default class UploadImage extends React.PureComponent {
   constructor(props) {
     super(props);
     const { aspect } = props;
+    // eslint-disable-next-line react/state-in-constructor
     this.state = {
       cropParameter: {
         crop: {
@@ -317,7 +320,7 @@ export default class UploadImage extends React.PureComponent {
     } = this.state;
     const uploadButton = (
       <div>
-        <Icon type={imageLoading || fileLoading ? 'loading' : 'plus'} />
+        {imageLoading || fileLoading ? <LoadingOutlined /> : <PlusOutlined />}
         <div className="ant-upload-text">上传</div>
       </div>
     );

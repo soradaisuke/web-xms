@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
+import { FilterOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Table,
   Pagination,
   Card,
   Spin,
   Popover,
-  Icon,
   Button,
   Popconfirm,
   Row,
@@ -74,7 +75,8 @@ class RecordsPage extends React.PureComponent {
     sort: PropTypes.string,
     total: PropTypes.number,
     user: PropTypes.instanceOf(Immutable.Map),
-    paginationComponentProps: PropTypes.object // eslint-disable-line react/forbid-prop-types
+    paginationComponentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
+    tableScroll: PropTypes.object // eslint-disable-line react/forbid-prop-types,
   };
 
   static defaultProps = {
@@ -89,7 +91,8 @@ class RecordsPage extends React.PureComponent {
     total: 0,
     inline: false,
     user: null,
-    paginationComponentProps: {}
+    paginationComponentProps: {},
+    tableScroll: null
   };
 
   static showTotal(total, range) {
@@ -98,14 +101,6 @@ class RecordsPage extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      records: Immutable.List(),
-      dataSource: [],
-      selectedRowKeys: [],
-      pendingFilter: {},
-      selectedRows: []
-    };
 
     props.table.columns.forEach(column => {
       column.resetFilters();
@@ -122,6 +117,14 @@ class RecordsPage extends React.PureComponent {
 
     return null;
   }
+
+  state = {
+    records: Immutable.List(),
+    dataSource: [],
+    selectedRowKeys: [],
+    pendingFilter: {},
+    selectedRows: []
+  };
 
   componentDidMount() {
     this.fetch();
@@ -435,8 +438,7 @@ class RecordsPage extends React.PureComponent {
             isAutoTrigger
           });
           filterProps.filterIcon = filtered => (
-            <Icon
-              type="filter"
+            <FilterOutlined
               style={{ color: filtered ? '#1890ff' : undefined }}
             />
           );
@@ -463,7 +465,7 @@ class RecordsPage extends React.PureComponent {
             isAutoTrigger
           });
         filterProps.filterIcon = filtered => (
-          <Icon
+          <LegacyIcon
             type={column.getFilterIcon()}
             style={{ color: filtered ? '#1890ff' : undefined }}
           />
@@ -584,12 +586,12 @@ class RecordsPage extends React.PureComponent {
             action = this.renderAction(editAction, { record, column });
             if (action) {
               return (
-                <React.Fragment>
+                <>
                   {children}
                   <Popover content={action}>
-                    <Icon style={{ marginLeft: '1rem' }} type="info-circle" />
+                    <InfoCircleOutlined style={{ marginLeft: '1rem' }} />
                   </Popover>
-                </React.Fragment>
+                </>
               );
             }
           }
@@ -668,11 +670,12 @@ class RecordsPage extends React.PureComponent {
           }}
         >
           {!filterMultiple &&
-            [{ value: fixedFilterValue, label: '全部' }, ...options].map(
-              ({ label, value }) => (
-                <Radio.Button value={value}>{label}</Radio.Button>
-              )
-            )}
+            [
+              { value: fixedFilterValue, label: '全部' },
+              ...options
+            ].map(({ label, value }) => (
+              <Radio.Button value={value}>{label}</Radio.Button>
+            ))}
         </FilterComponent>
       </Row>
     );
@@ -889,7 +892,7 @@ class RecordsPage extends React.PureComponent {
 
     const hasFilter = table.getHasFilter();
     return (
-      <React.Fragment>
+      <>
         {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
           {this.renderExpandFilterGroup()}
@@ -950,7 +953,7 @@ class RecordsPage extends React.PureComponent {
             onShowSizeChange={this.onChangePage}
           />
         </Group>
-      </React.Fragment>
+      </>
     );
   }
 

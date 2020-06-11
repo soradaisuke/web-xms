@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { size, remove, map, set, get, unset, forEach } from 'lodash';
-import { Icon, Row, Card, Button, Col, Popconfirm } from 'antd';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Row, Card, Button, Col, Popconfirm } from 'antd';
 import './DynamicItem.less';
 
 export default class DynamicItem extends React.PureComponent {
@@ -149,7 +150,7 @@ export default class DynamicItem extends React.PureComponent {
                 getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 <Button
-                  icon="close"
+                  icon={<CloseOutlined />}
                   shape="circle"
                   className="dynamic-delete-button"
                   disabled={disabled}
@@ -164,7 +165,7 @@ export default class DynamicItem extends React.PureComponent {
           onClick={this.add}
           disabled={disabled || size(value) > max}
         >
-          <Icon type="plus" />
+          <PlusOutlined />
           添加
         </Button>
       </Col>

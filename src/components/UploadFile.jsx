@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { makeCancelablePromise } from '@qt/web-core';
-import { Upload, Icon, message, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { Upload, message, Button } from 'antd';
 import { wrappedUploadFile as uploadFile } from '../utils/uploadFile';
 
 class UploadFile extends React.PureComponent {
@@ -75,7 +76,7 @@ class UploadFile extends React.PureComponent {
         {...this.props}
       >
         <Button type="primary" loading={loading}>
-          <Icon type="upload" />
+          <UploadOutlined />
           {title}
         </Button>
       </Upload>
