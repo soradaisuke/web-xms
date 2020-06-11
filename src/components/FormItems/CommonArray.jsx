@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { size, remove } from 'lodash';
-import { Icon, Row, Input, Button, Col } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { Row, Input, Button, Col } from 'antd';
 
 export default class CommonArray extends React.PureComponent {
   static displayName = 'CommonArray';
@@ -82,9 +83,8 @@ export default class CommonArray extends React.PureComponent {
                 {...formItemProps}
               />
               {size(value) > 1 && (
-                <Icon
+                <MinusCircleOutlined
                   style={{ fontSize: '18px', color: 'rgb(255, 0, 0)' }}
-                  type="minus-circle-o"
                   onClick={() => this.remove(i)}
                 />
               )}
@@ -96,7 +96,7 @@ export default class CommonArray extends React.PureComponent {
             onClick={this.add}
             style={{ marginTop: '10px', width: '60%' }}
           >
-            <Icon type="plus" />
+            <PlusOutlined />
             添加
           </Button>
         )}

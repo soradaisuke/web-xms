@@ -4,6 +4,12 @@ import Player from 'react-player';
 import { connect } from 'dva';
 import classNames from 'classnames';
 import shortId from 'shortid';
+import {
+  MinusOutlined,
+  PlusOutlined,
+  PauseOutlined,
+  CaretRightOutlined
+} from '@ant-design/icons';
 import { Button, Radio, Progress } from 'antd';
 import './InlineAudioPlayer.less';
 
@@ -103,8 +109,8 @@ class InlineAudioPlayer extends React.PureComponent {
       <div className={classNames('inline-audio-player-wrapper', className)}>
         {showChangeProgress && (
           <ButtonGroup size="small">
-            <Button onClick={this.decline} icon="minus" />
-            <Button onClick={this.increase} icon="plus" />
+            <Button onClick={this.decline} icon={<MinusOutlined />} />
+            <Button onClick={this.increase} icon={<PlusOutlined />} />
           </ButtonGroup>
         )}
         <Player
@@ -131,7 +137,7 @@ class InlineAudioPlayer extends React.PureComponent {
               type={playing ? '' : 'primary'}
               shape="circle"
               onClick={this.onClickPlay}
-              icon={playing ? 'pause' : 'caret-right'}
+              icon={playing ? <PauseOutlined /> : <CaretRightOutlined />}
             />
           )}
         />
@@ -167,7 +173,4 @@ const mapDispatchToProps = dispatch => ({
     })
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InlineAudioPlayer);
+export default connect(mapStateToProps, mapDispatchToProps)(InlineAudioPlayer);

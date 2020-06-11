@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Img } from '@qt/react-core';
 import { generateUpYunImageUrl } from '@qt/web-core';
+import { RedoOutlined, UndoOutlined } from '@ant-design/icons';
 import { Col, Slider, Switch, Button } from 'antd';
 import ActivatorModal from './ActivatorModal';
 import './ZoomImg.less';
@@ -123,14 +124,14 @@ export default class ZoomImg extends React.PureComponent {
                 className="action"
                 type="primary"
                 shape="circle"
-                icon="undo"
+                icon={<UndoOutlined />}
                 onClick={this.onClickRotateLeft}
               />
               <Button
                 className="action"
                 type="primary"
                 shape="circle"
-                icon="redo"
+                icon={<RedoOutlined />}
                 onClick={this.onClickRotateRight}
               />
             </>

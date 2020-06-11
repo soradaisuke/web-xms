@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { trim } from 'lodash';
-import { Icon, Row, message, Tag, Input } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Row, message, Tag, Input } from 'antd';
 
 export default class Tags extends React.PureComponent {
   static displayName = 'Tags';
@@ -83,7 +84,7 @@ export default class Tags extends React.PureComponent {
             onClick={this.showInput}
             style={{ background: '#fff', borderStyle: 'dashed' }}
           >
-            <Icon type="plus" />
+            <PlusOutlined />
             添加标签
           </Tag>
         )}

@@ -1,81 +1,64 @@
-import React from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Input } from 'antd';
+import { Input, Form } from 'antd';
 import { makeCancelablePromise } from '@qt/web-core';
 import ActivatorModal from './ActivatorModal';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-class InputModal extends React.PureComponent {
-  static displayName = 'InputModal';
-
-  static propTypes = {
-    ...ActivatorModal.propTypes,
-    form: PropTypes.shape({
-      validateFields: PropTypes.func.isRequired,
-      getFieldDecorator: PropTypes.func.isRequired,
-      setFieldsValue: PropTypes.func.isRequired
-    }).isRequired,
-    required: PropTypes.bool
-  };
-
-  static defaultProps = {
-    required: true
-  };
-
-  componentWillUnmount() {
-    if (this.onOkHandler) {
-      this.onOkHandler.cancel();
-    }
-  }
-
-  onOk = async () => {
-    this.onOkHandler = makeCancelablePromise(
-      new Promise((resolve, reject) => {
-        const { form, onOk } = this.props;
-        form.validateFields((err, { input }) => {
-          if (!err) {
-            resolve(onOk(input));
-          }
-          reject(err);
-        });
-      })
+function InputModal({ activator, title, required, onOk }) {
+  const [form] = Form.useForm();
+  const onOkHandler = useRef();
+  const onOkCallback = useCallback(async () => {
+    onOkHandler.current = makeCancelablePromise(
+      form.validateFields().then(({ input }) => onOk(input))
     );
-    await this.onOkHandler;
-  };
+    await onOkHandler.current;
+  }, [form, onOk]);
+  const onVisibleChange = useCallback(() => form.resetFields(['input']), [
+    form
+  ]);
 
-  onVisibleChange = () => {
-    const { form } = this.props;
-    form.resetFields(['input']);
-  };
+  useEffect(() => () => onOkHandler.current?.cancel(), []);
 
-  render() {
-    const { activator, title, form, required } = this.props;
-    return (
-      <ActivatorModal
-        activator={activator}
-        title={title}
-        onOk={this.onOk}
-        onVisibleChange={this.onVisibleChange}
-      >
-        <Form>
-          <FormItem key="input">
-            {form.getFieldDecorator('input', {
-              initialValue: '',
-              rules: [
-                {
-                  required,
-                  message: '输入不能为空',
-                  whitespace: true
-                }
-              ]
-            })(<TextArea autosize placeholder="请输入" />)}
-          </FormItem>
-        </Form>
-      </ActivatorModal>
-    );
-  }
+  return (
+    <ActivatorModal
+      activator={activator}
+      title={title}
+      onOk={onOkCallback}
+      onVisibleChange={onVisibleChange}
+    >
+      <Form form={form}>
+        <FormItem
+          key="input"
+          name="input"
+          initialValue=""
+          rules={[
+            {
+              required,
+              message: '输入不能为空',
+              whitespace: true
+            }
+          ]}
+        >
+          <TextArea autosize placeholder="请输入" />
+        </FormItem>
+      </Form>
+    </ActivatorModal>
+  );
 }
 
-export default Form.create()(InputModal);
+InputModal.propTypes = {
+  activator: PropTypes.node.isRequired,
+  onOk: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  required: PropTypes.bool
+};
+
+InputModal.defaultProps = {
+  title: '',
+  required: true
+};
+
+export default React.memo(InputModal);
