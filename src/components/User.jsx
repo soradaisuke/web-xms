@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import { Avatar, Menu, Dropdown, Icon } from 'antd';
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Menu, Dropdown } from 'antd';
 import { connect } from 'dva';
 import { ClickableDiv } from '@qt/react-core';
 import './User.less';
@@ -34,9 +35,13 @@ class User extends React.PureComponent {
         }
       >
         <div className="user-wrapper">
-          <Avatar className="avatar" src={user.get('avatar')} icon="user" />
+          <Avatar
+            className="avatar"
+            src={user.get('avatar')}
+            icon={<UserOutlined />}
+          />
           {user.get('nickname')}
-          <Icon type="down" />
+          <DownOutlined />
         </div>
       </Dropdown>
     );
@@ -54,7 +59,4 @@ const mapDispatchToProps = dispatch => ({
     })
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(User);
+export default connect(mapStateToProps, mapDispatchToProps)(User);

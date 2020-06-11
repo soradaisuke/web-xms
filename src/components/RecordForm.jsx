@@ -52,7 +52,10 @@ const generatePaths = object => {
     (result, key) => {
       const value = object[key];
       if (isPlainObject(value)) {
-        return concat(result, map(generatePaths(value), k => `${key}.${k}`));
+        return concat(
+          result,
+          map(generatePaths(value), k => `${key}.${k}`)
+        );
       }
       return concat(result, [key]);
     },
@@ -64,11 +67,6 @@ class RecordForm extends React.PureComponent {
   static displayName = 'RecordForm';
 
   static propTypes = {
-    form: PropTypes.shape({
-      validateFields: PropTypes.func.isRequired,
-      getFieldDecorator: PropTypes.func.isRequired,
-      resetFields: PropTypes.func.isRequired
-    }).isRequired,
     onOk: PropTypes.func.isRequired,
     renderActions: PropTypes.func,
     onRef: PropTypes.func,
@@ -91,6 +89,8 @@ class RecordForm extends React.PureComponent {
     user: null
   };
 
+  form = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -106,45 +106,38 @@ class RecordForm extends React.PureComponent {
     }
   }
 
-  onOk = async customOnOk => {
-    const { form, onOk, columns } = this.props;
+  onOk = customOnOk => {
+    const { onOk, columns } = this.props;
 
-    return new Promise((resolve, reject) => {
-      form.validateFields(async (err, values) => {
-        if (!err) {
-          const formatValues = {};
-          forEach(generatePaths(values), key => {
-            const value = get(values, key);
-            const column = columns.find(c => c.getFormKey() === key);
-            if (column) {
-              const generateSubmitValue = column.getFormGenerateSubmitValue();
-              if (generateSubmitValue && isFunction(generateSubmitValue)) {
-                set(formatValues, key, generateSubmitValue(value));
-              } else {
-                set(formatValues, key, column.formatFormSubmitValue(value));
-              }
-            }
-          });
-          try {
-            if (isFunction(customOnOk)) {
-              await customOnOk(formatValues);
-            } else {
-              await onOk(formatValues);
-            }
-            resolve(true);
-          } catch (e) {
-            resolve(false);
+    return this.form.current.validateFields().then(async values => {
+      const formatValues = {};
+      forEach(generatePaths(values), key => {
+        const value = get(values, key);
+        const column = columns.find(c => c.getFormKey() === key);
+        if (column) {
+          const generateSubmitValue = column.getFormGenerateSubmitValue();
+          if (generateSubmitValue && isFunction(generateSubmitValue)) {
+            set(formatValues, key, generateSubmitValue(value));
+          } else {
+            set(formatValues, key, column.formatFormSubmitValue(value));
           }
-        } else {
-          reject();
         }
       });
+      try {
+        if (isFunction(customOnOk)) {
+          await customOnOk(formatValues);
+        } else {
+          await onOk(formatValues);
+        }
+        return true;
+      } catch (e) {
+        return false;
+      }
     });
   };
 
   reset = () => {
-    const { form } = this.props;
-    return form.resetFields();
+    this.form.current.resetFields();
   };
 
   isEdit() {
@@ -156,30 +149,23 @@ class RecordForm extends React.PureComponent {
   }
 
   renderFormItem(column) {
-    const { user, form, record, checkVisibility } = this.props;
+    const { user, record, checkVisibility } = this.props;
 
     return column.renderInForm({
       user,
       record,
-      form,
+      form: this.form.current,
       checkVisibility,
       isEdit: this.isEdit()
     });
   }
 
   render() {
-    const {
-      user,
-      columns,
-      record,
-      form,
-      renderActions,
-      className
-    } = this.props;
-    const values = form.getFieldsValue();
+    const { user, columns, record, renderActions, className } = this.props;
+    const values = this.form.current ? this.form.current.getFieldsValue() : {};
 
     return (
-      <Form className={className} {...formItemLayout}>
+      <Form className={className} ref={this.form} {...formItemLayout}>
         {columns.map(column => this.renderFormItem(column))}
         {renderActions && (
           <Form.Item {...tailFormItemLayout}>
@@ -187,7 +173,7 @@ class RecordForm extends React.PureComponent {
               user,
               record,
               values,
-              form: this
+              form: this.form.current
             })}
           </Form.Item>
         )}
@@ -200,4 +186,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps)(Form.create()(RecordForm));
+export default connect(mapStateToProps)(RecordForm);

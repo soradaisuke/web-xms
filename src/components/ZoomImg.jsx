@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'glamor';
+import { ColumnWidthOutlined, ColumnHeightOutlined, RedoOutlined, UndoOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import { Row, Button } from 'antd';
 import Zoom from 'react-medium-image-zoom';
@@ -62,28 +63,28 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
           className="action"
           type="primary"
           shape="circle"
-          icon="column-width"
+          icon={<ColumnWidthOutlined />}
           onClick={scallXCallback}
         />
         <Button
           className="action"
           type="primary"
           shape="circle"
-          icon="column-height"
+          icon={<ColumnHeightOutlined />}
           onClick={scallYCallback}
         />
         <Button
           className="action"
           type="primary"
           shape="circle"
-          icon="undo"
+          icon={<UndoOutlined />}
           onClick={rotateCounterClockwiseCallback}
         />
         <Button
           className="action"
           type="primary"
           shape="circle"
-          icon="redo"
+          icon={RedoOutlined}
           onClick={rotateClockwiseCallback}
         />
       </Row>

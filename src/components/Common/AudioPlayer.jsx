@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Player from 'react-player';
 import classNames from 'classnames';
+import {
+  SoundOutlined,
+  PauseOutlined,
+  CaretRightOutlined
+} from '@ant-design/icons';
 import { Button, Slider, Radio } from 'antd';
 import { formatDuration } from '@qt/web-core';
 import { ClickableDiv } from '@qt/react-core';
@@ -170,6 +175,7 @@ export default class AudioPlayer extends React.PureComponent {
             style={{ width: `${currentPlayed * 100}%` }}
           />
           <button
+            aria-label="Seek"
             type="button"
             className="audio-player-handle"
             style={{ left: `${currentPlayed * 100}%` }}
@@ -181,7 +187,7 @@ export default class AudioPlayer extends React.PureComponent {
             type={playing ? '' : 'primary'}
             shape="circle"
             onClick={this.onClickPlay}
-            icon={playing ? 'pause' : 'caret-right'}
+            icon={playing ? <PauseOutlined /> : <CaretRightOutlined />}
           />
           <div className="audio-player-duration">
             {formatDuration({ seconds: playedSeconds })}/
@@ -201,7 +207,7 @@ export default class AudioPlayer extends React.PureComponent {
           )}
           {showVolume && (
             <div className="audio-player-sound">
-              <Button size="small" shape="circle" icon="sound" />
+              <Button size="small" shape="circle" icon={<SoundOutlined />} />
               <Slider
                 className="audio-player-sound-slider"
                 defaultValue={volume * 100}

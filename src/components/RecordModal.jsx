@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form } from 'antd';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import ActivatorModal from './ActivatorModal';
@@ -11,11 +10,6 @@ class RecordModal extends React.PureComponent {
 
   static propTypes = {
     children: PropTypes.node.isRequired,
-    form: PropTypes.shape({
-      validateFields: PropTypes.func.isRequired,
-      getFieldDecorator: PropTypes.func.isRequired,
-      resetFields: PropTypes.func.isRequired
-    }).isRequired,
     onOk: PropTypes.func.isRequired,
     checkVisibility: PropTypes.bool,
     user: PropTypes.instanceOf(Immutable.Map),
@@ -81,4 +75,4 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps)(Form.create()(RecordModal));
+export default connect(mapStateToProps)(RecordModal);
