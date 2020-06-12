@@ -236,9 +236,8 @@ function generateRecordsPage(
     namespace,
     actions,
     table,
-    tableScroll,
     filterGroupTrigger,
-    tableComponentProps = {},
+    tableProps = {},
     paginationProps = {}
   },
   component,
@@ -436,9 +435,8 @@ function generateRecordsPage(
         filterGroupTrigger={filterGroupTrigger}
         component={component}
         table={table}
-        tableComponentProps={tableComponentProps}
+        tableProps={tableProps}
         actions={actions}
-        tableScroll={tableScroll}
       />
     );
   }
