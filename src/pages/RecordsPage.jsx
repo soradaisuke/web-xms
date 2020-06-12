@@ -75,7 +75,7 @@ class RecordsPage extends React.PureComponent {
     sort: PropTypes.string,
     total: PropTypes.number,
     user: PropTypes.instanceOf(Immutable.Map),
-    paginationComponentProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
+    paginationProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
     tableScroll: PropTypes.object // eslint-disable-line react/forbid-prop-types,
   };
 
@@ -91,7 +91,7 @@ class RecordsPage extends React.PureComponent {
     total: 0,
     inline: false,
     user: null,
-    paginationComponentProps: {},
+    paginationProps: {},
     tableScroll: null
   };
 
@@ -868,7 +868,7 @@ class RecordsPage extends React.PureComponent {
       actions,
       tableScroll,
       tableComponentProps,
-      paginationComponentProps
+      paginationProps
     } = this.props;
 
     const multipleActions = actions
@@ -944,7 +944,7 @@ class RecordsPage extends React.PureComponent {
             showQuickJumper
             showSizeChanger
             showTotal={RecordsPage.showTotal}
-            {...paginationComponentProps}
+            {...paginationProps}
             className="ant-table-pagination"
             total={total}
             current={page}
