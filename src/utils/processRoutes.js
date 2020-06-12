@@ -1,12 +1,14 @@
 import React from 'react';
 import { startsWith, isFunction, filter } from 'lodash';
 import dynamic from 'dva/dynamic';
-import dynamicRecordsComponent from './dynamicRecordsComponent';
-import dynamicRecordComponent from './dynamicRecordComponent';
+import {
+  dynamicRecordsComponent,
+  dynamicRecordComponent,
+  dynamicRecordFormComponent
+} from './dynamicComponents';
 import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
-import dynamicRecordFormComponent from './dynamicRecordFormPage';
 import processFormConfig from './processFormConfig';
 
 function isClassComponent(component) {
