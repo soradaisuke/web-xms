@@ -16,10 +16,13 @@ class RecordFormPage extends React.PureComponent {
   static propTypes = {
     actions: PropTypes.instanceOf(TableActions).isRequired,
     history: PropTypes.shape({
-      push: PropTypes.func.isRequired
+      push: PropTypes.func.isRequired,
+      goBack: PropTypes.func.isRequired
     }).isRequired,
     match: PropTypes.shape({
-      params: PropTypes.shape({}).isRequired
+      params: PropTypes.shape({
+        id: PropTypes.string.isRequired
+      }).isRequired
     }).isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
     reset: PropTypes.func,
@@ -62,10 +65,15 @@ class RecordFormPage extends React.PureComponent {
   }
 
   fetch = async () => {
-    const { fetch } = this.props;
+    const {
+      match: {
+        params: { id }
+      },
+      fetch
+    } = this.props;
     if (fetch) {
       this.setState({ isLoading: true, error: null });
-      fetch()
+      fetch({ id })
         .then(() => {
           this.setState({ isLoading: false, error: null });
         })
