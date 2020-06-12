@@ -236,11 +236,10 @@ function generateRecordsPage(
     namespace,
     actions,
     table,
-    defaultPageSize = 10,
     tableScroll,
     filterGroupTrigger,
     tableComponentProps = {},
-    paginationComponentProps = {}
+    paginationProps = {}
   },
   component,
   inline
@@ -274,7 +273,10 @@ function generateRecordsPage(
       queries.page
     ]);
     const pagesize = useMemo(
-      () => (queries.pagesize ? toInteger(queries.pagesize) : defaultPageSize),
+      () =>
+        queries.pagesize
+          ? toInteger(queries.pagesize)
+          : paginationProps.defaultPageSize ?? 10,
       [queries.pagesize]
     );
     const sort = useMemo(() => queries.sort || '', [queries.sort]);
@@ -317,8 +319,8 @@ function generateRecordsPage(
 
     const dispatch = useDispatch();
 
-    // eslint-disable-next-line no-shadow
     const fetch = useCallback(
+      // eslint-disable-next-line no-shadow
       ({ page, pagesize, sort, filter = {} }) => {
         if (
           (table.getFixedSortOrder() && table.getFixedSortOrder() !== sort) ||
@@ -376,8 +378,8 @@ function generateRecordsPage(
       ]
     );
 
-    // eslint-disable-next-line no-shadow
     const updatePage = useCallback(
+      // eslint-disable-next-line no-shadow
       ({ page, pagesize, sort, filter }) => {
         const newFilter = { ...(filter || {}) };
         forEach(newFilter, (v, key) => {
@@ -430,7 +432,7 @@ function generateRecordsPage(
         edit={edit}
         remove={remove}
         updatePage={updatePage}
-        paginationComponentProps={paginationComponentProps}
+        paginationProps={paginationProps}
         filterGroupTrigger={filterGroupTrigger}
         component={component}
         table={table}
