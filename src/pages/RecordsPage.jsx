@@ -60,7 +60,7 @@ class RecordsPage extends React.PureComponent {
     create: PropTypes.func.isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
     updatePage: PropTypes.func.isRequired,
-    tableComponentProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+    tableProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     match: PropTypes.shape({
       params: PropTypes.shape({}).isRequired
     }).isRequired,
@@ -75,8 +75,7 @@ class RecordsPage extends React.PureComponent {
     sort: PropTypes.string,
     total: PropTypes.number,
     user: PropTypes.instanceOf(Immutable.Map),
-    paginationProps: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
-    tableScroll: PropTypes.object // eslint-disable-line react/forbid-prop-types,
+    paginationProps: PropTypes.object // eslint-disable-line react/forbid-prop-types,
   };
 
   static defaultProps = {
@@ -91,8 +90,7 @@ class RecordsPage extends React.PureComponent {
     total: 0,
     inline: false,
     user: null,
-    paginationProps: {},
-    tableScroll: null
+    paginationProps: {}
   };
 
   static showTotal(total, range) {
@@ -866,8 +864,7 @@ class RecordsPage extends React.PureComponent {
       isLoading,
       user,
       actions,
-      tableScroll,
-      tableComponentProps,
+      tableProps,
       paginationProps
     } = this.props;
 
@@ -911,6 +908,8 @@ class RecordsPage extends React.PureComponent {
           )}
           <Table
             bordered
+            scroll={defaultTableScroll}
+            {...tableProps}
             components={{
               body: {
                 row: EditableTableRow,
@@ -918,8 +917,6 @@ class RecordsPage extends React.PureComponent {
               }
             }}
             rowClassName={() => 'editable-row'}
-            scroll={tableScroll || defaultTableScroll}
-            {...tableComponentProps}
             loading={isLoading}
             dataSource={dataSource}
             rowKey={table.getPrimaryKey()}
