@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-6](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-5...v2.14.0-6) (2020-06-15)
+
+
+### Bug Fixes
+
+* **NoTicket:** 上传图片去除图片元信息 ([dfe57ea](https://git2.qingtingfm.com/zhibo/xms/commit/dfe57eaa07544a0e6772d93e9a39b8692cd73f34))
+
 ## [2.14.0-5](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-4...v2.14.0-5) (2020-06-09)
 
 
