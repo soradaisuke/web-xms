@@ -170,11 +170,11 @@ export default class UploadImage extends React.PureComponent {
       cropParameter: { pixelCrop }
     } = this.state;
 
-    const upYunSyncPreprocessor = needCrop
+    const upYunSyncPreprocessor = `/strip/true${needCrop
       ? `/crop/${pixelCrop.width}x${pixelCrop.height}a${pixelCrop.x}a${
           pixelCrop.y
         }`
-      : '';
+      : ''}`;
 
     this.setState({
       imageLoading: true
