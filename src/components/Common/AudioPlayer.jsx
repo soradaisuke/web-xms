@@ -9,7 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Slider, Radio } from 'antd';
 import { formatDuration } from '@qt/web-core';
-import { ClickableDiv } from '@qt/react-core';
+import { ClickableDiv } from '@qt/react';
 import './AudioPlayer.less';
 
 export default class AudioPlayer extends React.PureComponent {
