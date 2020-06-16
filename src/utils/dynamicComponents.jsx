@@ -22,6 +22,7 @@ import {
 } from 'lodash';
 import { generateUri } from '@qt/web-core';
 import Immutable from 'immutable';
+import PageDataContext from '../contexts/PageDataContext';
 import showError from './showError';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
@@ -417,27 +418,29 @@ function generateRecordsPage(
     const remove = useRemove({ apiPath, namespace });
 
     return (
-      <RecordsPage
-        {...props}
-        records={records}
-        total={total}
-        isLoading={isLoading}
-        filter={filter}
-        page={page}
-        pagesize={pagesize}
-        sort={sort}
-        fetch={fetch}
-        create={create}
-        edit={edit}
-        remove={remove}
-        updatePage={updatePage}
-        paginationProps={paginationProps}
-        filterGroupTrigger={filterGroupTrigger}
-        component={component}
-        table={table}
-        tableProps={tableProps}
-        actions={actions}
-      />
+      <PageDataContext.Provider value={records}>
+        <RecordsPage
+          {...props}
+          records={records}
+          total={total}
+          isLoading={isLoading}
+          filter={filter}
+          page={page}
+          pagesize={pagesize}
+          sort={sort}
+          fetch={fetch}
+          create={create}
+          edit={edit}
+          remove={remove}
+          updatePage={updatePage}
+          paginationProps={paginationProps}
+          filterGroupTrigger={filterGroupTrigger}
+          component={component}
+          table={table}
+          tableProps={tableProps}
+          actions={actions}
+        />
+      </PageDataContext.Provider>
     );
   }
 
@@ -480,20 +483,22 @@ function generateRecordPage(
     const reset = useReset({ namespace });
 
     return (
-      <RecordPage
-        {...props}
-        layout={layout}
-        component={component}
-        table={table}
-        actions={actions}
-        bordered={bordered}
-        descriptionsColumn={descriptionsColumn}
-        record={record}
-        fetch={fetch}
-        edit={edit}
-        remove={remove}
-        reset={reset}
-      />
+      <PageDataContext.Provider value={record}>
+        <RecordPage
+          {...props}
+          layout={layout}
+          component={component}
+          table={table}
+          actions={actions}
+          bordered={bordered}
+          descriptionsColumn={descriptionsColumn}
+          record={record}
+          fetch={fetch}
+          edit={edit}
+          remove={remove}
+          reset={reset}
+        />
+      </PageDataContext.Provider>
     );
   }
 
@@ -529,18 +534,20 @@ function generateRecordFormPage({
     const reset = useReset({ namespace });
 
     return (
-      <RecordFormPage
-        {...props}
-        {...formPageProps}
-        actions={actions}
-        table={table}
-        record={record}
-        fetch={fetch}
-        create={create}
-        edit={edit}
-        remove={remove}
-        reset={reset}
-      />
+      <PageDataContext.Provider value={record}>
+        <RecordFormPage
+          {...props}
+          {...formPageProps}
+          actions={actions}
+          table={table}
+          record={record}
+          fetch={fetch}
+          create={create}
+          edit={edit}
+          remove={remove}
+          reset={reset}
+        />
+      </PageDataContext.Provider>
     );
   }
 
