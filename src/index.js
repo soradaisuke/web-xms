@@ -16,6 +16,10 @@ export TableTransfer from './components/TableTransfer';
 export AudioPlayer from './components/Common/AudioPlayer';
 export InputModal from './components/InputModal';
 
+// hooks
+export useUser from './hooks/useUser';
+export usePageData from './hooks/usePageData';
+
 // export Tags from './components/FormItems/Tags';
 // export CommonArray from './components/FormItems/CommonArray';
 // export Select from './components/FormItems/Select';
