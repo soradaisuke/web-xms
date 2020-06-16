@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
-import { connect } from 'dva';
 import dynamic from 'dva/dynamic';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
+import useUser from './hooks/useUser';
 import Menu from './components/Menu';
 import User from './components/User';
 import Header from './components/Header';
@@ -45,72 +46,74 @@ function getValidRoutes(routes, user) {
   );
 }
 
-// eslint-disable-next-line react/prop-types
-function RouterConfig({ history, app, user }) {
+function renderRoute({
+  path,
+  inline,
+  title,
+  breadcrumb,
+  routes: subRoutes,
+  component: Component
+}) {
+  const children = [];
+  if ((title || breadcrumb || Component) && !inline) {
+    const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
+
+    children.push(
+      <Route
+        exact
+        key={path}
+        path={path}
+        render={() => !!Component && <Component routes={inlineRoutes} />}
+      />
+    );
+  }
+  if (subRoutes && subRoutes.length > 0) {
+    return children.concat(subRoutes.map(route => renderRoute(route)));
+  }
+
+  return children;
+}
+
+function ConnectedRouter({ history, app }) {
+  const user = useUser();
+
   const {
     routes: unCheckRoutes,
-    config: { name, api = {} }
+    config: { name, api: { auth } = {} }
   } = app;
 
-  const { auth } = api;
+  const routes = useMemo(() => getValidRoutes(unCheckRoutes, user), [
+    unCheckRoutes,
+    user
+  ]);
+  const homeRoute = useMemo(() => find(routes, ({ path }) => path === '/'), [
+    routes
+  ]);
+  const firstAvaliableNonHomeRoutePath = useMemo(() => {
+    let nonHomeRoutePath;
 
-  const routes = getValidRoutes(unCheckRoutes, user);
-
-  function renderRoute({
-    path,
-    inline,
-    title,
-    breadcrumb,
-    routes: subRoutes,
-    component: Component
-  }) {
-    const children = [];
-    if ((title || breadcrumb || Component) && !inline) {
-      const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
-
-      children.push(
-        <Route
-          exact
-          key={path}
-          path={path}
-          render={() => (
-            <React.Fragment>
-              <Breadcrumb routes={routes} />
-              {!!Component && <Component routes={inlineRoutes} />}
-            </React.Fragment>
-          )}
-        />
-      );
-    }
-    if (subRoutes && subRoutes.length > 0) {
-      return children.concat(subRoutes.map(route => renderRoute(route)));
-    }
-
-    return children;
-  }
-
-  const homeRoute = find(routes, ({ path }) => path === '/');
-
-  let firstAvaliableNonHomeRoutePath;
-
-  function findFirstAvaliableNonHomeRoute({
-    path,
-    routes: subRoutes,
-    component
-  }) {
-    if (path !== '/' && !!component) {
-      firstAvaliableNonHomeRoutePath = path;
-    } else {
-      const nonInlineRoutes = subRoutes
-        ? filter(subRoutes, ({ inline }) => !inline)
-        : [];
-      if (nonInlineRoutes && nonInlineRoutes.length > 0) {
-        forEach(nonInlineRoutes, r => findFirstAvaliableNonHomeRoute(r));
+    function findFirstAvaliableNonHomeRoute({
+      path,
+      routes: subRoutes,
+      component
+    }) {
+      if (path !== '/' && !!component) {
+        nonHomeRoutePath = path;
+      } else {
+        const nonInlineRoutes = subRoutes
+          ? filter(subRoutes, ({ inline }) => !inline)
+          : [];
+        if (nonInlineRoutes && nonInlineRoutes.length > 0) {
+          forEach(nonInlineRoutes, r => findFirstAvaliableNonHomeRoute(r));
+        }
       }
+      return !nonHomeRoutePath;
     }
-    return !firstAvaliableNonHomeRoutePath;
-  }
-  forEach(routes, r => findFirstAvaliableNonHomeRoute(r));
+
+    forEach(routes, r => findFirstAvaliableNonHomeRoute(r));
+
+    return nonHomeRoutePath;
+  }, [routes]);
 
   return (
     <ConfigProvider locale={zhCN}>
@@ -122,6 +125,7 @@ function RouterConfig({ history, app, user }) {
           <Layout className="xms-main-layout">
             {(!auth || !!user) && <Menu routes={routes} />}
             <Content className="xms-content">
+              <Breadcrumb routes={routes} />
               <Switch>
                 {map(routes, route => renderRoute(route))}
                 {(!auth || !!user) &&
@@ -147,11 +151,19 @@ function RouterConfig({ history, app, user }) {
   );
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
-
-const ConnectedRouter = connect(mapStateToProps)(RouterConfig);
+ConnectedRouter.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  history: PropTypes.object.isRequired,
+  app: PropTypes.shape({
+    routes: PropTypes.array.isRequired,
+    config: PropTypes.shape({
+      name: PropTypes.string,
+      api: PropTypes.shape({
+        auth: PropTypes.string
+      })
+    }).isRequired
+  }).isRequired
+};
 
 // eslint-disable-next-line react/prop-types
 export default ({ history, app }) => (
