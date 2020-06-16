@@ -447,21 +447,6 @@ function generateRecordsPage(
   return withRouter(Page);
 }
 
-export function dynamicRecordsComponent({ app, config, component, inline }) {
-  const service = generateService(config.api);
-  const model = generateModel({
-    namespace: config.namespace,
-    table: config.table,
-    service
-  });
-  return dynamic({
-    app,
-    models: () => [Promise.resolve(model)],
-    component: () =>
-      Promise.resolve(generateRecordsPage(config, component, inline))
-  });
-}
-
 function generateRecordPage(
   {
     namespace,
@@ -505,17 +490,6 @@ function generateRecordPage(
   return withRouter(Page);
 }
 
-export function dynamicRecordComponent({ app, config, component }) {
-  const service = generateService(config.api);
-  const model = generateModel({ namespace: config.namespace, service });
-
-  return dynamic({
-    app,
-    models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordPage(config, component))
-  });
-}
-
 function generateRecordFormPage({
   namespace,
   formPageProps = {},
@@ -554,13 +528,51 @@ function generateRecordFormPage({
   return withRouter(Page);
 }
 
-export function dynamicRecordFormComponent({ app, config }) {
+function dynamicComponent({
+  app,
+  config,
+  inline,
+  component,
+  generateFunction
+}) {
   const service = generateService(config.api);
-  const model = generateModel({ namespace: config.namespace, service });
+  const model = generateModel({
+    namespace: config.namespace,
+    table: config.table,
+    service
+  });
 
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
-    component: () => Promise.resolve(generateRecordFormPage(config))
+    component: () =>
+      Promise.resolve(generateFunction(config, component, inline))
+  });
+}
+
+export function dynamicRecordsComponent({ app, config, component, inline }) {
+  return dynamicComponent({
+    app,
+    config,
+    component,
+    inline,
+    generateFunction: generateRecordsPage
+  });
+}
+
+export function dynamicRecordComponent({ app, config, component }) {
+  return dynamicComponent({
+    app,
+    config,
+    component,
+    generateFunction: generateRecordPage
+  });
+}
+
+export function dynamicRecordFormComponent({ app, config }) {
+  return dynamicComponent({
+    app,
+    config,
+    generateFunction: generateRecordFormPage
   });
 }
