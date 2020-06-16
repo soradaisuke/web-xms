@@ -19,6 +19,7 @@ export InputModal from './components/InputModal';
 // hooks
 export useUser from './hooks/useUser';
 export usePageData from './hooks/usePageData';
+export useForm from './hooks/useForm';
 
 // export Tags from './components/FormItems/Tags';
 // export CommonArray from './components/FormItems/CommonArray';
