@@ -8,7 +8,7 @@
     "@babel/plugin-proposal-export-default-from",
     ["import", { "libraryName": "antd", "style": true }, "antd"],
     ["import", { "libraryName": "@qt/web-core", "camel2DashComponentName": false }, "@qt/web-core"],
-    ["import", { "libraryName": "@qt/react-core", "camel2DashComponentName": false }, "@qt/react-core"],
+    ["import", { "libraryName": "@qt/react", "camel2DashComponentName": false }, "@qt/react"],
     "lodash",
     "dva-hmr",
   ],

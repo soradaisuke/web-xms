@@ -9,7 +9,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import Immutable from 'immutable';
-import { ClickableDiv } from '@qt/react-core';
+import { ClickableDiv } from '@qt/react';
 import { EditableContext } from './EditableTableRow';
 import Column from '../schema/Column';
 import './EditableTableCell.less';

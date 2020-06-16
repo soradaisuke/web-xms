@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Img } from '@qt/react-core';
+import { Img } from '@qt/react';
 import { generateUpYunImageUrl } from '@qt/web-core';
 import { RedoOutlined, UndoOutlined } from '@ant-design/icons';
 import { Col, Slider, Switch, Button } from 'antd';
