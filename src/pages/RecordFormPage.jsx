@@ -1,219 +1,192 @@
-import React from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import Immutable from 'immutable';
-import { connect } from 'dva';
-import { Card, Row, Button, Modal } from 'antd';
+import { Card, Row, Form, Button } from 'antd';
+import { useEventCallback } from '@qt/react';
+import { useParams, useHistory } from 'react-router-dom';
 import TableType from '../schema/Table';
 import Page from './Page';
-import RecordForm from '../components/RecordForm';
 import TableActions from '../actions/TableActions';
-import './RecordsPage.less';
+import useUser from '../hooks/useUser';
+import ConfirmButton from '../components/Common/ConfirmButton';
 import visiblePromise from '../utils/visiblePromise';
+import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
+import FormContext from '../contexts/FormContext';
+import './RecordsPage.less';
 
-class RecordFormPage extends React.PureComponent {
-  static displayName = 'RecordFormPage';
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+    md: { span: 6 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+    md: { span: 18 }
+  }
+};
 
-  static propTypes = {
-    actions: PropTypes.instanceOf(TableActions).isRequired,
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired,
-      goBack: PropTypes.func.isRequired
-    }).isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        id: PropTypes.string.isRequired
-      }).isRequired
-    }).isRequired,
-    table: PropTypes.instanceOf(TableType).isRequired,
-    reset: PropTypes.func,
-    renderActions: PropTypes.func,
-    fetch: PropTypes.func,
-    create: PropTypes.func,
-    edit: PropTypes.func,
-    record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    user: PropTypes.instanceOf(Immutable.Map)
-  };
-
-  static defaultProps = {
-    reset: null,
-    user: null,
-    renderActions: null,
-    fetch: null,
-    create: null,
-    edit: null,
-    record: null
-  };
-
-  state = {
-    action: null,
-    isLoading: false,
-    error: null
-  };
-
-  componentDidMount() {
-    const { actions, reset } = this.props;
-    const isEdit = this.isEdit();
-    this.setState({
-      action: isEdit ? actions.getEditAction() : actions.getCreateAction()
-    });
-    if (reset) {
-      reset();
-    }
-    if (isEdit) {
-      this.fetch();
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0
+    },
+    sm: {
+      span: 16,
+      offset: 8
+    },
+    md: {
+      span: 18,
+      offset: 6
     }
   }
+};
 
-  fetch = async () => {
-    const {
-      match: {
-        params: { id }
-      },
-      fetch
-    } = this.props;
+function RecordFormPage({
+  record,
+  table,
+  actions,
+  reset,
+  fetch,
+  create,
+  edit
+}) {
+
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [action, setAction] = useState(null);
+
+  const user = useUser();
+
+  const history = useHistory();
+
+  const [form] = Form.useForm();
+
+  const { id } = useParams();
+  const isEdit = id !== 'new';
+
+  const columns = table.getColumns();
+
+  const onConfirmReset = useEventCallback(() => {
+    form.resetFields();
+  }, [form]);
+
+  const fetchInternal = useCallback(() => {
     if (fetch) {
-      this.setState({ isLoading: true, error: null });
+      setIsLoading(true);
+      setError(null);
       fetch({ id })
         .then(() => {
-          this.setState({ isLoading: false, error: null });
+          setIsLoading(false);
+          setError(null);
         })
-        .catch(e => this.setState({ isLoading: false, error: e }));
+        .catch(e => {
+          setIsLoading(true);
+          setError(e);
+        });
     }
-  };
+  }, [fetch, id]);
 
-  onOk = body => {
-    const { action } = this.state;
-    const {
-      create,
-      edit,
-      match: {
-        params: { id }
-      }
-    } = this.props;
+  const onFinish = useEventCallback(values => {
     const handler = action.getHandler({ create, edit });
+
     return visiblePromise({
-      promise: handler({ body, id }),
+      promise: handler({
+        body: formatColumnsSubmitValues({ columns, values }),
+        id
+      }),
+      onComplete: history.goBack,
       loadingMessage: action.getHandlingMessage(),
       successMessage: '保存成功',
       throwError: true
     });
-  };
+  }, [id, create, edit, action, columns]);
 
-  onRef = ref => {
-    this.form = ref;
-  };
+  useEffect(() => {
+    setAction(isEdit ? actions.getEditAction() : actions.getCreateAction());
 
-  onClickGoBack = () => {
-    const { history } = this.props;
-    if (this.form) {
-      Modal.confirm({
-        title: '确认放弃所编辑的内容返回上一页？',
-        onOk: history.goBack
-      });
+    reset();
+
+    if (isEdit) {
+      fetchInternal();
     }
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  onClickReset = () => {
-    if (this.form) {
-      Modal.confirm({
-        title: '确认重置？',
-        onOk: () => {
-          this.form.reset();
-        }
-      });
-    }
-  };
-
-  onClickSubmit = () => {
-    const { history } = this.props;
-    if (this.form) {
-      Modal.confirm({
-        title: '确认提交？',
-        onOk: () => {
-          this.form.onOk().then(isOk => {
-            if (isOk) {
-              history.goBack();
-            }
-          });
-        }
-      });
-    }
-  };
-
-  isEdit() {
-    const {
-      match: {
-        params: { id }
-      }
-    } = this.props;
-    return id !== 'new';
-  }
-
-  renderActions = () => {
-    const { isLoading } = this.state;
-    return (
-      <Row type="flex" align="middle">
-        <Button onClick={this.onClickGoBack}>返回</Button>
-        <Button
-          className="form-action"
-          disabled={isLoading}
-          type="danger"
-          onClick={this.onClickReset}
-        >
-          重置
-        </Button>
-        <Button
-          className="form-action"
-          disabled={isLoading}
-          type="primary"
-          onClick={this.onClickSubmit}
-        >
-          提交
-        </Button>
-      </Row>
-    );
-  };
-
-  renderContent() {
-    const { table, record, user, renderActions } = this.props;
-    const { action } = this.state;
-    if (!table || !action) {
-      return null;
-    }
-
-    return (
-      <Card title={action.getTitle()} className="content-card">
-        <RecordForm
-          className="record-form-page-form"
-          onRef={this.onRef}
-          record={record}
-          columns={table.getColumns()}
-          user={user}
-          onOk={this.onOk}
-          renderActions={renderActions || this.renderActions}
-        />
-      </Card>
-    );
-  }
-
-  render() {
-    const { isLoading, error } = this.state;
-
-    return (
+  return (
+    <FormContext.Provider value={form}>
       <Page
         showWatermark
         isLoading={isLoading}
         isError={!!error}
         errorMessage={error ? error.message : ''}
       >
-        {this.renderContent()}
+        <Card title={action?.getTitle() || ''} className="content-card">
+          <Form
+            {...formItemLayout}
+            scrollToFirstError
+            form={form}
+            onFinish={onFinish}
+          >
+            {columns.map(column => (
+              column.renderInForm({
+                user,
+                record,
+                form,
+                isEdit
+              })
+            ))}
+            <Form.Item {...tailFormItemLayout}>
+              <Row type="flex" align="middle">
+                <ConfirmButton
+                  title="确认放弃所编辑的内容返回上一页？"
+                  onOk={history.goBack}
+                >
+                  返回
+                </ConfirmButton>
+                <ConfirmButton
+                  danger
+                  type="primary"
+                  className="form-action"
+                  disabled={isLoading}
+                  title="确认重置？"
+                  onOk={onConfirmReset}
+                >
+                  重置
+                </ConfirmButton>
+                <Button
+                  className="form-action"
+                  disabled={isLoading}
+                  type="primary"
+                  htmlType="submit"
+                >
+                  提交
+                </Button>
+              </Row>
+            </Form.Item>
+          </Form>
+        </Card>
       </Page>
-    );
-  }
+    </FormContext.Provider>
+  );
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
+RecordFormPage.propTypes = {
+  actions: PropTypes.instanceOf(TableActions).isRequired,
+  table: PropTypes.instanceOf(TableType).isRequired,
+  reset: PropTypes.func,
+  fetch: PropTypes.func,
+  create: PropTypes.func,
+  edit: PropTypes.func,
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+}
 
-export default connect(mapStateToProps)(RecordFormPage);
+RecordFormPage.defaultProps = {
+  reset: null,
+  fetch: null,
+  create: null,
+  edit: null,
+  record: null
+}
+
+export default React.memo(RecordFormPage);

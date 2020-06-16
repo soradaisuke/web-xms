@@ -1,78 +1,115 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import { connect } from 'dva';
+import { useEventCallback } from '@qt/react';
+import { Form } from 'antd';
 import ActivatorModal from './ActivatorModal';
-import RecordForm from './RecordForm';
+import useUser from '../hooks/useUser';
+import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
+import FormContext from '../contexts/FormContext';
 
-class RecordModal extends React.PureComponent {
-  static displayName = 'RecordModal';
-
-  static propTypes = {
-    children: PropTypes.node.isRequired,
-    onOk: PropTypes.func.isRequired,
-    checkVisibility: PropTypes.bool,
-    user: PropTypes.instanceOf(Immutable.Map),
-    columns: PropTypes.instanceOf(Immutable.List),
-    title: PropTypes.string,
-    record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    records: PropTypes.array // eslint-disable-line react/forbid-prop-types
-  };
-
-  static defaultProps = {
-    title: '',
-    checkVisibility: true,
-    columns: Immutable.List(),
-    record: null,
-    records: null,
-    user: null
-  };
-
-  onOk = () => {
-    if (this.form) {
-      return this.form.onOk();
-    }
-    return Promise.resolve();
-  };
-
-  onVisibleChange = async visibility => {
-    if (visibility && this.form) {
-      await this.form.reset();
-    }
-  };
-
-  onRef = ref => {
-    this.form = ref;
-  };
-
-  isEdit() {
-    const { record, records } = this.props;
-    return (
-      (record && Object.keys(record).length > 0) ||
-      (records && records.length > 0)
-    );
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+    md: { span: 6 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+    md: { span: 18 }
   }
+};
 
-  render() {
-    const { children, title, ...props } = this.props;
-    const defaultTitle = this.isEdit() ? '编辑' : '添加';
+function RecordModal({
+  children,
+  onOk,
+  checkVisibility,
+  columns,
+  title,
+  record,
+  records,
+  ...props
+}) {
 
-    return (
+  const [form] = Form.useForm();
+
+  const user = useUser();
+
+  const isEdit = useMemo(() => (
+    (record && Object.keys(record).length > 0) ||
+    (records && records.length > 0)
+  ), [record, records]);
+
+  const defaultTilte = isEdit ? '编辑' : '新建';
+
+  const onVisibleChange = useEventCallback(visibility => {
+    if (visibility && form) {
+      form.resetFields();
+    }
+  }, [form]);
+
+  const onSubmit = useEventCallback(() => {
+    return form
+      .validateFields()
+      .then(async values => {
+        try {
+          await onOk(formatColumnsSubmitValues({
+            columns,
+            values
+          }));
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }, () => {
+        // Validate Failed
+        return Promise.reject();
+      });
+  }, [form, onOk, columns])
+
+  return (
+    <FormContext.Provider value={form}>
       <ActivatorModal
-        {...this.props}
+        {...props}
         activator={children}
-        title={title || defaultTitle}
-        onOk={this.onOk}
-        onVisibleChange={this.onVisibleChange}
+        title={title || defaultTilte}
+        onOk={onSubmit}
+        onVisibleChange={onVisibleChange}
       >
-        <RecordForm {...props} onRef={this.onRef} />
+        <Form {...formItemLayout} form={form}>
+          {columns.map(column => (
+            column.renderInForm({
+              user,
+              record,
+              records,
+              form,
+              isEdit,
+              checkVisibility
+            })
+          ))}
+        </Form>
       </ActivatorModal>
-    );
-  }
+    </FormContext.Provider>
+  );
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
+RecordModal.propTypes = {
+  children: PropTypes.node.isRequired,
+  onOk: PropTypes.func.isRequired,
+  checkVisibility: PropTypes.bool,
+  columns: PropTypes.instanceOf(Immutable.List),
+  title: PropTypes.string,
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  records: PropTypes.array // eslint-disable-line react/forbid-prop-types
+}
 
-export default connect(mapStateToProps)(RecordModal);
+RecordModal.defaultProps = {
+  title: '',
+  checkVisibility: true,
+  columns: Immutable.List(),
+  record: null,
+  records: null
+};
+
+export default React.memo(RecordModal);
