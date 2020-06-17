@@ -7,6 +7,7 @@ import ActivatorModal from './ActivatorModal';
 import useUser from '../hooks/useUser';
 import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
+import usePageConfig from '../hooks/usePageConfigContext';
 
 const formItemLayout = {
   labelCol: {
@@ -35,6 +36,8 @@ function RecordModal({
   const [form] = Form.useForm();
 
   const user = useUser();
+
+  const { formProps } = usePageConfig();
 
   const isEdit = useMemo(() => (
     (record && Object.keys(record).length > 0) ||
@@ -77,7 +80,11 @@ function RecordModal({
         onOk={onSubmit}
         onVisibleChange={onVisibleChange}
       >
-        <Form {...formItemLayout} form={form}>
+        <Form
+          {...formItemLayout}
+          {...formProps}
+          form={form}
+        >
           {columns.map(column => (
             column.renderInForm({
               user,
