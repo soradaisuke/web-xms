@@ -267,26 +267,27 @@ export default class Action {
     }
 
     const handler = this.getHandler({ remove, create, edit });
-    let children;
-
-    if (this.getLink() && !disabled) {
-      children = (
-        <RecordLink link={this.getLink()} record={record || records}>
-          {this.getTitle()}
-        </RecordLink>
-      );
-    } else if (this.getShape() !== 'circle') {
-      children = this.getTitle();
-    }
 
     const buttonProps = {
       disabled,
-      children,
       type: this.getType(),
       shape: this.getShape(),
       icon: this.getIcon(),
       className: 'action-button'
     };
+
+    if (this.getLink() && !disabled) {
+      buttonProps.children = (
+        <RecordLink link={this.getLink()} record={record || records}>
+          {this.getTitle()}
+        </RecordLink>
+      );
+      return <Button {...buttonProps} key={this.getTitle()} />;
+    }
+    
+    if (this.getShape() !== 'circle') {
+      buttonProps.children = this.getTitle();
+    }
 
     const onClick = async ({
       data = {},
