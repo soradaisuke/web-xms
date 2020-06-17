@@ -1,162 +1,108 @@
-import React from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { css } from 'glamor';
 import classNames from 'classnames';
-import { Img } from '@qt/react-core';
-import { generateUpYunImageUrl } from '@qt/web-core';
-import { Col, Slider, Switch, Button } from 'antd';
+import { Row, Button } from 'antd';
+import Zoom from 'react-medium-image-zoom';
 import ActivatorModal from './ActivatorModal';
+import 'react-medium-image-zoom/dist/styles.css';
 import './ZoomImg.less';
 
-export default class ZoomImg extends React.PureComponent {
-  static displayName = 'ZoomImg';
+function ZoomImg({ src, thumbnailWidth, imgClassName }) {
+  const [rotate, setRotate] = useState(0);
+  const [scaleX, setScaleX] = useState(1);
+  const [scaleY, setScaleY] = useState(1);
 
-  static propTypes = {
-    src: PropTypes.string,
-    imgClassName: PropTypes.string,
-    modalWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    showLeftRightFlip: PropTypes.bool,
-    showTopDownFlip: PropTypes.bool,
-    showRotate: PropTypes.bool
-  };
+  const rotateClockwiseCallback = useCallback(() => {
+    setRotate(rotate + 90);
+  }, [rotate, setRotate]);
 
-  static defaultProps = {
-    src: '',
-    imgClassName: '',
-    modalWidth: '',
-    showLeftRightFlip: false,
-    showTopDownFlip: false,
-    showRotate: false
-  };
+  const rotateCounterClockwiseCallback = useCallback(() => {
+    setRotate(rotate - 90);
+  }, [rotate, setRotate]);
 
-  state = {
-    zoomValue: 1,
-    isLeftRightFlip: false,
-    isTopDownFlip: false,
-    rotate: 0
-  };
+  const scallXCallback = useCallback(() => {
+    setScaleX(-scaleX);
+  }, [scaleX, setScaleX]);
 
-  changeZoomValue = zoomValue => {
-    this.setState({
-      zoomValue
-    });
-  };
+  const scallYCallback = useCallback(() => {
+    setScaleY(-scaleY);
+  }, [scaleY, setScaleY]);
 
-  onChangeLeftRightFlip = isLeftRightFlip => {
-    this.setState({
-      isLeftRightFlip,
-      isTopDownFlip: false
-    });
-  };
+  const activator = useMemo(() => {
+    const imgProps = {};
 
-  onChangeTopDownFlip = isTopDownFlip => {
-    this.setState({
-      isTopDownFlip,
-      isLeftRightFlip: false
-    });
-  };
-
-  onClickRotateLeft = () => {
-    const { rotate } = this.state;
-    let newRotate = (rotate - 90) % 360;
-    if (newRotate < 0) {
-      newRotate += 360;
-    }
-    this.setState({ rotate: newRotate });
-  };
-
-  onClickRotateRight = () => {
-    const { rotate } = this.state;
-    this.setState({ rotate: (rotate + 90) % 360 });
-  };
-
-  render() {
-    const {
-      src,
-      showLeftRightFlip,
-      showTopDownFlip,
-      showRotate,
-      modalWidth,
-      imgClassName
-    } = this.props;
-    const { zoomValue, isLeftRightFlip, isTopDownFlip, rotate } = this.state;
-    const children = (
-      <Img
-        src={src}
-        className={classNames(imgClassName, 'zoom-img-activator')}
-      />
-    );
-
-    let format = rotate > 0 ? `/rotate/${rotate}` : '';
-    if (isLeftRightFlip) {
-      format = `${format}/flip/left,right`;
-    } else if (isTopDownFlip) {
-      format = `${format}/flip/top,down`;
+    if (thumbnailWidth) {
+      imgProps.width = thumbnailWidth;
     }
 
     return (
-      <ActivatorModal
-        activator={children}
-        width={modalWidth || window.innerWidth - 300}
-      >
-        <Col>
-          {showLeftRightFlip && (
-            <Switch
-              checkedChildren="左右翻转"
-              unCheckedChildren="左右不翻转"
-              className="action"
-              checked={isLeftRightFlip}
-              onChange={this.onChangeLeftRightFlip}
-            />
-          )}
-          {showTopDownFlip && (
-            <Switch
-              checkedChildren="上下翻转"
-              unCheckedChildren="上下不翻转"
-              className="action"
-              checked={isTopDownFlip}
-              onChange={this.onChangeTopDownFlip}
-            />
-          )}
-          {showRotate && (
-            <>
-              <Button
-                className="action"
-                type="primary"
-                shape="circle"
-                icon="undo"
-                onClick={this.onClickRotateLeft}
-              />
-              <Button
-                className="action"
-                type="primary"
-                shape="circle"
-                icon="redo"
-                onClick={this.onClickRotateRight}
-              />
-            </>
-          )}
-          <div
-            className="zoom-img-wrapper"
-            style={{ height: `${window.innerHeight - 300}px` }}
-          >
-            <div
-              className="zoom-img"
-              style={{
-                width: `${100 * zoomValue}%`,
-                height: `${100 * zoomValue}%`,
-                backgroundImage: `url(${generateUpYunImageUrl(src, format)})`
-              }}
-            />
-          </div>
-          <Slider
-            min={1}
-            max={5}
-            step={0.1}
-            onChange={this.changeZoomValue}
-            value={zoomValue}
-          />
-        </Col>
-      </ActivatorModal>
+      <img
+        alt=""
+        className={classNames(imgClassName, 'zoom-img-activator')}
+        src={src}
+        {...imgProps}
+      />
     );
-  }
+  }, [src]);
+
+  const zoomImgClassName = useMemo(
+    () =>
+      css({
+        transform: `rotate(${rotate}deg) scale(${scaleX}, ${scaleY})`,
+        backgroundImage: `url(${src})`
+      }).toString(),
+    [rotate, scaleX, scaleY, src]
+  );
+
+  return (
+    <ActivatorModal activator={activator} width={window.innerHeight - 200}>
+      <Row>
+        <Button
+          className="action"
+          type="primary"
+          shape="circle"
+          icon="column-width"
+          onClick={scallXCallback}
+        />
+        <Button
+          className="action"
+          type="primary"
+          shape="circle"
+          icon="column-height"
+          onClick={scallYCallback}
+        />
+        <Button
+          className="action"
+          type="primary"
+          shape="circle"
+          icon="undo"
+          onClick={rotateCounterClockwiseCallback}
+        />
+        <Button
+          className="action"
+          type="primary"
+          shape="circle"
+          icon="redo"
+          onClick={rotateClockwiseCallback}
+        />
+      </Row>
+      <Zoom>
+        <div className={classNames('zoom-img', zoomImgClassName)} />
+      </Zoom>
+    </ActivatorModal>
+  );
 }
+
+ZoomImg.propTypes = {
+  src: PropTypes.string.isRequired,
+  imgClassName: PropTypes.string,
+  thumbnailWidth: PropTypes.number
+};
+
+ZoomImg.defaultProps = {
+  imgClassName: '',
+  thumbnailWidth: null
+};
+
+export default React.memo(ZoomImg);

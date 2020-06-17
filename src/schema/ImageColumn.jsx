@@ -1,6 +1,7 @@
 import React from 'react';
 import { isNumber } from 'lodash';
 import { generateUpYunImageUrl } from '@qt/web-core';
+import ZoomImg from '../components/ZoomImg';
 import UploadImage from '../components/FormItems/UploadImage';
 import StringColumn from './StringColumn';
 
@@ -8,11 +9,7 @@ export default class ImageColumn extends StringColumn {
   renderInTableValueDefault({ value }) {
     const src = generateUpYunImageUrl(value);
     const width = this.getTableWidth();
-    const style = width
-      ? { width: isNumber(width) ? `${width - 32}px` : width }
-      : {};
-
-    return <img alt="" src={src} style={style} />;
+    return <ZoomImg src={src} thumbnailWidth={width} />;
   }
 
   renderInDescriptionDefault({ value }) {
