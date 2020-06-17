@@ -28,6 +28,7 @@ import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
+import PageConfigContext from '../contexts/PageConfigContext';
 
 function generateService({ fetch, create, edit, remove } = {}) {
   return {
@@ -239,6 +240,7 @@ function generateRecordsPage(
     table,
     filterGroupTrigger,
     tableProps = {},
+    formProps = {},
     paginationProps = {}
   },
   component,
@@ -418,29 +420,31 @@ function generateRecordsPage(
     const remove = useRemove({ apiPath, namespace });
 
     return (
-      <PageDataContext.Provider value={records}>
-        <RecordsPage
-          {...props}
-          records={records}
-          total={total}
-          isLoading={isLoading}
-          filter={filter}
-          page={page}
-          pagesize={pagesize}
-          sort={sort}
-          fetch={fetch}
-          create={create}
-          edit={edit}
-          remove={remove}
-          updatePage={updatePage}
-          paginationProps={paginationProps}
-          filterGroupTrigger={filterGroupTrigger}
-          component={component}
-          table={table}
-          tableProps={tableProps}
-          actions={actions}
-        />
-      </PageDataContext.Provider>
+      <PageConfigContext.Provider value={{ formProps }}>
+        <PageDataContext.Provider value={records}>
+          <RecordsPage
+            {...props}
+            records={records}
+            total={total}
+            isLoading={isLoading}
+            filter={filter}
+            page={page}
+            pagesize={pagesize}
+            sort={sort}
+            fetch={fetch}
+            create={create}
+            edit={edit}
+            remove={remove}
+            updatePage={updatePage}
+            paginationProps={paginationProps}
+            filterGroupTrigger={filterGroupTrigger}
+            component={component}
+            table={table}
+            tableProps={tableProps}
+            actions={actions}
+          />
+        </PageDataContext.Provider>
+      </PageConfigContext.Provider>
     );
   }
 
@@ -455,6 +459,7 @@ function generateRecordPage(
     table,
     bordered,
     layout,
+    formProps = {},
     descriptionsColumn
   },
   component
@@ -468,22 +473,24 @@ function generateRecordPage(
     const reset = useReset({ namespace });
 
     return (
-      <PageDataContext.Provider value={record}>
-        <RecordPage
-          {...props}
-          layout={layout}
-          component={component}
-          table={table}
-          actions={actions}
-          bordered={bordered}
-          descriptionsColumn={descriptionsColumn}
-          record={record}
-          fetch={fetch}
-          edit={edit}
-          remove={remove}
-          reset={reset}
-        />
-      </PageDataContext.Provider>
+      <PageConfigContext.Provider value={{ formProps }}>
+        <PageDataContext.Provider value={record}>
+          <RecordPage
+            {...props}
+            layout={layout}
+            component={component}
+            table={table}
+            actions={actions}
+            bordered={bordered}
+            descriptionsColumn={descriptionsColumn}
+            record={record}
+            fetch={fetch}
+            edit={edit}
+            remove={remove}
+            reset={reset}
+          />
+        </PageDataContext.Provider>
+      </PageConfigContext.Provider>
     );
   }
 
@@ -493,6 +500,7 @@ function generateRecordPage(
 function generateRecordFormPage({
   namespace,
   formPageProps = {},
+  formProps = {},
   api: { path, host, defaultBody } = {},
   actions,
   table
@@ -508,20 +516,22 @@ function generateRecordFormPage({
     const reset = useReset({ namespace });
 
     return (
-      <PageDataContext.Provider value={record}>
-        <RecordFormPage
-          {...props}
-          {...formPageProps}
-          actions={actions}
-          table={table}
-          record={record}
-          fetch={fetch}
-          create={create}
-          edit={edit}
-          remove={remove}
-          reset={reset}
-        />
-      </PageDataContext.Provider>
+      <PageConfigContext.Provider value={{ formProps }}>
+        <PageDataContext.Provider value={record}>
+          <RecordFormPage
+            {...props}
+            {...formPageProps}
+            actions={actions}
+            table={table}
+            record={record}
+            fetch={fetch}
+            create={create}
+            edit={edit}
+            remove={remove}
+            reset={reset}
+          />
+        </PageDataContext.Provider>
+      </PageConfigContext.Provider>
     );
   }
 

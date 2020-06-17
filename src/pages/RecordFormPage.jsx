@@ -11,6 +11,7 @@ import ConfirmButton from '../components/Common/ConfirmButton';
 import visiblePromise from '../utils/visiblePromise';
 import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
+import usePageConfig from '../hooks/usePageConfigContext';
 import './RecordsPage.less';
 
 const formItemLayout = {
@@ -60,6 +61,8 @@ function RecordFormPage({
   const user = useUser();
 
   const history = useHistory();
+
+  const { formProps } = usePageConfig();
 
   const [form] = Form.useForm();
 
@@ -125,8 +128,9 @@ function RecordFormPage({
           <Form
             {...formItemLayout}
             scrollToFirstError
-            form={form}
             onFinish={onFinish}
+            {...formProps}
+            form={form}
           >
             {columns.map(column => (
               column.renderInForm({
