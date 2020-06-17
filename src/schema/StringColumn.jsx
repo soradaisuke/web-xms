@@ -1,6 +1,7 @@
 import React from 'react';
 import { toString, isUndefined, map } from 'lodash';
 import { Input, Select } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import Column from './Column';
 
 export default class StringColumn extends Column {
@@ -28,7 +29,7 @@ export default class StringColumn extends Column {
 
   // eslint-disable-next-line class-methods-use-this
   getFilterIcon() {
-    return 'search';
+    return SearchOutlined;
   }
 
   renderFilterDropDownContent = ({

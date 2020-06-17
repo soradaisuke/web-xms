@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import { FilterOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Table,
   Pagination,
@@ -462,12 +461,10 @@ class RecordsPage extends React.PureComponent {
             ...dropDownParams,
             isAutoTrigger
           });
-        filterProps.filterIcon = filtered => (
-          <LegacyIcon
-            type={column.getFilterIcon()}
-            style={{ color: filtered ? '#1890ff' : undefined }}
-          />
-        );
+        filterProps.filterIcon = filtered => {
+          const Icon = column.getFilterIcon();
+          return <Icon style={{ color: filtered ? '#1890ff' : undefined }} />;
+        };
       }
 
       filterProps.parentFilteredValue = parentFilteredValue;

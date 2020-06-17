@@ -322,7 +322,7 @@ export default class Column {
 
   // eslint-disable-next-line class-methods-use-this
   getFilterIcon() {
-    return 'filter';
+    return FilterOutlined;
   }
 
   useValueOptionsInTable() {

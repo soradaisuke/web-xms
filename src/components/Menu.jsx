@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link, withRouter, matchPath } from 'react-router-dom';
 import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
@@ -93,6 +92,8 @@ class NavMenu extends React.PureComponent {
 
     if (state?.unmatch) return null;
 
+    const Icon = collapsed ? DoubleRightOutlined : DoubleLeftOutlined;
+    
     return (
       <div
         className={classNames('xms-side-menu', collapsed ? 'collapsed' : '')}
@@ -105,11 +106,7 @@ class NavMenu extends React.PureComponent {
         >
           {renderMenus(routes)}
         </Menu>
-        <LegacyIcon
-          className="xms-collapse"
-          type={collapsed ? <DoubleRightOutlined /> : <DoubleLeftOutlined />}
-          onClick={this.onClickCollapse}
-        />
+        <Icon className="xms-collapse" onClick={this.onClickCollapse} />
       </div>
     );
   }

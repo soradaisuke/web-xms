@@ -20,7 +20,7 @@ import {
   isUndefined,
   split
 } from 'lodash';
-import { generateUri } from '@qt/web-core';
+import { generateUri } from '@qt/web-common';
 import Immutable from 'immutable';
 import PageDataContext from '../contexts/PageDataContext';
 import showError from './showError';
@@ -250,7 +250,7 @@ function generateRecordsPage(
     const location = useLocation();
     const { queries, globalQueries } = useMemo(() => {
       const gq = parse(location.search);
-      let q = {};
+      let q = gq;
 
       if (inline) {
         try {
