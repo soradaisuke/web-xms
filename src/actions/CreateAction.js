@@ -13,16 +13,8 @@ export default class CreateAction extends Action {
     return this.config.get('title', '新建');
   }
 
-  getHandler({ create }) {
-    return this.config.get('handler', create);
-  }
-
   getHandlingMessage() {
     return this.config.get('handlingMessage', '正在保存……');
-  }
-
-  getColumns({ table }) {
-    return this.columns || table.getColumns();
   }
 
   // eslint-disable-next-line class-methods-use-this

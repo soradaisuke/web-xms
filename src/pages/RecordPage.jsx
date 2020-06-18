@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import { Tabs, Card, Collapse, Descriptions, message } from 'antd';
-import { map, filter, get, reduce, find } from 'lodash';
+import { map, filter, get, reduce } from 'lodash';
 import classNames from 'classnames';
 import TableType from '../schema/Table';
-import EditAction from '../actions/EditAction';
 import Page from './Page';
 import showError from '../utils/showError';
+import Action from '../components/Action';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
@@ -28,8 +28,6 @@ class RecordPage extends React.PureComponent {
     actions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     fetch: PropTypes.func,
-    remove: PropTypes.func,
-    edit: PropTypes.func,
     record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     routes: PropTypes.arrayOf(
       PropTypes.shape({
@@ -56,8 +54,6 @@ class RecordPage extends React.PureComponent {
     layout: 'card',
     user: null,
     fetch: null,
-    remove: null,
-    edit: null,
     record: null,
     descriptionsColumn: { xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }
   };
@@ -106,34 +102,8 @@ class RecordPage extends React.PureComponent {
     this.fetch();
   };
 
-  renderAction(action, { column, inline } = {}) {
-    const {
-      user,
-      remove,
-      edit,
-      record,
-      table,
-      match: { params: matchParams }
-    } = this.props;
-
-    const props = {
-      user,
-      matchParams,
-      remove,
-      edit,
-      table,
-      record,
-      inline,
-      column,
-      confirm: this.fetch,
-      submit: this.updateRecord
-    };
-
-    return action.render(props);
-  }
-
   renderActions() {
-    const { actions, user } = this.props;
+    const { actions, user, record } = this.props;
 
     if (!actions) {
       return null;
@@ -147,33 +117,22 @@ class RecordPage extends React.PureComponent {
 
     return (
       <Descriptions.Item label="操作">
-        {validActions.map(action => this.renderAction(action))}
+        {validActions.map(action => (
+          <Action
+            action={action}
+            record={record}
+            onComplete={this.fetch}
+          />
+        ))}
       </Descriptions.Item>
     );
   }
 
   renderDescriptionItem(column) {
-    const { user, record, actions } = this.props;
+    const { user, record } = this.props;
 
     if (!column.canShowInDescription({ user, record })) {
       return null;
-    }
-
-    let children = column.renderInDescription({
-      record,
-      value: get(record, column.getKey())
-    });
-
-    const editAction = find(actions, action => action instanceof EditAction);
-    if (column.canInlineEdit() && editAction) {
-      const action = this.renderAction(editAction, {
-        record,
-        column,
-        inline: true
-      });
-      if (action) {
-        children = action;
-      }
     }
 
     return (
@@ -182,7 +141,12 @@ class RecordPage extends React.PureComponent {
         key={column.getKey()}
         span={column.getDescriptionSpan()}
       >
-        {children}
+        {
+          column.renderInDescription({
+            record,
+            value: get(record, column.getKey())
+          })
+        }
       </Descriptions.Item>
     );
   }

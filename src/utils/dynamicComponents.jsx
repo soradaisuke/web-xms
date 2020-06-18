@@ -419,7 +419,13 @@ function generateRecordsPage(
     const remove = useRemove({ apiPath, namespace });
 
     return (
-      <PageConfigContext.Provider value={{ formProps }}>
+      <PageConfigContext.Provider value={{
+        formProps,
+        create,
+        edit,
+        remove,
+        table
+      }}>
         <PageDataContext.Provider value={records}>
           <RecordsPage
             {...props}
@@ -471,7 +477,14 @@ function generateRecordPage(
     const reset = useReset({ namespace });
 
     return (
-      <PageConfigContext.Provider value={{ formProps }}>
+      <PageConfigContext.Provider
+        value={{
+          formProps,
+          edit,
+          remove,
+          table
+        }}
+      >
         <PageDataContext.Provider value={record}>
           <RecordPage
             {...props}
@@ -514,7 +527,15 @@ function generateRecordFormPage({
     const reset = useReset({ namespace });
 
     return (
-      <PageConfigContext.Provider value={{ formProps }}>
+      <PageConfigContext.Provider
+        value={{
+          formProps,
+          create,
+          edit,
+          remove,
+          table
+        }}
+      >
         <PageDataContext.Provider value={record}>
           <RecordFormPage
             {...props}

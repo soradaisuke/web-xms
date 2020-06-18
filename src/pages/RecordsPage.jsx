@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
-import { FilterOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { FilterOutlined } from '@ant-design/icons';
 import {
   Table,
   Card,
   Spin,
-  Popover,
   Button,
   Popconfirm,
   Row,
@@ -43,6 +42,7 @@ import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
 import visiblePromise from '../utils/visiblePromise';
+import Action from '../components/Action';
 import './RecordsPage.less';
 import FilterDropDown from '../components/FilterDropDown';
 import FilterIcon from '../components/FilterIcon';
@@ -56,8 +56,6 @@ class RecordsPage extends React.PureComponent {
     actions: PropTypes.instanceOf(TableActions).isRequired,
     fetch: PropTypes.func.isRequired,
     edit: PropTypes.func.isRequired,
-    remove: PropTypes.func.isRequired,
-    create: PropTypes.func.isRequired,
     table: PropTypes.instanceOf(TableType).isRequired,
     updatePage: PropTypes.func.isRequired,
     tableProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
@@ -386,8 +384,8 @@ class RecordsPage extends React.PureComponent {
       filter: propsFilter,
       actions,
       table,
-      edit,
       user,
+      edit,
       match: { params: matchParams },
       filterGroupTrigger
     } = this.props;
@@ -545,7 +543,7 @@ class RecordsPage extends React.PureComponent {
                   })
                     ? body =>
                         this.updateRecord({
-                          promise: editAction.getHandler({ edit })({
+                          promise: editAction.getHandler(edit)({
                             id: get(record, table.getPrimaryKey()),
                             body
                           }),
@@ -562,41 +560,15 @@ class RecordsPage extends React.PureComponent {
             ? `${split(sort, ' ')[1]}end`
             : false
         }
-        render={(value, record) => {
-          const children = column.renderInTable({
+        render={(value, record) => 
+          column.renderInTable({
             value,
             record,
             user,
             reload: this.fetch,
             ...filterProps
-          });
-          if (
-            column.canInlineEdit() &&
-            editAction &&
-            !column.canShowFormItemInEditableTable()
-          ) {
-            let action = this.renderAction(editAction, {
-              record,
-              column,
-              inline: true
-            });
-            if (action) {
-              return action;
-            }
-            action = this.renderAction(editAction, { record, column });
-            if (action) {
-              return (
-                <>
-                  {children}
-                  <Popover content={action}>
-                    <InfoCircleOutlined style={{ marginLeft: '1rem' }} />
-                  </Popover>
-                </>
-              );
-            }
-          }
-          return children;
-        }}
+          })
+        }
       />
     );
   }
@@ -767,43 +739,13 @@ class RecordsPage extends React.PureComponent {
     );
   }
 
-  renderAction(action, { record, records, column, inline } = {}) {
-    const {
-      user,
-      remove,
-      edit,
-      create,
-      table,
-      match: { params: matchParams }
-    } = this.props;
-
-    let props = {
-      inline,
-      user,
-      matchParams,
-      remove,
-      edit,
-      create,
-      table,
-      column,
-      confirm: this.fetch,
-      submit: this.updateRecord
-    };
-
-    if (record) {
-      props = { ...props, record };
-    } else if (records) {
-      props = {
-        ...props,
-        records,
-        submit: async params => {
-          await this.updateRecord({ ...params, throwError: true });
-          this.resetTableState();
-        }
-      };
-    }
-
-    return action.render(props);
+  renderAction(action, { record, records } = {}) {
+    return <Action
+      action={action}
+      record={record}
+      records={records}
+      onComplete={this.fetch}
+    />;
   }
 
   renderRowActions() {

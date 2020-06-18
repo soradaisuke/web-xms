@@ -7,7 +7,7 @@ import ActivatorModal from './ActivatorModal';
 import useUser from '../hooks/useUser';
 import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
-import usePageConfig from '../hooks/usePageConfigContext';
+import usePageConfig from '../hooks/usePageConfig';
 
 const formItemLayout = {
   labelCol: {

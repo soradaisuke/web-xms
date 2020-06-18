@@ -11,7 +11,7 @@ import ConfirmButton from '../components/Common/ConfirmButton';
 import visiblePromise from '../utils/visiblePromise';
 import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
-import usePageConfig from '../hooks/usePageConfigContext';
+import usePageConfig from '../hooks/usePageConfig';
 import './RecordsPage.less';
 
 const formItemLayout = {
@@ -92,7 +92,7 @@ function RecordFormPage({
   }, [fetch, id]);
 
   const onFinish = useEventCallback(values => {
-    const handler = action.getHandler({ create, edit });
+    const handler = action.getHandler(isEdit ? edit : create);
 
     return visiblePromise({
       promise: handler({
@@ -104,7 +104,7 @@ function RecordFormPage({
       successMessage: '保存成功',
       throwError: true
     });
-  }, [id, create, edit, action, columns]);
+  }, [id, create, edit, action, columns, isEdit]);
 
   useEffect(() => {
     setAction(isEdit ? actions.getEditAction() : actions.getCreateAction());

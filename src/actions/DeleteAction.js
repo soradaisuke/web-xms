@@ -25,10 +25,6 @@ export default class DeleteAction extends Action {
     return this.config.getIn(['confirm', 'title'], '确认删除?');
   }
 
-  getHandler({ remove }) {
-    return this.config.get('handler', remove);
-  }
-
   getHandlingMessage() {
     return this.config.get('handlingMessage', '正在删除……');
   }

@@ -14,14 +14,6 @@ export default class EditAction extends Action {
     return this.config.get('title', '编辑');
   }
 
-  getColumns({ table }) {
-    return this.columns || table.getColumns();
-  }
-
-  getHandler({ edit }) {
-    return this.config.get('handler', edit);
-  }
-
   getHandlingMessage() {
     return this.config.get('handlingMessage', '正在保存……');
   }
@@ -48,11 +40,6 @@ export default class EditAction extends Action {
         id: get(record, table.getPrimaryKey())
       })
     );
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderInline({ record, column, onClick } = {}) {
-    return column.renderInlineEdit({ record, onClick });
   }
 
   setLink(link) {
