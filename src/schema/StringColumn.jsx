@@ -32,20 +32,6 @@ export default class StringColumn extends Column {
     return SearchOutlined;
   }
 
-  renderFilterDropDownContent = ({
-    setSelectedKeys, // eslint-disable-line react/prop-types
-    selectedKeys, // eslint-disable-line react/prop-types
-    confirm // eslint-disable-line react/prop-types
-  }) => (
-    <Input
-      {...this.getTableFilterComponentProps()} // eslint-disable-line react/no-this-in-sfc
-      value={selectedKeys[0]}
-      onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-      onPressEnter={confirm}
-      style={{ width: 188, marginBottom: 8, display: 'block' }}
-    />
-  );
-
   // eslint-disable-next-line class-methods-use-this
   canShowFormItemInEditableTable() {
     return true;

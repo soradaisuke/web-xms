@@ -16,11 +16,10 @@ import {
 } from 'lodash';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
-import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Radio, Checkbox, Form } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
+import { Radio, Checkbox, Form } from 'antd';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
-import TreeFilter from '../components/TreeFilter';
 import './Column.less';
 import generateAntdOptions from '../utils/generateAntdOptions';
 
@@ -409,77 +408,6 @@ export default class Column {
       );
     }
     return children;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderFilterDropDownContent() {
-    return null;
-  }
-
-  renderFilterDropDown = ({
-    setSelectedKeys,
-    selectedKeys,
-    confirm,
-    clearFilters,
-    isAutoTrigger
-  }) => (
-    <div style={{ padding: 8 }}>
-      {// eslint-disable-next-line react/no-this-in-sfc
-      this.renderFilterDropDownContent({
-        setSelectedKeys,
-        selectedKeys,
-        confirm,
-        clearFilters
-      })}
-      <div className="filter-dropdown-button-wrapper">
-        <Button
-          type="primary"
-          onClick={confirm}
-          icon={<SearchOutlined />}
-          size="small"
-          style={{ width: 90, marginRight: 8 }}
-        >
-          {!isAutoTrigger ? '确定' : '搜索'}
-        </Button>
-        <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
-          重置
-        </Button>
-      </div>
-    </div>
-  );
-
-  // eslint-disable-next-line class-methods-use-this
-  getRenderFilterTree({ parentValue }) {
-    return ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      isAutoTrigger
-    }) => (
-      <div style={{ padding: 8 }}>
-        <TreeFilter
-          column={this}
-          parentValue={parentValue}
-          selectedKeys={selectedKeys}
-          setSelectedKeys={setSelectedKeys}
-        />
-        <div className="filter-dropdown-button-wrapper">
-          <Button
-            type="primary"
-            onClick={confirm}
-            icon={<FilterOutlined />}
-            size="small"
-            style={{ width: 90, marginRight: 8 }}
-          >
-            {isAutoTrigger ? '筛选' : '确定'}
-          </Button>
-          <Button onClick={clearFilters} size="small" style={{ width: 90 }}>
-            重置
-          </Button>
-        </div>
-      </div>
-    );
   }
 
   // form

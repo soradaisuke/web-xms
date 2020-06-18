@@ -45,6 +45,7 @@ import Group from '../components/Group';
 import Page from './Page';
 import visiblePromise from '../utils/visiblePromise';
 import './RecordsPage.less';
+import FilterDropDown from '../components/FilterDropDown';
 
 const { Column } = Table;
 
@@ -430,10 +431,15 @@ class RecordsPage extends React.PureComponent {
           column.canFilterTreeInTable() ||
           column.getTableFilterSearchRequest()
         ) {
-          filterProps.filterDropdown = column.getRenderFilterTree({
-            parentValue: parentFilteredValue,
-            isAutoTrigger
-          });
+          filterProps.filterDropdown = dropDownParams => (
+            <FilterDropDown
+              useTreeFilter
+              column={column}
+              isAutoTrigger={isAutoTrigger}
+              parentValue={parentFilteredValue}
+              {...dropDownParams}
+            />
+          );
           filterProps.filterIcon = filtered => (
             <FilterOutlined
               style={{ color: filtered ? '#1890ff' : undefined }}
@@ -456,11 +462,13 @@ class RecordsPage extends React.PureComponent {
       } else if (column.canRenderFilterDropDown() && !renderFilterInTitle) {
         filterProps.filtered = !!filteredValue.length;
         filterProps.filteredValue = filteredValue;
-        filterProps.filterDropdown = dropDownParams =>
-          column.renderFilterDropDown({
-            ...dropDownParams,
-            isAutoTrigger
-          });
+        filterProps.filterDropdown = dropDownParams => (
+          <FilterDropDown
+            column={column}
+            isAutoTrigger={isAutoTrigger}
+            {...dropDownParams}
+          />
+        );
         filterProps.filterIcon = filtered => {
           const Icon = column.getFilterIcon();
           return <Icon style={{ color: filtered ? '#1890ff' : undefined }} />;
