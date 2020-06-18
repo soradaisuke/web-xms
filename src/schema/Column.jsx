@@ -16,7 +16,6 @@ import {
 } from 'lodash';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
-import { FilterOutlined } from '@ant-design/icons';
 import { Radio, Checkbox, Form } from 'antd';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
@@ -317,11 +316,6 @@ export default class Column {
   // eslint-disable-next-line class-methods-use-this
   canRenderFilterDropDown() {
     return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  getFilterIcon() {
-    return FilterOutlined;
   }
 
   useValueOptionsInTable() {

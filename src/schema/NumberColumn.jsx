@@ -1,7 +1,6 @@
 import React from 'react';
 import { toNumber, isNaN, map } from 'lodash';
 import { InputNumber, Select } from 'antd';
-import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import Column from './Column';
 
 // toNumber('') = 0, toNumber(null) = 0, toNumber(undefined) = NAN
@@ -24,10 +23,6 @@ export default class NumberColumn extends Column {
   // eslint-disable-next-line class-methods-use-this
   canRenderFilterDropDown() {
     return true;
-  }
-
-  getFilterIcon() {
-    return this.canFilterRangeInTable() ? FilterOutlined : SearchOutlined;
   }
 
   renderInFormItem({

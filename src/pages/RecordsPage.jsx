@@ -46,6 +46,7 @@ import Page from './Page';
 import visiblePromise from '../utils/visiblePromise';
 import './RecordsPage.less';
 import FilterDropDown from '../components/FilterDropDown';
+import FilterIcon from '../components/FilterIcon';
 
 const { Column } = Table;
 
@@ -469,10 +470,9 @@ class RecordsPage extends React.PureComponent {
             {...dropDownParams}
           />
         );
-        filterProps.filterIcon = filtered => {
-          const Icon = column.getFilterIcon();
-          return <Icon style={{ color: filtered ? '#1890ff' : undefined }} />;
-        };
+        filterProps.filterIcon = filtered => (
+          <FilterIcon filtered={filtered} column={column} />
+        );
       }
 
       filterProps.parentFilteredValue = parentFilteredValue;

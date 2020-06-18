@@ -12,6 +12,7 @@ import MonthColumn from '../schema/MonthColumn';
 import TimeColumn from '../schema/TimeColumn';
 import BaseDateTimeColumn from '../schema/BaseDateTimeColumn';
 import './FilterDropDown.less';
+import Column from '../schema/Column';
 
 const { RangePicker, MonthPicker } = DatePicker;
 
@@ -359,8 +360,7 @@ function FilterDropDown({
 }
 
 FilterDropDown.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  column: PropTypes.object.isRequired,
+  column: PropTypes.instanceOf(Column).isRequired,
   setSelectedKeys: PropTypes.func.isRequired,
   selectedKeys: PropTypes.func.isRequired,
   confirm: PropTypes.func.isRequired,
