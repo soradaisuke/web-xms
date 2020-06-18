@@ -276,17 +276,34 @@ export default class Action {
       className: 'action-button'
     };
 
-    if (this.getLink() && !disabled) {
-      buttonProps.children = (
-        <RecordLink link={this.getLink()} record={record || records}>
-          {this.getTitle()}
-        </RecordLink>
-      );
-      return <Button {...buttonProps} key={this.getTitle()} />;
-    }
-    
     if (this.getShape() !== 'circle') {
       buttonProps.children = this.getTitle();
+    }
+
+    if (this.getLink() && !disabled) {
+      buttonProps.children = (
+        <>
+          {buttonProps.children}
+          <RecordLink
+            style={{
+              width: '100%',
+              height: '100%',
+              position: 'absolute',
+              left: 0,
+              top: 0
+            }}
+            link={this.getLink()}
+            record={record || records}
+          />
+        </>
+      );
+      return (
+        <Button
+          {...buttonProps}
+          style={{ position: 'relative' }}
+          key={this.getTitle()}
+        />
+      );
     }
 
     const onClick = async ({

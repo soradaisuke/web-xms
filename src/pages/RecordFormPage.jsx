@@ -141,7 +141,7 @@ class RecordFormPage extends React.PureComponent {
     return id !== 'new';
   }
 
-  renderActions = (data) => {
+  renderActions = data => {
     const { isLoading } = this.state;
     const { renderActions } = this.props;
 

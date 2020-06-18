@@ -73,7 +73,7 @@ export default function processRoutes({ app, routes }) {
       }
 
       if (config.type === 'list') {
-        processedConfig = processListConfig({ config, path });
+        processedConfig = processListConfig({ config, path, useFormPage });
         component = dynamicRecordsComponent({
           app,
           component,

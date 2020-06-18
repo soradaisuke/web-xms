@@ -54,4 +54,8 @@ export default class EditAction extends Action {
   renderInline({ record, column, onClick } = {}) {
     return column.renderInlineEdit({ record, onClick });
   }
+
+  setLink(link) {
+    return new EditAction(this.config.set('link', link).toJS());
+  }
 }

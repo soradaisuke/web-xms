@@ -9,11 +9,13 @@ export default class RecordLink extends React.PureComponent {
 
   static propTypes = {
     link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     children: PropTypes.node
   };
 
   static defaultProps = {
+    style: {},
     children: null,
     record: null
   };
@@ -29,12 +31,17 @@ export default class RecordLink extends React.PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, style } = this.props;
     let url = this.getUrl();
 
     if (startsWith(url, 'http')) {
       return (
-        <a href={this.getUrl()} rel="noopener noreferrer" target="_blank">
+        <a
+          style={style}
+          href={this.getUrl()}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           {children}
         </a>
       );
@@ -44,6 +51,10 @@ export default class RecordLink extends React.PureComponent {
       url = `${window.location.pathname}/${url}`;
     }
 
-    return <Link to={url}>{children}</Link>;
+    return (
+      <Link style={style} to={url}>
+        {children}
+      </Link>
+    );
   }
 }
