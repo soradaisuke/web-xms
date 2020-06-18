@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-8](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-7...v2.14.0-8) (2020-06-18)
+
+
+### Features
+
+* **QTLIVE-319:** ZoomImg支持阿里云图片 ([e823b2e](https://git2.qingtingfm.com/zhibo/xms/commit/e823b2e6a2a2b8a7e1fd97da3b43f34113666dba))
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复link按钮能唤起Modal ([a2aeb29](https://git2.qingtingfm.com/zhibo/xms/commit/a2aeb2946145c38a6c0560ca514a48d9312a0f47))
+* **NoTicket:** 表单页支持多Action ([d9c4908](https://git2.qingtingfm.com/zhibo/xms/commit/d9c490801b1a779c29cf764c731b7cdcbd4a979d))
+* **NoTickt:** 自动生成link ([8e65eab](https://git2.qingtingfm.com/zhibo/xms/commit/8e65eabce3b954c5537f415a0e618d2bd2831019))
+
 ## [2.14.0-7](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-6...v2.14.0-7) (2020-06-15)
 
 
