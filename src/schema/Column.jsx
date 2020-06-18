@@ -639,7 +639,7 @@ export default class Column {
     formComponentProps
   }) {
     let children;
-    if (this.getFormExpandable() && this.parentValue(parentValue)) {
+    if (this.getFormExpandable() && this.getFilters(parentValue)) {
       const Component = this.canSelectMutipleInForm()
         ? Checkbox.Group
         : Radio.Group;
