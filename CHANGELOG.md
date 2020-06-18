@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-9](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-8...v2.14.0-9) (2020-06-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** this.parentValue is not a function ([a02b60a](https://git2.qingtingfm.com/zhibo/xms/commit/a02b60ad1690f2d0d172237aa3746fbb186ab8ab))
+
 ## [2.14.0-8](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-7...v2.14.0-8) (2020-06-18)
 
 
