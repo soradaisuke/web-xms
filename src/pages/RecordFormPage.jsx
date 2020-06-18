@@ -141,8 +141,10 @@ class RecordFormPage extends React.PureComponent {
     return id !== 'new';
   }
 
-  renderActions = () => {
+  renderActions = (data) => {
     const { isLoading } = this.state;
+    const { renderActions } = this.props;
+
     return (
       <Row type="flex" align="middle">
         <Button onClick={this.onClickGoBack}>返回</Button>
@@ -162,12 +164,13 @@ class RecordFormPage extends React.PureComponent {
         >
           提交
         </Button>
+        {renderActions && renderActions(data)}
       </Row>
     );
   };
 
   renderContent() {
-    const { table, record, user, renderActions } = this.props;
+    const { table, record, user } = this.props;
     const { action } = this.state;
     if (!table || !action) {
       return null;
@@ -182,7 +185,7 @@ class RecordFormPage extends React.PureComponent {
           columns={table.getColumns()}
           user={user}
           onOk={this.onOk}
-          renderActions={renderActions || this.renderActions}
+          renderActions={this.renderActions}
         />
       </Card>
     );
