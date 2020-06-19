@@ -4,11 +4,13 @@ import { Tree, Input } from 'antd';
 import { map } from 'lodash';
 import generateTreeData from '../utils/generateTreeData';
 import './TreeFilter.less';
+import Column from '../schema/Column';
 
 const { Search } = Input;
 
 export default class TreeFilter extends React.PureComponent {
   static propTypes = {
+    column: PropTypes.instanceOf(Column).isRequired,
     selectedKeys: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
     setSelectedKeys: PropTypes.func.isRequired,
     parentValue: PropTypes.any // eslint-disable-line react/forbid-prop-types

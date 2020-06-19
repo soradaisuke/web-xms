@@ -28,39 +28,35 @@ async function generateRequest(path, options = {}) {
     uri.set('host', host);
   }
 
-  try {
-    let response = await fetch(uri.href, newOptions);
+  let response = await fetch(uri.href, newOptions);
 
-    if (response.status < 200 || response.status >= 300) {
-      const error = new Error(response.statusText);
-      error.code = response.status;
+  if (response.status < 200 || response.status >= 300) {
+    const error = new Error(response.statusText);
+    error.code = response.status;
 
-      try {
-        response = await response.json();
-        error.message = response.errmsg || response.msg;
-        error.code = response.code || response.errcode || error.code;
-      } catch (e) {
-        //
-      }
-
-      throw error;
+    try {
+      response = await response.json();
+      error.message = response.errmsg || response.msg;
+      error.code = response.code || response.errcode || error.code;
+    } catch (e) {
+      //
     }
 
-    response = await response.json();
-
-    if (response.errcode !== undefined) {
-      if (response.errcode === 0) {
-        return response.data;
-      }
-      const error = new Error(response.errmsg);
-      error.code = response.errcode;
-      throw error;
-    }
-
-    return response;
-  } catch (error) {
     throw error;
   }
+
+  response = await response.json();
+
+  if (response.errcode !== undefined) {
+    if (response.errcode === 0) {
+      return response.data;
+    }
+    const error = new Error(response.errmsg);
+    error.code = response.errcode;
+    throw error;
+  }
+
+  return response;
 }
 
 async function get(url, options = {}) {

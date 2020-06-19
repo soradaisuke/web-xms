@@ -1,7 +1,12 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { css } from 'glamor';
-import { ColumnWidthOutlined, ColumnHeightOutlined, RedoOutlined, UndoOutlined } from '@ant-design/icons';
+import {
+  ColumnWidthOutlined,
+  ColumnHeightOutlined,
+  RedoOutlined,
+  UndoOutlined
+} from '@ant-design/icons';
 import classNames from 'classnames';
 import { Row, Button } from 'antd';
 import Zoom from 'react-medium-image-zoom';
@@ -45,7 +50,7 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
         {...imgProps}
       />
     );
-  }, [src]);
+  }, [imgClassName, src, thumbnailWidth]);
 
   const zoomImgClassName = useMemo(
     () =>

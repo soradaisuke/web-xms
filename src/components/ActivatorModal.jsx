@@ -9,6 +9,7 @@ export default class ActivatorModal extends React.PureComponent {
 
   static propTypes = {
     activator: PropTypes.node.isRequired,
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
     onCancel: PropTypes.func,
     onOk: PropTypes.func,
     onVisibleChange: PropTypes.func

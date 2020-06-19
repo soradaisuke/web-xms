@@ -7,6 +7,7 @@ export default class DatePickerWithPresets extends React.PureComponent {
   static displayName = 'DatePickerWithPresets';
 
   static propTypes = {
+    onChange: PropTypes.func.isRequired,
     presets: PropTypes.arrayOf(
       PropTypes.shape({
         text: PropTypes.string,
@@ -39,7 +40,7 @@ export default class DatePickerWithPresets extends React.PureComponent {
   };
 
   render() {
-    const { onChange, presets, format, ...props } = this.props;
+    const { presets, format, ...props } = this.props;
     const { open, date } = this.state;
     return (
       <DatePicker

@@ -7,6 +7,8 @@ import './TreeSelect.less';
 
 export default class XMSTreeSelect extends React.PureComponent {
   static propTypes = {
+    treeData: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+    column: PropTypes.any.isRequired, // eslint-disable-line react/forbid-prop-types
     parentValue: PropTypes.any // eslint-disable-line react/forbid-prop-types
   };
 
@@ -22,8 +24,10 @@ export default class XMSTreeSelect extends React.PureComponent {
     const defaultOption = radioOptions.find(option => option.get('default'));
 
     if (defaultOption) {
+      // eslint-disable-next-line react/state-in-constructor
       this.state = { radioValue: defaultOption.get('value') };
     } else {
+      // eslint-disable-next-line react/state-in-constructor
       this.state = {};
     }
   }
@@ -94,7 +98,7 @@ export default class XMSTreeSelect extends React.PureComponent {
     treeData = treeData || treeDataProps || [];
 
     return (
-      <React.Fragment>
+      <>
         {this.renderRadioOptions()}
         <TreeSelect
           placeholder={column.getFormPlaceholder(true)}
@@ -112,7 +116,7 @@ export default class XMSTreeSelect extends React.PureComponent {
           filterTreeNode={column.getFormSearchRequest() ? false : null}
           onSearch={this.onSearch}
         />
-      </React.Fragment>
+      </>
     );
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Transfer, Table } from 'antd';
 import difference from 'lodash/difference';
 
@@ -50,5 +51,12 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
     }}
   </Transfer>
 );
+
+TableTransfer.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  leftColumns: PropTypes.array.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  rightColumns: PropTypes.array.isRequired
+};
 
 export default React.memo(TableTransfer);

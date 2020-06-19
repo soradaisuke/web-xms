@@ -35,12 +35,7 @@ export default function generateUserModel({ auth, login, logout }) {
     namespace: 'user',
     state: null,
     reducers: {
-      save(
-        state,
-        {
-          payload: { user }
-        }
-      ) {
+      save(state, { payload: { user } }) {
         return Immutable.fromJS(user);
       }
     },
@@ -74,31 +69,18 @@ export default function generateUserModel({ auth, login, logout }) {
         }
       },
       *logout(_, { call }) {
-        try {
-          if (logout) {
-            yield call(service.logout);
-          } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
-            Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
-          } else {
-            Cookie.remove('sso_token', { domain: '.qingting.fm' });
-          }
-          window.location.replace(window.location.origin);
-        } catch (e) {
-          throw e;
+        if (logout) {
+          yield call(service.logout);
+        } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
+          Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
+        } else {
+          Cookie.remove('sso_token', { domain: '.qingting.fm' });
         }
+        window.location.replace(window.location.origin);
       },
-      *login(
-        {
-          payload: { account, password }
-        },
-        { call }
-      ) {
+      *login({ payload: { account, password } }, { call }) {
         if (login) {
-          try {
-            yield call(service.login, { account, password });
-          } catch (e) {
-            throw e;
-          }
+          yield call(service.login, { account, password });
         }
       }
     },

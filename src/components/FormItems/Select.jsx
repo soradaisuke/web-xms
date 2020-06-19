@@ -7,6 +7,7 @@ export default class Select extends React.PureComponent {
   static displayName = 'Select';
 
   static propTypes = {
+    treeData: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
     onChange: PropTypes.func, // eslint-disable-line react/require-default-props
     // eslint-disable-next-line react/require-default-props
     value: PropTypes.oneOfType([
@@ -15,26 +16,27 @@ export default class Select extends React.PureComponent {
       PropTypes.arrayOf(PropTypes.number),
       PropTypes.arrayOf(PropTypes.string)
     ]),
+    treeCheckStrictly: PropTypes.bool,
     formFieldValues: PropTypes.shape({}),
     onSearch: PropTypes.func, // (value, formFieldValues, cb) => cb(newOptions)
     showSearch: PropTypes.bool,
-    treeNodeFilterProp: PropTypes.string
+    treeNodeFilterProp: PropTypes.string,
+    filterOptions: PropTypes.func
   };
 
   static defaultProps = {
     showSearch: false,
     onSearch: null,
     formFieldValues: {},
-    treeNodeFilterProp: 'title'
+    treeNodeFilterProp: 'title',
+    treeCheckStrictly: false,
+    filterOptions: null
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      treeData: props.treeData
-    };
-  }
+  state = {
+    // eslint-disable-next-line react/destructuring-assignment
+    treeData: this.props.treeData
+  };
 
   onSearch = debounce(value => {
     const { onSearch, showSearch, formFieldValues } = this.props;
