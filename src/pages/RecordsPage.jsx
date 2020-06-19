@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { FilterOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import {
   Table,
-  Pagination,
   Card,
   Spin,
   Popover,
@@ -75,8 +74,7 @@ class RecordsPage extends React.PureComponent {
     records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
     sort: PropTypes.string,
     total: PropTypes.number,
-    user: PropTypes.instanceOf(Immutable.Map),
-    paginationProps: PropTypes.object // eslint-disable-line react/forbid-prop-types,
+    user: PropTypes.instanceOf(Immutable.Map)
   };
 
   static defaultProps = {
@@ -90,8 +88,7 @@ class RecordsPage extends React.PureComponent {
     sort: '',
     total: 0,
     inline: false,
-    user: null,
-    paginationProps: {}
+    user: null
   };
 
   static showTotal(total, range) {
@@ -869,8 +866,7 @@ class RecordsPage extends React.PureComponent {
       isLoading,
       user,
       actions,
-      tableProps,
-      paginationProps
+      tableProps
     } = this.props;
 
     const multipleActions = actions
@@ -926,13 +922,24 @@ class RecordsPage extends React.PureComponent {
             dataSource={dataSource}
             rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
-            pagination={false}
             onChange={(pagination, filters, sorter) =>
               this.onChange({ pagination, filters, sorter, columns })
             }
             getPopupContainer={() =>
               document.getElementsByClassName('xms-page')[0]
             }
+            pagination={{
+              showQuickJumper: true,
+              showSizeChanger: true,
+              showTotal: RecordsPage.showTotal,
+              ...(tableProps.pagination ?? {}),
+              className: 'ant-table-pagination',
+              total,
+              current: page,
+              pageSize: pagesize,
+              onChange: this.onChangePage,
+              onShowSizeChange: this.onChangePage
+            }}
           >
             {columns.map(column =>
               this.renderColumn({
@@ -942,18 +949,6 @@ class RecordsPage extends React.PureComponent {
             )}
             {this.renderRowActions()}
           </Table>
-          <Pagination
-            showQuickJumper
-            showSizeChanger
-            showTotal={RecordsPage.showTotal}
-            {...paginationProps}
-            className="ant-table-pagination"
-            total={total}
-            current={page}
-            pageSize={pagesize}
-            onChange={this.onChangePage}
-            onShowSizeChange={this.onChangePage}
-          />
         </Group>
       </>
     );

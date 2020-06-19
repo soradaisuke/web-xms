@@ -240,8 +240,7 @@ function generateRecordsPage(
     table,
     filterGroupTrigger,
     tableProps = {},
-    formProps = {},
-    paginationProps = {}
+    formProps = {}
   },
   component,
   inline
@@ -278,7 +277,7 @@ function generateRecordsPage(
       () =>
         queries.pagesize
           ? toInteger(queries.pagesize)
-          : paginationProps.defaultPageSize ?? 10,
+          : tableProps.pagination?.defaultPageSize ?? 10,
       [queries.pagesize]
     );
     const sort = useMemo(() => queries.sort || '', [queries.sort]);
@@ -436,7 +435,6 @@ function generateRecordsPage(
             edit={edit}
             remove={remove}
             updatePage={updatePage}
-            paginationProps={paginationProps}
             filterGroupTrigger={filterGroupTrigger}
             component={component}
             table={table}
