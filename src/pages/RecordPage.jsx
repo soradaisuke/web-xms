@@ -9,6 +9,8 @@ import TableType from '../schema/Table';
 import Page from './Page';
 import showError from '../utils/showError';
 import Action from '../components/Action';
+import EditableCell from '../components/Editable/EditableCell';
+import EditableDescriptions from '../components/Editable/EditableDescriptions';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
@@ -141,12 +143,18 @@ class RecordPage extends React.PureComponent {
         key={column.getKey()}
         span={column.getDescriptionSpan()}
       >
-        {
-          column.renderInDescription({
-            record,
-            value: get(record, column.getKey())
-          })
-        }
+        <EditableCell
+          column={column}
+          record={record}
+          onComplete={this.fetch}
+        >
+          {
+            column.renderInDescription({
+              record,
+              value: get(record, column.getKey())
+            })
+          }
+        </EditableCell>
       </Descriptions.Item>
     );
   }
@@ -159,10 +167,10 @@ class RecordPage extends React.PureComponent {
     }
 
     const children = (
-      <Descriptions bordered={bordered} column={descriptionsColumn}>
+      <EditableDescriptions bordered={bordered} column={descriptionsColumn}>
         {table.getColumns().map(column => this.renderDescriptionItem(column))}
         {this.renderActions()}
-      </Descriptions>
+      </EditableDescriptions>
     );
 
     return inline ? (

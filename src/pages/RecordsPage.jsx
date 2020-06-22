@@ -35,17 +35,17 @@ import {
   isObject,
   filter as filterFunc
 } from 'lodash';
-import EditableTableCell from '../components/EditableTableCell';
-import EditableTableRow from '../components/EditableTableRow';
+import EditableTableCell from '../components/Editable/EditableTableCell';
+import EditableTableRow from '../components/Editable/EditableTableRow';
 import TableType from '../schema/Table';
 import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
 import visiblePromise from '../utils/visiblePromise';
 import Action from '../components/Action';
-import './RecordsPage.less';
 import FilterDropDown from '../components/FilterDropDown';
 import FilterIcon from '../components/FilterIcon';
+import './RecordsPage.less';
 
 const { Column } = Table;
 
@@ -382,11 +382,7 @@ class RecordsPage extends React.PureComponent {
     const {
       sort,
       filter: propsFilter,
-      actions,
-      table,
       user,
-      edit,
-      match: { params: matchParams },
       filterGroupTrigger
     } = this.props;
     const { pendingFilter } = this.state;
@@ -475,7 +471,6 @@ class RecordsPage extends React.PureComponent {
     const parentFilteredValue = column.parentColumn
       ? get(filter, column.parentColumn.getTableFilterKey())
       : undefined;
-    const editAction = actions.getEditAction();
     const filteredValue = get(filter, column.getTableFilterKey());
     return (
       <Column
@@ -524,37 +519,11 @@ class RecordsPage extends React.PureComponent {
         fixed={column.getTableFixed()}
         sorter={column.canSortInTable()}
         sortDirections={column.getTableSortDirections().toArray()}
-        onCell={
-          column.canShowFormItemInEditableTable() && column.canInlineEdit()
-            ? record => ({
-                record,
-                column,
-                table,
-                user,
-                submit:
-                  editAction &&
-                  editAction.isVisible() &&
-                  isFunction(editAction.isDisabled) &&
-                  !editAction.isDisabled({
-                    user,
-                    record,
-                    table,
-                    matchParams
-                  })
-                    ? body =>
-                        this.updateRecord({
-                          promise: editAction.getHandler(edit)({
-                            id: get(record, table.getPrimaryKey()),
-                            body
-                          }),
-                          throwError: true,
-                          reload: true,
-                          loadingMessage: editAction.getHandlingMessage()
-                        })
-                    : null
-              })
-            : null
-        }
+        onCell={record => ({
+          record,
+          column,
+          onComplete: this.fetch
+        })}
         sortOrder={
           sort && startsWith(sort, `${column.getKey()} `)
             ? `${split(sort, ' ')[1]}end`

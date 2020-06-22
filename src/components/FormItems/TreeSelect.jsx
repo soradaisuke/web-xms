@@ -102,7 +102,6 @@ export default class XMSTreeSelect extends React.PureComponent {
         {this.renderRadioOptions()}
         <TreeSelect
           placeholder={column.getFormPlaceholder(true)}
-          searchPlaceholder={column.getFormSearchPlaceholder()}
           treeCheckable={column.canSelectMutipleInForm()}
           getPopupContainer={() =>
             document.getElementsByClassName('xms-layout')[0]

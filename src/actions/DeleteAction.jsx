@@ -1,3 +1,5 @@
+import React from 'react';
+import { DeleteOutlined } from '@ant-design/icons';
 import Action from './Action';
 
 export default class DeleteAction extends Action {
@@ -10,7 +12,7 @@ export default class DeleteAction extends Action {
   }
 
   getIcon() {
-    return this.config.get('icon', 'delete');
+    return this.config.get('icon', <DeleteOutlined />);
   }
 
   getTitle() {

@@ -26,11 +26,6 @@ export default class StringColumn extends Column {
     return true;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canShowFormItemInEditableTable() {
-    return true;
-  }
-
   renderInFormItem({
     user,
     record,

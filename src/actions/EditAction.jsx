@@ -1,4 +1,6 @@
+import React from 'react';
 import { isFunction, get } from 'lodash';
+import { EditOutlined } from '@ant-design/icons';
 import Action from './Action';
 
 export default class EditAction extends Action {
@@ -7,7 +9,7 @@ export default class EditAction extends Action {
   }
 
   getIcon() {
-    return this.config.get('icon', 'edit');
+    return this.config.get('icon', <EditOutlined />);
   }
 
   getTitle() {

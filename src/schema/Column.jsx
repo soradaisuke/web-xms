@@ -309,11 +309,6 @@ export default class Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  canShowFormItemInEditableTable() {
-    return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   canRenderFilterDropDown() {
     return false;
   }
@@ -445,7 +440,7 @@ export default class Column {
 
   // eslint-disable-next-line class-methods-use-this
   getFormDefaultInitialValue() {
-    return null;
+    return undefined;
   }
 
   getFormInitialValue() {
@@ -922,10 +917,5 @@ export default class Column {
     }
 
     return Promise.reject();
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderInlineEdit() {
-    return null;
   }
 }

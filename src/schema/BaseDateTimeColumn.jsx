@@ -42,11 +42,6 @@ export default class BaseDateTimeColumn extends StringColumn {
     return value && moment(value).isValid() ? moment(value) : undefined;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canShowFormItemInEditableTable() {
-    return false;
-  }
-
   renderInFormItem({
     user,
     record,

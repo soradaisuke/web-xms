@@ -1,7 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
 import { Switch } from 'antd';
-import { get } from 'lodash';
 import Column from './Column';
 
 export default class BooleanColumn extends Column {
@@ -44,24 +43,6 @@ export default class BooleanColumn extends Column {
   // eslint-disable-next-line class-methods-use-this
   getFormDefaultInitialValue() {
     return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderInlineEdit({ onClick, record }) {
-    return this.renderInFormItem({
-      isEdit: true,
-      formComponentProps: {
-        checked: get(record, this.getKey()),
-        onChange: value => {
-          onClick({
-            data: { body: { [this.getFormKey()]: value } },
-            loadingMessage: '正在保存……',
-            throwError: true,
-            reload: true
-          });
-        }
-      }
-    });
   }
 
   renderInFormItem({

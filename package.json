@@ -39,6 +39,7 @@
     "react-lines-ellipsis": "^0.14.1",
     "react-medium-image-zoom": "^4.3.1",
     "react-player": "^1.15.3",
+    "react-tabs": "^3.1.1",
     "reselect": "^3.0.1",
     "shortid": "^2.2.15",
     "url-parse": "^1.4.7",
