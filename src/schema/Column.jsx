@@ -11,7 +11,6 @@ import {
   find,
   filter,
   forEach,
-  isBoolean,
   flatten
 } from 'lodash';
 import LinesEllipsis from 'react-lines-ellipsis';
@@ -21,8 +20,6 @@ import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
 import './Column.less';
 import generateAntdOptions from '../utils/generateAntdOptions';
-
-export const DEFAULT_GROUP_NAME = '其它筛选项';
 
 const FormItem = Form.Item;
 
@@ -101,61 +98,11 @@ export default class Column {
     return this.config.get('parentKey');
   }
 
-  canFilterExpand() {
-    return (
-      this.config.getIn(['table', 'filterExpandable']) ||
-      this.config.getIn(['table', 'expandFilter'])
-    );
-  }
-
   isPrimaryKey() {
     return this.config.get('primaryKey');
   }
 
   // table
-
-  getTableTitle({ filtered, filteredValue, parentFilteredValue }) {
-    if (
-      !filteredValue ||
-      !filteredValue.length ||
-      (filteredValue.length === 1 && filteredValue[0] === null)
-    )
-      return this.getTitle();
-    if (filtered) {
-      if (this.canFilterRangeInTable()) {
-        return `${this.getTitle()}（${this.renderInTableValueDefault({
-          value: get(filteredValue, '[0][0]'),
-          parentFilteredValue
-        })} ~ ${this.renderInTableValueDefault({
-          value: get(filteredValue, '[0][1]'),
-          parentFilteredValue
-        })}）`;
-      }
-      if (this.canFilterMultipleInTable()) {
-        if (filteredValue.length > 3) {
-          return `${this.getTitle()}（已选${filteredValue.length}个）`;
-        }
-        return `${this.getTitle()}（${join(
-          map(
-            filteredValue,
-            v =>
-              this.renderInTableValueDefault({
-                value: v,
-                parentFilteredValue
-              }) || ''
-          ),
-          '，'
-        )}）`;
-      }
-
-      return `${this.getTitle()}（${this.renderInTableValueDefault({
-        value: filteredValue[0],
-        parentFilteredValue
-      }) || ''}）`;
-    }
-
-    return this.getTitle();
-  }
 
   getTableLink() {
     return this.config.getIn(['table', 'link']);
@@ -173,15 +120,10 @@ export default class Column {
     return this.config.getIn(['table', 'fixedSortOrder']);
   }
 
-  getTableFixedFilterValue() {
-    const value = isBoolean(this.getTableFilterRequired())
-      ? this.getTableFilterDefault()
-      : this.getTableFilterRequired();
-    return this.getTableFilterRequired() ? value : null;
-  }
+  // filter
 
   getFilters(parentFilteredValue, key = 'normal') {
-    if (this.getParentKey()) {
+    if (this.getParentKey() && key !== 'search') {
       if (isArray(parentFilteredValue)) {
         const filters = filter(
           map(parentFilteredValue, v => this.filters.getIn([v, key])),
@@ -200,26 +142,68 @@ export default class Column {
     return this.filters ? this.filters.get(key) : null;
   }
 
-  getTableFilterKey() {
+  getFilterKey() {
     return this.config.getIn(['table', 'filterKey']) || this.getKey();
   }
 
-  getTableFilterComponentProps() {
-    if (!this.tableFilterComponentProps) {
-      this.tableFilterComponentProps = this.config
-        .getIn(['table', 'filterComponentProps'], Immutable.Map())
+  getFilterFormItemProps() {
+    if (!this.filterFormItemProps) {
+      this.filterFormItemProps = this.config
+        .getIn(['table', 'filterFormItemProps'], Immutable.Map())
         .toJS();
     }
 
-    return this.tableFilterComponentProps;
+    return this.filterFormItemProps;
   }
 
-  getTableFilterDefault() {
+  getFilterFormItemComponentProps() {
+    if (!this.filterFormItemComponentProps) {
+      this.filterFormItemComponentProps = this.config
+        .getIn(['table', 'filterFormItemComponentProps'], Immutable.Map())
+        .toJS();
+    }
+
+    return this.filterFormItemComponentProps;
+  }
+
+  getFilterDefault() {
     return this.config.getIn(['table', 'filterDefault']);
   }
 
-  getTableFilterRequired() {
+  getFilterRequired() {
     return this.config.getIn(['table', 'filterRequired']);
+  }
+
+  getFilterGroup() {
+    return this.config.getIn(['table', 'filterGroup'], '');
+  }
+
+  getFilterPresets() {
+    return this.config.getIn(['table', 'filterPresets'], Immutable.List([]));
+  }
+
+  getFilterSearchRequest() {
+    return this.config.getIn(['table', 'filterSearchRequest']);
+  }
+
+  canFilterInTable() {
+    return this.config.getIn(['table', 'filter']);
+  }
+
+  canFilterExpandable() {
+    return this.config.getIn(['table', 'filterExpandable']);
+  }
+
+  canFilterMultiple() {
+    return this.config.getIn(['table', 'filterMultiple']);
+  }
+
+  canFilterRange() {
+    return this.config.getIn(['table', 'filterRange']);
+  }
+
+  canFilterOutside() {
+    return this.config.getIn(['table', 'filterOutside'], true);
   }
 
   getTableWidth() {
@@ -234,14 +218,6 @@ export default class Column {
     return this.config.getIn(['table', 'maxLines']);
   }
 
-  getFilterGroup() {
-    return this.config.getIn(['table', 'filterGroup'], DEFAULT_GROUP_NAME);
-  }
-
-  getTableFilterSearchRequest() {
-    return this.config.getIn(['table', 'filterSearchRequest']);
-  }
-
   resetFilters() {
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
@@ -249,46 +225,6 @@ export default class Column {
     } else {
       this.filters = Immutable.Map();
     }
-  }
-
-  isFilterOutside() {
-    return this.config.getIn(['table', 'filterOutside']);
-  }
-
-  shouldRenderTableFilter(user) {
-    return (
-      this.canFilterInTable() &&
-      !this.shouldRenderOutsideFilter(user) &&
-      !this.shouldRenderExpandFilter()
-    );
-  }
-
-  shouldRenderOutsideFilter(user) {
-    return (
-      this.canFilterInTable() &&
-      !this.canFilterExpand() &&
-      (this.isFilterOutside() || !this.canShowInTable(user))
-    );
-  }
-
-  shouldRenderExpandFilter() {
-    return this.canFilterInTable() && this.canFilterExpand();
-  }
-
-  canFilterInTable() {
-    return this.config.getIn(['table', 'filter']);
-  }
-
-  canFilterTreeInTable() {
-    return this.config.getIn(['table', 'filterTree']);
-  }
-
-  canFilterMultipleInTable() {
-    return this.config.getIn(['table', 'filterMultiple']);
-  }
-
-  canFilterRangeInTable() {
-    return this.config.getIn(['table', 'filterRange']);
   }
 
   canSortInTable() {
@@ -326,7 +262,7 @@ export default class Column {
   renderInTableValueDefault({ value, parentFilteredValue }) {
     const filters = this.getFilters(
       parentFilteredValue,
-      this.getTableFilterSearchRequest() ? 'search' : 'normal'
+      this.getFilterSearchRequest() ? 'search' : 'normal'
     );
     const option = findOption(filters, value);
     if (option) {
@@ -901,7 +837,7 @@ export default class Column {
   }
 
   fetchSearchValueOptions(value) {
-    const filterSearchRequest = this.getTableFilterSearchRequest();
+    const filterSearchRequest = this.getFilterSearchRequest();
 
     if (filterSearchRequest) {
       if (!this.activefilterSearchRequest) {

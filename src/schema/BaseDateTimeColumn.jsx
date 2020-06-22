@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 import { DatePicker } from 'antd';
-import Immutable from 'immutable';
 import StringColumn from './StringColumn';
 
 export default class BaseDateTimeColumn extends StringColumn {
@@ -15,10 +14,6 @@ export default class BaseDateTimeColumn extends StringColumn {
       ['table', 'format'],
       this.getDefaultInTableFormat()
     );
-  }
-
-  getTableFilterPresets() {
-    return this.config.getIn(['table', 'filterPresets'], Immutable.List([]));
   }
 
   // eslint-disable-next-line class-methods-use-this

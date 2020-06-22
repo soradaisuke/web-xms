@@ -4,19 +4,7 @@ import { TimePicker } from 'antd';
 import { isNumber } from 'lodash';
 import NumberColumn from './NumberColumn';
 
-export default class TimeColumn extends NumberColumn {
-  // eslint-disable-next-line class-methods-use-this
-  getDefaultInTableFormat() {
-    return 'HH:mm:ss';
-  }
-
-  getInTableFormat() {
-    return this.config.getIn(
-      ['table', 'format'],
-      this.getDefaultInTableFormat()
-    );
-  }
-
+export default class DurationColumn extends NumberColumn {
   // eslint-disable-next-line class-methods-use-this
   formatFormFieldValue(v) {
     return moment()

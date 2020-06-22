@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
-import NumberColumn from '../schema/NumberColumn';
-import StringColumn from '../schema/StringColumn';
-import Column from '../schema/Column';
+import NumberColumn from '../../schema/NumberColumn';
+import StringColumn from '../../schema/StringColumn';
+import Column from '../../schema/Column';
 import './FilterDropDown.less';
 
 function FilterIcon({ column, filtered }) {
@@ -16,7 +16,7 @@ function FilterIcon({ column, filtered }) {
   }
 
   if (column instanceof NumberColumn) {
-    return column.canFilterRangeInTable() ? (
+    return column.canFilterRange() ? (
       <FilterOutlined style={style} />
     ) : (
       <SearchOutlined style={style} />

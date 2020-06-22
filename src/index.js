@@ -7,7 +7,7 @@ export history from './utils/history';
 export Group from './components/Group';
 export ActivatorModal from './components/ActivatorModal';
 export Page from './pages/Page';
-export DatePickerWithPresets from './components/DatePickerWithPresets';
+export DatePickerWithPresets from './components/Filter/DatePickerWithPresets';
 export textToPath from './utils/textToPath';
 export UploadImage from './components/FormItems/UploadImage';
 export UploadFile from './components/UploadFile';

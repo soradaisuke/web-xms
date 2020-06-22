@@ -46,22 +46,9 @@ export default class Table {
 
   findDefaultFilter() {
     this.columns.forEach(column => {
-      const valueOptions = (
-        column.getValueOptions() || Immutable.List()
-      ).filter(option => option.get('default'));
-      if (valueOptions.size > 0) {
+      if (column.getFilterDefault()) {
         this.defaultFilter = this.defaultFilter || {};
-        this.defaultFilter[
-          column.getTableFilterKey()
-        ] = column.canFilterMultipleInTable()
-          ? valueOptions.map(option => option.get('value')).toArray()
-          : valueOptions.getIn([0, 'value']);
-      }
-      if (column.getTableFilterDefault()) {
-        this.defaultFilter = this.defaultFilter || {};
-        this.defaultFilter[
-          column.getTableFilterKey()
-        ] = column.getTableFilterDefault();
+        this.defaultFilter[column.getFilterKey()] = column.getFilterDefault();
       }
     });
   }

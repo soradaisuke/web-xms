@@ -3,37 +3,15 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
-import { FilterOutlined } from '@ant-design/icons';
-import {
-  Table,
-  Card,
-  Spin,
-  Button,
-  Popconfirm,
-  Row,
-  Radio,
-  Checkbox,
-  Col
-} from 'antd';
+import { Table, Card, Button, Form } from 'antd';
 import {
   split,
   startsWith,
-  isArray,
   isEqual,
-  size,
   map,
   get,
-  set,
-  values,
-  unset,
-  isUndefined,
-  isNull,
-  cloneDeep,
-  isFunction,
-  groupBy,
   isBoolean,
-  isObject,
-  filter as filterFunc
+  groupBy
 } from 'lodash';
 import EditableTableCell from '../components/Editable/EditableTableCell';
 import EditableTableRow from '../components/Editable/EditableTableRow';
@@ -41,10 +19,11 @@ import TableType from '../schema/Table';
 import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
-import visiblePromise from '../utils/visiblePromise';
 import Action from '../components/Action';
-import FilterDropDown from '../components/FilterDropDown';
-import FilterIcon from '../components/FilterIcon';
+import FilterDropDown from '../components/Filter/FilterDropDown';
+import FilterIcon from '../components/Filter/FilterIcon';
+import FormItem from '../components/Filter/FormItem';
+import PageFilterFormContext from '../contexts/PageFilterFormContext';
 import './RecordsPage.less';
 
 const { Column } = Table;
@@ -93,14 +72,6 @@ class RecordsPage extends React.PureComponent {
     return `${range[0]}-${range[1]}，共${total}个`;
   }
 
-  constructor(props) {
-    super(props);
-
-    props.table.columns.forEach(column => {
-      column.resetFilters();
-    });
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.records !== nextProps.records) {
       return {
@@ -116,12 +87,22 @@ class RecordsPage extends React.PureComponent {
     records: Immutable.List(),
     dataSource: [],
     selectedRowKeys: [],
-    pendingFilter: {},
     selectedRows: []
   };
 
+  form = React.createRef();
+
+  constructor(props) {
+    super(props);
+
+    props.table.columns.forEach(column => {
+      column.resetFilters();
+    });
+  }
+
   componentDidMount() {
     this.fetch();
+    this.updateFilterForm();
   }
 
   componentDidUpdate(prevProps) {
@@ -133,21 +114,26 @@ class RecordsPage extends React.PureComponent {
       !isEqual(prevProps.filter, filter)
     ) {
       this.fetch();
+
+      if (!isEqual(prevProps.filter, filter)) {
+        this.updateFilterForm();
+      }
     }
   }
+
+  updateFilterForm = () => {
+    const { filter } = this.props;
+
+    // eslint-disable-next-line no-unused-expressions
+    this.form.current?.setFieldsValue(filter);
+  };
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
     this.setState({ selectedRowKeys, selectedRows });
   };
 
-  resetPendingFilter = () => {
-    this.setState({
-      pendingFilter: {}
-    });
-  };
-
-  onChangePage = (page, pagesize) => {
-    const { updatePage, sort, filter } = this.props;
+  onFinish = filter => {
+    const { page, pagesize, sort, updatePage } = this.props;
     updatePage({
       page,
       pagesize,
@@ -156,150 +142,26 @@ class RecordsPage extends React.PureComponent {
     });
   };
 
-  checkFixedFilterValue = ({ filter, column }) => {
-    const fixedFilterValue = column.getTableFixedFilterValue();
-    if (
-      isUndefined(get(filter, column.getTableFilterKey())) &&
-      fixedFilterValue
-    ) {
-      set(filter, column.getTableFilterKey(), fixedFilterValue);
-    }
-  };
+  onChange = (pagination, _, sorter) => {
+    const { updatePage, sort, filter } = this.props;
 
-  onChange = ({ filters, sorter, columns, onlyFilters = false }) => {
-    const { page, pagesize, updatePage, sort, filter } = this.props;
+    let newPage = pagination.page;
+    const newPageSize = pagination.pageSize;
+    let newSort = '';
 
-    const newFilter = cloneDeep(filter);
-    columns.forEach(column => {
-      if (
-        column.shouldRenderTableFilter() ||
-        column.shouldRenderOutsideFilter()
-      ) {
-        unset(newFilter, column.getTableFilterKey());
-
-        if (column.parentColumn) {
-          let parentFilteredValue = filters[column.parentColumn.getKey()];
-          parentFilteredValue =
-            column.parentColumn.canFilterMultipleInTable() ||
-            !parentFilteredValue
-              ? parentFilteredValue
-              : parentFilteredValue[0];
-
-          if (
-            !isEqual(
-              parentFilteredValue,
-              get({ ...filter }, column.parentColumn.getTableFilterKey())
-            )
-          ) {
-            set(newFilter, column.getTableFilterKey(), null);
-            return true;
-          }
-        }
-        const value = filters[column.getKey()];
-        if (value && value.length > 0) {
-          if (column.canFilterMultipleInTable()) {
-            if (
-              filterFunc(value, v => !isUndefined(v) && !isNull(v)).length > 0
-            ) {
-              set(newFilter, column.getTableFilterKey(), value);
-            }
-          } else if (!isUndefined(value[0]) && !isNull(value[0])) {
-            set(newFilter, column.getTableFilterKey(), value[0]);
-          }
-        }
-        this.checkFixedFilterValue({
-          filter: newFilter,
-          column
-        });
-      }
-      return true;
-    });
-
-    let newPage = page;
-    let newSort = sort;
-
-    if (!onlyFilters) {
-      if (sorter && sorter.columnKey && sorter.order) {
-        newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
-      } else {
-        newSort = '';
-      }
-
-      if (sort !== newSort) {
-        newPage = 1;
-      }
+    if (sorter && sorter.columnKey && sorter.order) {
+      newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
     }
 
-    if (!isEqual(filter, newFilter)) {
+    if (sort !== newSort) {
       newPage = 1;
     }
 
     updatePage({
       page: newPage,
-      pagesize,
+      pagesize: newPageSize,
       sort: newSort,
-      filter: newFilter
-    });
-  };
-
-  onChangeTriggeredFilter = ({ filters, columns }) => {
-    const { filter } = this.props;
-    const { pendingFilter } = this.state;
-    const newFilter = cloneDeep(pendingFilter);
-
-    columns.forEach(column => {
-      unset(newFilter, column.getTableFilterKey());
-
-      if (column.parentColumn) {
-        const parentFilteredValue =
-          filters[column.parentColumn.getTableFilterKey()];
-
-        if (
-          !isEqual(
-            parentFilteredValue,
-            get(
-              { ...filter, ...pendingFilter },
-              column.parentColumn.getTableFilterKey()
-            )
-          )
-        ) {
-          set(newFilter, column.getTableFilterKey(), null);
-          return true;
-        }
-      }
-      const value = filters[column.getTableFilterKey()];
-      set(newFilter, column.getTableFilterKey(), value);
-      this.checkFixedFilterValue({
-        filter: newFilter,
-        column
-      });
-      return true;
-    });
-
-    this.setState({
-      pendingFilter: newFilter
-    });
-  };
-
-  updateRecord = async ({
-    promise,
-    loadingMessage,
-    throwError = false,
-    reload = false,
-    onComplete
-  }) => {
-    await visiblePromise({
-      promise,
-      loadingMessage,
-      throwError,
-      onComplete: ({ result }) => {
-        if (isFunction(onComplete)) {
-          onComplete({ result });
-        }
-        if (reload) {
-          this.fetch();
-        }
-      }
+      filter
     });
   };
 
@@ -317,50 +179,10 @@ class RecordsPage extends React.PureComponent {
   };
 
   resetFilters = () => {
-    const {
-      updatePage,
-      page,
-      pagesize,
-      sort,
-      table: { columns }
-    } = this.props;
-    this.setState({
-      pendingFilter: {}
-    });
-    const filter = {};
-    columns.forEach(column => {
-      if (!column.canFilterInTable()) {
-        return;
-      }
-      this.checkFixedFilterValue({
-        filter,
-        column
-      });
-    });
-    updatePage({ page, pagesize, sort, filter });
-  };
-
-  onClickFilterGroupSearch = columns => {
-    const { pagesize, updatePage, sort, filter } = this.props;
-    const { pendingFilter } = this.state;
-    const newFilter = { ...filter, ...pendingFilter };
-    columns.forEach(column => {
-      const filterKey = column.getTableFilterKey();
-      if (!isUndefined(newFilter[filterKey])) {
-        set(
-          newFilter,
-          filterKey,
-          column.formatFormSubmitValue(newFilter[filterKey])
-        );
-      }
-    });
-    updatePage({
-      page: 1,
-      pagesize,
-      sort,
-      filter: newFilter
-    });
-    this.resetPendingFilter();
+    // eslint-disable-next-line no-unused-expressions
+    this.form.current?.resetFields();
+    // eslint-disable-next-line no-unused-expressions
+    this.form.current?.submit();
   };
 
   resetTableState() {
@@ -373,146 +195,37 @@ class RecordsPage extends React.PureComponent {
     }
   }
 
-  renderColumn({
-    column,
-    columns,
-    shouldRenderTableFilter = true,
-    renderFilterInTitle = false
-  }) {
-    const {
-      sort,
-      filter: propsFilter,
-      user,
-      filterGroupTrigger
-    } = this.props;
-    const { pendingFilter } = this.state;
-    const filter = { ...propsFilter, ...pendingFilter };
+  renderColumn(column) {
+    const { sort, filter, user } = this.props;
     const filterProps = {};
-    const isAutoTrigger =
-      !column.shouldRenderOutsideFilter() || !filterGroupTrigger;
 
-    if (column.canFilterInTable() && shouldRenderTableFilter) {
-      const parentFilteredValue = column.parentColumn
-        ? get(filter, column.parentColumn.getTableFilterKey())
-        : null;
-
-      let filteredValue = get(filter, column.getTableFilterKey());
+    if (column.canFilterInTable()) {
+      let filteredValue = get(filter, column.getFilterKey());
 
       if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
-        if (
-          column.canFilterRangeInTable() ||
-          !column.canFilterMultipleInTable()
-        ) {
+        if (column.canFilterRange() || !column.canFilterMultiple()) {
           filteredValue = [filteredValue];
         }
       } else {
         filteredValue = [];
       }
 
-      const filters = column.getFilters(parentFilteredValue, 'disableInFilter');
-      const valueOptionsRequest = column.getValueOptionsRequest();
-
-      if (filters || column.getTableFilterSearchRequest()) {
-        filterProps.filters = filters;
-        filterProps.filtered =
-          !!filteredValue.length &&
-          !(filteredValue.length === 1 && filteredValue[0] === null);
-        filterProps.filteredValue = filteredValue;
-        filterProps.filterMultiple = column.canFilterMultipleInTable();
-        if (
-          column.canFilterTreeInTable() ||
-          column.getTableFilterSearchRequest()
-        ) {
-          filterProps.filterDropdown = dropDownParams => (
-            <FilterDropDown
-              useTreeFilter
-              column={column}
-              isAutoTrigger={isAutoTrigger}
-              parentValue={parentFilteredValue}
-              {...dropDownParams}
-            />
-          );
-          filterProps.filterIcon = filtered => (
-            <FilterOutlined
-              style={{ color: filtered ? '#1890ff' : undefined }}
-            />
-          );
-        }
-      } else if (valueOptionsRequest) {
-        if (
-          (isArray(parentFilteredValue) &&
-            parentFilteredValue.length > 0 &&
-            parentFilteredValue[0] !== null) ||
-          !isUndefined(parentFilteredValue)
-        ) {
-          filterProps.filterDropdown = () => <Spin style={{ width: '100%' }} />;
-          column
-            .fetchValueOptions(parentFilteredValue)
-            .then(() => this.forceUpdate())
-            .catch(() => {});
-        }
-      } else if (column.canRenderFilterDropDown() && !renderFilterInTitle) {
-        filterProps.filtered = !!filteredValue.length;
-        filterProps.filteredValue = filteredValue;
-        filterProps.filterDropdown = dropDownParams => (
-          <FilterDropDown
-            column={column}
-            isAutoTrigger={isAutoTrigger}
-            {...dropDownParams}
-          />
-        );
-        filterProps.filterIcon = filtered => (
-          <FilterIcon filtered={filtered} column={column} />
-        );
-      }
-
-      filterProps.parentFilteredValue = parentFilteredValue;
+      filterProps.filtered =
+        !!filteredValue.length &&
+        !(filteredValue.length === 1 && filteredValue[0] === null);
+      filterProps.filteredValue = filteredValue;
+      filterProps.filterMultiple = column.canFilterMultiple();
+      filterProps.filterDropdown = dropDownParams => (
+        <FilterDropDown column={column} {...dropDownParams} />
+      );
+      filterProps.filterIcon = filtered => (
+        <FilterIcon column={column} filtered={filtered} />
+      );
     }
-    const parentFilteredValue = column.parentColumn
-      ? get(filter, column.parentColumn.getTableFilterKey())
-      : undefined;
-    const filteredValue = get(filter, column.getTableFilterKey());
     return (
       <Column
-        {...(renderFilterInTitle ? {} : filterProps)}
-        title={
-          renderFilterInTitle ? (
-            <Col>
-              <div>{column.getTitle()}</div>
-              {column.renderInForm({
-                isFilter: true,
-                // treeData: generateTreeData(filterProps.filters || []),
-                formComponentProps: {
-                  ...column.getTableFilterComponentProps(),
-                  parentValue: parentFilteredValue,
-                  treeCheckable: column.canFilterMultipleInTable(),
-                  value:
-                    isUndefined(filteredValue) || filteredValue === null
-                      ? undefined
-                      : column.formatFormFieldValue(filteredValue),
-                  onChange: v => {
-                    const value =
-                      isObject(v) && isObject(v.target) ? v.target.value : v;
-                    this.onChangeTriggeredFilter({
-                      filters: {
-                        ...filter,
-                        [column.getTableFilterKey()]: isUndefined(value)
-                          ? null
-                          : value
-                      },
-                      columns
-                    });
-                  },
-                  style: { width: 200 },
-                  getPopupContainer: () =>
-                    document.getElementsByClassName('xms-page')[0]
-                }
-              })}
-            </Col>
-          ) : (
-            column.getTableTitle(filterProps)
-          )
-        }
+        {...filterProps}
+        title={column.getTitle()}
         dataIndex={column.getKey()}
         key={column.getKey()}
         width={column.getTableWidth()}
@@ -529,7 +242,7 @@ class RecordsPage extends React.PureComponent {
             ? `${split(sort, ' ')[1]}end`
             : false
         }
-        render={(value, record) => 
+        render={(value, record) =>
           column.renderInTable({
             value,
             record,
@@ -542,179 +255,15 @@ class RecordsPage extends React.PureComponent {
     );
   }
 
-  renderExpandFilters(column) {
-    const { filter, pagesize, sort, updatePage } = this.props;
-
-    const parentFilteredValue = column.parentColumn
-      ? get(filter, column.parentColumn.getTableFilterKey())
-      : null;
-
-    const filteredValue = get(filter, column.getTableFilterKey());
-
-    const filters = column.getFilters(parentFilteredValue, 'disableInFilter');
-    const valueOptionsRequest = column.getValueOptionsRequest();
-    const filterMultiple = column.canFilterMultipleInTable();
-
-    if (
-      !filters &&
-      !column.getTableFilterSearchRequest() &&
-      valueOptionsRequest
-    ) {
-      if (
-        (isArray(parentFilteredValue) && parentFilteredValue.length > 0) ||
-        !isUndefined(parentFilteredValue)
-      ) {
-        column
-          .fetchValueOptions(parentFilteredValue)
-          .then(() => this.forceUpdate())
-          .catch(() => {});
-      }
-    }
-
-    const options = filters
-      ? filters.map(({ value, text: label }) => ({ value, label }))
-      : [];
-    const FilterComponent = filterMultiple ? Checkbox.Group : Radio.Group;
-    const fixedFilterValue = column.getTableFixedFilterValue();
-
-    return (
-      <Row type="flex" align="middle" style={{ marginBottom: '1rem' }}>
-        {`${column.getTitle()}：`}
-        <FilterComponent
-          buttonStyle="solid"
-          options={filterMultiple ? options : null}
-          value={filteredValue}
-          onChange={e => {
-            let value;
-            if (filterMultiple) {
-              value = e;
-            } else {
-              value = e.target.value; // eslint-disable-line prefer-destructuring
-            }
-            const newFilter = cloneDeep(filter);
-            if (
-              (isUndefined(value) || (isArray(value) && !size(value))) &&
-              fixedFilterValue
-            ) {
-              value = fixedFilterValue;
-            }
-            unset(newFilter, column.getTableFilterKey());
-            updatePage({
-              page: 1,
-              pagesize,
-              sort,
-              filter: {
-                ...newFilter,
-                [column.getTableFilterKey()]: value
-              }
-            });
-          }}
-        >
-          {!filterMultiple &&
-            [
-              { value: fixedFilterValue, label: '全部' },
-              ...options
-            ].map(({ label, value }) => (
-              <Radio.Button value={value}>{label}</Radio.Button>
-            ))}
-        </FilterComponent>
-      </Row>
-    );
-  }
-
-  renderExpandFilterGroup() {
-    const { table } = this.props;
-    const columns = table
-      .getColumns()
-      .filter(column => column.shouldRenderExpandFilter());
-    if (columns.size === 0) {
-      return null;
-    }
-
-    return columns.map(column => this.renderExpandFilters(column));
-  }
-
-  renderFilterGroup() {
-    const { table, user, filterGroupTrigger } = this.props;
-    const columns = table
-      .getColumns()
-      .filter(column => column.shouldRenderOutsideFilter(user));
-    const searchButton = (
-      <Button
-        type="primary"
-        style={{ marginBottom: '0.5rem' }}
-        onClick={() => this.onClickFilterGroupSearch(columns)}
-      >
-        搜索
-      </Button>
-    );
-    if (columns.size === 0) {
-      return null;
-    }
-    const renderFilterGroupTable = filterColumns => (
-      <Table
-        bordered
-        className="filters-table"
-        rowKey={table.getPrimaryKey()}
-        pagination={false}
-        onChange={(pagination, filters, sorter) =>
-          this.onChange({
-            pagination,
-            filters,
-            sorter,
-            columns: filterColumns,
-            onlyFilter: true
-          })
-        }
-        scroll={{ x: true }}
-        getPopupContainer={() => document.getElementsByClassName('xms-page')[0]}
-      >
-        {filterColumns.map(column =>
-          this.renderColumn({
-            column,
-            columns: filterColumns,
-            renderFilterInTitle: filterGroupTrigger
-          })
-        )}
-      </Table>
-    );
-    const groupedColumns = groupBy(columns.toArray(), column =>
-      column.getFilterGroup()
-    );
-
-    if (size(groupedColumns) === 1) {
-      return (
-        <>
-          {renderFilterGroupTable(values(groupedColumns)[0])}
-          {filterGroupTrigger && searchButton}
-        </>
-      );
-    }
-    return (
-      <>
-        {map(groupedColumns, (iColumns, groupName) => (
-          <Row key={groupName} type="flex">
-            <Col className="filter-group-name">{groupName}</Col>
-            <Col style={{ flex: 1 }}>{renderFilterGroupTable(iColumns)}</Col>
-          </Row>
-        ))}
-        {filterGroupTrigger && (
-          <Row key="button" type="flex">
-            <Col className="filter-group-name" />
-            <Col style={{ flex: 1 }}>{searchButton}</Col>
-          </Row>
-        )}
-      </>
-    );
-  }
-
   renderAction(action, { record, records } = {}) {
-    return <Action
-      action={action}
-      record={record}
-      records={records}
-      onComplete={this.fetch}
-    />;
+    return (
+      <Action
+        action={action}
+        record={record}
+        records={records}
+        onComplete={this.fetch}
+      />
+    );
   }
 
   renderRowActions() {
@@ -767,6 +316,49 @@ class RecordsPage extends React.PureComponent {
     );
   }
 
+  renderFilterItems() {
+    const { user, table } = this.props;
+
+    const groupedColumns = groupBy(
+      table
+        .getColumns()
+        .filter(
+          column => column.canFilterInTable() && column.canShowInTable(user)
+        )
+        .toArray(),
+      column => column.getFilterGroup()
+    );
+
+    return (
+      <Form layout="inline" ref={this.form} onFinish={this.onFinish}>
+        {map(groupedColumns, (cs, name) => (
+          <React.Fragment key={name}>
+            {name && <Form.Item label={name} />}
+            {cs.map(column => (
+              <FormItem key={column.getFilterKey()} column={column} />
+            ))}
+            <div className="line-break" style={{ width: '100%' }} />
+          </React.Fragment>
+        ))}
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            筛选
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <Button
+            danger
+            type="primary"
+            htmlType="submit"
+            onClick={this.resetFilters}
+          >
+            重置
+          </Button>
+        </Form.Item>
+      </Form>
+    );
+  }
+
   renderContent() {
     const { dataSource, selectedRowKeys } = this.state;
     const {
@@ -801,23 +393,10 @@ class RecordsPage extends React.PureComponent {
 
     const hasFilter = table.getHasFilter();
     return (
-      <>
+      <PageFilterFormContext.Provider value={this.form}>
         {this.renderGlobalActions(multipleActions)}
         <Group title="列表">
-          {this.renderExpandFilterGroup()}
-          {this.renderFilterGroup()}
-          {hasFilter && (
-            <Row style={{ marginTop: 10 }}>
-              <Popconfirm
-                title="确认重置全部筛选项?"
-                onConfirm={this.resetFilters}
-              >
-                <Button type="primary" style={{ marginBottom: '1rem' }}>
-                  重置
-                </Button>
-              </Popconfirm>
-            </Row>
-          )}
+          {hasFilter && this.renderFilterItems()}
           <Table
             bordered
             scroll={defaultTableScroll}
@@ -833,9 +412,7 @@ class RecordsPage extends React.PureComponent {
             dataSource={dataSource}
             rowKey={table.getPrimaryKey()}
             rowSelection={rowSelection}
-            onChange={(pagination, filters, sorter) =>
-              this.onChange({ pagination, filters, sorter, columns })
-            }
+            onChange={this.onChange}
             getPopupContainer={() =>
               document.getElementsByClassName('xms-page')[0]
             }
@@ -847,21 +424,14 @@ class RecordsPage extends React.PureComponent {
               className: 'ant-table-pagination',
               total,
               current: page,
-              pageSize: pagesize,
-              onChange: this.onChangePage,
-              onShowSizeChange: this.onChangePage
+              pageSize: pagesize
             }}
           >
-            {columns.map(column =>
-              this.renderColumn({
-                column,
-                shouldRenderTableFilter: column.shouldRenderTableFilter(user)
-              })
-            )}
+            {columns.map(column => this.renderColumn(column))}
             {this.renderRowActions()}
           </Table>
         </Group>
-      </>
+      </PageFilterFormContext.Provider>
     );
   }
 
