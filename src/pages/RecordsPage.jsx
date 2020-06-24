@@ -1,22 +1,12 @@
-import React from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'dva';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import { Table, Card, Button, Form } from 'antd';
-import {
-  split,
-  startsWith,
-  isEqual,
-  map,
-  get,
-  isBoolean,
-  groupBy
-} from 'lodash';
+import { split, startsWith, map, get, isBoolean, groupBy } from 'lodash';
+import { useEventCallback } from '@qt/react';
 import EditableTableCell from '../components/Editable/EditableTableCell';
 import EditableTableRow from '../components/Editable/EditableTableRow';
-import TableType from '../schema/Table';
-import TableActions from '../actions/TableActions';
 import Group from '../components/Group';
 import Page from './Page';
 import Action from '../components/Action';
@@ -24,127 +14,87 @@ import FilterDropDown from '../components/Filter/FilterDropDown';
 import FilterIcon from '../components/Filter/FilterIcon';
 import FormItem from '../components/Filter/FormItem';
 import PageFilterFormContext from '../contexts/PageFilterFormContext';
+import useUser from '../hooks/useUser';
+import usePageConfig from '../hooks/usePageConfig';
 import './RecordsPage.less';
 
 const { Column } = Table;
 
-class RecordsPage extends React.PureComponent {
-  static displayName = 'RecordsPage';
+function showTotal(total, range) {
+  return `${range[0]}-${range[1]}，共${total}个`;
+}
 
-  static propTypes = {
-    actions: PropTypes.instanceOf(TableActions).isRequired,
-    fetch: PropTypes.func.isRequired,
-    edit: PropTypes.func.isRequired,
-    table: PropTypes.instanceOf(TableType).isRequired,
-    updatePage: PropTypes.func.isRequired,
-    tableProps: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-    match: PropTypes.shape({
-      params: PropTypes.shape({}).isRequired
-    }).isRequired,
-    component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-    isLoading: PropTypes.bool,
-    filterGroupTrigger: PropTypes.bool,
-    page: PropTypes.number,
-    pagesize: PropTypes.number,
-    inline: PropTypes.bool,
-    filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
-    sort: PropTypes.string,
-    total: PropTypes.number,
-    user: PropTypes.instanceOf(Immutable.Map)
-  };
+function RecordsPage({
+  page,
+  pagesize,
+  sort,
+  filter,
+  isLoading,
+  records,
+  total
+}) {
+  const [form] = Form.useForm();
+  const user = useUser();
+  const {
+    component: Component,
+    inline,
+    actions,
+    table,
+    fetch: fetchEffect,
+    updatePage,
+    tableProps
+  } = usePageConfig();
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const dataSource = useMemo(() => records.toJS(), [records]);
+  const rowActions = useMemo(
+    () => actions.getRowActions().filter(action => action.isVisible(user)),
+    [user, actions]
+  );
+  const multipleActions = useMemo(
+    () => actions.getMultipleActions().filter(action => action.isVisible(user)),
+    [user, actions]
+  );
+  const globalActions = useMemo(
+    () => actions.getGlobalActions().filter(action => action.isVisible(user)),
+    [user, actions]
+  );
+  const columns = useMemo(
+    () => table.getColumns().filter(column => column.canShowInTable(user)),
+    [table, user]
+  );
+  const filterColumns = useMemo(
+    () => columns.filter(column => column.canFilter()),
+    [columns]
+  );
+  const hasOutsideFilter = useMemo(
+    () => filterColumns.filter(column => column.canFilterOutside()),
+    [filterColumns]
+  );
+  const hasTableFilter = useMemo(
+    () => filterColumns.filter(column => !column.canFilterOutside()),
+    [filterColumns]
+  );
+  const groupedFilterColumns = useMemo(
+    () => groupBy(filterColumns.toArray(), column => column.getFilterGroup()),
+    [filterColumns]
+  );
 
-  static defaultProps = {
-    component: null,
-    isLoading: false,
-    filterGroupTrigger: false,
-    filter: {},
-    records: Immutable.List(),
-    page: 1,
-    pagesize: 10,
-    sort: '',
-    total: 0,
-    inline: false,
-    user: null
-  };
+  const onTableSelectChange = useEventCallback((rowKeys, rows) => {
+    setSelectedRows(rows);
+    setSelectedRowKeys(rowKeys);
+  });
 
-  static showTotal(total, range) {
-    return `${range[0]}-${range[1]}，共${total}个`;
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (prevState.records !== nextProps.records) {
-      return {
-        records: nextProps.records,
-        dataSource: nextProps.records.toJS()
-      };
-    }
-
-    return null;
-  }
-
-  state = {
-    records: Immutable.List(),
-    dataSource: [],
-    selectedRowKeys: [],
-    selectedRows: []
-  };
-
-  form = React.createRef();
-
-  constructor(props) {
-    super(props);
-
-    props.table.columns.forEach(column => {
-      column.resetFilters();
-    });
-  }
-
-  componentDidMount() {
-    this.fetch();
-    this.updateFilterForm();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { pagesize, page, sort, filter } = this.props;
-    if (
-      prevProps.pagesize !== pagesize ||
-      prevProps.page !== page ||
-      prevProps.sort !== sort ||
-      !isEqual(prevProps.filter, filter)
-    ) {
-      this.fetch();
-
-      if (!isEqual(prevProps.filter, filter)) {
-        this.updateFilterForm();
-      }
-    }
-  }
-
-  updateFilterForm = () => {
-    const { filter } = this.props;
-
-    // eslint-disable-next-line no-unused-expressions
-    this.form.current?.setFieldsValue(filter);
-  };
-
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    this.setState({ selectedRowKeys, selectedRows });
-  };
-
-  onFinish = filter => {
-    const { page, pagesize, sort, updatePage } = this.props;
+  const onFilterFinish = useEventCallback(f => {
     updatePage({
       page,
       pagesize,
       sort,
-      filter
+      filter: f
     });
-  };
+  });
 
-  onChange = (pagination, _, sorter) => {
-    const { updatePage, sort, filter } = this.props;
-
+  const onTableChange = useEventCallback((pagination, _, sorter) => {
     let newPage = pagination.page;
     const newPageSize = pagination.pageSize;
     let newSort = '';
@@ -163,297 +113,279 @@ class RecordsPage extends React.PureComponent {
       sort: newSort,
       filter
     });
-  };
+  });
 
-  fetch = async () => {
-    const { fetch, page, pagesize, sort, filter } = this.props;
+  const onResetFilters = useEventCallback(() => {
+    form.resetFields();
+    form.submit();
+  });
 
-    this.resetTableState();
+  const rowSelection = useMemo(
+    () =>
+      multipleActions.size > 0
+        ? {
+            selectedRowKeys,
+            onChange: onTableSelectChange
+          }
+        : null,
+    [multipleActions, selectedRowKeys, onTableSelectChange]
+  );
 
-    fetch({
+  const fetch = useCallback(() => {
+    setSelectedRows([]);
+    setSelectedRowKeys([]);
+
+    fetchEffect({
       page,
       pagesize,
       sort,
       filter
     });
-  };
+  }, [fetchEffect, filter, page, pagesize, sort]);
 
-  resetFilters = () => {
-    // eslint-disable-next-line no-unused-expressions
-    this.form.current?.resetFields();
-    // eslint-disable-next-line no-unused-expressions
-    this.form.current?.submit();
-  };
+  const renderColumn = useCallback(
+    column => {
+      const filterProps = {};
 
-  resetTableState() {
-    const { selectedRowKeys, selectedRows } = this.state;
-    if (selectedRowKeys.length || selectedRows.length) {
-      this.setState({
-        selectedRowKeys: [],
-        selectedRows: []
-      });
-    }
-  }
+      if (column.canFilter() && !column.canFilterOutside()) {
+        let filteredValue = get(filter, column.getFilterKey());
 
-  renderColumn(column) {
-    const { sort, filter, user } = this.props;
-    const filterProps = {};
-
-    if (column.canFilterInTable()) {
-      let filteredValue = get(filter, column.getFilterKey());
-
-      if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
-        if (column.canFilterRange() || !column.canFilterMultiple()) {
-          filteredValue = [filteredValue];
+        if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
+          if (column.canFilterRange() || !column.canFilterMultiple()) {
+            filteredValue = [filteredValue];
+          }
+        } else {
+          filteredValue = [];
         }
-      } else {
-        filteredValue = [];
+
+        filterProps.filtered =
+          !!filteredValue.length &&
+          !(filteredValue.length === 1 && filteredValue[0] === null);
+        filterProps.filteredValue = filteredValue;
+        filterProps.filterMultiple = column.canFilterMultiple();
+        filterProps.filterDropdown = dropDownParams => (
+          <FilterDropDown column={column} {...dropDownParams} />
+        );
+        filterProps.filterIcon = filtered => (
+          <FilterIcon column={column} filtered={filtered} />
+        );
       }
-
-      filterProps.filtered =
-        !!filteredValue.length &&
-        !(filteredValue.length === 1 && filteredValue[0] === null);
-      filterProps.filteredValue = filteredValue;
-      filterProps.filterMultiple = column.canFilterMultiple();
-      filterProps.filterDropdown = dropDownParams => (
-        <FilterDropDown column={column} {...dropDownParams} />
-      );
-      filterProps.filterIcon = filtered => (
-        <FilterIcon column={column} filtered={filtered} />
-      );
-    }
-    return (
-      <Column
-        {...filterProps}
-        title={column.getTitle()}
-        dataIndex={column.getKey()}
-        key={column.getKey()}
-        width={column.getTableWidth()}
-        fixed={column.getTableFixed()}
-        sorter={column.canSortInTable()}
-        sortDirections={column.getTableSortDirections().toArray()}
-        onCell={record => ({
-          record,
-          column,
-          onComplete: this.fetch
-        })}
-        sortOrder={
-          sort && startsWith(sort, `${column.getKey()} `)
-            ? `${split(sort, ' ')[1]}end`
-            : false
-        }
-        render={(value, record) =>
-          column.renderInTable({
-            value,
+      return (
+        <Column
+          {...filterProps}
+          title={column.getTitle()}
+          dataIndex={column.getKey()}
+          key={column.getKey()}
+          width={column.getTableWidth()}
+          fixed={column.getTableFixed()}
+          sorter={column.canSortInTable()}
+          sortDirections={column.getTableSortDirections().toArray()}
+          onCell={record => ({
             record,
-            user,
-            reload: this.fetch,
-            ...filterProps
-          })
-        }
-      />
-    );
-  }
+            column,
+            onComplete: fetch
+          })}
+          sortOrder={
+            sort && startsWith(sort, `${column.getKey()} `)
+              ? `${split(sort, ' ')[1]}end`
+              : false
+          }
+          render={(value, record) =>
+            column.renderInTable({
+              value,
+              record,
+              user,
+              reload: fetch,
+              ...filterProps
+            })
+          }
+        />
+      );
+    },
+    [fetch, filter, sort, user]
+  );
 
-  renderAction(action, { record, records } = {}) {
+  useEffect(() => {
+    table.columns.forEach(column => {
+      column.resetFilters();
+    });
+  }, [table.columns]);
+
+  useEffect(() => {
+    form.setFieldsValue(filter);
+  }, [filter, form]);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch, page, pagesize, sort, filter]);
+
+  const filterFormChildren = useMemo(() => {
     return (
-      <Action
-        action={action}
-        record={record}
-        records={records}
-        onComplete={this.fetch}
-      />
+      (hasOutsideFilter || hasTableFilter) && (
+        <Form layout="inline" form={form} onFinish={onFilterFinish}>
+          {map(groupedFilterColumns, (cs, name) => (
+            <React.Fragment key={name}>
+              {name && <Form.Item label={name} />}
+              {cs.map(column => (
+                <FormItem key={column.getFilterKey()} column={column} />
+              ))}
+              <div className="line-break" style={{ width: '100%' }} />
+            </React.Fragment>
+          ))}
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              筛选
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button
+              danger
+              type="primary"
+              htmlType="submit"
+              onClick={onResetFilters}
+            >
+              重置
+            </Button>
+          </Form.Item>
+        </Form>
+      )
     );
-  }
+  }, [
+    form,
+    groupedFilterColumns,
+    hasOutsideFilter,
+    hasTableFilter,
+    onFilterFinish,
+    onResetFilters
+  ]);
 
-  renderRowActions() {
-    const { actions, user } = this.props;
-    const rowActions = actions
-      .getRowActions()
-      .filter(action => action.isVisible(user));
-
-    return rowActions.size > 0 ? (
-      <Column
-        title="操作"
-        key="action"
-        render={(
-          record // eslint-disable-line react/jsx-no-bind
-        ) => (
-          <div className="actions">
-            {rowActions.map(action => this.renderAction(action, { record }))}
-          </div>
-        )}
-      />
-    ) : null;
-  }
-
-  renderGlobalActions(multipleActions) {
-    const { actions, user } = this.props;
-    const globalActions = actions
-      .getGlobalActions()
-      .filter(action => action.isVisible(user));
-
-    if (
-      globalActions.size === 0 &&
-      (!multipleActions || multipleActions.size === 0)
-    ) {
-      return null;
-    }
-
-    const { records } = this.props;
-    const { selectedRows } = this.state;
-
-    return (
+  const globalActionsChildren = useMemo(() => {
+    return globalActions.size > 0 && (
       <Group title="操作">
         <div className="actions">
-          {globalActions.map(action => this.renderAction(action, { records }))}
-          {multipleActions &&
-            multipleActions.map(action =>
-              this.renderAction(action, { records: selectedRows })
-            )}
+          {globalActions &&
+            globalActions.map(action => (
+              <Action
+                key={action.getTitle()}
+                action={action}
+                records={action.isMultipleAction() ? selectedRows : records}
+                onComplete={fetch}
+              />
+            ))}
         </div>
       </Group>
     );
-  }
+  }, [fetch, globalActions, selectedRows]);
 
-  renderFilterItems() {
-    const { user, table } = this.props;
-
-    const groupedColumns = groupBy(
-      table
-        .getColumns()
-        .filter(
-          column => column.canFilterInTable() && column.canShowInTable(user)
-        )
-        .toArray(),
-      column => column.getFilterGroup()
-    );
-
-    return (
-      <Form layout="inline" ref={this.form} onFinish={this.onFinish}>
-        {map(groupedColumns, (cs, name) => (
-          <React.Fragment key={name}>
-            {name && <Form.Item label={name} />}
-            {cs.map(column => (
-              <FormItem key={column.getFilterKey()} column={column} />
-            ))}
-            <div className="line-break" style={{ width: '100%' }} />
-          </React.Fragment>
-        ))}
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            筛选
-          </Button>
-        </Form.Item>
-        <Form.Item>
-          <Button
-            danger
-            type="primary"
-            htmlType="submit"
-            onClick={this.resetFilters}
-          >
-            重置
-          </Button>
-        </Form.Item>
-      </Form>
-    );
-  }
-
-  renderContent() {
-    const { dataSource, selectedRowKeys } = this.state;
-    const {
-      total,
-      page,
-      pagesize,
-      table,
-      isLoading,
-      user,
-      actions,
-      tableProps
-    } = this.props;
-
-    const multipleActions = actions
-      .getMultipleActions()
-      .filter(action => action.isVisible(user));
-
-    const rowSelection =
-      multipleActions.size > 0
-        ? {
-            selectedRowKeys,
-            onChange: this.onSelectChange
-          }
-        : null;
-
-    const columns = table
-      .getColumns()
-      .filter(column => column.canShowInTable(user));
-
+  const tableChildren = useMemo(() => {
     const defaultTableScroll =
       table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
 
-    const hasFilter = table.getHasFilter();
     return (
-      <PageFilterFormContext.Provider value={this.form}>
-        {this.renderGlobalActions(multipleActions)}
-        <Group title="列表">
-          {hasFilter && this.renderFilterItems()}
-          <Table
-            bordered
-            scroll={defaultTableScroll}
-            {...tableProps}
-            components={{
-              body: {
-                row: EditableTableRow,
-                cell: EditableTableCell
-              }
-            }}
-            rowClassName={() => 'editable-row'}
-            loading={isLoading}
-            dataSource={dataSource}
-            rowKey={table.getPrimaryKey()}
-            rowSelection={rowSelection}
-            onChange={this.onChange}
-            getPopupContainer={() =>
-              document.getElementsByClassName('xms-page')[0]
-            }
-            pagination={{
-              showQuickJumper: true,
-              showSizeChanger: true,
-              showTotal: RecordsPage.showTotal,
-              ...(tableProps.pagination ?? {}),
-              className: 'ant-table-pagination',
-              total,
-              current: page,
-              pageSize: pagesize
-            }}
-          >
-            {columns.map(column => this.renderColumn(column))}
-            {this.renderRowActions()}
-          </Table>
-        </Group>
-      </PageFilterFormContext.Provider>
-    );
-  }
-
-  render() {
-    const { component: Component, inline, records } = this.props;
-    return (
-      <Page showWatermark={!inline}>
-        {Component ? (
-          <Card className={classNames('content-card', inline ? 'inline' : '')}>
-            <Component records={records} />
-          </Card>
+      <Table
+        bordered
+        scroll={defaultTableScroll}
+        {...tableProps}
+        components={{
+          body: {
+            row: EditableTableRow,
+            cell: EditableTableCell
+          }
+        }}
+        rowClassName={() => 'editable-row'}
+        loading={isLoading}
+        dataSource={dataSource}
+        rowKey={table.getPrimaryKey()}
+        rowSelection={rowSelection}
+        onChange={onTableChange}
+        getPopupContainer={() => document.getElementsByClassName('xms-page')[0]}
+        pagination={{
+          showQuickJumper: true,
+          showSizeChanger: true,
+          showTotal,
+          ...(tableProps.pagination ?? {}),
+          total,
+          current: page,
+          pageSize: pagesize
+        }}
+      >
+        {columns.map(column => renderColumn(column))}
+        {rowActions.size > 0 ? (
+          <Column
+            title="操作"
+            key="action"
+            render={(
+              record // eslint-disable-line react/jsx-no-bind
+            ) => (
+              <div className="actions">
+                {rowActions.map(action => (
+                  <Action
+                    key={action.getTitle()}
+                    action={action}
+                    record={record}
+                    onComplete={fetch}
+                  />
+                ))}
+              </div>
+            )}
+          />
         ) : null}
-        <Card className={classNames('content-card', inline ? 'inline' : '')}>
-          {this.renderContent()}
-        </Card>
-      </Page>
+      </Table>
     );
-  }
+  }, [
+    columns,
+    dataSource,
+    fetch,
+    isLoading,
+    onTableChange,
+    page,
+    pagesize,
+    renderColumn,
+    rowActions,
+    rowSelection,
+    table,
+    tableProps,
+    total
+  ]);
+
+  return (
+    <Page showWatermark={!inline}>
+      {Component ? (
+        <Card className={classNames('content-card', inline ? 'inline' : '')}>
+          <Component />
+        </Card>
+      ) : null}
+      <Card className={classNames('content-card', inline ? 'inline' : '')}>
+        <PageFilterFormContext.Provider value={form}>
+          {globalActionsChildren}
+          <Group title="列表">
+            {filterFormChildren}
+            {tableChildren}
+          </Group>
+        </PageFilterFormContext.Provider>
+      </Card>
+    </Page>
+  );
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
+RecordsPage.propTypes = {
+  isLoading: PropTypes.bool,
+  page: PropTypes.number,
+  pagesize: PropTypes.number,
+  filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
+  sort: PropTypes.string,
+  total: PropTypes.number
+};
 
-export default connect(mapStateToProps)(RecordsPage);
+RecordsPage.defaultProps = {
+  isLoading: false,
+  filter: {},
+  records: Immutable.List(),
+  page: 1,
+  pagesize: 10,
+  sort: '',
+  total: 0
+};
+
+export default React.memo(RecordsPage);

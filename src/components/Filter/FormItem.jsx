@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Form, InputNumber, Input, Switch } from 'antd';
+import { Form, InputNumber, Input } from 'antd';
 import { get } from 'lodash';
 import Radio from './Radio';
 import CheckBox from './CheckBox';
@@ -15,7 +15,6 @@ import NumberColumn from '../../schema/NumberColumn';
 import StringColumn from '../../schema/StringColumn';
 import DurationColumn from '../../schema/DurationColumn';
 import DateColumn from '../../schema/DateColumn';
-import BooleanColumn from '../../schema/BooleanColumn';
 
 function FormItem({ column }) {
   const commonFormItemProps = useMemo(
@@ -72,17 +71,13 @@ function FormItem({ column }) {
         column.getFilterSearchRequest() ||
         column.getValueOptionsRequest()
       ) {
-        if (column instanceof BooleanColumn) {
-          inner = <Switch {...column.getFilterFormItemComponentProps()} />;
-        } else {
-          inner = (
-            <TreeSelect
-              style={{ width: '100px' }}
-              column={column}
-              {...column.getFilterFormItemComponentProps()}
-            />
-          );
-        }
+        inner = (
+          <TreeSelect
+            style={{ width: '100px' }}
+            column={column}
+            {...column.getFilterFormItemComponentProps()}
+          />
+        );
       } else if (column instanceof DateColumn) {
         if (column.canFilterRange()) {
           inner = (

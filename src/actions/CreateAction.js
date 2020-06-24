@@ -22,11 +22,6 @@ export default class CreateAction extends Action {
     return true;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canHandleGlobal() {
-    return false;
-  }
-
   setLink(link) {
     return new CreateAction(this.config.set('link', link).toJS());
   }

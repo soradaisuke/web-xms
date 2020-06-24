@@ -32,11 +32,6 @@ export default class DeleteAction extends Action {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  canHandleGlobal() {
-    return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   needReload() {
     return true;
   }

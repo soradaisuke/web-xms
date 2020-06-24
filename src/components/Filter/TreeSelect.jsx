@@ -12,6 +12,7 @@ function FilterTreeSelect({ column, ...props }) {
   return (
     <TreeSelect
       {...props}
+      allowClear
       showSearch
       treeData={options}
       treeCheckable={column.canFilterMultiple()}

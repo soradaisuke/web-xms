@@ -186,7 +186,7 @@ export default class Column {
     return this.config.getIn(['table', 'filterSearchRequest']);
   }
 
-  canFilterInTable() {
+  canFilter() {
     return this.config.getIn(['table', 'filter']);
   }
 

@@ -36,7 +36,7 @@ export default class Action {
   }
 
   isGlobalAction() {
-    return this.config.get('global') && !this.config.get('multiple');
+    return this.config.get('global');
   }
 
   getTitle() {
@@ -146,9 +146,5 @@ export default class Action {
     }
 
     return !invisible;
-  }
-
-  canHandleGlobal() {
-    return this.isMultipleAction() && !this.isRowAction();
   }
 }

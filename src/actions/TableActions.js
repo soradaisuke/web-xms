@@ -21,7 +21,7 @@ export default class TableActions {
       if (action.isMultipleAction()) {
         this.multipleActions = this.multipleActions.push(action);
       }
-      if (action.isGlobalAction()) {
+      if (action.isGlobalAction() || this.isMultipleAction()) {
         this.globalActions = this.globalActions.push(action);
       }
       if (action instanceof EditAction) {

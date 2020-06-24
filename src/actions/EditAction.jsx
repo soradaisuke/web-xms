@@ -25,11 +25,6 @@ export default class EditAction extends Action {
     return true;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canHandleGlobal() {
-    return false;
-  }
-
   isDisabled({ user, record, records, matchParams, table }) {
     const enable = this.config.get('enable');
     return (

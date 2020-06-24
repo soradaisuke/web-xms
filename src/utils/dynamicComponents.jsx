@@ -29,7 +29,6 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
 import PageConfigContext from '../contexts/PageConfigContext';
-import PageFilterContext from '../contexts/PageFilterContext';
 
 function generateService({ fetch, create, edit, remove } = {}) {
   return {
@@ -239,14 +238,13 @@ function generateRecordsPage(
     namespace,
     actions,
     table,
-    filterGroupTrigger,
     tableProps = {},
     formProps = {}
   },
   component,
   inline
 ) {
-  function Page(props) {
+  function Page() {
     const location = useLocation();
     const { queries, globalQueries } = useMemo(() => {
       const gq = parse(location.search);
@@ -419,45 +417,41 @@ function generateRecordsPage(
     const edit = useEdit({ apiPath, namespace });
     const remove = useRemove({ apiPath, namespace });
 
+    const pageConfig = useMemo(
+      () => ({
+        formProps,
+        tableProps,
+        inline,
+        table,
+        actions,
+        component,
+        fetch,
+        create,
+        edit,
+        remove,
+        updatePage
+      }),
+      [fetch, create, edit, remove, updatePage]
+    );
+
     return (
-      <PageConfigContext.Provider
-        value={{
-          formProps,
-          create,
-          edit,
-          remove,
-          table
-        }}
-      >
-        <PageFilterContext.Provider value={filter}>
-          <PageDataContext.Provider value={records}>
-            <RecordsPage
-              {...props}
-              records={records}
-              total={total}
-              isLoading={isLoading}
-              filter={filter}
-              page={page}
-              pagesize={pagesize}
-              sort={sort}
-              fetch={fetch}
-              create={create}
-              edit={edit}
-              remove={remove}
-              updatePage={updatePage}
-              filterGroupTrigger={filterGroupTrigger}
-              component={component}
-              table={table}
-              tableProps={tableProps}
-              actions={actions}
-            />
-          </PageDataContext.Provider>
-        </PageFilterContext.Provider>
+      <PageConfigContext.Provider value={pageConfig}>
+        <PageDataContext.Provider value={records}>
+          <RecordsPage
+            records={records}
+            total={total}
+            isLoading={isLoading}
+            filter={filter}
+            page={page}
+            pagesize={pagesize}
+            sort={sort}
+          />
+        </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );
   }
 
-  return withRouter(Page);
+  return Page;
 }
 
 function generateRecordPage(

@@ -40,8 +40,7 @@ function Action({
     record,
     records,
     user,
-    matchParams,
-    id: get(record, table.getPrimaryKey())
+    matchParams
   }
 
   const filteredRecords = useMemo(() => (
@@ -56,7 +55,7 @@ function Action({
 
   const disabled = useMemo(() => {
     const enable = action.getEnable();
-    if (action.canHandleGlobal()) {
+    if (action.isGlobalAction()) {
       return (records && records.length === 0) ||
       (isFunction(enable) && !enable(params));
     }
@@ -85,7 +84,7 @@ function Action({
     if (isFunction(handler)) {
       let promise;
 
-      if (action.canHandleGlobal()) {
+      if (action.isGlobalAction()) {
         promise = handler({
           ...params,
           ...data
