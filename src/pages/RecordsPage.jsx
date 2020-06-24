@@ -42,7 +42,8 @@ function RecordsPage({
     table,
     fetch: fetchEffect,
     updatePage,
-    tableProps
+    tableProps,
+    filterFormProps
   } = usePageConfig();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -222,7 +223,12 @@ function RecordsPage({
   const filterFormChildren = useMemo(() => {
     return (
       (hasOutsideFilter || hasTableFilter) && (
-        <Form layout="inline" form={form} onFinish={onFilterFinish}>
+        <Form
+          layout="inline"
+          {...filterFormProps}
+          form={form}
+          onFinish={onFilterFinish}
+        >
           {map(groupedFilterColumns, (cs, name) => (
             <React.Fragment key={name}>
               {name && <Form.Item label={name} />}
@@ -251,6 +257,7 @@ function RecordsPage({
       )
     );
   }, [
+    filterFormProps,
     form,
     groupedFilterColumns,
     hasOutsideFilter,

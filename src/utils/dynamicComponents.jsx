@@ -239,7 +239,8 @@ function generateRecordsPage(
     actions,
     table,
     tableProps = {},
-    formProps = {}
+    formProps = {},
+    filterFormProps = {}
   },
   component,
   inline
@@ -421,6 +422,7 @@ function generateRecordsPage(
       () => ({
         formProps,
         tableProps,
+        filterFormProps,
         inline,
         table,
         actions,
