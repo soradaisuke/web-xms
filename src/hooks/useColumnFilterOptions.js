@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { makeCancelablePromise } from '@qt/web-core';
+import { makeCancelablePromise } from '@qt/web-common';
 import { useEventCallback } from '@qt/react';
 import useParentFilterValue from './useParentFilterValue';
 

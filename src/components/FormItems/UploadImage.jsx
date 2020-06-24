@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
-import { generateDeviceId } from '@qt/web-core';
+import { generateDeviceId } from '@qt/web-common';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
@@ -173,13 +173,9 @@ export default class UploadImage extends React.PureComponent {
       cropParameter: { pixelCrop }
     } = this.state;
 
-    const upYunSyncPreprocessor = `/strip/true${
-      needCrop
-        ? `/crop/${pixelCrop.width}x${pixelCrop.height}a${pixelCrop.x}a${
-            pixelCrop.y
-          }`
-        : ''
-    }`;
+    const upYunSyncPreprocessor = needCrop
+      ? `/crop/${pixelCrop.width}x${pixelCrop.height}a${pixelCrop.x}a${pixelCrop.y}`
+      : '';
 
     this.setState({
       imageLoading: true

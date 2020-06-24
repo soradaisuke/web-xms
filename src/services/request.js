@@ -1,6 +1,6 @@
 import { includes, isPlainObject } from 'lodash';
 import fetch from 'dva/fetch';
-import { generateUri } from '@qt/web-core';
+import { generateUri } from '@qt/web-common';
 
 let { host } = window.location;
 

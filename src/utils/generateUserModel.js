@@ -1,7 +1,8 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
 import Cookie from 'js-cookie';
-import { generateUri, isProduction } from '@qt/web-core';
+import { isProduction } from '@qt/env';
+import { generateUri } from '@qt/web-common';
 import request from '../services/request';
 
 const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;

@@ -1,7 +1,7 @@
 import { split, drop, join } from 'lodash';
 import shortid from 'shortid';
 import { isProduction } from '@qt/env';
-import { uploadFile, uploadImage } from '@qt/web-core';
+import { uploadImage, uploadFile } from '@qt/web-common';
 import OSS from 'ali-oss';
 import request from '../services/request';
 import isTuboshu from './isTuboshu';

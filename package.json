@@ -23,8 +23,7 @@
   "dependencies": {
     "@qt/env": "^1.4.1",
     "@qt/react": "^1.14.1",
-    "@qt/web-common": "^1.9.1",
-    "@qt/web-core": "^2.1.2",
+    "@qt/web-common": "^1.10.1",
     "ali-oss": "^6.9.1",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
@@ -60,7 +59,6 @@
     "@babel/preset-react": "^7.10.1",
     "@babel/runtime": "^7.10.2",
     "@qt/eslint-config": "^1.5.0",
-    "@qt/react-core": "^2.7.3",
     "@qt/stylelint-config": "^1.0.1",
     "@qt/web-prettier-config": "^1.0.0",
     "antd": "^4.3.4",

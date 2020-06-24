@@ -8,8 +8,8 @@ import {
   CaretRightOutlined
 } from '@ant-design/icons';
 import { Button, Slider, Radio } from 'antd';
-import { formatDuration } from '@qt/web-core';
 import { ClickableDiv } from '@qt/react';
+import formatDuration from '../../utils/formatDuration';
 import './AudioPlayer.less';
 
 export default class AudioPlayer extends React.PureComponent {
