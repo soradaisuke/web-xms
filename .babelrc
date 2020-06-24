@@ -6,6 +6,7 @@
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-optional-chaining",
     ["import", { "libraryName": "antd", "style": true }, "antd"],
     ["import", { "libraryName": "@qt/web-core", "camel2DashComponentName": false }, "@qt/web-core"],
     ["import", { "libraryName": "@qt/react-core", "camel2DashComponentName": false }, "@qt/react-core"],
