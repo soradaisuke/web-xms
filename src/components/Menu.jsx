@@ -5,6 +5,7 @@ import { Link, withRouter, matchPath } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
+import history from '../utils/history';
 import { filter } from 'lodash/fp';
 import './Menu.less';
 
@@ -74,10 +75,19 @@ class NavMenu extends React.PureComponent {
     this.setState({ collapsed: !collapsed });
   };
 
+  componentDidUpdate() {
+    const { location: { state } } = this.props;
+    if (state?.unmatch) {
+      history.replace(location.pathname);
+    }
+  }
+
   render() {
     const { collapsed } = this.state;
     const { selectedKeys, openKeys } = selector(this.props);
-    const { routes } = this.props;
+    const { routes, location: { state } } = this.props;
+
+    if (!openKeys.length || (state?.unmatch)) return null;
 
     return (
       <div

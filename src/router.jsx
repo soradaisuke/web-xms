@@ -127,7 +127,10 @@ function RouterConfig({ history, app, user }) {
                 {(!auth || !!user) &&
                 !homeRoute &&
                 firstAvaliableNonHomeRoutePath ? (
-                  <Redirect from="/" to={firstAvaliableNonHomeRoutePath} />
+                  <Redirect from="/" to={{
+                    pathname: firstAvaliableNonHomeRoutePath,
+                    state: { unmatch: true }
+                  }} />
                 ) : null}
               </Switch>
             </Content>
