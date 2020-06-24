@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import EditAction from './EditAction';
 import CreateAction from './CreateAction';
+import DeleteAction from './DeleteAction';
 
 export default class TableActions {
   constructor(actions = []) {
@@ -29,6 +30,9 @@ export default class TableActions {
       if (action instanceof CreateAction) {
         this.createAction = action;
       }
+      if (action instanceof DeleteAction) {
+        this.deleteAction = action;
+      }
     });
   }
 
@@ -54,5 +58,9 @@ export default class TableActions {
 
   getCreateAction() {
     return this.createAction;
+  }
+
+  getDeleteAction() {
+    return this.deleteAction;
   }
 }

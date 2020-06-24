@@ -13,17 +13,21 @@ import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
 import usePageConfig from '../hooks/usePageConfig';
+import useForm from '../hooks/useForm';
 
 function Action({
   action,
   record,
   records,
-  onComplete
+  onComplete,
+  disabledRecordModal
 }) {
 
   const user = useUser();
 
-  const matchParams = useParams(); 
+  const matchParams = useParams();
+
+  const form = useForm();
 
   const {
     table,
@@ -138,22 +142,51 @@ function Action({
     children: action.getShape() !== 'circle' ? action.getTitle() : null
   }
 
+  const onFormOk = useEventCallback(f =>
+    (f || form)
+      .validateFields()
+      .then(async values => {
+        try {
+          await onOk({
+            data: { body: values },
+            throwError: true,
+            reload: true
+          });
+          return true;
+        } catch (e) {
+          return false;
+        }
+      })
+      .catch(() => {
+        if (disabledRecordModal) {
+          return false;
+        }
+        return Promise.reject();
+      })
+  , [form, onOk]);
+
   const onClick = useEventCallback(() => {
+    const onOkInternal =
+      disabledRecordModal
+        ? onFormOk
+        : onOk;
     if (action.showConfirmModal()) {
       const confirmTitle = action.getConfirmTitle();
       Modal.confirm({
         title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
         content: action.getConfirmContent(),
         ...action.getConfirmProps(),
-        onOk
+        onOk: onOkInternal
       });
     } else {
-      onOk();
+      onOkInternal();
     }
   }, [
     action,
     params,
-    onOk
+    onOk,
+    disabledRecordModal,
+    onFormOk
   ]);
 
   if (!action.isVisible(user) ||
@@ -163,47 +196,6 @@ function Action({
 
   if (isFunction(action.getRender())) {
     return (action.getRender())({ ...params, reload: onComplete });
-  }
-
-  if (action.getColumns() ||
-    action instanceof CreateAction ||
-    action instanceof EditAction
-  ) {
-    return (
-      <RecordModal
-        {...action.getModalProps()}
-        columns={action.getColumns() || table.getColumns()}
-        key={action.getTitle()}
-        title={action.getTitle()}
-        record={record}
-        records={records}
-        checkVisibility={action.checkVisibility()}
-        onOk={body =>
-          onOk({
-            data: { body },
-            loadingMessage: null,
-            throwError: false,
-            reload: true
-          })
-        }
-      >
-        <Button {...buttonProps} />
-      </RecordModal>
-    );
-  }
-
-  if (!disabled && action.getConfirmType() === 'pop') {
-    const confirmTitle = action.getConfirmTitle();
-    return (
-      <Popconfirm
-        {...action.getConfirmProps()}
-        key={action.getTitle()}
-        title={isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle}
-        onConfirm={onOk}
-      >
-        <Button {...buttonProps} />
-      </Popconfirm>
-    );
   }
 
   if (action.getLink() && !disabled) {
@@ -229,7 +221,47 @@ function Action({
     );
   }
 
-  return <Button {...buttonProps} onClick={onClick} />;
+  if ((action.getColumns() ||
+    action instanceof CreateAction ||
+    action instanceof EditAction) &&
+    !disabledRecordModal
+  ) {
+    return (
+      <RecordModal
+        {...action.getModalProps()}
+        columns={action.getColumns() || table.getColumns()}
+        key={action.getTitle()}
+        title={action.getTitle()}
+        record={record}
+        records={records}
+        checkVisibility={action.checkVisibility()}
+        onOk={onFormOk}
+      >
+        <Button {...buttonProps} />
+      </RecordModal>
+    );
+  }
+
+  if (!disabled && action.getConfirmType() === 'pop') {
+    const confirmTitle = action.getConfirmTitle();
+    return (
+      <Popconfirm
+        {...action.getConfirmProps()}
+        key={action.getTitle()}
+        title={isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle}
+        onConfirm={onOk}
+      >
+        <Button {...buttonProps} />
+      </Popconfirm>
+    );
+  }
+
+  return (
+    <Button
+      {...buttonProps}
+      onClick={onClick}
+    />
+  );
 }
 
 Action.propTypes = {
@@ -238,13 +270,15 @@ Action.propTypes = {
   record: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
   records: PropTypes.array,
-  onComplete: PropTypes.func
+  onComplete: PropTypes.func,
+  disabledRecordModal: PropTypes.bool
 }
 
 Action.defaultProps = {
   record: null,
   records: null,
-  onComplete: null
+  onComplete: null,
+  disabledRecordModal: false
 }
 
 export default React.memo(Action);

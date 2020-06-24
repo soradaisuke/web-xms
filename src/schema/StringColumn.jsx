@@ -55,7 +55,6 @@ export default class StringColumn extends Column {
       return (
         <Input.TextArea
           style={{ width: '100%' }}
-          {...formComponentProps}
           placeholder={this.getFormPlaceholder()}
           {...this.getFormComponentProps({
             isEdit,
@@ -64,13 +63,13 @@ export default class StringColumn extends Column {
             value,
             values
           })}
+          {...formComponentProps}
         />
       );
     }
     return (
       <Input
         style={{ width: '100%' }}
-        {...formComponentProps}
         placeholder={this.getFormPlaceholder()}
         {...this.getFormComponentProps({
           isEdit,
@@ -79,6 +78,7 @@ export default class StringColumn extends Column {
           value,
           values
         })}
+        {...formComponentProps}
       />
     );
   }

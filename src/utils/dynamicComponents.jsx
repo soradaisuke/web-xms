@@ -515,11 +515,11 @@ function generateRecordPage(
 
 function generateRecordFormPage({
   namespace,
-  formPageProps = {},
+  formPageConfig = {},
   formProps = {},
   api: { path, host, defaultBody } = {},
-  actions,
-  table
+  table,
+  actions
 }) {
   function Page(props) {
     const record = useSelector(state => state[namespace].get('record'));
@@ -544,8 +544,8 @@ function generateRecordFormPage({
         <PageDataContext.Provider value={record}>
           <RecordFormPage
             {...props}
-            {...formPageProps}
-            actions={actions}
+            {...formPageConfig}
+            tableActions={actions}
             table={table}
             record={record}
             fetch={fetch}

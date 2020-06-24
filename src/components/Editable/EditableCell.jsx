@@ -126,13 +126,14 @@ function EditableCell({
 }
 
 EditableCell.propTypes = {
-  column: PropTypes.instanceOf(Column).isRequired,
+  column: PropTypes.instanceOf(Column),
   onComplete: PropTypes.func,
   children: PropTypes.node,
   record: PropTypes.object // eslint-disable-line react/forbid-prop-types
 };
 
 EditableCell.defaultProps = {
+  column: null,
   onComplete: null,
   children: null,
   record: {}

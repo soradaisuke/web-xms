@@ -5,7 +5,6 @@ import { useEventCallback } from '@qt/react';
 import { Form } from 'antd';
 import ActivatorModal from './ActivatorModal';
 import useUser from '../hooks/useUser';
-import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
 
@@ -52,24 +51,7 @@ function RecordModal({
     }
   }, [form]);
 
-  const onSubmit = useEventCallback(() => {
-    return form
-      .validateFields()
-      .then(async values => {
-        try {
-          await onOk(formatColumnsSubmitValues({
-            columns,
-            values
-          }));
-          return true;
-        } catch (e) {
-          return false;
-        }
-      }, () => {
-        // Validate Failed
-        return Promise.reject();
-      });
-  }, [form, onOk, columns])
+  const onSubmit = useEventCallback(() => onOk(form), [form, onOk]);
 
   return (
     <FormContext.Provider value={form}>

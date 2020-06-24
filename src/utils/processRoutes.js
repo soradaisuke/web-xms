@@ -57,7 +57,7 @@ export default function processRoutes({ app, routes }) {
       const route = migrateRoute(r, app);
 
       const { config = {}, path, models, inline, routes: subRoutes } = route;
-      const { useFormPage } = config;
+      const { useFormPage, formPageConfig } = config;
       const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
       let { component } = route;
       let processedConfig = {};
@@ -75,7 +75,7 @@ export default function processRoutes({ app, routes }) {
       }
 
       if (config.type === 'list') {
-        processedConfig = processListConfig({ config, path, useFormPage });
+        processedConfig = processListConfig({ config, path, formPageConfig, useFormPage });
         component = dynamicRecordsComponent({
           app,
           component,

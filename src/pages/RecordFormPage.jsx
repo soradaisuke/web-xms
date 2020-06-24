@@ -1,17 +1,20 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Row, Form, Button } from 'antd';
+import { Card, Row, Form, Button, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
 import { useParams, useHistory } from 'react-router-dom';
+import { filter } from 'lodash';
 import TableType from '../schema/Table';
 import Page from './Page';
-import TableActions from '../actions/TableActions';
 import useUser from '../hooks/useUser';
-import ConfirmButton from '../components/Common/ConfirmButton';
-import visiblePromise from '../utils/visiblePromise';
-import formatColumnsSubmitValues from '../utils/formatColumnsSubmitValues';
 import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
+import Action from '../actions/Action';
+import TableActions from '../actions/TableActions';
+import ActionComponent from '../components/Action';
+import CreateAction from '../actions/CreateAction';
+import EditAction from '../actions/EditAction';
+import DeleteAction from '../actions/DeleteAction';
 import './RecordsPage.less';
 
 const formItemLayout = {
@@ -49,14 +52,11 @@ function RecordFormPage({
   table,
   actions,
   reset,
-  fetch,
-  create,
-  edit
+  fetch
 }) {
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [action, setAction] = useState(null);
 
   const user = useUser();
 
@@ -91,24 +91,12 @@ function RecordFormPage({
     }
   }, [fetch, id]);
 
-  const onFinish = useEventCallback(values => {
-    const handler = action.getHandler(isEdit ? edit : create);
-
-    return visiblePromise({
-      promise: handler({
-        body: formatColumnsSubmitValues({ columns, values }),
-        id
-      }),
-      onComplete: history.goBack,
-      loadingMessage: action.getHandlingMessage(),
-      successMessage: '保存成功',
-      throwError: true
-    });
-  }, [id, create, edit, action, columns, isEdit]);
+  const renderActions = useMemo(() =>
+    filter(actions, action =>
+      !(action instanceof (isEdit ? CreateAction : EditAction))
+    ), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setAction(isEdit ? actions.getEditAction() : actions.getCreateAction());
-
     reset();
 
     if (isEdit) {
@@ -124,51 +112,52 @@ function RecordFormPage({
         isError={!!error}
         errorMessage={error ? error.message : ''}
       >
-        <Card title={action?.getTitle() || ''} className="content-card">
-          <Form
-            {...formItemLayout}
-            scrollToFirstError
-            onFinish={onFinish}
-            {...formProps}
-            form={form}
-          >
-            {columns.map(column => (
-              column.renderInForm({
-                user,
-                record,
-                form,
-                isEdit
-              })
-            ))}
-            <Form.Item {...tailFormItemLayout}>
-              <Row type="flex" align="middle">
-                <ConfirmButton
-                  title="确认放弃所编辑的内容返回上一页？"
-                  onOk={history.goBack}
-                >
-                  返回
-                </ConfirmButton>
-                <ConfirmButton
-                  danger
-                  type="primary"
-                  className="form-action"
-                  disabled={isLoading}
-                  title="确认重置？"
-                  onOk={onConfirmReset}
-                >
-                  重置
-                </ConfirmButton>
-                <Button
-                  className="form-action"
-                  disabled={isLoading}
-                  type="primary"
-                  htmlType="submit"
-                >
-                  提交
-                </Button>
-              </Row>
-            </Form.Item>
-          </Form>
+        <Card title={isEdit ? '编辑' : '新建'} className="content-card">
+          {
+            (!isEdit || record) && (
+              <Form
+                {...formItemLayout}
+                scrollToFirstError
+                {...formProps}
+                form={form}
+              >
+                {(columns.map(column => (
+                  column.renderInForm({
+                    user,
+                    record,
+                    form,
+                    isEdit
+                  })
+                )))}
+                <Form.Item {...tailFormItemLayout}>
+                  <Row type="flex" align="middle" className="form-actions">
+                    <Popconfirm
+                      key="重置"
+                      title="确认重置表单？"
+                      onConfirm={onConfirmReset}
+                    >
+                      <Button style={{ marginRight: 10 }} danger>重置</Button>
+                    </Popconfirm>
+                    {renderActions.map(a =>
+                      <ActionComponent
+                        disabledRecordModal={a instanceof CreateAction || a instanceof EditAction}
+                        action={a}
+                        record={record}
+                        loading={isLoading}
+                        // eslint-disable-next-line no-nested-ternary
+                        onComplete={a instanceof CreateAction ||
+                          a instanceof EditAction ||
+                          a instanceof DeleteAction
+                            ? (a instanceof EditAction ? fetchInternal : history.goBack)
+                            : null
+                        }
+                      />
+                    )}
+                  </Row>
+                </Form.Item>
+              </Form>
+            )
+          }
         </Card>
       </Page>
     </FormContext.Provider>
@@ -176,20 +165,18 @@ function RecordFormPage({
 }
 
 RecordFormPage.propTypes = {
-  actions: PropTypes.instanceOf(TableActions).isRequired,
+  tableActions: PropTypes.instanceOf(TableActions).isRequired,
   table: PropTypes.instanceOf(TableType).isRequired,
+  actions: PropTypes.arrayOf(PropTypes.instanceOf(Action)),
   reset: PropTypes.func,
   fetch: PropTypes.func,
-  create: PropTypes.func,
-  edit: PropTypes.func,
   record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 }
 
 RecordFormPage.defaultProps = {
+  actions: [],
   reset: null,
   fetch: null,
-  create: null,
-  edit: null,
   record: null
 }
 
