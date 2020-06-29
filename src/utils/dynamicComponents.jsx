@@ -236,7 +236,6 @@ function generateRecordsPage(
   {
     api: { host, path, fixedFilter, defaultBody, defaultFilter },
     namespace,
-    actions,
     table,
     tableProps = {},
     formProps = {},
@@ -425,7 +424,6 @@ function generateRecordsPage(
         filterFormProps,
         inline,
         table,
-        actions,
         component,
         fetch,
         create,
@@ -460,7 +458,6 @@ function generateRecordPage(
   {
     namespace,
     api: { path, host } = {},
-    actions,
     table,
     bordered,
     layout,
@@ -492,7 +489,6 @@ function generateRecordPage(
             layout={layout}
             component={component}
             table={table}
-            actions={actions}
             bordered={bordered}
             descriptionsColumn={descriptionsColumn}
             record={record}
@@ -514,8 +510,7 @@ function generateRecordFormPage({
   formPageConfig = {},
   formProps = {},
   api: { path, host, defaultBody } = {},
-  table,
-  actions
+  table
 }) {
   function Page(props) {
     const record = useSelector(state => state[namespace].get('record'));
@@ -541,7 +536,6 @@ function generateRecordFormPage({
           <RecordFormPage
             {...props}
             {...formPageConfig}
-            tableActions={actions}
             table={table}
             record={record}
             fetch={fetch}

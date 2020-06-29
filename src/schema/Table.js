@@ -1,70 +1,119 @@
 import Immutable from 'immutable';
 import findCascadeColumn from '../utils/findCascadeColumn';
+import CreateAction from '../actions/CreateAction';
+import EditAction from '../actions/EditAction';
+import DeleteAction from '../actions/DeleteAction';
 
 export default class Table {
-  constructor(columns = []) {
+  constructor(columns = [], actions = []) {
     this.columns = Immutable.List(columns);
+    this.actions = Immutable.List(actions);
 
-    this.findPrimaryKey();
-    this.findDefaultSortOrder();
-    this.findFixedSortOrder();
-    this.findDefaultFilter();
-    this.findCascadeColumn();
-    this.calculateScrollWidth();
-  }
+    let scrollWidth = 0;
 
-  findPrimaryKey() {
-    const primaryColumn = this.columns.find(column => column.isPrimaryKey());
-
-    if (this.columns.size > 0 && !primaryColumn) {
-      console.error('missing primary key');
-    } else if (primaryColumn) {
-      this.primaryKey = primaryColumn.getKey();
-    }
-  }
-
-  findDefaultSortOrder() {
-    const column = this.columns.find(c => !!c.getTableDefaultSortOrder());
-
-    if (column) {
-      this.defaultSortOrder = `${column.getKey()} ${column
-        .getTableDefaultSortOrder()
-        .replace('end', '')}`;
-    }
-  }
-
-  findFixedSortOrder() {
-    const column = this.columns.find(c => !!c.getTableFixedSortOrder());
-
-    if (column) {
-      this.fixedSortOrder = `${column.getKey()} ${column
-        .getTableFixedSortOrder()
-        .replace('end', '')}`;
-    }
-  }
-
-  findDefaultFilter() {
     this.columns.forEach(column => {
+      if (column.isPrimaryKey()) {
+        if (this.primaryKey) {
+          console.error('multiple primary key');
+        } else {
+          this.primaryKey = column.getKey();
+        }
+      }
+
+      if (column.getTableDefaultSortOrder()) {
+        if (this.defaultSortOrder) {
+          console.error('multiple default sort order');
+        } else {
+          this.defaultSortOrder = `${column.getKey()} ${column
+            .getTableDefaultSortOrder()
+            .replace('end', '')}`;
+        }
+      }
+
+      if (column.getTableFixedSortOrder()) {
+        if (this.fixedSortOrder) {
+          console.error('multiple fixed sort order');
+        } else {
+          this.fixedSortOrder = `${column.getKey()} ${column
+            .getTableFixedSortOrder()
+            .replace('end', '')}`;
+        }
+      }
+
       if (column.getFilterDefault()) {
         this.defaultFilter = this.defaultFilter || {};
         this.defaultFilter[column.getFilterKey()] = column.getFilterDefault();
       }
-    });
-  }
 
-  findCascadeColumn() {
-    findCascadeColumn(this.columns);
-  }
-
-  calculateScrollWidth() {
-    let scrollWidth = 0;
-    this.columns.forEach(c => {
-      if (c.getTableWidth() > 0) {
-        scrollWidth += c.getTableWidth();
+      if (column.getTableWidth() > 0) {
+        scrollWidth += column.getTableWidth();
       }
     });
 
+    if (this.columns.size > 0 && !this.primaryKey) {
+      console.error('missing primary key');
+    }
+
     this.scrollWidth = scrollWidth > 0 ? scrollWidth * 1.2 : 0;
+
+    findCascadeColumn(this.columns);
+
+    this.processActions();
+  }
+
+  processActions() {
+    this.rowActions = Immutable.List();
+    this.globalActions = Immutable.List();
+    this.multipleActions = Immutable.List();
+
+    this.actions.forEach(action => {
+      if (action.isRowAction()) {
+        this.rowActions = this.rowActions.push(action);
+      }
+      if (action.isMultipleAction()) {
+        this.multipleActions = this.multipleActions.push(action);
+      }
+      if (action.isGlobalAction() || this.isMultipleAction()) {
+        this.globalActions = this.globalActions.push(action);
+      }
+      if (action instanceof EditAction) {
+        this.editAction = action;
+      }
+      if (action instanceof CreateAction) {
+        this.createAction = action;
+      }
+      if (action instanceof DeleteAction) {
+        this.deleteAction = action;
+      }
+    });
+  }
+
+  getActions() {
+    return this.actions;
+  }
+
+  getRowActions() {
+    return this.rowActions;
+  }
+
+  getMultipleActions() {
+    return this.multipleActions;
+  }
+
+  getGlobalActions() {
+    return this.globalActions;
+  }
+
+  getEditAction() {
+    return this.editAction;
+  }
+
+  getCreateAction() {
+    return this.createAction;
+  }
+
+  getDeleteAction() {
+    return this.deleteAction;
   }
 
   getColumns() {

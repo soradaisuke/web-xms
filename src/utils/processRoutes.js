@@ -75,7 +75,12 @@ export default function processRoutes({ app, routes }) {
       }
 
       if (config.type === 'list') {
-        processedConfig = processListConfig({ config, path, formPageConfig, useFormPage });
+        processedConfig = processListConfig({
+          config,
+          path,
+          formPageConfig,
+          useFormPage
+        });
         component = dynamicRecordsComponent({
           app,
           component,
@@ -105,7 +110,7 @@ export default function processRoutes({ app, routes }) {
           breadcrumb: ({ id }) => (id === 'new' ? '新建' : '编辑'),
           path: `${path}/:id/edit`,
           config: {
-            ...processedConfig,
+            ...processedConfig.formPageConfig,
             type: 'form'
           }
         };

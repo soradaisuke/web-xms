@@ -38,7 +38,6 @@ function RecordsPage({
   const {
     component: Component,
     inline,
-    actions,
     table,
     fetch: fetchEffect,
     updatePage,
@@ -49,16 +48,16 @@ function RecordsPage({
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const dataSource = useMemo(() => records.toJS(), [records]);
   const rowActions = useMemo(
-    () => actions.getRowActions().filter(action => action.isVisible(user)),
-    [user, actions]
+    () => table.getRowActions().filter(action => action.isVisible(user)),
+    [user, table]
   );
   const multipleActions = useMemo(
-    () => actions.getMultipleActions().filter(action => action.isVisible(user)),
-    [user, actions]
+    () => table.getMultipleActions().filter(action => action.isVisible(user)),
+    [user, table]
   );
   const globalActions = useMemo(
-    () => actions.getGlobalActions().filter(action => action.isVisible(user)),
-    [user, actions]
+    () => table.getGlobalActions().filter(action => action.isVisible(user)),
+    [user, table]
   );
   const columns = useMemo(
     () => table.getColumns().filter(column => column.canShowInTable(user)),

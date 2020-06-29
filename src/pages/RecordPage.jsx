@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { connect } from 'dva';
 import { Tabs, Card, Collapse, Descriptions, message } from 'antd';
-import { map, filter, get, reduce } from 'lodash';
+import { map, get, reduce } from 'lodash';
 import classNames from 'classnames';
 import TableType from '../schema/Table';
 import Page from './Page';
@@ -27,7 +27,6 @@ class RecordPage extends React.PureComponent {
     }).isRequired,
     bordered: PropTypes.bool,
     table: PropTypes.instanceOf(TableType),
-    actions: PropTypes.array, // eslint-disable-line react/forbid-prop-types
     component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     fetch: PropTypes.func,
     record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -47,7 +46,6 @@ class RecordPage extends React.PureComponent {
   };
 
   static defaultProps = {
-    actions: null,
     bordered: false,
     table: null,
     component: null,
@@ -105,26 +103,20 @@ class RecordPage extends React.PureComponent {
   };
 
   renderActions() {
-    const { actions, user, record } = this.props;
+    const { table, user, record } = this.props;
 
-    if (!actions) {
-      return null;
-    }
+    const validActions = table
+      .getActions()
+      .filter(action => action.isVisible(user));
 
-    const validActions = filter(actions, action => action.isVisible(user));
-
-    if (validActions.length === 0) {
+    if (validActions.size === 0) {
       return null;
     }
 
     return (
       <Descriptions.Item label="操作">
         {validActions.map(action => (
-          <Action
-            action={action}
-            record={record}
-            onComplete={this.fetch}
-          />
+          <Action action={action} record={record} onComplete={this.fetch} />
         ))}
       </Descriptions.Item>
     );
@@ -143,17 +135,11 @@ class RecordPage extends React.PureComponent {
         key={column.getKey()}
         span={column.getDescriptionSpan()}
       >
-        <EditableCell
-          column={column}
-          record={record}
-          onComplete={this.fetch}
-        >
-          {
-            column.renderInDescription({
-              record,
-              value: get(record, column.getKey())
-            })
-          }
+        <EditableCell column={column} record={record} onComplete={this.fetch}>
+          {column.renderInDescription({
+            record,
+            value: get(record, column.getKey())
+          })}
         </EditableCell>
       </Descriptions.Item>
     );
