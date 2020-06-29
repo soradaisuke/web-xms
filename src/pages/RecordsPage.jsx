@@ -68,11 +68,11 @@ function RecordsPage({
     [columns]
   );
   const hasOutsideFilter = useMemo(
-    () => filterColumns.filter(column => column.canFilterOutside()),
+    () => filterColumns.filter(column => column.canFilterOutside()).size > 0,
     [filterColumns]
   );
   const hasTableFilter = useMemo(
-    () => filterColumns.filter(column => !column.canFilterOutside()),
+    () => filterColumns.filter(column => !column.canFilterOutside()).size > 0,
     [filterColumns]
   );
   const groupedFilterColumns = useMemo(
@@ -266,22 +266,24 @@ function RecordsPage({
   ]);
 
   const globalActionsChildren = useMemo(() => {
-    return globalActions.size > 0 && (
-      <Group title="操作">
-        <div className="actions">
-          {globalActions &&
-            globalActions.map(action => (
-              <Action
-                key={action.getTitle()}
-                action={action}
-                records={action.isMultipleAction() ? selectedRows : records}
-                onComplete={fetch}
-              />
-            ))}
-        </div>
-      </Group>
+    return (
+      globalActions.size > 0 && (
+        <Group title="操作">
+          <div className="actions">
+            {globalActions &&
+              globalActions.map(action => (
+                <Action
+                  key={action.getTitle()}
+                  action={action}
+                  records={action.isMultipleAction() ? selectedRows : records}
+                  onComplete={fetch}
+                />
+              ))}
+          </div>
+        </Group>
+      )
     );
-  }, [fetch, globalActions, selectedRows]);
+  }, [fetch, globalActions, records, selectedRows]);
 
   const tableChildren = useMemo(() => {
     const defaultTableScroll =
