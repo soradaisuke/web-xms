@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-11](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-10...v2.14.0-11) (2020-06-29)
+
+
+### Features
+
+* **NoTicket:** global action传入records ([dbd904f](https://git2.qingtingfm.com/zhibo/xms/commit/dbd904f9fb450909cb6418e5a2b24e09d283643b))
+
 ## [2.14.0-10](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-9...v2.14.0-10) (2020-06-29)
 
 
