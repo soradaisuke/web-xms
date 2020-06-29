@@ -837,15 +837,16 @@ class RecordsPage extends React.PureComponent {
       return null;
     }
 
-    const { selectedRows: records } = this.state;
+    const { records } = this.props;
+    const { selectedRows } = this.state;
 
     return (
       <Group title="操作">
         <div className="actions">
-          {globalActions.map(action => this.renderAction(action))}
+          {globalActions.map(action => this.renderAction(action, { records }))}
           {multipleActions &&
             multipleActions.map(action =>
-              this.renderAction(action, { records })
+              this.renderAction(action, { records: selectedRows })
             )}
         </div>
       </Group>

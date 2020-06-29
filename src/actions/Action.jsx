@@ -134,7 +134,7 @@ export default class Action {
   }
 
   canHandleGlobal() {
-    return this.isMultipleAction() && !this.isRowAction();
+    return !this.isRowAction();
   }
 
   renderInteral({
