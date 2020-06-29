@@ -240,7 +240,7 @@ export default class Action {
 
     if (this.canHandleGlobal()) {
       disabled =
-        (records && records.length === 0) ||
+        (this.isMultipleAction() && records && records.length === 0) ||
         (isFunction(enable) && !enable(params));
     } else {
       filteredRecords = records
