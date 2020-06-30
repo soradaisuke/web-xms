@@ -83,7 +83,7 @@ function EditableTableCell({
   const value = useMemo(() => get(record, column?.getKey()), [column, record]);
   const childrenNode = useMemo(() => {
     if (!column) {
-      return null;
+      return children;
     }
 
     const render = column.getTableRender();
@@ -119,14 +119,16 @@ function EditableTableCell({
       );
     }
     return renderInTable({ value, parentFilterValue, column });
-  }, [column, value, parentFilterValue, record, onComplete]);
+  }, [column, value, parentFilterValue, children, record, onComplete]);
 
   return (
     <td {...restProps}>
-      {column && (
+      {column ? (
         <EditableCell record={record} column={column} onComplete={onComplete}>
           {childrenNode}
         </EditableCell>
+      ) : (
+        children
       )}
     </td>
   );

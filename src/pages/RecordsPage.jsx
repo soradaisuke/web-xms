@@ -265,7 +265,9 @@ function RecordsPage({
                 <Action
                   key={action.getTitle()}
                   action={action}
-                  records={action.isMultipleAction() ? selectedRows : records}
+                  records={
+                    action.isMultipleAction() ? selectedRows : dataSource
+                  }
                   onComplete={fetch}
                 />
               ))}
@@ -273,7 +275,7 @@ function RecordsPage({
         </Group>
       )
     );
-  }, [fetch, globalActions, records, selectedRows]);
+  }, [fetch, globalActions, dataSource, selectedRows]);
 
   const tableChildren = useMemo(() => {
     return (

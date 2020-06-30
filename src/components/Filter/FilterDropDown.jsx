@@ -13,7 +13,7 @@ import DurationRangePicker from './DurationRangePicker';
 import NumberColumn from '../../schema/NumberColumn';
 import StringColumn from '../../schema/StringColumn';
 import DurationColumn from '../../schema/DurationColumn';
-import DateColumn from '../../schema/DateColumn';
+import DateTimeColumn from '../../schema/DateTimeColumn';
 import Column from '../../schema/Column';
 import usePgaeFilterForm from '../../hooks/usePageFilterForm';
 import './FilterDropDown.less';
@@ -81,7 +81,7 @@ function FilterDropDown({
         />
       );
     }
-    if (column instanceof DateColumn) {
+    if (column instanceof DateTimeColumn) {
       if (column.canFilterRange()) {
         return (
           <>

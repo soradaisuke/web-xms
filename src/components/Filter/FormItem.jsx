@@ -14,7 +14,7 @@ import Column from '../../schema/Column';
 import NumberColumn from '../../schema/NumberColumn';
 import StringColumn from '../../schema/StringColumn';
 import DurationColumn from '../../schema/DurationColumn';
-import DateColumn from '../../schema/DateColumn';
+import DateTimeColumn from '../../schema/DateTimeColumn';
 
 function FormItem({ column }) {
   const commonFormItemProps = useMemo(
@@ -78,7 +78,7 @@ function FormItem({ column }) {
             {...column.getFilterFormItemComponentProps()}
           />
         );
-      } else if (column instanceof DateColumn) {
+      } else if (column instanceof DateTimeColumn) {
         if (column.canFilterRange()) {
           inner = (
             <RangePicker

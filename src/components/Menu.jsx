@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { filter } from 'lodash/fp';
 import { Link, withRouter, matchPath } from 'react-router-dom';
 import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
@@ -93,7 +94,7 @@ class NavMenu extends React.PureComponent {
     if (state?.unmatch) return null;
 
     const Icon = collapsed ? DoubleRightOutlined : DoubleLeftOutlined;
-    
+
     return (
       <div
         className={classNames('xms-side-menu', collapsed ? 'collapsed' : '')}
