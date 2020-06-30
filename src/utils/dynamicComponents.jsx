@@ -56,9 +56,8 @@ function generateService({ fetch, create, edit, remove } = {}) {
   };
 }
 
-function generateModel({ namespace, service, table }) {
+function generateModel({ namespace, service }) {
   const initialState = Immutable.fromJS({
-    table,
     records: [],
     record: null,
     total: 0
@@ -244,7 +243,7 @@ function generateRecordsPage(
   component,
   inline
 ) {
-  function Page() {
+  function Page(props) {
     const location = useLocation();
     const { queries, globalQueries } = useMemo(() => {
       const gq = parse(location.search);
@@ -438,6 +437,7 @@ function generateRecordsPage(
       <PageConfigContext.Provider value={pageConfig}>
         <PageDataContext.Provider value={records}>
           <RecordsPage
+            {...props}
             records={records}
             total={total}
             isLoading={isLoading}
@@ -459,15 +459,22 @@ function generateRecordPage(
     namespace,
     api: { path, host } = {},
     table,
-    bordered,
     layout,
+    inline,
     formProps = {},
-    descriptionsColumn
+    descriptionsProps = {}
   },
   component
 ) {
   function Page(props) {
-    const record = useSelector(state => state[namespace].get('record'));
+    const { record, isLoading } = useSelector(
+      state => ({
+        record: state[namespace].get('record'),
+        isLoading: state.loading.effects[`${namespace}/fetch`]
+      }),
+      shallowEqual
+    );
+
     const apiPath = useApiPath({ path, host });
     const fetch = useFetch({ apiPath, namespace });
     const edit = useEdit({ apiPath, namespace });
@@ -477,32 +484,31 @@ function generateRecordPage(
     return (
       <PageConfigContext.Provider
         value={{
+          layout,
           formProps,
+          descriptionsProps,
+          inline,
+          table,
+          component,
+          fetch,
           edit,
           remove,
-          table
+          reset
         }}
       >
         <PageDataContext.Provider value={record}>
           <RecordPage
             {...props}
-            layout={layout}
-            component={component}
-            table={table}
-            bordered={bordered}
-            descriptionsColumn={descriptionsColumn}
+            isLoading={isLoading}
             record={record}
-            fetch={fetch}
-            edit={edit}
-            remove={remove}
-            reset={reset}
+            inline={inline}
           />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );
   }
 
-  return withRouter(Page);
+  return Page;
 }
 
 function generateRecordFormPage({
@@ -562,7 +568,6 @@ function dynamicComponent({
   const service = generateService(config.api);
   const model = generateModel({
     namespace: config.namespace,
-    table: config.table,
     service
   });
 

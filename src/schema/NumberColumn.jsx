@@ -20,11 +20,6 @@ export default class NumberColumn extends Column {
     return formatNumber(v);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canRenderFilterDropDown() {
-    return true;
-  }
-
   renderInFormItem({
     user,
     record,

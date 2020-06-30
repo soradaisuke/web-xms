@@ -8,18 +8,14 @@ import {
   map,
   isEqual,
   get,
-  find,
   filter,
   forEach,
   flatten
 } from 'lodash';
-import LinesEllipsis from 'react-lines-ellipsis';
 import Immutable from 'immutable';
 import { Radio, Checkbox, Form } from 'antd';
-import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
 import generateAntdOptions from '../utils/generateAntdOptions';
-import './Column.less';
 
 const FormItem = Form.Item;
 
@@ -273,33 +269,8 @@ export default class Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  canRenderFilterDropDown() {
-    return false;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   formatFilterValue(v) {
     return v;
-  }
-
-  renderInTable({ value, record, user, reload, parentFilteredValue }) {
-    const children = this.renderInTableValue({
-      value,
-      record,
-      user,
-      reload,
-      parentFilteredValue
-    });
-    const link = this.getTableLink();
-
-    if (link) {
-      return (
-        <RecordLink link={link} record={record}>
-          {children}
-        </RecordLink>
-      );
-    }
-    return children;
   }
 
   // form
@@ -654,7 +625,7 @@ export default class Column {
   // descriptions
 
   canShowInDescription({ user, record }) {
-    const invisible = this.config.getIn(['detail', 'invisible']);
+    const invisible = this.config.getIn(['description', 'invisible']);
     if (isFunction(invisible)) {
       if (!user) {
         return false;
@@ -666,84 +637,26 @@ export default class Column {
     return !invisible;
   }
 
-  getDescriptionWidth() {
-    return this.config.getIn(['detail', 'width'], undefined);
-  }
-
-  getDescriptionSpan() {
-    return this.config.getIn(['detail', 'span'], 1);
-  }
-
   getDescriptionLink() {
-    return this.config.getIn(['detail', 'link']);
+    return this.config.getIn(['description', 'link']);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  renderInDescriptionDefault({ value }) {
-    const filters = this.getFilters();
-    if (filters) {
-      const option = find(filters, o => o.value === value);
-      if (option) {
-        return option.text;
-      }
-    }
-
-    const maxLines = this.getTableMaxLines();
-    if (maxLines > 0) {
-      return (
-        <LinesEllipsis
-          text={value || ''}
-          maxLine={maxLines}
-          ellipsis="..."
-          trimRight
-          basedOn="letters"
-        />
-      );
-    }
-    return value;
+  getDescriptionRender() {
+    return this.config.getIn(['description', 'render']);
   }
 
-  renderInDescriptionValue({ value, record }) {
-    const render = this.config.getIn(['detail', 'render']);
-
-    if (isFunction(render)) {
-      return render({ value, record });
-    }
-
-    if (isArray(value)) {
-      return (
-        <>
-          {map(value, v => (
-            <React.Fragment key={v}>
-              {this.renderInDescriptionDefault({
-                value: v,
-                record
-              })}
-              <br />
-            </React.Fragment>
-          ))}
-        </>
-      );
-    }
-
-    return this.renderInDescriptionDefault({
-      value,
-      record
-    });
+  getDescriptionImageWidth() {
+    return this.config.getIn(['description', 'imageWidth'], 0);
   }
 
-  renderInDescription({ value, record }) {
-    const children = this.renderInDescriptionValue({ value, record });
-    const link = this.getDescriptionLink();
-
-    if (link) {
-      return (
-        <RecordLink link={link} record={record}>
-          {children}
-        </RecordLink>
-      );
+  getDescriptionItemProps() {
+    if (!this.descriptionItemProps) {
+      this.descriptionItemProps = this.config
+        .getIn(['description', 'descriptionItemProps'], Immutable.Map())
+        .toJS();
     }
-    return children;
+
+    return this.descriptionItemProps;
   }
 
   fetchValueOptions(parentFilteredValue) {

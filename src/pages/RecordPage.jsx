@@ -1,161 +1,135 @@
-import React from 'react';
+import React, { useCallback, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Immutable from 'immutable';
-import { connect } from 'dva';
-import { Tabs, Card, Collapse, Descriptions, message } from 'antd';
-import { map, get, reduce } from 'lodash';
+import { Tabs, Card, Collapse, Descriptions } from 'antd';
+import { map, reduce } from 'lodash';
 import classNames from 'classnames';
-import TableType from '../schema/Table';
 import Page from './Page';
-import showError from '../utils/showError';
 import Action from '../components/Action';
-import EditableCell from '../components/Editable/EditableCell';
+import EditableDescriptionCell from '../components/Editable/EditableDescriptionCell';
 import EditableDescriptions from '../components/Editable/EditableDescriptions';
+import usePageConfig from '../hooks/usePageConfig';
+import useUser from '../hooks/useUser';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 
-class RecordPage extends React.PureComponent {
-  static displayName = 'RecordPage';
+function RecordPage({ isLoading, record, routes }) {
+  const {
+    component: Component,
+    inline,
+    layout,
+    table,
+    fetch,
+    descriptionsProps
+  } = usePageConfig();
+  const user = useUser();
+  const columns = useMemo(
+    () =>
+      table
+        .getColumns()
+        .filter(column => column.canShowInDescription({ user, record })),
+    [record, table, user]
+  );
+  const actions = useMemo(
+    () => table.getActions().filter(action => action.isVisible(user)),
+    [user, table]
+  );
 
-  static propTypes = {
-    history: PropTypes.shape({
-      push: PropTypes.func.isRequired
-    }).isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({}).isRequired
-    }).isRequired,
-    bordered: PropTypes.bool,
-    table: PropTypes.instanceOf(TableType),
-    component: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-    fetch: PropTypes.func,
-    record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-    routes: PropTypes.arrayOf(
-      PropTypes.shape({
-        component: PropTypes.bode
-      })
-    ),
-    inline: PropTypes.bool,
-    layout: PropTypes.oneOf(['card', 'tab', 'collapse']),
-    // eslint-disable-next-line react/forbid-prop-types
-    descriptionsColumn: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.number
-    ]),
-    user: PropTypes.instanceOf(Immutable.Map)
-  };
+  const renderRouteChunk = useCallback(
+    chunk => {
+      if (chunk && chunk.length) {
+        const chunkLayout = chunk[0].layout || layout;
 
-  static defaultProps = {
-    bordered: false,
-    table: null,
-    component: null,
-    routes: [],
-    inline: false,
-    layout: 'card',
-    user: null,
-    fetch: null,
-    record: null,
-    descriptionsColumn: { xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }
-  };
-
-  state = {
-    isLoading: false,
-    error: null
-  };
-
-  componentDidMount() {
-    this.fetch();
-  }
-
-  fetch = async () => {
-    const { fetch } = this.props;
-    if (fetch) {
-      this.setState({ isLoading: true, error: null });
-      fetch()
-        .then(() => {
-          this.setState({ isLoading: false, error: null });
-        })
-        .catch(e => this.setState({ isLoading: false, error: e }));
-    }
-  };
-
-  updateRecord = async ({ promise, loadingMessage, throwError = false }) => {
-    let hide;
-    if (loadingMessage) {
-      hide = message.loading(loadingMessage, 0);
-    }
-
-    try {
-      await promise;
-      if (hide) {
-        hide();
+        switch (chunkLayout) {
+          case 'collapse':
+            return (
+              <Card
+                key={chunk[0].path}
+                className={classNames('content-card', inline ? 'inline' : '')}
+              >
+                <Collapse>
+                  {map(chunk, ({ component: Com, path, title = '' }) => (
+                    <Panel header={title} key={path}>
+                      <Com inline />
+                    </Panel>
+                  ))}
+                </Collapse>
+              </Card>
+            );
+          case 'tab':
+            return (
+              <Card
+                key={chunk[0].path}
+                className={classNames('content-card', inline ? 'inline' : '')}
+              >
+                <Tabs>
+                  {map(chunk, ({ component: Com, path, title = '' }) => (
+                    <TabPane tab={title} key={path}>
+                      <Com inline />
+                    </TabPane>
+                  ))}
+                </Tabs>
+              </Card>
+            );
+          case 'card':
+          default:
+            return map(chunk, ({ component: Com, path, title = '' }) => (
+              <Card
+                key={path}
+                title={title}
+                className={classNames('content-card', inline ? 'inline' : '')}
+              >
+                <Com inline />
+              </Card>
+            ));
+        }
       }
-    } catch (e) {
-      if (hide) {
-        hide();
-      }
-      showError(e.message);
-      if (throwError) {
-        throw e;
-      }
-    }
-    this.fetch();
-  };
 
-  renderActions() {
-    const { table, user, record } = this.props;
+      return null;
+    },
+    [layout, inline]
+  );
 
-    const validActions = table
-      .getActions()
-      .filter(action => action.isVisible(user));
-
-    if (validActions.size === 0) {
+  const actionsNode = useMemo(() => {
+    if (actions.size === 0) {
       return null;
     }
 
     return (
       <Descriptions.Item label="操作">
-        {validActions.map(action => (
-          <Action action={action} record={record} onComplete={this.fetch} />
+        {actions.map(action => (
+          <Action
+            key={action.getTitle()}
+            action={action}
+            record={record}
+            onComplete={fetch}
+          />
         ))}
       </Descriptions.Item>
     );
-  }
+  }, [actions, record, fetch]);
 
-  renderDescriptionItem(column) {
-    const { user, record } = this.props;
-
-    if (!column.canShowInDescription({ user, record })) {
-      return null;
-    }
-
-    return (
-      <Descriptions.Item
-        label={column.getTitle()}
-        key={column.getKey()}
-        span={column.getDescriptionSpan()}
-      >
-        <EditableCell column={column} record={record} onComplete={this.fetch}>
-          {column.renderInDescription({
-            record,
-            value: get(record, column.getKey())
-          })}
-        </EditableCell>
-      </Descriptions.Item>
-    );
-  }
-
-  renderContent() {
-    const { record, inline, table, bordered, descriptionsColumn } = this.props;
-
-    if (!record || !table) {
+  const contentNode = useMemo(() => {
+    if (!record || columns.size === 0) {
       return null;
     }
 
     const children = (
-      <EditableDescriptions bordered={bordered} column={descriptionsColumn}>
-        {table.getColumns().map(column => this.renderDescriptionItem(column))}
-        {this.renderActions()}
+      <EditableDescriptions {...descriptionsProps}>
+        {columns.map(column => (
+          <Descriptions.Item
+            {...column.getDescriptionItemProps()}
+            label={column.getTitle()}
+            key={column.getKey()}
+          >
+            <EditableDescriptionCell
+              record={record}
+              column={column}
+              onComplete={fetch}
+            />
+          </Descriptions.Item>
+        ))}
+        {actionsNode}
       </EditableDescriptions>
     );
 
@@ -166,63 +140,9 @@ class RecordPage extends React.PureComponent {
         {children}
       </Card>
     );
-  }
+  }, [record, columns, descriptionsProps, actionsNode, inline, fetch]);
 
-  renderRouteChunk(chunk) {
-    const { layout, inline, record } = this.props;
-    if (chunk && chunk.length) {
-      const chunkLayout = chunk[0].layout || layout;
-
-      switch (chunkLayout) {
-        case 'collapse':
-          return (
-            <Card
-              key={chunk[0].path}
-              className={classNames('content-card', inline ? 'inline' : '')}
-            >
-              <Collapse>
-                {map(chunk, ({ component: Component, path, title = '' }) => (
-                  <Panel header={title} key={path}>
-                    <Component inline record={record} />
-                  </Panel>
-                ))}
-              </Collapse>
-            </Card>
-          );
-        case 'tab':
-          return (
-            <Card
-              key={chunk[0].path}
-              className={classNames('content-card', inline ? 'inline' : '')}
-            >
-              <Tabs>
-                {map(chunk, ({ component: Component, path, title = '' }) => (
-                  <TabPane tab={title} key={path}>
-                    <Component inline record={record} />
-                  </TabPane>
-                ))}
-              </Tabs>
-            </Card>
-          );
-        case 'card':
-        default:
-          return map(chunk, ({ component: Component, path, title = '' }) => (
-            <Card
-              key={path}
-              title={title}
-              className={classNames('content-card', inline ? 'inline' : '')}
-            >
-              <Component inline record={record} />
-            </Card>
-          ));
-      }
-    }
-
-    return null;
-  }
-
-  renderRoutes() {
-    const { routes, layout } = this.props;
+  const routesNode = useMemo(() => {
     if (routes && routes.length) {
       return map(
         reduce(
@@ -244,38 +164,44 @@ class RecordPage extends React.PureComponent {
           },
           []
         ),
-        chunk => this.renderRouteChunk(chunk)
+        chunk => renderRouteChunk(chunk)
       );
     }
 
     return null;
-  }
+  }, [layout, routes, renderRouteChunk]);
 
-  render() {
-    const { component: Component, inline, record } = this.props;
-    const { isLoading, error } = this.state;
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
-    return (
-      <Page
-        isLoading={isLoading}
-        isError={!!error}
-        errorMessage={error ? error.message : ''}
-        showWatermark={!inline}
-      >
-        {Component ? (
-          <Card className={classNames('content-card', inline ? 'inline' : '')}>
-            <Component record={record} />
-          </Card>
-        ) : null}
-        {this.renderContent()}
-        {this.renderRoutes()}
-      </Page>
-    );
-  }
+  return (
+    <Page isLoading={isLoading} showWatermark={!inline}>
+      {Component ? (
+        <Card className={classNames('content-card', inline ? 'inline' : '')}>
+          <Component />
+        </Card>
+      ) : null}
+      {contentNode}
+      {routesNode}
+    </Page>
+  );
 }
 
-const mapStateToProps = state => ({
-  user: state.user
-});
+RecordPage.propTypes = {
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  routes: PropTypes.arrayOf(
+    PropTypes.shape({
+      component: PropTypes.bode
+    })
+  ),
+  isLoading: PropTypes.bool
+};
 
-export default connect(mapStateToProps)(RecordPage);
+RecordPage.defaultProps = {
+  routes: [],
+  record: null,
+  isLoading: false
+};
+
+export default RecordPage;

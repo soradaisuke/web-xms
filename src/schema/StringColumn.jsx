@@ -21,11 +21,6 @@ export default class StringColumn extends Column {
     return v || '';
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  canRenderFilterDropDown() {
-    return true;
-  }
-
   renderInFormItem({
     user,
     record,
