@@ -62,10 +62,11 @@ export default class Table {
       if (action.isRowAction()) {
         this.rowActions = this.rowActions.push(action);
       }
+
       if (action.isMultipleAction()) {
         this.multipleActions = this.multipleActions.push(action);
       }
-      if (action.isGlobalAction() || this.isMultipleAction()) {
+      if (action.isGlobalAction() || action.isMultipleAction()) {
         this.globalActions = this.globalActions.push(action);
       }
       if (action instanceof EditAction) {

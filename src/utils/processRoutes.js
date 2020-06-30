@@ -74,7 +74,7 @@ export default function processRoutes({ app, routes }) {
         });
       }
 
-      if (config.type === 'list') {
+      if (config.type === 'table') {
         processedConfig = processListConfig({
           config,
           path,
@@ -90,7 +90,7 @@ export default function processRoutes({ app, routes }) {
       } else if (
         !!component ||
         inlineRoutes.length > 0 ||
-        config.type === 'detail'
+        config.type === 'descriptions'
       ) {
         processedConfig = processSingleConfig({ config, path });
         component = dynamicRecordComponent({
