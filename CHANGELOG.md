@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-12](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-11...v2.14.0-12) (2020-06-30)
+
+
+### Bug Fixes
+
+* **BJCM-192:** 新建页面的下拉选框在页面高度不足100%且选项高度高于页面高度时会被截取 ([4de35f4](https://git2.qingtingfm.com/zhibo/xms/commit/4de35f4fa3bb9f46cddae58c2be795009836ae23))
+* **QTLIVE-1316:** 修复菜单项不自动展开 ([39e7716](https://git2.qingtingfm.com/zhibo/xms/commit/39e77165a4b83fa56c6ba5c5e034bce17a8bd643))
+
 ## [2.14.0-11](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-10...v2.14.0-11) (2020-06-29)
 
 
