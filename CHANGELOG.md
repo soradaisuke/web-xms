@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-13](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-12...v2.14.0-13) (2020-06-30)
+
+
+### Features
+
+* **NoTicket:** filterDropdown高度限制400px ([e368cc7](https://git2.qingtingfm.com/zhibo/xms/commit/e368cc7247e25b95d29c3e847a930112f32142a9))
+
 ## [2.14.0-12](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-11...v2.14.0-12) (2020-06-30)
 
 
