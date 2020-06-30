@@ -1,22 +1,29 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { get, set } from 'lodash';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { useEventCallback, ClickableDiv } from '@qt/react';
 import { EditableContext } from './EditableTableRow';
 import Column from '../../schema/Column';
 import usePageConfig from '../../hooks/usePageConfig';
 import useUser from '../../hooks/useUser';
-import visiblePromise from '../../utils/visiblePromise';
 import StringColumn from '../../schema/StringColumn';
 import NumberColumn from '../../schema/NumberColumn';
-import BooleanColumn from '../../schema/BooleanColumn';
+// import BooleanColumn from '../../schema/BooleanColumn';
+import useActionConfig from '../../hooks/useActionConfig';
 import './EditableTableCell.less';
 
 function EditableCell({ children, record, column, onComplete }) {
   const [editing, setEditing] = useState(false);
   const editor = useRef();
   const form = useContext(EditableContext);
-  const { edit, table } = usePageConfig();
+  const user = useUser();
+  const value = get(record, column.getKey());
+  const { table } = usePageConfig();
+  const { disabled, onOk } = useActionConfig({
+    action: table.getEditAction(),
+    record,
+    onComplete
+  });
 
   useEffect(() => {
     if (editing && editor.current) {
@@ -26,6 +33,9 @@ function EditableCell({ children, record, column, onComplete }) {
 
   const toggleEdit = useEventCallback(() => {
     setEditing(pre => !pre);
+    form.setFieldsValue({
+      [column.getFormKey()]: get(record, column.getFormKey())
+    });
   }, []);
 
   const onFormItemRef = useEventCallback(
@@ -35,52 +45,28 @@ function EditableCell({ children, record, column, onComplete }) {
     [editor]
   );
 
-  const submit = useEventCallback(
-    body =>
-      visiblePromise({
-        promise: edit({
-          id: get(record, table.getPrimaryKey()),
-          body
-        }),
-        loadingMessage: '正在保存...',
-        successMessage: '保存成功',
-        onComplete
-      }),
-    [record, table, onComplete]
-  );
-
   const save = useEventCallback(async () => {
     try {
-      const formValues = await form.validateFields();
-      set(
-        formValues,
-        column.getFormKey(),
-        column.formatFormSubmitValue(get(formValues, column.getFormKey()))
-      );
+      const body = await form.validateFields();
       toggleEdit();
-      submit(formValues);
+      onOk({ data: { body } });
     } catch (e) {
       // error
     }
-  }, [form, column, toggleEdit]);
+  }, [form, column, toggleEdit, onOk]);
 
-  const onChange = useEventCallback(
-    value => {
-      submit({
-        [column.getFormKey()]: value
-      });
-    },
-    [submit, column]
-  );
-
-  const user = useUser();
-  const values = form.getFieldsValue();
-  const value = get(values, column?.getFormKey());
+  // const onChange = useEventCallback(
+  //   value => {
+  //     submit({
+  //       [column.getFormKey()]: value
+  //     });
+  //   },
+  //   [submit, column]
+  // );
 
   if (
-    !column ||
-    !column.canInlineEdit() ||
-    !column.canShowInEditFrom({ user, value, values, record })
+    disabled ||
+    !column.canShowInEditFrom({ user, value, values: record, record })
   ) {
     return children;
   }
@@ -108,15 +94,15 @@ function EditableCell({ children, record, column, onComplete }) {
     );
   }
 
-  if (column instanceof BooleanColumn) {
-    return column.renderInFormItem({
-      isEdit: true,
-      formComponentProps: {
-        checked: get(record, column.getKey()),
-        onChange
-      }
-    });
-  }
+  // if (column instanceof BooleanColumn) {
+  //   return column.renderInFormItem({
+  //     isEdit: true,
+  //     formComponentProps: {
+  //       checked: get(record, column.getKey()),
+  //       onChange: save
+  //     }
+  //   });
+  // }
 
   return children;
 }

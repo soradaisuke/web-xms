@@ -77,7 +77,7 @@ function renderInDescription({ column, value, parentFilterValue }) {
 function EditableDescriptionCell({ record, column, onComplete }) {
   const parentFilterValue = useParentFilterValue(column);
   const value = useMemo(() => get(record, column?.getKey()), [column, record]);
-  const childrenNode = useMemo(() => {
+  const valueNode = useMemo(() => {
     if (!column) {
       return null;
     }
@@ -117,11 +117,18 @@ function EditableDescriptionCell({ record, column, onComplete }) {
     return renderInDescription({ value, parentFilterValue, column });
   }, [column, value, parentFilterValue, record, onComplete]);
 
-  return (
-    <EditableCell record={record} column={column} onComplete={onComplete}>
-      {childrenNode}
-    </EditableCell>
-  );
+  const childrenNode = useMemo(() => {
+    if (column && column.canInlineEdit()) {
+      return (
+        <EditableCell record={record} column={column} onComplete={onComplete}>
+          {valueNode}
+        </EditableCell>
+      );
+    }
+    return valueNode;
+  }, [column, valueNode, record, onComplete]);
+
+  return childrenNode;
 }
 
 EditableDescriptionCell.propTypes = {

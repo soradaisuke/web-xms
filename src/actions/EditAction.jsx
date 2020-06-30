@@ -42,4 +42,9 @@ export default class EditAction extends Action {
   setLink(link) {
     return new EditAction(this.config.set('link', link).toJS());
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  needReload() {
+    return true;
+  }
 }

@@ -1,136 +1,28 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Button, Modal, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
-import { get, isFunction, filter, map } from 'lodash';
+import { isFunction } from 'lodash';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router-dom';
 import ActionConfig from '../actions/Action';
 import useUser from '../hooks/useUser';
 import RecordLink from './RecordLink';
 import RecordModal from './RecordModal';
-import visiblePromise from '../utils/visiblePromise';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
-import DeleteAction from '../actions/DeleteAction';
 import usePageConfig from '../hooks/usePageConfig';
 import useForm from '../hooks/useForm';
+import useActionConfig from '../hooks/useActionConfig';
 
 function Action({ action, record, records, onComplete, disabledRecordModal }) {
   const user = useUser();
-
-  const matchParams = useParams();
-
   const form = useForm();
-
-  const { table, edit, remove, create } = usePageConfig();
-
-  const params = useMemo(
-    () => ({
-      record,
-      records,
-      user,
-      matchParams
-    }),
-    [record, records, user, matchParams]
-  );
-
-  const filteredRecords = useMemo(
-    () =>
-      action.isMultipleAction() && !action.isGlobalAction()
-        ? filter(records || [], r =>
-            isFunction(action.getEnable())
-              ? action.getEnable()({ ...params, records: null, record: r })
-              : true
-          )
-        : null,
-    [action, records, params]
-  );
-
-  const disabled = useMemo(() => {
-    if (filteredRecords) {
-      return filteredRecords.length === 0;
-    }
-
-    const enable = action.getEnable();
-    if (action.isGlobalAction()) {
-      return (
-        (action.isMultipleAction() && records && records.length === 0) ||
-        (isFunction(enable) && !enable(params))
-      );
-    }
-
-    return isFunction(enable) && !enable(params);
-  }, [action, params, filteredRecords, records]);
-
-  const onOk = useEventCallback(
-    ({
-      data = {},
-      loadingMessage = action.getHandlingMessage(),
-      throwError = false,
-      reload = action.needReload()
-    }) => {
-      let defaultHandler;
-      if (action instanceof CreateAction) {
-        defaultHandler = create;
-      } else if (action instanceof EditAction) {
-        defaultHandler = edit;
-      } else if (action instanceof DeleteAction) {
-        defaultHandler = remove;
-      }
-      const handler = action.getHandler(defaultHandler);
-
-      if (isFunction(handler)) {
-        let promise;
-
-        if (action.isGlobalAction()) {
-          promise = handler({
-            ...params,
-            ...data
-          });
-        } else if (filteredRecords) {
-          promise = Promise.all(
-            map(filteredRecords, r =>
-              handler({
-                ...params,
-                records: null,
-                record: r,
-                id: get(r, table.getPrimaryKey()),
-                ...data
-              })
-            )
-          );
-        } else {
-          promise = handler({
-            ...params,
-            id: get(record, table.getPrimaryKey()),
-            ...data
-          });
-        }
-
-        visiblePromise({
-          promise,
-          loadingMessage,
-          throwError,
-          onComplete: () => {
-            const onActionComplete = action.getOnComplete();
-            if (isFunction(onActionComplete)) {
-              onActionComplete();
-            }
-            if (reload && isFunction(onComplete)) {
-              onComplete();
-            }
-          }
-        });
-      }
-    },
-    [
-      // eslint-disable-line react-hooks/exhaustive-deps
-      params,
-      record,
-      filteredRecords,
-      onComplete
-    ]
-  );
+  const { table } = usePageConfig();
+  const { params, disabled, onOk } = useActionConfig({
+    action,
+    record,
+    records,
+    onComplete
+  });
 
   const buttonProps = {
     className: 'action-button',

@@ -81,7 +81,7 @@ function EditableTableCell({
 }) {
   const parentFilterValue = useParentFilterValue(column);
   const value = useMemo(() => get(record, column?.getKey()), [column, record]);
-  const childrenNode = useMemo(() => {
+  const valueNode = useMemo(() => {
     if (!column) {
       return children;
     }
@@ -121,17 +121,18 @@ function EditableTableCell({
     return renderInTable({ value, parentFilterValue, column });
   }, [column, value, parentFilterValue, children, record, onComplete]);
 
-  return (
-    <td {...restProps}>
-      {column ? (
+  const childrenNode = useMemo(() => {
+    if (column && column.canInlineEdit()) {
+      return (
         <EditableCell record={record} column={column} onComplete={onComplete}>
-          {childrenNode}
+          {valueNode}
         </EditableCell>
-      ) : (
-        children
-      )}
-    </td>
-  );
+      );
+    }
+    return valueNode;
+  }, [column, valueNode, record, onComplete]);
+
+  return <td {...restProps}>{childrenNode}</td>;
 }
 
 EditableTableCell.propTypes = {
