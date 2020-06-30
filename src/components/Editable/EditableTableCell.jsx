@@ -8,7 +8,7 @@ import Column from '../../schema/Column';
 import EditableCell from './EditableCell';
 import useParentFilterValue from '../../hooks/useParentFilterValue';
 import InlineAudioPlayer from '../Common/InlineAudioPlayer';
-import BaseDateTimeColumn from '../../schema/BaseDateTimeColumn';
+import DateTimeColumn from '../../schema/DateTimeColumn';
 import DurationColumn from '../../schema/DurationColumn';
 import ImageColumn from '../../schema/ImageColumn';
 import ObjectColumn from '../../schema/ObjectColumn';
@@ -28,7 +28,7 @@ function renderInTable({ column, value, parentFilterValue }) {
     ) : null;
   }
 
-  if (column instanceof BaseDateTimeColumn) {
+  if (column instanceof DateTimeColumn) {
     return value && moment(value).isValid()
       ? moment(value).format(column.getInTableFormat())
       : '';
