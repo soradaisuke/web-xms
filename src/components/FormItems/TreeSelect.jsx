@@ -100,7 +100,9 @@ export default class XMSTreeSelect extends React.PureComponent {
           placeholder={column.getFormPlaceholder(true)}
           searchPlaceholder={column.getFormSearchPlaceholder()}
           treeCheckable={column.canSelectMutipleInForm()}
-          getPopupContainer={trigger => trigger.parentNode}
+          getPopupContainer={() =>
+            document.getElementsByClassName('xms-layout')[0]
+          }
           {...props}
           className="xms-tree-select"
           allowClear
