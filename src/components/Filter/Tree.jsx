@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useEventCallback } from '@qt/react';
 import { Tree, Input, Spin } from 'antd';
-import { map } from 'lodash';
 import generateTreeData from '../../utils/generateTreeData';
 import useColumnFilterOptions from '../../hooks/useColumnFilterOptions';
 import Column from '../../schema/Column';
@@ -16,9 +15,9 @@ function FilterTree({ column, setSelectedKeys, selectedKeys, ...props }) {
   const onCheck = useEventCallback(
     (checkedKeys, { node: { key } = {} } = {}) => {
       if (column.canFilterMultiple()) {
-        setSelectedKeys(map(checkedKeys, k => column.formatFilterValue(k)));
+        setSelectedKeys(checkedKeys);
       } else {
-        setSelectedKeys([column.formatFilterValue(key)]);
+        setSelectedKeys([key]);
       }
     }
   );

@@ -8,11 +8,6 @@ const formatNumber = n => (n && !isNaN(toNumber(n)) ? toNumber(n) : n);
 
 export default class NumberColumn extends Column {
   // eslint-disable-next-line class-methods-use-this
-  formatFilterValue(v) {
-    return formatNumber(v);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   formatFormSubmitValue(v) {
     if (this.canSelectMutipleInForm()) {
       return map(v, item => formatNumber(item));

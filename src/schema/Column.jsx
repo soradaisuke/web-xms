@@ -268,11 +268,6 @@ export default class Column {
     return !invisible;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  formatFilterValue(v) {
-    return v;
-  }
-
   // form
   isImmutableInForm({ user, value, values, record }) {
     const immutableInForm = this.config.getIn(['form', 'immutable']);

@@ -31,11 +31,6 @@ export default class BooleanColumn extends Column {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  formatFilterValue(v) {
-    return v && v !== 'false';
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   getFormFiledValuePropName() {
     return 'checked';
   }

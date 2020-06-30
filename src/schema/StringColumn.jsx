@@ -1,16 +1,11 @@
 import React from 'react';
-import { toString, isUndefined, map } from 'lodash';
+import { map } from 'lodash';
 import { Input, Select } from 'antd';
 import Column from './Column';
 
 export default class StringColumn extends Column {
   getFormMultipleLine() {
     return this.config.getIn(['form', 'multipleLine']);
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  formatFilterValue(v) {
-    return isUndefined(v) ? v : toString(v);
   }
 
   // eslint-disable-next-line class-methods-use-this

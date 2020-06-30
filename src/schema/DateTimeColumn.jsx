@@ -16,11 +16,6 @@ export default class DateTimeColumn extends StringColumn {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  formatFilterValue(v) {
-    return v && isFunction(v.format) ? v.format('YYYY-MM-DD') : v;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   formatFormSubmitValue(v) {
     return v && isFunction(v.format) ? v.format('YYYY-MM-DD') : v;
   }
