@@ -18,8 +18,8 @@ import Immutable from 'immutable';
 import { Radio, Checkbox, Form } from 'antd';
 import RecordLink from '../components/RecordLink';
 import TreeSelect from '../components/FormItems/TreeSelect';
-import './Column.less';
 import generateAntdOptions from '../utils/generateAntdOptions';
+import './Column.less';
 
 const FormItem = Form.Item;
 
@@ -108,16 +108,48 @@ export default class Column {
     return this.config.getIn(['table', 'link']);
   }
 
+  getTableRender() {
+    return this.config.getIn(['table', 'render']);
+  }
+
+  getTableWidth() {
+    return this.config.getIn(['table', 'columnProps', 'width'], 0);
+  }
+
+  getTableColumnProps() {
+    if (!this.tableColumnProps) {
+      this.tableColumnProps = this.config
+        .getIn(['table', 'columnProps'], Immutable.Map())
+        .toJS();
+    }
+
+    return this.tableColumnProps;
+  }
+
   getTableSortDirections() {
-    return this.config.getIn(['table', 'sortDirections'], Immutable.List());
+    if (!this.sortDirections) {
+      this.sortDirections = this.config
+        .getIn(['table', 'sortDirections'], Immutable.List())
+        .toArray();
+    }
+
+    return this.sortDirections;
   }
 
-  getTableDefaultSortOrder() {
-    return this.config.getIn(['table', 'defaultSortOrder']);
+  getTableDefaultSortDirection() {
+    return this.config.getIn(['table', 'defaultSortDirection']);
   }
 
-  getTableFixedSortOrder() {
-    return this.config.getIn(['table', 'fixedSortOrder']);
+  getTableFixedSortDirection() {
+    return this.config.getIn(['table', 'fixedSortDirection']);
+  }
+
+  getTableMaxLines() {
+    return this.config.getIn(['table', 'maxLines']);
+  }
+
+  useValueOptionsInTable() {
+    return this.config.getIn(['table', 'useValueOptions']);
   }
 
   // filter
@@ -140,6 +172,14 @@ export default class Column {
         : null;
     }
     return this.filters ? this.filters.get(key) : null;
+  }
+
+  getFilterOption({ value, parentFilterValue }) {
+    const filters = this.getFilters(
+      parentFilterValue,
+      this.getFilterSearchRequest() ? 'search' : 'normal'
+    );
+    return findOption(filters, value);
   }
 
   getFilterKey() {
@@ -206,18 +246,6 @@ export default class Column {
     return this.config.getIn(['table', 'filterOutside'], true);
   }
 
-  getTableWidth() {
-    return this.config.getIn(['table', 'width'], undefined);
-  }
-
-  getTableFixed() {
-    return this.config.getIn(['table', 'fixed']);
-  }
-
-  getTableMaxLines() {
-    return this.config.getIn(['table', 'maxLines']);
-  }
-
   resetFilters() {
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
@@ -249,70 +277,9 @@ export default class Column {
     return false;
   }
 
-  useValueOptionsInTable() {
-    return this.config.getIn(['table', 'useValueOptions']);
-  }
-
   // eslint-disable-next-line class-methods-use-this
   formatFilterValue(v) {
     return v;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value, parentFilteredValue }) {
-    const filters = this.getFilters(
-      parentFilteredValue,
-      this.getFilterSearchRequest() ? 'search' : 'normal'
-    );
-    const option = findOption(filters, value);
-    if (option) {
-      return option.text;
-    }
-
-    const maxLines = this.getTableMaxLines();
-    if (maxLines > 0) {
-      return (
-        <LinesEllipsis
-          text={value || ''}
-          maxLine={maxLines}
-          ellipsis="..."
-          trimRight
-          basedOn="letters"
-        />
-      );
-    }
-    return value;
-  }
-
-  renderInTableValue({ value, record, user, reload, parentFilteredValue }) {
-    const render = this.config.getIn(['table', 'render']);
-
-    if (isFunction(render)) {
-      return render({ value, record, user, reload });
-    }
-
-    if (isArray(value)) {
-      return (
-        <>
-          {map(value, v => (
-            <React.Fragment key={v}>
-              {this.renderInTableValueDefault({
-                value: v,
-                record,
-                parentFilteredValue
-              })}
-              <br />
-            </React.Fragment>
-          ))}
-        </>
-      );
-    }
-
-    return this.renderInTableValueDefault({
-      value,
-      record,
-      parentFilteredValue
-    });
   }
 
   renderInTable({ value, record, user, reload, parentFilteredValue }) {

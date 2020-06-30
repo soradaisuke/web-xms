@@ -34,11 +34,6 @@ export default class ObjectColumn extends Column {
     return v;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value }) {
-    return JSON.stringify(value);
-  }
-
   renderInFormItem({
     user,
     record,

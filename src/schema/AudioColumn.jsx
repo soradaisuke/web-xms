@@ -3,8 +3,7 @@ import InlineAudioPlayer from '../components/Common/InlineAudioPlayer';
 import StringColumn from './StringColumn';
 
 export default class AudioColumn extends StringColumn {
-  // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value }) {
+  renderInDescriptionDefault({ value }) {
     return value ? (
       <InlineAudioPlayer
         showPlaybackRate={this.showPlaybackRate()}
@@ -12,10 +11,6 @@ export default class AudioColumn extends StringColumn {
         url={value}
       />
     ) : null;
-  }
-
-  renderInDescriptionDefault({ value }) {
-    return this.renderInTableValueDefault({ value });
   }
 
   showPlaybackRate() {

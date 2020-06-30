@@ -1,17 +1,10 @@
 import React from 'react';
 import { isNumber } from 'lodash';
 import { removeUrlProtocol } from '@qt/web-common';
-import ZoomImg from '../components/ZoomImg';
 import UploadImage from '../components/FormItems/UploadImage';
 import StringColumn from './StringColumn';
 
 export default class ImageColumn extends StringColumn {
-  renderInTableValueDefault({ value }) {
-    const src = removeUrlProtocol(value);
-    const width = this.getTableWidth();
-    return <ZoomImg src={src} thumbnailWidth={width} />;
-  }
-
   renderInDescriptionDefault({ value }) {
     const src = removeUrlProtocol(value);
     const width = this.getDescriptionWidth();

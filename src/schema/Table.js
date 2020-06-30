@@ -9,8 +9,6 @@ export default class Table {
     this.columns = Immutable.List(columns);
     this.actions = Immutable.List(actions);
 
-    let scrollWidth = 0;
-
     this.columns.forEach(column => {
       if (column.isPrimaryKey()) {
         if (this.primaryKey) {
@@ -20,22 +18,22 @@ export default class Table {
         }
       }
 
-      if (column.getTableDefaultSortOrder()) {
+      if (column.getTableDefaultSortDirection()) {
         if (this.defaultSortOrder) {
           console.error('multiple default sort order');
         } else {
           this.defaultSortOrder = `${column.getKey()} ${column
-            .getTableDefaultSortOrder()
+            .getTableDefaultSortDirection()
             .replace('end', '')}`;
         }
       }
 
-      if (column.getTableFixedSortOrder()) {
+      if (column.getTableFixedSortDirection()) {
         if (this.fixedSortOrder) {
           console.error('multiple fixed sort order');
         } else {
           this.fixedSortOrder = `${column.getKey()} ${column
-            .getTableFixedSortOrder()
+            .getTableFixedSortDirection()
             .replace('end', '')}`;
         }
       }
@@ -44,17 +42,11 @@ export default class Table {
         this.defaultFilter = this.defaultFilter || {};
         this.defaultFilter[column.getFilterKey()] = column.getFilterDefault();
       }
-
-      if (column.getTableWidth() > 0) {
-        scrollWidth += column.getTableWidth();
-      }
     });
 
     if (this.columns.size > 0 && !this.primaryKey) {
       console.error('missing primary key');
     }
-
-    this.scrollWidth = scrollWidth > 0 ? scrollWidth * 1.2 : 0;
 
     findCascadeColumn(this.columns);
 
@@ -134,9 +126,5 @@ export default class Table {
 
   getDefaultFilter() {
     return this.defaultFilter;
-  }
-
-  getScrollWidth() {
-    return this.scrollWidth;
   }
 }

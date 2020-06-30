@@ -16,15 +16,10 @@ export default class BaseDateTimeColumn extends StringColumn {
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value }) {
+  renderInDescriptionDefault({ value }) {
     return value && moment(value).isValid()
       ? moment(value).format(this.getInTableFormat())
       : '';
-  }
-
-  renderInDescriptionDefault({ value }) {
-    return this.renderInTableValueDefault({ value });
   }
 
   // eslint-disable-next-line class-methods-use-this

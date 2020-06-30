@@ -172,14 +172,13 @@ function RecordsPage({
       }
       return (
         <Column
+          {...column.getTableColumnProps()}
           {...filterProps}
           title={column.getTitle()}
           dataIndex={column.getKey()}
           key={column.getKey()}
-          width={column.getTableWidth()}
-          fixed={column.getTableFixed()}
           sorter={column.canSortInTable()}
-          sortDirections={column.getTableSortDirections().toArray()}
+          sortDirections={column.getTableSortDirections()}
           onCell={record => ({
             record,
             column,
@@ -190,19 +189,10 @@ function RecordsPage({
               ? `${split(sort, ' ')[1]}end`
               : false
           }
-          render={(value, record) =>
-            column.renderInTable({
-              value,
-              record,
-              user,
-              reload: fetch,
-              ...filterProps
-            })
-          }
         />
       );
     },
-    [fetch, filter, sort, user]
+    [fetch, filter, sort]
   );
 
   useEffect(() => {
@@ -286,13 +276,9 @@ function RecordsPage({
   }, [fetch, globalActions, records, selectedRows]);
 
   const tableChildren = useMemo(() => {
-    const defaultTableScroll =
-      table.getScrollWidth() > 0 ? { x: table.getScrollWidth() } : {};
-
     return (
       <Table
         bordered
-        scroll={defaultTableScroll}
         {...tableProps}
         components={{
           body: {

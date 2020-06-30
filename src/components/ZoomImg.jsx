@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { isNumber } from 'lodash';
 import { css } from 'glamor';
 import {
   ColumnWidthOutlined,
@@ -10,6 +11,7 @@ import {
 import classNames from 'classnames';
 import { Row, Button } from 'antd';
 import Zoom from 'react-medium-image-zoom';
+import { useEventCallback } from '@qt/react';
 import ActivatorModal from './ActivatorModal';
 import 'react-medium-image-zoom/dist/styles.css';
 import './ZoomImg.less';
@@ -36,10 +38,12 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
   }, [scaleY, setScaleY]);
 
   const activator = useMemo(() => {
-    const imgProps = {};
+    const style = {};
 
     if (thumbnailWidth) {
-      imgProps.width = thumbnailWidth;
+      style.width = isNumber(thumbnailWidth)
+        ? `${thumbnailWidth}px`
+        : thumbnailWidth;
     }
 
     return (
@@ -47,7 +51,7 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
         alt=""
         className={classNames(imgClassName, 'zoom-img-activator')}
         src={src}
-        {...imgProps}
+        style={style}
       />
     );
   }, [imgClassName, src, thumbnailWidth]);
@@ -61,8 +65,20 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
     [rotate, scaleX, scaleY, src]
   );
 
+  const onVisibleChange = useEventCallback(visible => {
+    if (visible) {
+      setRotate(0);
+      setScaleX(1);
+      setScaleY(1);
+    }
+  });
+
   return (
-    <ActivatorModal activator={activator} width={window.innerHeight - 200}>
+    <ActivatorModal
+      activator={activator}
+      width={window.innerHeight - 200}
+      onVisibleChange={onVisibleChange}
+    >
       <Row>
         <Button
           className="action"
@@ -89,7 +105,7 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
           className="action"
           type="primary"
           shape="circle"
-          icon={RedoOutlined}
+          icon={<RedoOutlined />}
           onClick={rotateClockwiseCallback}
         />
       </Row>

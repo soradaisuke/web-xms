@@ -5,6 +5,10 @@ import { isNumber } from 'lodash';
 import NumberColumn from './NumberColumn';
 
 export default class DurationColumn extends NumberColumn {
+  getInTableFormat() {
+    return this.config.getIn(['table', 'format'], 'HH:mm:ss');
+  }
+
   // eslint-disable-next-line class-methods-use-this
   formatFormFieldValue(v) {
     return moment()
@@ -12,18 +16,13 @@ export default class DurationColumn extends NumberColumn {
       .add(v, 's');
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  renderInTableValueDefault({ value }) {
+  renderInDescriptionDefault({ value }) {
     return isNumber(value)
       ? moment()
           .startOf('day')
           .add(value, 's')
           .format(this.getInTableFormat())
       : '';
-  }
-
-  renderInDescriptionDefault({ value }) {
-    return this.renderInTableValueDefault({ value });
   }
 
   renderInFormItem({
