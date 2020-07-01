@@ -12,6 +12,7 @@ import Header from './components/Header';
 import Breadcrumb from './components/Breadcrumb';
 import 'moment/locale/zh-cn';
 import './router.less';
+import Watermark from './components/Watermark';
 
 const { Content } = Layout;
 
@@ -117,6 +118,7 @@ function ConnectedRouter({ history, app }) {
 
   return (
     <ConfigProvider locale={zhCN}>
+      <Watermark />
       <Router history={history}>
         <Layout className="xms-layout">
           <Header name={name}>

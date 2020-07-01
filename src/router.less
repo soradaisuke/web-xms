@@ -39,6 +39,28 @@ body {
   #root {
     width: 100%;
     height: 100%;
+    position: relative;
+
+    .watermark-wrapper {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+
+      .watermark {
+        .flex-row-container();
+
+        position: absolute;
+        left: -50%;
+        top: -50%;
+        width: 200%;
+        height: 200%;
+        transform: rotate(45deg);
+        transform-origin: center;
+      }
+    }
 
     .xms-layout {
       height: 100vh;
@@ -67,27 +89,6 @@ body {
           .xms-page {
             position: relative;
             overflow: hidden;
-
-            .watermark-wrapper {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: hidden;
-
-              .watermark {
-                .flex-row-container();
-
-                position: absolute;
-                left: -50%;
-                top: -50%;
-                width: 200%;
-                height: 200%;
-                transform: rotate(45deg);
-                transform-origin: center;
-              }
-            }
 
             .ant-card {
               background: transparent;
