@@ -77,7 +77,7 @@ export default function useActionConfig({
       loadingMessage = action.getHandlingMessage(),
       throwError = false,
       reload = action.needReload()
-    }) => {
+    } = {}) => {
       if (isFunction(handler)) {
         let promise;
 

@@ -249,7 +249,7 @@ export default class Column {
   }
 
   canSortInTable() {
-    return this.getTableSortDirections().size > 0;
+    return this.getTableSortDirections().length > 0;
   }
 
   canShowInTable(user) {
