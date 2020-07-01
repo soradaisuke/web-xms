@@ -338,7 +338,7 @@ export default class Column {
     if (!this.formItemRules) {
       this.formItemRules = this.config
         .getIn(['form', 'formItemProps', 'rules'], Immutable.List())
-        .toArray();
+        .toJS();
     }
 
     return this.formItemRules;

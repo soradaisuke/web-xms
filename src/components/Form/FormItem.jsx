@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Form, InputNumber, Input, Select, Switch } from 'antd';
-import { get, concat, map, find, isArray } from 'lodash';
+import { get, concat, map, find, isArray, isPlainObject, trim } from 'lodash';
 import { toNumber } from 'lodash/fp';
 import UploadImage from './UploadImage';
+import ObjectInputTextArea from './ObjectInputTextArea';
 import TreeSelect from '../Filter/TreeSelect';
 import Radio from '../Filter/Radio';
 import CheckBox from '../Filter/CheckBox';
@@ -17,6 +18,7 @@ import DurationColumn from '../../schema/DurationColumn';
 import DateTimeColumn from '../../schema/DateTimeColumn';
 import BooleanColumn from '../../schema/BooleanColumn';
 import ImageColumn from '../../schema/ImageColumn';
+import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
 
 function FormItem({
@@ -69,6 +71,30 @@ function FormItem({
         }
       ]);
     }
+    if (column instanceof ObjectColumn) {
+      r = concat(r, [
+        {
+          validator: (_, value, cb) => {
+            if (isPlainObject(value)) {
+              cb();
+            }
+            if (trim(value)) {
+              try {
+                const result = JSON.parse(value);
+                if (!isPlainObject(result)) {
+                  throw new Error();
+                }
+              } catch (err) {
+                cb(
+                  '格式错误！例子：{"key1": "value1", "key2": "value2"}，其中除双引号里的内容以外的都要是英文字符'
+                );
+              }
+            }
+            cb();
+          }
+        }
+      ]);
+    }
 
     return r;
   }, [column]);
@@ -80,6 +106,14 @@ function FormItem({
     return value => value;
   }, [column]);
 
+  const initialValue = useMemo(() => {
+    if (record && Object.keys(record).length > 0) {
+      return get(record, column.getKey());
+    }
+
+    return column.getFormItemInitialValue();
+  }, [record, column]);
+
   const commonFormItemProps = useMemo(
     () => ({
       normalize,
@@ -87,11 +121,10 @@ function FormItem({
       ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
       name: column.getFormItemName(),
-      initialValue:
-        get(record, column.getKey()) || column.getFormItemInitialValue(),
+      initialValue,
       rules
     }),
-    [column, hideLabel, normalize, record, rules, valuePropName]
+    [column, hideLabel, normalize, rules, initialValue, valuePropName]
   );
 
   const formItemProps = useMemo(() => {
@@ -136,7 +169,7 @@ function FormItem({
       inner = (
         <TreeSelect
           forForm
-          style={{ width: '100px' }}
+          style={{ width: '100%' }}
           column={column}
           {...formItemComponentProps}
         />
@@ -195,7 +228,7 @@ function FormItem({
       }
     } else if (column instanceof StringColumn) {
       if (column.isArray()) {
-        return (
+        inner = (
           <Select
             style={{ width: '100%' }}
             placeholder={`输入${column.getTitle()}`}
@@ -205,7 +238,7 @@ function FormItem({
         );
       }
       if (column.getFormMultipleLine()) {
-        return (
+        inner = (
           <Input.TextArea
             style={{ width: '100%' }}
             placeholder={`输入${column.getTitle()}`}
@@ -215,6 +248,14 @@ function FormItem({
       }
       inner = (
         <Input
+          style={{ width: '100%' }}
+          placeholder={`输入${column.getTitle()}`}
+          {...formItemComponentProps}
+        />
+      );
+    } else if (column instanceof ObjectColumn) {
+      inner = (
+        <ObjectInputTextArea
           style={{ width: '100%' }}
           placeholder={`输入${column.getTitle()}`}
           {...formItemComponentProps}
