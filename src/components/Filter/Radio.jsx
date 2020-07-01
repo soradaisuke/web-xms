@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Radio } from 'antd';
 import generateRadioOrCheckboxOptions from '../../utils/generateRadioOrCheckboxOptions';
-import useColumnFilterOptions from '../../hooks/useColumnFilterOptions';
+import useColumnValueOptions from '../../hooks/useColumnValueOptions';
 import Column from '../../schema/Column';
 
 function FilterRadio({ column, ...props }) {
-  const [options] = useColumnFilterOptions(
+  const [options] = useColumnValueOptions(
     column,
     generateRadioOrCheckboxOptions
   );

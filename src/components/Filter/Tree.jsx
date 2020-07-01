@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { useEventCallback } from '@qt/react';
 import { Tree, Input, Spin } from 'antd';
 import generateTreeData from '../../utils/generateTreeData';
-import useColumnFilterOptions from '../../hooks/useColumnFilterOptions';
+import useColumnValueOptions from '../../hooks/useColumnValueOptions';
 import Column from '../../schema/Column';
 import './Tree.less';
 
 const { Search } = Input;
 
 function FilterTree({ column, setSelectedKeys, selectedKeys, ...props }) {
-  const [options, onSearch] = useColumnFilterOptions(column, generateTreeData);
+  const [options, onSearch] = useColumnValueOptions(column, generateTreeData);
 
   const onCheck = useEventCallback(
     (checkedKeys, { node: { key } = {} } = {}) => {
@@ -36,7 +36,7 @@ function FilterTree({ column, setSelectedKeys, selectedKeys, ...props }) {
     onCheck
   };
 
-  if (column.getFilterSearchRequest()) {
+  if (column.getValueOptionsSearchRequest()) {
     return (
       <>
         <Search

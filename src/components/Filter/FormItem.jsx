@@ -68,7 +68,7 @@ function FormItem({ column }) {
         }
       } else if (
         column.getFilters(null, 'disableInFilter') ||
-        column.getFilterSearchRequest() ||
+        column.getValueOptionsSearchRequest() ||
         column.getValueOptionsRequest()
       ) {
         inner = (
@@ -83,6 +83,7 @@ function FormItem({ column }) {
           inner = (
             <RangePicker
               presets={column.getFilterPresets()}
+              format={column.getFormat()}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -90,6 +91,7 @@ function FormItem({ column }) {
           inner = (
             <DatePicker
               presets={column.getFilterPresets()}
+              format={column.getFormat()}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -98,12 +100,16 @@ function FormItem({ column }) {
         if (column.canFilterRange()) {
           inner = (
             <DurationRangePicker
+              format={column.getFormat()}
               {...column.getFilterFormItemComponentProps()}
             />
           );
         } else {
           inner = (
-            <DurationPicker {...column.getFilterFormItemComponentProps()} />
+            <DurationPicker
+              format={column.getFormat()}
+              {...column.getFilterFormItemComponentProps()}
+            />
           );
         }
       } else if (column instanceof NumberColumn) {

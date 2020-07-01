@@ -12,6 +12,7 @@ import ActionComponent from '../components/Action';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
+import FormItem from '../components/Form/FormItem';
 import './RecordsPage.less';
 
 const formItemLayout = {
@@ -59,7 +60,14 @@ function RecordFormPage({ record, table, reset, fetch }) {
   const { id } = useParams();
   const isEdit = id !== 'new';
 
-  const columns = table.getColumns();
+  const columns = useMemo(() => {
+    if (isEdit) {
+      return table
+        .getColumns()
+        .filter(c => c.canShowInEditFrom({ record, user }));
+    }
+    return table.getColumns().filter(c => c.canShowInCreateFrom({ user }));
+  }, [isEdit, record, table, user]);
 
   const onConfirmReset = useEventCallback(() => {
     form.resetFields();
@@ -115,14 +123,13 @@ function RecordFormPage({ record, table, reset, fetch }) {
               {...formProps}
               form={form}
             >
-              {columns.map(column =>
-                column.renderInForm({
-                  user,
-                  record,
-                  form,
-                  isEdit
-                })
-              )}
+              {columns.map(column => (
+                <FormItem
+                  key={column.getTitle()}
+                  record={record}
+                  column={column}
+                />
+              ))}
               <Form.Item {...tailFormItemLayout}>
                 <Row type="flex" align="middle" className="form-actions">
                   <Popconfirm
@@ -142,8 +149,8 @@ function RecordFormPage({ record, table, reset, fetch }) {
                       action={a}
                       record={record}
                       loading={isLoading}
-                      // eslint-disable-next-line no-nested-ternary
                       onComplete={
+                        // eslint-disable-next-line no-nested-ternary
                         a instanceof CreateAction ||
                         a instanceof EditAction ||
                         a instanceof DeleteAction

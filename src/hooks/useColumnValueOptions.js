@@ -3,11 +3,15 @@ import { makeCancelablePromise } from '@qt/web-common';
 import { useEventCallback } from '@qt/react';
 import useParentFilterValue from './useParentFilterValue';
 
-export default function useColumnFilterOptions(column, generateFunc) {
+export default function useColumnValueOptions(column, generateFunc, forForm) {
   const parentFilterValue = useParentFilterValue(column);
   const filters = useMemo(
-    () => column.getFilters(parentFilterValue, 'disableInFilter'),
-    [column, parentFilterValue]
+    () =>
+      column.getFilters(
+        parentFilterValue,
+        forForm ? 'disableInForm' : 'disableInFilter'
+      ),
+    [column, forForm, parentFilterValue]
   );
 
   const [options, setOptions] = useState(null);
@@ -25,7 +29,10 @@ export default function useColumnFilterOptions(column, generateFunc) {
         () =>
           setOptions(
             generateFunc(
-              column.getFilters(parentFilterValue, 'disableInFilter')
+              column.getFilters(
+                parentFilterValue,
+                forForm ? 'disableInForm' : 'disableInFilter'
+              )
             )
           ),
         () => {}
@@ -34,14 +41,14 @@ export default function useColumnFilterOptions(column, generateFunc) {
       return () => request.cancel();
     }
     return () => {};
-  }, [column, options, parentFilterValue, filters, generateFunc]);
+  }, [column, options, parentFilterValue, filters, generateFunc, forForm]);
 
   const onSearch = useEventCallback(async value => {
-    const tableFilterSearchRequest = column.getFilterSearchRequest();
+    const searchRequest = column.getValueOptionsSearchRequest();
 
-    if (tableFilterSearchRequest) {
-      await column.fetchSearchValueOptions(value);
-      setOptions(generateFunc(column.getFilters(null, 'search')));
+    if (searchRequest) {
+      const data = await searchRequest(value);
+      setOptions(generateFunc(data));
     }
   });
 

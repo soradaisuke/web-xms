@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { removeUrlProtocol } from '@qt/web-common';
-import { map, isArray, isNumber, get, isFunction } from 'lodash';
+import { map, isNumber, get, isFunction } from 'lodash';
 import LinesEllipsis from 'react-lines-ellipsis';
 import Column from '../../schema/Column';
 import EditableCell from './EditableCell';
@@ -30,7 +30,7 @@ function renderInDescription({ column, value, parentFilterValue }) {
 
   if (column instanceof DateTimeColumn) {
     return value && moment(value).isValid()
-      ? moment(value).format(column.getInTableFormat())
+      ? moment(value).format(column.getFormat())
       : '';
   }
 
@@ -39,7 +39,7 @@ function renderInDescription({ column, value, parentFilterValue }) {
       ? moment()
           .startOf('day')
           .add(value, 's')
-          .format(column.getInTableFormat())
+          .format(column.getFormat())
       : '';
   }
 
@@ -98,7 +98,7 @@ function EditableDescriptionCell({ record, column, onComplete }) {
       );
     }
 
-    if (isArray(value)) {
+    if (column.isArray()) {
       return (
         <>
           {map(value, v => (

@@ -119,7 +119,6 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
         title={action.getTitle()}
         record={record}
         records={records}
-        checkVisibility={action.checkVisibility()}
         onOk={onFormOk}
       >
         <Button {...buttonProps} />

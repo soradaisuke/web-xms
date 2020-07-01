@@ -110,29 +110,20 @@ export default class Action {
 
   getModalProps() {
     if (!this.modalProps) {
-      this.modalProps = this.config
-        .get('modalProps', Immutable.Map())
-        .toJS();
+      this.modalProps = this.config.get('modalProps', Immutable.Map()).toJS();
     }
     return this.modalProps;
   }
 
   getButtonProps() {
     if (!this.buttonProps) {
-      this.buttonProps = this.config
-        .get('buttonProps', Immutable.Map())
-        .toJS();
+      this.buttonProps = this.config.get('buttonProps', Immutable.Map()).toJS();
     }
     return this.buttonProps;
   }
 
   needReload() {
     return this.config.get('reload');
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  checkVisibility() {
-    return false;
   }
 
   isVisible(user) {

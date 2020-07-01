@@ -10,6 +10,7 @@ import StringColumn from '../../schema/StringColumn';
 import NumberColumn from '../../schema/NumberColumn';
 // import BooleanColumn from '../../schema/BooleanColumn';
 import useActionConfig from '../../hooks/useActionConfig';
+import FormItem from '../Form/FormItem';
 import './EditableTableCell.less';
 
 function EditableCell({ children, record, column, onComplete }) {
@@ -64,27 +65,36 @@ function EditableCell({ children, record, column, onComplete }) {
   //   [submit, column]
   // );
 
-  if (
-    disabled ||
-    !column.canShowInEditFrom({ user, value, values: record, record })
-  ) {
+  if (disabled || !column.canEdit({ user, value, values: record, record })) {
     return children;
   }
 
   if (column instanceof StringColumn || column instanceof NumberColumn) {
     if (editing) {
-      return column.renderInForm({
-        form,
-        record,
-        user,
-        hideFormLabel: true,
-        isEdit: true,
-        formComponentProps: {
-          ref: onFormItemRef,
-          onPressEnter: save,
-          onBlur: save
-        }
-      });
+      return (
+        <FormItem
+          isEdit
+          hideLabel
+          column={column}
+          formItemComponentProps={{
+            ref: onFormItemRef,
+            onPressEnter: save,
+            onBlur: save
+          }}
+        />
+      );
+      //   return column.renderInForm({
+      //     form,
+      //     record,
+      //     user,
+      //     hideFormLabel: true,
+      //     isEdit: true,
+      //     formComponentProps: {
+      //       ref: onFormItemRef,
+      //       onPressEnter: save,
+      //       onBlur: save
+      //     }
+      //   });
     }
 
     return (

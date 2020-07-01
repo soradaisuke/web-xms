@@ -7,6 +7,7 @@ import ActivatorModal from './ActivatorModal';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
+import FormItem from './Form/FormItem';
 
 const formItemLayout = {
   labelCol: {
@@ -24,32 +25,44 @@ const formItemLayout = {
 function RecordModal({
   children,
   onOk,
-  checkVisibility,
   columns,
   title,
   record,
   records,
   ...props
 }) {
-
-  const [form] = Form.useForm();
-
   const user = useUser();
+  const [form] = Form.useForm();
 
   const { formProps } = usePageConfig();
 
-  const isEdit = useMemo(() => (
-    (record && Object.keys(record).length > 0) ||
-    (records && records.length > 0)
-  ), [record, records]);
+  const cols = useMemo(() => {
+    if (record && Object.keys(record).length > 0) {
+      return columns.filter(c => c.canShowInEditFrom({ record, user }));
+    }
+    if (records && records.length > 0) {
+      return columns;
+    }
+    return columns.filter(c => c.canShowInCreateFrom({ user }));
+  }, [columns, record, records, user]);
+
+  const isEdit = useMemo(
+    () =>
+      (record && Object.keys(record).length > 0) ||
+      (records && records.length > 0),
+    [record, records]
+  );
 
   const defaultTilte = isEdit ? '编辑' : '新建';
 
-  const onVisibleChange = useEventCallback(visibility => {
-    if (visibility && form) {
-      form.resetFields();
-    }
-  }, [form]);
+  const onVisibleChange = useEventCallback(
+    visibility => {
+      if (visibility && form) {
+        form.resetFields();
+      }
+    },
+    [form]
+  );
 
   const onSubmit = useEventCallback(() => onOk(form), [form, onOk]);
 
@@ -62,20 +75,9 @@ function RecordModal({
         onOk={onSubmit}
         onVisibleChange={onVisibleChange}
       >
-        <Form
-          {...formItemLayout}
-          {...formProps}
-          form={form}
-        >
-          {columns.map(column => (
-            column.renderInForm({
-              user,
-              record,
-              records,
-              form,
-              isEdit,
-              checkVisibility
-            })
+        <Form {...formItemLayout} {...formProps} form={form}>
+          {cols.map(column => (
+            <FormItem key={column.getTitle()} record={record} column={column} />
           ))}
         </Form>
       </ActivatorModal>
@@ -86,16 +88,14 @@ function RecordModal({
 RecordModal.propTypes = {
   children: PropTypes.node.isRequired,
   onOk: PropTypes.func.isRequired,
-  checkVisibility: PropTypes.bool,
   columns: PropTypes.instanceOf(Immutable.List),
   title: PropTypes.string,
   record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   records: PropTypes.array // eslint-disable-line react/forbid-prop-types
-}
+};
 
 RecordModal.defaultProps = {
   title: '',
-  checkVisibility: true,
   columns: Immutable.List(),
   record: null,
   records: null

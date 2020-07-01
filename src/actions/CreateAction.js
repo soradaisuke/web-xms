@@ -17,11 +17,6 @@ export default class CreateAction extends Action {
     return this.config.get('handlingMessage', '正在保存……');
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  checkVisibility() {
-    return true;
-  }
-
   setLink(link) {
     return new CreateAction(this.config.set('link', link).toJS());
   }

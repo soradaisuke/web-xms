@@ -69,7 +69,7 @@ function FilterDropDown({
   const children = useMemo(() => {
     if (
       column.getFilters(null, 'disableInFilter') ||
-      column.getFilterSearchRequest() ||
+      column.getValueOptionsSearchRequest() ||
       column.getValueOptionsRequest()
     ) {
       return (

@@ -20,11 +20,6 @@ export default class EditAction extends Action {
     return this.config.get('handlingMessage', '正在保存……');
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  checkVisibility() {
-    return true;
-  }
-
   isDisabled({ user, record, records, matchParams, table }) {
     const enable = this.config.get('enable');
     return (
