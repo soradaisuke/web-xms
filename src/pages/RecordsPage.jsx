@@ -95,7 +95,7 @@ function RecordsPage({
   });
 
   const onTableChange = useEventCallback((pagination, _, sorter) => {
-    let newPage = pagination.page;
+    let newPage = pagination.current;
     const newPageSize = pagination.pageSize;
     let newSort = '';
 

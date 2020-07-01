@@ -130,7 +130,7 @@ function ConnectedRouter({ history, app }) {
           </Sider>
           <Layout className="xms-site-layout">
             <Header className="xms-site-layout-heder">
-              <div className="site-name">{name}</div>
+              {name}
               <User />
             </Header>
             <Content className="xms-content">

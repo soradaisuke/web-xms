@@ -310,6 +310,10 @@ export default class Column {
     return this.config.getIn(['form', 'presets'], Immutable.List([]));
   }
 
+  getFormRequired() {
+    return this.config.getIn(['form', 'required'], false);
+  }
+
   getFormItemAvailableWhen() {
     if (!this.formItemAvailableWhen) {
       this.formItemAvailableWhen = this.config

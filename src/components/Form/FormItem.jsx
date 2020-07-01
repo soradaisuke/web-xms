@@ -52,13 +52,20 @@ function FormItem({
   }, [column]);
 
   const rules = useMemo(() => {
-    const r = column.getFormItemRules();
+    let r = column.getFormItemRules();
 
     if (column instanceof UrlColumn) {
-      return concat(r, [
+      r = concat(r, [
         {
           type: 'url',
           message: '格式不正确，要求为网络地址'
+        }
+      ]);
+    }
+    if (column.getFormRequired()) {
+      r = concat(r, [
+        {
+          required: true
         }
       ]);
     }
@@ -75,14 +82,14 @@ function FormItem({
 
   const commonFormItemProps = useMemo(
     () => ({
+      normalize,
+      valuePropName,
+      ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
       name: column.getFormItemName(),
       initialValue:
         get(record, column.getKey()) || column.getFormItemInitialValue(),
-      valuePropName,
-      normalize,
-      rules,
-      ...column.getFormItemProps()
+      rules
     }),
     [column, hideLabel, normalize, record, rules, valuePropName]
   );
@@ -249,7 +256,7 @@ function FormItem({
 FormItem.propTypes = {
   column: PropTypes.instanceOf(Column).isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  record: PropTypes.object.isRequired,
+  record: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
   formItemComponentProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
@@ -257,6 +264,7 @@ FormItem.propTypes = {
 };
 
 FormItem.defaultProps = {
+  record: null,
   formItemComponentProps: {},
   hideLabel: false
 };

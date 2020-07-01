@@ -40,8 +40,8 @@ class User extends React.PureComponent {
             src={user.get('avatar')}
             icon={<UserOutlined />}
           />
-          {user.get('nickname')}
-          <DownOutlined />
+          {`  ${user.get('nickname')}  `}
+          <DownOutlined className="icon-down" />
         </div>
       </Dropdown>
     );

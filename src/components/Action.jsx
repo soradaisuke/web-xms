@@ -111,14 +111,21 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
       action instanceof EditAction) &&
     !disabledRecordModal
   ) {
+    const props = action.getColumns()
+      ? {
+          columns: action.getColumns(),
+          records
+        }
+      : {
+          columns: table.getColumns()
+        };
     return (
       <RecordModal
         {...action.getModalProps()}
-        columns={action.getColumns() || table.getColumns()}
+        {...props}
         key={action.getTitle()}
         title={action.getTitle()}
         record={record}
-        records={records}
         onOk={onFormOk}
       >
         <Button {...buttonProps} />
