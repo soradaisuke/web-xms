@@ -26,6 +26,11 @@ export default class CreateAction extends Action {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  canHandleMultiple() {
+    return false;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   checkVisibility() {
     return true;
   }

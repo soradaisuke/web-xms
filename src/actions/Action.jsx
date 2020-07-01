@@ -137,6 +137,11 @@ export default class Action {
     return !this.isRowAction();
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  canHandleMultiple() {
+    return true;
+  }
+
   renderInteral({
     record,
     records,
@@ -320,7 +325,7 @@ export default class Action {
             ...params,
             ...data
           });
-        } else if (filteredRecords) {
+        } else if (filteredRecords && this.canHandleMultiple()) {
           promise = Promise.all(
             map(filteredRecords, r =>
               handler({

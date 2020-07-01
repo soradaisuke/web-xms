@@ -795,7 +795,11 @@ export default class Column {
       <FormItem
         key={key}
         label={hideFormLabel ? '' : this.getTitle()}
-        extra={this.getFormHint()}
+        extra={
+          this.getFormHint() ? (
+            <span style={{ whiteSpace: 'pre-line' }}>{this.getFormHint()}</span>
+          ) : null
+        }
       >
         {getFieldDecorator(key, {
           initialValue,
