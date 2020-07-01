@@ -224,6 +224,7 @@ export default class Column {
   getFilterKey() {
     return (
       this.config.getIn(['table', 'filterFormItemProps', 'name']) ||
+      this.config.getIn(['table', 'filterKey']) ||
       this.getKey()
     );
   }
@@ -345,7 +346,11 @@ export default class Column {
   }
 
   getFormItemName() {
-    return this.config.getIn(['form', 'formItemProps', 'name'], this.getKey());
+    return (
+      this.config.getIn(['form', 'formItemProps', 'name']) ||
+      this.config.getIn(['form', 'key']) ||
+      this.getKey()
+    );
   }
 
   getFormItemLabel() {
