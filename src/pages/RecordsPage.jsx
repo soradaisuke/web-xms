@@ -344,7 +344,7 @@ function RecordsPage({
   ]);
 
   return (
-    <Page showWatermark={!inline}>
+    <Page>
       {Component ? (
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
           <Component />

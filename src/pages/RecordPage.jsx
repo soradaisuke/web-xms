@@ -172,11 +172,13 @@ function RecordPage({ isLoading, record, routes }) {
   }, [layout, routes, renderRouteChunk]);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    if (columns.size > 0) {
+      fetch();
+    }
+  }, [columns.size, fetch]);
 
   return (
-    <Page isLoading={isLoading} showWatermark={!inline}>
+    <Page isLoading={isLoading}>
       {Component ? (
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
           <Component />

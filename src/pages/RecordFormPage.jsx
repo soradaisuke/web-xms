@@ -110,7 +110,6 @@ function RecordFormPage({ record, table, reset, fetch }) {
   return (
     <FormContext.Provider value={form}>
       <Page
-        showWatermark
         isLoading={isLoading}
         isError={!!error}
         errorMessage={error ? error.message : ''}
