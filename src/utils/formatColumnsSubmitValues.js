@@ -29,14 +29,16 @@ const generatePaths = object => {
     },
     []
   );
-};  
+};
 
 export default function formatColumnsSubmitValues({ columns, values }) {
   const newValues = {};
   forEach(generatePaths(values), key => {
     const value = get(values, key);
     const column = columns.find(c => {
-      const k = isArray(c.getFormKey()) ? c.getFormKey() : [c.getFormKey()];
+      const k = isArray(c.getFormItemName())
+        ? c.getFormItemName()
+        : [c.getFormItemName()];
       return isEqual(k, key);
     });
     if (column) {

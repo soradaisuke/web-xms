@@ -47,10 +47,10 @@ export default class DynamicItem extends React.PureComponent {
   onChange = ({ column, value, index }) => {
     const { onChange, value: values } = this.props;
 
-    const newValue = { ...values[index], [column.getFormKey()]: value };
+    const newValue = { ...values[index], [column.getFormItemName()]: value };
     if (column.childColumn) {
       forEach(column.childColumn, childColumn => {
-        unset(newValue, childColumn.getFormKey());
+        unset(newValue, childColumn.getFormItemName());
       });
     }
     values[index] = newValue;
@@ -65,7 +65,7 @@ export default class DynamicItem extends React.PureComponent {
       columns.forEach(column => {
         set(
           initialValue,
-          column.getFormKey(),
+          column.getFormItemName(),
           column.generateFormInitialValue()
         );
       });
@@ -79,9 +79,9 @@ export default class DynamicItem extends React.PureComponent {
       <Col>
         {columns.map(column => {
           const parentValue = column.parentColumn
-            ? get(value, column.parentColumn.getFormKey())
+            ? get(value, column.parentColumn.getFormItemName())
             : null;
-          const columnValue = get(value, column.getFormKey());
+          const columnValue = get(value, column.getFormItemName());
           const params = {
             user,
             value: columnValue,
@@ -97,7 +97,7 @@ export default class DynamicItem extends React.PureComponent {
                 }),
               [column.getFormFiledValuePropName()]: get(
                 value,
-                column.getFormKey()
+                column.getFormItemName()
               ),
               onChange: newValue =>
                 this.onChange({
@@ -118,7 +118,7 @@ export default class DynamicItem extends React.PureComponent {
           }
           return (
             <Row
-              key={column.getFormKey()}
+              key={column.getFormItemName()}
               type="flex"
               align="middle"
               className="dynamic-item"

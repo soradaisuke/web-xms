@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Form, InputNumber, Input, Select, Switch } from 'antd';
 import { get, concat, map, find, isArray, isPlainObject, trim } from 'lodash';
@@ -20,6 +20,7 @@ import BooleanColumn from '../../schema/BooleanColumn';
 import ImageColumn from '../../schema/ImageColumn';
 import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
+import useForm from '../../hooks/useForm';
 
 function FormItem({
   column,
@@ -114,6 +115,14 @@ function FormItem({
     return column.getFormItemInitialValue();
   }, [record, column]);
 
+  const form = useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      [column.getFormItemName()]: initialValue
+    });
+  }, [column, form, initialValue]);
+
   const commonFormItemProps = useMemo(
     () => ({
       normalize,
@@ -121,10 +130,9 @@ function FormItem({
       ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
       name: column.getFormItemName(),
-      initialValue,
       rules
     }),
-    [column, hideLabel, normalize, rules, initialValue, valuePropName]
+    [column, hideLabel, normalize, rules, valuePropName]
   );
 
   const formItemProps = useMemo(() => {
@@ -134,8 +142,8 @@ function FormItem({
         shouldUpdate: (prevValues, curValues) => {
           if (
             column.parentColumn &&
-            get(prevValues, column.parentColumn.getFormKey()) !==
-              get(curValues, column.parentColumn.getFormKey())
+            get(prevValues, column.parentColumn.getFormItemName()) !==
+              get(curValues, column.parentColumn.getFormItemName())
           ) {
             return true;
           }
@@ -270,6 +278,7 @@ function FormItem({
         for (let i = 0; i < dependencies.length; i += 1) {
           const { key, value } = dependencies[i];
           const curValue = getFieldValue(key);
+
           if (isArray(value)) {
             if (!find(value, v => v === curValue)) {
               return null;

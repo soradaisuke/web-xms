@@ -35,7 +35,7 @@ function EditableCell({ children, record, column, onComplete }) {
   const toggleEdit = useEventCallback(() => {
     setEditing(pre => !pre);
     form.setFieldsValue({
-      [column.getFormKey()]: get(record, column.getFormKey())
+      [column.getFormItemName()]: get(record, column.getFormItemName())
     });
   }, []);
 
@@ -59,7 +59,7 @@ function EditableCell({ children, record, column, onComplete }) {
   // const onChange = useEventCallback(
   //   value => {
   //     submit({
-  //       [column.getFormKey()]: value
+  //       [column.getFormItemName()]: value
   //     });
   //   },
   //   [submit, column]
