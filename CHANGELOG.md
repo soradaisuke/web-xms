@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-13...v3.0.0-beta.0) (2020-07-01)
+
+
+### Features
+
+* **NoTicket:** FormItem支持ObjectColumn ([613bd69](https://git2.qingtingfm.com/zhibo/xms/commit/613bd69afe4e9a7e3d16863f022232f3c3987e8c))
+* **NoTicket:** 合并date相关column ([8818ef9](https://git2.qingtingfm.com/zhibo/xms/commit/8818ef95ba6b1cf7c1ebedcf3816069d3c5c3cfc))
+* **NoTicket:** 移除formatFilterValue ([d1490bc](https://git2.qingtingfm.com/zhibo/xms/commit/d1490bc24c18ff60edff69d9c24705837be94e82))
+* **NoTicket:** 重构EditableCell ([5cb2cf8](https://git2.qingtingfm.com/zhibo/xms/commit/5cb2cf8737b5451f7547236b515ccc4d84e38cd4))
+* **NoTicket:** 页面type改名 ([87b0b3a](https://git2.qingtingfm.com/zhibo/xms/commit/87b0b3a04e029ffe99afea48e242acf0c94c5e54))
+* **QTLIVE-1232:** config.paginationProps ([47df0a3](https://git2.qingtingfm.com/zhibo/xms/commit/47df0a3be544cfa585abf8abda847e915de1496d))
+* **QTLIVE-1233:** config.tableProps ([c2a89ec](https://git2.qingtingfm.com/zhibo/xms/commit/c2a89ec9ac58913b9bf7a0d384d53b34fdb4c13f))
+* **QTLIVE-1235:** config.formProps ([2741e97](https://git2.qingtingfm.com/zhibo/xms/commit/2741e97f31a631c8dfc2822c158820d69698c211))
+* **QTLIVE-1244:** 统一各个页面dynamicComponent实现方法 ([8f91f26](https://git2.qingtingfm.com/zhibo/xms/commit/8f91f267f5d37015772d54896cf1597681c5ed6c))
+* **QTLIVE-1247:** RecordForm改为hooks实现 ([e399726](https://git2.qingtingfm.com/zhibo/xms/commit/e39972643eddb10b3e4407ca0a7c11fa47c97138))
+* **QTLIVE-1255:** hooks-useUser ([98d3dc2](https://git2.qingtingfm.com/zhibo/xms/commit/98d3dc289c67283b8df8243876df0681c319fc1d))
+* **QTLIVE-1262:** hooks-usePageData ([6b9fa5a](https://git2.qingtingfm.com/zhibo/xms/commit/6b9fa5a3d906532364be746f7de1f2b9f2d9c3e5))
+* **QTLIVE-1274:** components.Action ([e5f9198](https://git2.qingtingfm.com/zhibo/xms/commit/e5f91984f4d8a7b34ca3201dcbfd305bad60d71a))
+* **QTLIVE-1279:** components-FilterDropDown ([b1c27f1](https://git2.qingtingfm.com/zhibo/xms/commit/b1c27f15d3d21e9dc4f3dc863c765cfa5d57a14a))
+* **QTLIVE-1289:** components-FilterIcon ([5b24737](https://git2.qingtingfm.com/zhibo/xms/commit/5b247375d568e4c5842f9de04794792c072490ee))
+* **QTLIVE-1291:** 使用Table.pagination ([6d9e087](https://git2.qingtingfm.com/zhibo/xms/commit/6d9e087c89f20d48e5b89c911843dce4ca22b43b))
+* **QTLIVE-1307:** 重构inlineEdit & action icon修改 ([f5d1ad2](https://git2.qingtingfm.com/zhibo/xms/commit/f5d1ad2402164fb8fdd31ba744b28f3107eb925e))
+* **QTLIVE-1312:** RcordFormPage使用Action渲染 ([9f4c5a8](https://git2.qingtingfm.com/zhibo/xms/commit/9f4c5a8b401c6074d57e92196f1c5ffbee47ba68))
+* **QTLIVE-1313:** 重构filters ([462ea20](https://git2.qingtingfm.com/zhibo/xms/commit/462ea20c1bd963ca63c58d92bdc256dcf28944f7))
+* **QTLIVE-1317:** Table和TableAction合并 ([34cbe08](https://git2.qingtingfm.com/zhibo/xms/commit/34cbe080b815eb5d061b9ae1e66dcf6ef9b91084))
+* **QTLIVE-1318:** 调整页面布局 ([33a176c](https://git2.qingtingfm.com/zhibo/xms/commit/33a176c8dcade4f197c779b0ba1d7569bece5134))
+* **QTLIVE-1320:** config.filterFormProps ([31644d5](https://git2.qingtingfm.com/zhibo/xms/commit/31644d5e27ca5f947f9ea34aef3c83848d797716))
+* **QTLIVE-1321:** RecordsPage改为hooks实现 ([a11fda1](https://git2.qingtingfm.com/zhibo/xms/commit/a11fda19ed821936f07e33b86d893af0c197ed6e))
+* **QTLIVE-1326:** column.renderInTable改到EditableCell里 ([1d12643](https://git2.qingtingfm.com/zhibo/xms/commit/1d12643293140eded43f569c5cf57280eb436aad))
+* **QTLIVE-1327:** column.renderInForm改为组件 ([b194a6f](https://git2.qingtingfm.com/zhibo/xms/commit/b194a6f127ec308aa45e1751a8aa00b5e3ba2a23))
+* **QTLIVE-1353:** RecordPage改为hooks实现 ([6bc02ae](https://git2.qingtingfm.com/zhibo/xms/commit/6bc02ae9fccaac729d5cdaace161684c771fa949))
+* **QTLIVE-1378:** 水印改为全局 ([d18209d](https://git2.qingtingfm.com/zhibo/xms/commit/d18209d1fea5548d7ff87dc34adf2627fc2f898e))
+* **QTLIVE-150:** XMS替换依赖web-core和react-core ([cdd958e](https://git2.qingtingfm.com/zhibo/xms/commit/cdd958ed5be72a4b178e45d9b5e15c437c5182af))
+
+
+### Bug Fixes
+
+* **NoTicket:** @qt/react替换@qt/react-core ([fb00b1b](https://git2.qingtingfm.com/zhibo/xms/commit/fb00b1ba459a77d7da4390c1ac19444f9bddac84))
+* **NoTicket:** bug fix ([f0ca750](https://git2.qingtingfm.com/zhibo/xms/commit/f0ca750f4996c7fcde0245df71ab167c19c48aae))
+* **NoTicket:** eslint ([291b71c](https://git2.qingtingfm.com/zhibo/xms/commit/291b71c183c95c7802c2fc9e099d4a2ac2fae4ce))
+* **NoTicket:** RecordLink type error ([71b4347](https://git2.qingtingfm.com/zhibo/xms/commit/71b434700c0de80b76c417a609b79b804e442d6a))
+* **NoTicket:** 修复编辑时shouldUpdate不生效 ([0e830db](https://git2.qingtingfm.com/zhibo/xms/commit/0e830dbdaf1ec01d5b4c45b2f46903f506876dd0))
+* **NoTicket:** 修复部分错误 ([f34a533](https://git2.qingtingfm.com/zhibo/xms/commit/f34a53300d1bc3b1b1e62e294b52268bff12a9ed))
+* **NoTicket:** 增加form和filter key的可配置项 ([e30d2d4](https://git2.qingtingfm.com/zhibo/xms/commit/e30d2d4e7850a50942db5028d209379433b0e3b7))
+* **NoTicket:** 无filter时不显示按钮 ([837a134](https://git2.qingtingfm.com/zhibo/xms/commit/837a1345e8e071a0af1d21040d676d14e7210d85))
+* **NoTicket:** 移除LegacyIcon ([0b6ab94](https://git2.qingtingfm.com/zhibo/xms/commit/0b6ab94086dd497df475ced4d3d760aad2abcf3d))
+* **NoTicket:** 统一dynamicComponent函数 ([ac36256](https://git2.qingtingfm.com/zhibo/xms/commit/ac36256721c26eb391872ae7197ce472b2ce31a4))
+* **NoTicket:** 表格不显示按钮 ([4ce6ebd](https://git2.qingtingfm.com/zhibo/xms/commit/4ce6ebdd43779da514143f086e2c287f57227269))
+
 ## [2.14.0-13](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-12...v2.14.0-13) (2020-06-30)
 
 
