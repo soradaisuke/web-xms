@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useEventCallback } from '@qt/react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
@@ -8,13 +9,12 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import useUser from './hooks/useUser';
 import Menu from './components/Menu';
 import User from './components/User';
-import Header from './components/Header';
 import Breadcrumb from './components/Breadcrumb';
+import Watermark from './components/Watermark';
 import 'moment/locale/zh-cn';
 import './router.less';
-import Watermark from './components/Watermark';
 
-const { Content } = Layout;
+const { Content, Sider, Header } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
   <div className="dynamic-loading">
@@ -116,16 +116,23 @@ function ConnectedRouter({ history, app }) {
     return nonHomeRoutePath;
   }, [routes]);
 
+  const [collapsed, setCollapsed] = useState(false);
+  const onCollapse = useEventCallback(c => setCollapsed(c));
+
   return (
     <ConfigProvider locale={zhCN}>
       <Watermark />
       <Router history={history}>
         <Layout className="xms-layout">
-          <Header name={name}>
-            <User />
-          </Header>
-          <Layout className="xms-main-layout">
+          <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+            <div className="logo" />
             {(!auth || !!user) && <Menu routes={routes} />}
+          </Sider>
+          <Layout className="xms-site-layout">
+            <Header className="xms-site-layout-heder">
+              <div className="site-name">{name}</div>
+              <User />
+            </Header>
             <Content className="xms-content">
               <Breadcrumb routes={routes} />
               <Switch>
@@ -144,9 +151,7 @@ function ConnectedRouter({ history, app }) {
               </Switch>
             </Content>
           </Layout>
-          <BackTop
-            target={() => document.getElementsByClassName('xms-content')[0]}
-          />
+          <BackTop />
         </Layout>
       </Router>
     </ConfigProvider>

@@ -39,80 +39,77 @@ body {
   #root {
     width: 100%;
     height: 100%;
+    position: relative;
 
-    .xms-layout {
-      height: 100vh;
+    .watermark-wrapper {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
 
-      .xms-main-layout {
+      .watermark {
         .flex-row-container();
 
-        padding-top: 40px;
-        background: #fff;
-        flex-direction: row;
+        position: absolute;
+        left: -50%;
+        top: -50%;
+        width: 200%;
+        height: 200%;
+        transform: rotate(45deg);
+        transform-origin: center;
+      }
+    }
+
+    .xms-layout {
+      min-height: 100vh;
+      position: relative;
+
+      .logo {
+        width: 100%;
+        padding: 10px;
+
+        &:after {
+          .background-contain-center-no-repeat();
+
+          width: 100%;
+          height: 40px;
+          display: block;
+          content: '';
+          background-image: url('./assets/ic-logo.png');
+        }
+      }
+
+      .xms-site-layout {
+        .xms-site-layout-heder {
+          .flex-row-container();
+          .flex-container-align-items-center();
+
+          background: #fff;
+
+          .trigger {
+            font-size: 18px;
+            padding: 0 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+  
+            &:hover {
+              color: #1890ff;
+            }
+          }
+
+          .site-name {
+            margin-left: 20px;
+          }
+        }
 
         .xms-content {
-          padding: 0 20px 144px 32px;
-          overflow-x: hidden;
-          overflow-y: scroll;
+          margin: 0 16px;
+          padding: 24px;
 
           .ant-breadcrumb {
-            margin-bottom: 1rem;
-          }
-
-          .dynamic-loading {
-            .flex-row-container();
-            .flex-container-align-all-center();
-          }
-
-          .xms-page {
-            position: relative;
-            overflow: hidden;
-
-            .watermark-wrapper {
-              position: absolute;
-              left: 0;
-              top: 0;
-              width: 100%;
-              height: 100%;
-              overflow: hidden;
-
-              .watermark {
-                .flex-row-container();
-
-                position: absolute;
-                left: -50%;
-                top: -50%;
-                width: 200%;
-                height: 200%;
-                transform: rotate(45deg);
-                transform-origin: center;
-              }
-            }
-
-            .ant-card {
-              background: transparent;
-            }
-
-            .xms-page-loading {
-              .inline-card {
-                margin-bottom: 1rem;
-              }
-            }
-
-            // .ant-dropdown
-            //   .ant-table-filter-dropdown
-            //   .ant-dropdown-menu.ant-dropdown-menu-root.ant-dropdown-menu-vertical {
-            //   max-height: 400px;
-            //   overflow-y: scroll;
-            // }
-
-            .ant-empty-normal {
-              margin: 128px 0;
-            }
-
-            .action-button {
-              margin: 10px;
-            }
+            margin-bottom: 20px;
           }
         }
       }

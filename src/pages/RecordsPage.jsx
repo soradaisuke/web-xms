@@ -294,7 +294,6 @@ function RecordsPage({
         rowKey={table.getPrimaryKey()}
         rowSelection={rowSelection}
         onChange={onTableChange}
-        getPopupContainer={() => document.getElementsByClassName('xms-page')[0]}
         pagination={{
           showQuickJumper: true,
           showSizeChanger: true,

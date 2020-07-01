@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { filter } from 'lodash/fp';
 import { Link, withRouter, matchPath } from 'react-router-dom';
-import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
 import history from '../utils/history';
-import './Menu.less';
 
 const { SubMenu } = Menu;
 
@@ -41,23 +38,25 @@ const selector = createSelector(
 );
 
 function renderMenus(routes) {
-  return validMenues(routes).map(({ path, title, routes: childRoutes }) => {
-    const subRoutes = validMenues(childRoutes);
+  return validMenues(routes).map(
+    ({ path, title, icon, routes: childRoutes }) => {
+      const subRoutes = validMenues(childRoutes);
 
-    if (subRoutes.length > 0) {
+      if (subRoutes.length > 0) {
+        return (
+          <SubMenu key={path} title={title}>
+            {renderMenus(subRoutes)}
+          </SubMenu>
+        );
+      }
+
       return (
-        <SubMenu key={path} title={title}>
-          {renderMenus(subRoutes)}
-        </SubMenu>
+        <Menu.Item key={path} icon={icon}>
+          <Link to={path}>{title}</Link>
+        </Menu.Item>
       );
     }
-
-    return (
-      <Menu.Item key={path}>
-        <Link to={path}>{title}</Link>
-      </Menu.Item>
-    );
-  });
+  );
 }
 
 class NavMenu extends React.PureComponent {
@@ -67,10 +66,6 @@ class NavMenu extends React.PureComponent {
     routes: PropTypes.array.isRequired // eslint-disable-line react/forbid-prop-types
   };
 
-  state = {
-    collapsed: false
-  };
-
   componentDidUpdate() {
     const { location } = this.props;
     if (location.state?.unmatch) {
@@ -78,13 +73,7 @@ class NavMenu extends React.PureComponent {
     }
   }
 
-  onClickCollapse = () => {
-    const { collapsed } = this.state;
-    this.setState({ collapsed: !collapsed });
-  };
-
   render() {
-    const { collapsed } = this.state;
     const { selectedKeys, openKeys } = selector(this.props);
     const {
       routes,
@@ -93,22 +82,16 @@ class NavMenu extends React.PureComponent {
 
     if (state?.unmatch) return null;
 
-    const Icon = collapsed ? DoubleRightOutlined : DoubleLeftOutlined;
-
     return (
-      <div
-        className={classNames('xms-side-menu', collapsed ? 'collapsed' : '')}
+      <Menu
+        className="xms-menu"
+        theme="dark"
+        mode="inline"
+        selectedKeys={selectedKeys}
+        defaultOpenKeys={openKeys}
       >
-        <Menu
-          className="xms-menu"
-          mode="inline"
-          selectedKeys={selectedKeys}
-          defaultOpenKeys={openKeys}
-        >
-          {renderMenus(routes)}
-        </Menu>
-        <Icon className="xms-collapse" onClick={this.onClickCollapse} />
-      </div>
+        {renderMenus(routes)}
+      </Menu>
     );
   }
 }

@@ -147,7 +147,6 @@ export default class DynamicItem extends React.PureComponent {
                 placement="left"
                 disabled={disabled}
                 onConfirm={() => this.remove(i)}
-                getPopupContainer={triggerNode => triggerNode.parentNode}
               >
                 <Button
                   icon={<CloseOutlined />}
