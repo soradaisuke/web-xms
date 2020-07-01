@@ -6,7 +6,7 @@ export request from './services/request';
 export history from './utils/history';
 // export Group from './components/Group';
 // export ActivatorModal from './components/ActivatorModal';
-// export Page from './pages/Page';
+export Page from './pages/Page';
 // export textToPath from './utils/textToPath';
 // export UploadImage from './components/Form/UploadImage';
 // export UploadFile from './components/UploadFile';
