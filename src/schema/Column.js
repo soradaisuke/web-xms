@@ -135,17 +135,40 @@ export default class Column {
   }
 
   getTableWidth() {
-    return this.config.getIn(['table', 'columnProps', 'width'], 0);
+    return this.config.getIn(
+      ['table', 'columnProps', 'width'],
+      this.config.getIn(['table', 'width'], 0)
+    );
   }
 
   getTableSortDirections() {
     if (!this.sortDirections) {
       this.sortDirections = this.config
-        .getIn(['table', 'columnProps', 'sortDirections'], Immutable.List())
+        .getIn(
+          ['table', 'columnProps', 'sortDirections'],
+          this.config.getIn(['table', 'sortDirections'], Immutable.List())
+        )
         .toArray();
     }
 
     return this.sortDirections;
+  }
+
+  canSortInTable() {
+    return this.getTableSortDirections().length > 0;
+  }
+
+  canShowInTable(user) {
+    const invisible = this.config.getIn(['table', 'invisible']);
+    if (isFunction(invisible)) {
+      if (!user) {
+        return false;
+      }
+
+      return !invisible({ user });
+    }
+
+    return !invisible;
   }
 
   // filter
@@ -173,6 +196,15 @@ export default class Column {
   getFilterOption({ value, parentFilterValue }) {
     const filters = this.getFilters(parentFilterValue);
     return findOption(filters, value);
+  }
+
+  resetFilters() {
+    const valueOptions = this.getValueOptions();
+    if (valueOptions) {
+      this.filters = generateFilters(valueOptions.toJS());
+    } else {
+      this.filters = Immutable.Map();
+    }
   }
 
   getFilterDefault() {
@@ -222,10 +254,9 @@ export default class Column {
   }
 
   getFilterKey() {
-    return (
-      this.config.getIn(['table', 'filterFormItemProps', 'name']) ||
-      this.config.getIn(['table', 'filterKey']) ||
-      this.getKey()
+    return this.config.getIn(
+      ['table', 'filterFormItemProps', 'name'],
+      this.config.getIn(['table', 'filterKey'], this.getKey())
     );
   }
 
@@ -237,32 +268,6 @@ export default class Column {
     }
 
     return this.filterFormItemComponentProps;
-  }
-
-  resetFilters() {
-    const valueOptions = this.getValueOptions();
-    if (valueOptions) {
-      this.filters = generateFilters(valueOptions.toJS());
-    } else {
-      this.filters = Immutable.Map();
-    }
-  }
-
-  canSortInTable() {
-    return this.getTableSortDirections().length > 0;
-  }
-
-  canShowInTable(user) {
-    const invisible = this.config.getIn(['table', 'invisible']);
-    if (isFunction(invisible)) {
-      if (!user) {
-        return false;
-      }
-
-      return !invisible({ user });
-    }
-
-    return !invisible;
   }
 
   // form
@@ -338,7 +343,10 @@ export default class Column {
   getFormItemRules() {
     if (!this.formItemRules) {
       this.formItemRules = this.config
-        .getIn(['form', 'formItemProps', 'rules'], Immutable.List())
+        .getIn(
+          ['form', 'formItemProps', 'rules'],
+          this.config.getIn(['form', 'rules'], Immutable.List())
+        )
         .toJS();
     }
 
@@ -346,35 +354,27 @@ export default class Column {
   }
 
   getFormItemName() {
-    return (
-      this.config.getIn(['form', 'formItemProps', 'name']) ||
-      this.config.getIn(['form', 'key']) ||
-      this.getKey()
+    return this.config.getIn(
+      ['form', 'formItemProps', 'name'],
+      this.config.getIn(['form', 'key'], this.getKey())
     );
   }
 
   getFormItemLabel() {
     return this.config.getIn(
       ['form', 'formItemProps', 'label'],
-      this.getTitle()
+      this.config.getIn(['form', 'label'], this.getTitle())
     );
   }
 
   getFormItemInitialValue() {
-    return this.config.getIn(['form', 'formItemProps', 'initialValue']);
+    return this.config.getIn(
+      ['form', 'formItemProps', 'initialValue'],
+      this.config.getIn(['form', 'initialValue'])
+    );
   }
 
   getFormItemComponentProps() {
-    if (!this.formItemComponentProps) {
-      this.formItemComponentProps = this.config
-        .getIn(['form', 'formItemComponentProps'], Immutable.Map())
-        .toJS();
-    }
-
-    return this.formItemComponentProps;
-  }
-
-  getFormComponentProps() {
     if (!this.formItemComponentProps) {
       this.formItemComponentProps = this.config
         .getIn(['form', 'formItemComponentProps'], Immutable.Map())
