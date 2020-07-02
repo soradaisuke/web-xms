@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Button, Modal, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
 import { isFunction } from 'lodash';
 import PropTypes from 'prop-types';
+import RecordLink from './RecordLink';
 import ActionConfig from '../actions/Action';
 import useUser from '../hooks/useUser';
-import RecordLink from './RecordLink';
 import RecordModal from './RecordModal';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -24,15 +24,18 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
     onComplete
   });
 
-  const buttonProps = {
-    className: 'action-button',
-    type: action.getType(),
-    shape: action.getShape(),
-    icon: action.getIcon(),
-    ...(action.getButtonProps() || {}),
-    disabled,
-    children: action.getShape() !== 'circle' ? action.getTitle() : null
-  };
+  const buttonProps = useMemo(
+    () => ({
+      className: 'action-button',
+      type: action.getLink() && !disabled ? 'link' : action.getType(),
+      shape: action.getShape(),
+      icon: action.getIcon(),
+      children: action.getShape() !== 'circle' ? action.getTitle() : null,
+      ...action.getButtonProps(),
+      disabled
+    }),
+    [action, disabled]
+  );
 
   const onFormOk = useEventCallback(
     f =>
@@ -84,24 +87,11 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
 
   if (action.getLink() && !disabled) {
     return (
-      <Button
-        {...buttonProps}
-        style={{ position: 'relative' }}
-        key={action.getTitle()}
-      >
-        {buttonProps.children}
-        <RecordLink
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'absolute',
-            left: 0,
-            top: 0
-          }}
-          link={action.getLink()}
-          record={record || records}
-        />
-      </Button>
+      <RecordLink
+        link={action.getLink()}
+        record={record || records}
+        buttonProps={buttonProps}
+      />
     );
   }
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { isFunction, startsWith } from 'lodash';
 import textToPath from '../utils/textToPath';
@@ -9,14 +10,15 @@ export default class RecordLink extends React.PureComponent {
 
   static propTypes = {
     link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
     // eslint-disable-next-line react/forbid-prop-types
     record: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    // eslint-disable-next-line react/forbid-prop-types
+    buttonProps: PropTypes.object,
     children: PropTypes.node
   };
 
   static defaultProps = {
-    style: {},
+    buttonProps: {},
     children: null,
     record: null
   };
@@ -32,19 +34,14 @@ export default class RecordLink extends React.PureComponent {
   }
 
   render() {
-    const { children, style } = this.props;
+    const { children, buttonProps } = this.props;
     let url = this.getUrl();
 
     if (startsWith(url, 'http')) {
       return (
-        <a
-          style={style}
-          href={this.getUrl()}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          {children}
-        </a>
+        <Button href={url} target="_blank" type="link" {...buttonProps}>
+          {buttonProps.children || children}
+        </Button>
       );
     }
 
@@ -53,8 +50,10 @@ export default class RecordLink extends React.PureComponent {
     }
 
     return (
-      <Link style={style} to={url}>
-        {children}
+      <Link to={url}>
+        <Button type="link" {...buttonProps}>
+          {buttonProps.children || children}
+        </Button>
       </Link>
     );
   }

@@ -30,8 +30,13 @@ function ResizableTitle({ onResize, width, ...restProps }) {
 }
 
 ResizableTitle.propTypes = {
-  onResize: PropTypes.func.isRequired,
-  width: PropTypes.number.isRequired
+  onResize: PropTypes.func,
+  width: PropTypes.number
+};
+
+ResizableTitle.defaultProps = {
+  onResize: null,
+  width: 0
 };
 
 export default ResizableTitle;

@@ -43,18 +43,6 @@ export default class Action {
     return this.config.get('title');
   }
 
-  getType() {
-    return this.config.get('type', 'primary');
-  }
-
-  getShape() {
-    return this.config.get('shape');
-  }
-
-  getIcon() {
-    return this.config.get('icon');
-  }
-
   getConfirmType() {
     return this.config.getIn(['confirm', 'type']);
   }
@@ -115,13 +103,6 @@ export default class Action {
     return this.modalProps;
   }
 
-  getButtonProps() {
-    if (!this.buttonProps) {
-      this.buttonProps = this.config.get('buttonProps', Immutable.Map()).toJS();
-    }
-    return this.buttonProps;
-  }
-
   needReload() {
     return this.config.get('reload');
   }
@@ -137,5 +118,30 @@ export default class Action {
     }
 
     return !invisible;
+  }
+
+  getButtonProps() {
+    if (!this.buttonProps) {
+      this.buttonProps = this.config.get('buttonProps', Immutable.Map()).toJS();
+    }
+    return this.buttonProps;
+  }
+
+  getType() {
+    return this.config.getIn(
+      ['buttonProps', 'type'],
+      this.config.get('type', 'primary')
+    );
+  }
+
+  getShape() {
+    return this.config.getIn(
+      ['buttonProps', 'shape'],
+      this.config.get('shape')
+    );
+  }
+
+  getIcon() {
+    return this.config.getIn(['buttonProps', 'icon'], this.config.get('icon'));
   }
 }
