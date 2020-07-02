@@ -66,23 +66,37 @@ body {
       min-height: 100vh;
       position: relative;
 
-      .logo {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
+      .xms-sider {
+        overflow: auto;
+        height: 100vh;
+        position: fixed;
+        left: 0;
 
-        &::after {
-          .background-contain-center-no-repeat();
-
+        .logo {
           width: 100%;
-          height: 40px;
-          display: block;
-          content: '';
-          background-image: url('./assets/ic-logo.png');
+          padding: 10px;
+          margin-bottom: 15px;
+  
+          &::after {
+            .background-contain-center-no-repeat();
+  
+            width: 100%;
+            height: 40px;
+            display: block;
+            content: '';
+            background-image: url('./assets/ic-logo.png');
+          }
         }
       }
 
       .xms-site-layout {
+        margin-left: 200px;
+        transition: all 0.2s;
+
+        &.collapsed {
+          margin-left: 80px;
+        }
+
         .xms-site-layout-heder {
           .flex-row-container();
           .flex-container-align-items-center();

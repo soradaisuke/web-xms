@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
@@ -124,11 +125,21 @@ function ConnectedRouter({ history, app }) {
       <Watermark />
       <Router history={history}>
         <Layout className="xms-layout">
-          <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+          <Sider
+            className="xms-sider"
+            collapsible
+            collapsed={collapsed}
+            onCollapse={onCollapse}
+          >
             <div className="logo" />
             {(!auth || !!user) && <Menu routes={routes} />}
           </Sider>
-          <Layout className="xms-site-layout">
+          <Layout
+            className={classNames(
+              'xms-site-layout',
+              collapsed ? 'collapsed' : ''
+            )}
+          >
             <Header className="xms-site-layout-heder">
               {name}
               <User />
