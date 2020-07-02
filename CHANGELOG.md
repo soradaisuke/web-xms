@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.4](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2020-07-02)
+
+
+### Features
+
+* **NoTicket:** 优化可配置项 ([d18715a](https://git2.qingtingfm.com/zhibo/xms/commit/d18715a9c1c7a453a68948dcf00cd34ab14ebb89))
+* **NoTicket:** 固定侧边栏 ([4c1084d](https://git2.qingtingfm.com/zhibo/xms/commit/4c1084d35fcf3d1f64914fefc45cfc5d074f8077))
+* **NoTicket:** 表格可伸缩 ([2ef8f1c](https://git2.qingtingfm.com/zhibo/xms/commit/2ef8f1c5137a80455ad91c02ac73a388cc161f9f))
+
+
+### Bug Fixes
+
+* **NoTicket:** stylelint ([fe48c21](https://git2.qingtingfm.com/zhibo/xms/commit/fe48c21a38db4dcaa1067435d4caffd358f75b3c))
+
 ## [3.0.0-beta.3](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2020-07-01)
 
 
