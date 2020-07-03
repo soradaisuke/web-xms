@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.5](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.4...v3.0.0-beta.5) (2020-07-03)
+
+
+### Features
+
+* **QTLIVE-1230:** 使用link类型button替代RecordLink ([5486430](https://git2.qingtingfm.com/zhibo/xms/commit/5486430692a0aa9fa0c68d0d58abfd662d38e1bd))
+
+
+### Bug Fixes
+
+* **NoTicket:** allowClear ([639b1e4](https://git2.qingtingfm.com/zhibo/xms/commit/639b1e4782aa4740b24cd0257d0f08896dd537c8))
+* **NoTicket:** 暂时禁止伸缩表格 ([b4ca487](https://git2.qingtingfm.com/zhibo/xms/commit/b4ca4877618e4a8f8782c5fe5c5f2c5515a0cd33))
+
 ## [3.0.0-beta.4](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2020-07-02)
 
 
