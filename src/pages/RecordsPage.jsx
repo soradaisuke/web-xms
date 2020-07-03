@@ -17,7 +17,7 @@ import PageFilterFormContext from '../contexts/PageFilterFormContext';
 import useUser from '../hooks/useUser';
 import usePageConfig from '../hooks/usePageConfig';
 import './RecordsPage.less';
-import ResizableTitle from '../components/Table/ResizableTitle';
+// import ResizableTitle from '../components/Table/ResizableTitle';
 
 const { Column } = Table;
 
@@ -64,7 +64,7 @@ function RecordsPage({
     () => table.getColumns().filter(column => column.canShowInTable(user)),
     [table, user]
   );
-  const [widths, setWidths] = useState(columns.map(c => c.getTableWidth()));
+  const [widths] = useState(columns.map(c => c.getTableWidth()));
   const filterColumns = useMemo(
     () => columns.filter(column => column.canFilter()),
     [columns]
@@ -122,14 +122,14 @@ function RecordsPage({
     form.submit();
   });
 
-  const handleResize = useMemo(
-    () => index => (e, { size }) => {
-      setWidths(pre => {
-        return pre.set(index, size.width);
-      });
-    },
-    [setWidths]
-  );
+  // const handleResize = useMemo(
+  //   () => index => (e, { size }) => {
+  //     setWidths(pre => {
+  //       return pre.set(index, size.width);
+  //     });
+  //   },
+  //   [setWidths]
+  // );
 
   const rowSelection = useMemo(
     () =>
@@ -196,10 +196,10 @@ function RecordsPage({
             column,
             onComplete: fetch
           })}
-          onHeaderCell={() => ({
-            width: widths.get(index),
-            onResize: handleResize(index)
-          })}
+          // onHeaderCell={() => ({
+          //   width: widths.get(index),
+          //   onResize: handleResize(index)
+          // })}
           sortOrder={
             sort && startsWith(sort, `${column.getKey()} `)
               ? `${split(sort, ' ')[1]}end`
@@ -208,7 +208,7 @@ function RecordsPage({
         />
       );
     },
-    [fetch, filter, handleResize, sort, widths]
+    [fetch, filter, sort, widths]
   );
 
   useEffect(() => {
@@ -299,9 +299,9 @@ function RecordsPage({
         bordered
         {...tableProps}
         components={{
-          header: {
-            cell: ResizableTitle
-          },
+          // header: {
+          //   cell: ResizableTitle
+          // },
           body: {
             row: EditableTableRow,
             cell: EditableTableCell
