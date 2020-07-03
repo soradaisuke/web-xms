@@ -1,60 +1,59 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { isFunction, startsWith } from 'lodash';
 import textToPath from '../utils/textToPath';
+import usePageData from '../hooks/usePageData';
 
-export default class RecordLink extends React.PureComponent {
-  static displayName = 'RecordLink';
+function RecordLink({
+  link,
+  record,
+  buttonProps,
+  children
+}) {
 
-  static propTypes = {
-    link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
-    // eslint-disable-next-line react/forbid-prop-types
-    record: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    // eslint-disable-next-line react/forbid-prop-types
-    buttonProps: PropTypes.object,
-    children: PropTypes.node
-  };
+  const { filter } = usePageData();
 
-  static defaultProps = {
-    buttonProps: {},
-    children: null,
-    record: null
-  };
-
-  getUrl() {
-    const { link, record } = this.props;
-
+  const url = useMemo(() => {
     if (isFunction(link)) {
-      return textToPath(link(record));
+      return textToPath(link({ record, filter }));
     }
 
     return textToPath(link);
-  }
+  }, [link, record, filter]);
 
-  render() {
-    const { children, buttonProps } = this.props;
-    let url = this.getUrl();
-
-    if (startsWith(url, 'http')) {
-      return (
-        <Button href={url} target="_blank" type="link" {...buttonProps}>
-          {buttonProps.children || children}
-        </Button>
-      );
-    }
-
-    if (!startsWith(url, '/')) {
-      url = `${window.location.pathname}/${url}`;
-    }
-
+  if (startsWith(url, 'http')) {
     return (
-      <Link to={url}>
-        <Button type="link" {...buttonProps}>
-          {buttonProps.children || children}
-        </Button>
-      </Link>
+      <Button href={url} target="_blank" type="link" {...buttonProps}>
+        {buttonProps.children || children}
+      </Button>
     );
   }
+
+  return (
+    <Link to={!startsWith(url, '/') ? `${window.location.pathname}/${url}` : url}>
+      <Button type="link" {...buttonProps}>
+        {buttonProps.children || children}
+      </Button>
+    </Link>
+  );
 }
+
+RecordLink.propTypes = {
+  link: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  record: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  // eslint-disable-next-line react/forbid-prop-types
+  buttonProps: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
+  children: PropTypes.node
+};
+
+RecordLink.defaultProps = {
+  buttonProps: {},
+  children: null,
+  record: null
+};
+
+export default React.memo(RecordLink);
