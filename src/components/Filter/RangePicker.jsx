@@ -31,6 +31,7 @@ function FilterRangePicker({ value, onChange, presets, ...props }) {
 
   return (
     <RangePicker
+      allowClear
       {...props}
       value={!isUndefined(value) ? [moment(value[0]), moment(value[1])] : null}
       onChange={onChangeDate}

@@ -219,6 +219,7 @@ function FormItem({
       if (column.isArray()) {
         inner = (
           <Select
+            allowClear
             style={{ width: '100%' }}
             placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
@@ -238,6 +239,7 @@ function FormItem({
       if (column.isArray()) {
         inner = (
           <Select
+            allowClear
             style={{ width: '100%' }}
             placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
@@ -248,6 +250,7 @@ function FormItem({
       if (column.getFormMultipleLine()) {
         inner = (
           <Input.TextArea
+            allowClear
             style={{ width: '100%' }}
             placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
@@ -256,6 +259,7 @@ function FormItem({
       }
       inner = (
         <Input
+          allowClear
           style={{ width: '100%' }}
           placeholder={`输入${column.getTitle()}`}
           {...formItemComponentProps}

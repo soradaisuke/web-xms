@@ -29,6 +29,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
 
   return (
     <DatePicker
+      allowClear
       {...props}
       value={!isUndefined(value) ? moment(value) : null}
       onChange={onChangeDate}

@@ -1,32 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, set } from 'lodash';
+import moment from 'moment';
+import { isUndefined } from 'lodash';
 import { useEventCallback } from '@qt/react';
-import DurationPicker from './DurationPicker';
+import { TimePicker } from 'antd';
+
+const { RangePicker } = TimePicker;
 
 function DurationRangePicker({ value, onChange, ...props }) {
-  const onLeftChange = useEventCallback(newValue => {
-    onChange(set([...(value || [])], '[0]', newValue));
-  });
-
-  const onRightChange = useEventCallback(newValue => {
-    onChange(set([...(value || [])], '[1]', newValue));
+  const onChangeDate = useEventCallback((_, strings) => {
+    onChange(strings);
   });
 
   return (
-    <>
-      <DurationPicker
-        {...props}
-        value={get(value, '[0]')}
-        onChange={onLeftChange}
-      />
-      {' ~ '}
-      <DurationPicker
-        {...props}
-        value={get(value, '[1]')}
-        onChange={onRightChange}
-      />
-    </>
+    <RangePicker
+      allowClear
+      {...props}
+      value={!isUndefined(value) ? [moment(value[0]), moment(value[1])] : null}
+      onChange={onChangeDate}
+    />
   );
 }
 

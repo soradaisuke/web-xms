@@ -121,7 +121,9 @@ function FormItem({ column }) {
           inner = <InputNumber {...column.getFilterFormItemComponentProps()} />;
         }
       } else if (column instanceof StringColumn) {
-        inner = <Input {...column.getFilterFormItemComponentProps()} />;
+        inner = (
+          <Input allowClear {...column.getFilterFormItemComponentProps()} />
+        );
       }
     }
 

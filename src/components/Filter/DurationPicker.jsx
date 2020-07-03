@@ -12,6 +12,7 @@ function DurationPicker({ value, onChange, ...props }) {
 
   return (
     <TimePicker
+      allowClear
       {...props}
       value={
         !isUndefined(value)

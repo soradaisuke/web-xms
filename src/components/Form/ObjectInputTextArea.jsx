@@ -18,6 +18,7 @@ function ObjectInputTextArea({ value, onChange, ...props }) {
 
   return (
     <Input.TextArea
+      allowClear
       {...props}
       value={isPlainObject(value) ? JSON.stringify(value) : value}
       onChange={onChangeTime}
