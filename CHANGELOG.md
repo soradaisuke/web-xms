@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.7](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.6...v3.0.0-beta.7) (2020-07-06)
+
+
+### Features
+
+* **NoTicket:** breadcrumb能拿到页面数据 ([e765f03](https://git2.qingtingfm.com/zhibo/xms/commit/e765f03f546180012dd443591bc57394bf860686))
+
 ## [3.0.0-beta.6](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.5...v3.0.0-beta.6) (2020-07-06)
 
 
