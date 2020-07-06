@@ -88,7 +88,7 @@ function EditableDescriptionCell({ record, column, onComplete }) {
       return render({ value, record, reload: onComplete });
     }
 
-    const link = column.getTableLink();
+    const link = column.getDescriptionLink();
 
     if (link) {
       return (
