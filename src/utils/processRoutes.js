@@ -124,6 +124,7 @@ export default function processRoutes({ app, routes }) {
       return {
         ...route,
         component,
+        namespace: processedConfig.namespace,
         routes: processRoutesInternal(route.routes, route.path)
       };
     });

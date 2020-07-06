@@ -433,7 +433,10 @@ function generateRecordsPage(
       [fetch, create, edit, remove, updatePage]
     );
 
-    const pageDataValue = useMemo(() => ({ filter, records }), [filter, records]);
+    const pageDataValue = useMemo(() => ({ filter, records }), [
+      filter,
+      records
+    ]);
 
     return (
       <PageConfigContext.Provider value={pageConfig}>

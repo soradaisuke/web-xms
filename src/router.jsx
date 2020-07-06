@@ -10,7 +10,7 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import useUser from './hooks/useUser';
 import Menu from './components/Menu';
 import User from './components/User';
-import Breadcrumb from './components/Breadcrumb';
+import Breadcrumb from './components/Nav/Breadcrumb';
 import Watermark from './components/Watermark';
 import 'moment/locale/zh-cn';
 import './router.less';
