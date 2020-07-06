@@ -3,7 +3,12 @@ import { makeCancelablePromise } from '@qt/web-common';
 import { useEventCallback } from '@qt/react';
 import useParentFilterValue from './useParentFilterValue';
 
-export default function useColumnValueOptions(column, generateFunc, forForm) {
+export default function useColumnValueOptions(
+  column,
+  generateFunc,
+  forForm,
+  value
+) {
   const parentFilterValue = useParentFilterValue(column);
   const filters = useMemo(
     () =>
@@ -17,37 +22,57 @@ export default function useColumnValueOptions(column, generateFunc, forForm) {
   const [options, setOptions] = useState(null);
 
   useEffect(() => {
-    setOptions(filters ? generateFunc(filters) : null);
-  }, [filters, generateFunc]);
-
-  useEffect(() => {
-    if ((!options || !filters) && column.getValueOptionsRequest()) {
-      const request = makeCancelablePromise(
-        column.fetchValueOptions(parentFilterValue)
-      );
-      request.then(
-        () =>
-          setOptions(
-            generateFunc(
-              column.getFilters(
-                parentFilterValue,
-                forForm ? 'disableInForm' : 'disableInFilter'
+    if (!options) {
+      if (filters) {
+        setOptions(generateFunc(filters));
+      } else if (column.getValueOptionsRequest()) {
+        const request = makeCancelablePromise(
+          column.fetchValueOptions(parentFilterValue)
+        );
+        request.then(
+          () =>
+            setOptions(
+              generateFunc(
+                column.getFilters(
+                  parentFilterValue,
+                  forForm ? 'disableInForm' : 'disableInFilter'
+                )
               )
-            )
-          ),
-        () => {}
-      );
+            ),
+          () => {}
+        );
 
-      return () => request.cancel();
+        return () => request.cancel();
+      } else if (column.getValueOptionsInitialValueRequest()) {
+        const request = makeCancelablePromise(
+          column.getValueOptionsInitialValueRequest()(value)
+        );
+        request.then(
+          data => setOptions(generateFunc(data)),
+          e => {
+            console.log(e);
+          }
+        );
+
+        return () => request.cancel();
+      }
     }
     return () => {};
-  }, [column, options, parentFilterValue, filters, generateFunc, forForm]);
+  }, [
+    column,
+    options,
+    parentFilterValue,
+    filters,
+    generateFunc,
+    forForm,
+    value
+  ]);
 
-  const onSearch = useEventCallback(async value => {
+  const onSearch = useEventCallback(async v => {
     const searchRequest = column.getValueOptionsSearchRequest();
 
     if (searchRequest) {
-      const data = await searchRequest(value);
+      const data = await searchRequest(v);
       setOptions(generateFunc(data));
     }
   });

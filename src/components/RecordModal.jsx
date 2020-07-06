@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import { get } from 'lodash';
 import { useEventCallback } from '@qt/react';
 import { Form } from 'antd';
 import ActivatorModal from './ActivatorModal';
@@ -56,32 +55,16 @@ function RecordModal({
 
   const defaultTilte = isEdit ? '编辑' : '新建';
 
-  const onVisibleChange = useEventCallback(
-    visibility => {
-      if (visibility && form) {
-        cols.forEach(column => {
-          form.setFieldsValue({
-            [column.getFormItemName()]:
-              record && Object.keys(record).length > 0
-                ? get(record, column.getKey())
-                : column.getFormItemInitialValue()
-          });
-        });
-      }
-    },
-    [form]
-  );
-
   const onSubmit = useEventCallback(() => onOk(form), [form, onOk]);
 
   return (
     <FormContext.Provider value={form}>
       <ActivatorModal
         {...props}
+        destroyOnClose
         activator={children}
         title={title || defaultTilte}
         onOk={onSubmit}
-        onVisibleChange={onVisibleChange}
       >
         <Form {...formItemLayout} {...formProps} form={form}>
           {cols.map(column => (

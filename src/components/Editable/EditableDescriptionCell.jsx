@@ -16,6 +16,7 @@ import AudioColumn from '../../schema/AudioColumn';
 import ZoomImg from '../ZoomImg';
 import RecordLink from '../RecordLink';
 import './EditableTableCell.less';
+import toKey from '../../utils/toKey';
 
 function renderInDescription({ column, value, parentFilterValue }) {
   if (column instanceof AudioColumn) {
@@ -102,7 +103,7 @@ function EditableDescriptionCell({ record, column, onComplete }) {
       return (
         <>
           {map(value, v => (
-            <React.Fragment key={v}>
+            <React.Fragment key={toKey(v)}>
               {renderInDescription({
                 value: v,
                 column,

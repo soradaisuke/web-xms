@@ -11,7 +11,9 @@ const FilterTreeSelect = React.forwardRef(
     const [options, onSearch] = useColumnValueOptions(
       column,
       generateTreeData,
-      forForm
+      forForm,
+      // eslint-disable-next-line react/prop-types
+      props.value
     );
 
     return (

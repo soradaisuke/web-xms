@@ -72,7 +72,7 @@ function FormItem({
         }
       ]);
     }
-    if (column instanceof ObjectColumn) {
+    if (column instanceof ObjectColumn && !column.isArray()) {
       r = concat(r, [
         {
           validator: (_, value, cb) => {
@@ -109,7 +109,11 @@ function FormItem({
 
   const initialValue = useMemo(() => {
     if (record && Object.keys(record).length > 0) {
-      return get(record, column.getKey());
+      const curValue = get(record, column.getKey());
+      if (column.getFormItemNormalizeInitialValue()) {
+        return column.getFormItemNormalizeInitialValue()(curValue);
+      }
+      return curValue;
     }
 
     return column.getFormItemInitialValue();
