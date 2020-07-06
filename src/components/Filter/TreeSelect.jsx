@@ -6,26 +6,29 @@ import useColumnValueOptions from '../../hooks/useColumnValueOptions';
 import Column from '../../schema/Column';
 import './Tree.less';
 
-function FilterTreeSelect({ column, forForm, ...props }) {
-  const [options, onSearch] = useColumnValueOptions(
-    column,
-    generateTreeData,
-    forForm
-  );
+const FilterTreeSelect = React.forwardRef(
+  ({ column, forForm, ...props }, ref) => {
+    const [options, onSearch] = useColumnValueOptions(
+      column,
+      generateTreeData,
+      forForm
+    );
 
-  return (
-    <TreeSelect
-      {...props}
-      allowClear
-      showSearch
-      treeData={options}
-      treeCheckable={forForm ? column.isArray() : column.canFilterMultiple()}
-      treeNodeFilterProp="title"
-      filterTreeNode={column.getValueOptionsSearchRequest() ? false : null}
-      onSearch={onSearch}
-    />
-  );
-}
+    return (
+      <TreeSelect
+        {...props}
+        ref={ref}
+        allowClear
+        showSearch
+        treeData={options}
+        treeCheckable={forForm ? column.isArray() : column.canFilterMultiple()}
+        treeNodeFilterProp="title"
+        filterTreeNode={column.getValueOptionsSearchRequest() ? false : null}
+        onSearch={onSearch}
+      />
+    );
+  }
+);
 
 FilterTreeSelect.propTypes = {
   column: PropTypes.instanceOf(Column).isRequired,
