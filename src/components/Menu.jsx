@@ -44,7 +44,7 @@ function renderMenus(routes) {
 
       if (subRoutes.length > 0) {
         return (
-          <SubMenu key={path} title={title}>
+          <SubMenu key={path} title={title} icon={icon}>
             {renderMenus(subRoutes)}
           </SubMenu>
         );
