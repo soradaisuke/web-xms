@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import { get } from 'lodash';
 import { useEventCallback } from '@qt/react';
 import { Form } from 'antd';
 import ActivatorModal from './ActivatorModal';
@@ -58,7 +59,14 @@ function RecordModal({
   const onVisibleChange = useEventCallback(
     visibility => {
       if (visibility && form) {
-        form.resetFields();
+        cols.forEach(column => {
+          form.setFieldsValue({
+            [column.getFormItemName()]:
+              record && Object.keys(record).length > 0
+                ? get(record, column.getKey())
+                : column.getFormItemInitialValue()
+          });
+        });
       }
     },
     [form]
