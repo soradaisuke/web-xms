@@ -192,7 +192,7 @@ function useFetch({ apiPath, namespace }) {
   );
 }
 
-function useEdit({ apiPath, namespace }) {
+function useEdit({ apiPath, namespace, ignoreId }) {
   const dispatch = useDispatch();
 
   return useCallback(
@@ -201,11 +201,11 @@ function useEdit({ apiPath, namespace }) {
         type: `${namespace}/edit`,
         payload: {
           path: apiPath,
-          id,
+          id: ignoreId ? undefined : id,
           body
         }
       }),
-    [apiPath, dispatch, namespace]
+    [apiPath, dispatch, namespace, ignoreId]
   );
 }
 
@@ -482,7 +482,7 @@ function generateRecordPage(
 
     const apiPath = useApiPath({ path, host });
     const fetch = useFetch({ apiPath, namespace });
-    const edit = useEdit({ apiPath, namespace });
+    const edit = useEdit({ apiPath, namespace, ignoreId: true });
     const remove = useRemove({ apiPath, namespace });
     const reset = useReset({ namespace });
 
