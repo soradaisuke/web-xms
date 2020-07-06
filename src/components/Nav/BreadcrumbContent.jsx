@@ -40,14 +40,14 @@ function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
 BreadcrumbContent.propTypes = {
   hasLink: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  breadcrumb: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
-    .isRequired,
+  breadcrumb: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   namespace: PropTypes.string,
   title: PropTypes.string
 };
 
 BreadcrumbContent.defaultProps = {
   title: '',
+  breadcrumb: null,
   namespace: null
 };
 
