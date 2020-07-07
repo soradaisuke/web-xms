@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.14](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.13...v3.0.0-beta.14) (2020-07-07)
+
+
+### Features
+
+* **NoTicket:** action的invisible和enalbe可以获取到当前页面和父页面的数据 ([a1a9295](https://git2.qingtingfm.com/zhibo/xms/commit/a1a92950f87088ac3cdf8b70691f7f640827af4f))
+
+
+### Bug Fixes
+
+* **NoTicket:** textToPath格式错误 ([3dbc380](https://git2.qingtingfm.com/zhibo/xms/commit/3dbc380c289dbf1d62ecdde091c57cc4eb43a78e))
+
 ## [3.0.0-beta.13](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.12...v3.0.0-beta.13) (2020-07-07)
 
 
