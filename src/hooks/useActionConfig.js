@@ -16,7 +16,7 @@ export default function useActionConfig({
   records,
   onComplete
 }) {
-  const { parentPagaData, ...pageData } = usePageData();
+  const { parentPageData, ...pageData } = usePageData();
   const user = useUser();
   const matchParams = useParams();
 
@@ -27,9 +27,9 @@ export default function useActionConfig({
       user,
       matchParams,
       pageData,
-      parentPagaData
+      parentPageData
     }),
-    [record, records, user, matchParams, pageData, parentPagaData]
+    [record, records, user, matchParams, pageData, parentPageData]
   );
 
   const filteredRecords = useMemo(
