@@ -9,7 +9,9 @@ import usePageData from '../hooks/usePageData';
 const { Link } = router;
 
 function RecordLink({ link, record, buttonProps, children }) {
-  const { filter } = usePageData();
+  const pageData = usePageData();
+
+  const filter = pageData?.filter ?? null;
 
   const url = useMemo(() => {
     if (isFunction(link)) {

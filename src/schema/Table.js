@@ -57,8 +57,14 @@ export default class Table {
     this.rowActions = Immutable.List();
     this.globalActions = Immutable.List();
     this.multipleActions = Immutable.List();
+    this.formActions = Immutable.List();
 
     this.actions.forEach(action => {
+      if (action.isFormAction()) {
+        this.formActions = this.formActions.push(action);
+        return;
+      }
+
       if (action.isRowAction()) {
         this.rowActions = this.rowActions.push(action);
       }
@@ -79,6 +85,10 @@ export default class Table {
         this.deleteAction = action;
       }
     });
+  }
+
+  getFormActions() {
+    return this.formActions;
   }
 
   getActions() {

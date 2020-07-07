@@ -1,5 +1,5 @@
 import React from 'react';
-import { startsWith, isFunction, filter } from 'lodash';
+import { startsWith, isFunction, filter, uniqueId } from 'lodash';
 import { dynamic } from 'dva';
 import {
   dynamicRecordsComponent,
@@ -57,7 +57,7 @@ export default function processRoutes({ app, routes }) {
       const route = migrateRoute(r, app);
 
       const { config = {}, path, models, inline, routes: subRoutes } = route;
-      const { useFormPage, formPageConfig } = config;
+      const { useFormPage } = config;
       const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
       let { component } = route;
       let processedConfig = {};
@@ -78,7 +78,6 @@ export default function processRoutes({ app, routes }) {
         processedConfig = processListConfig({
           config,
           path,
-          formPageConfig,
           useFormPage
         });
         component = dynamicRecordsComponent({
@@ -106,11 +105,13 @@ export default function processRoutes({ app, routes }) {
       }
 
       if (useFormPage) {
+        const idIdentifier = uniqueId('_id');
         const formPageRoute = {
           breadcrumb: ({ id }) => (id === 'new' ? '新建' : '编辑'),
-          path: `${path}/:id/edit`,
+          path: `${path}/:${idIdentifier}/edit`,
           config: {
-            ...processedConfig.formPageConfig,
+            ...processedConfig,
+            idIdentifier,
             type: 'form'
           }
         };

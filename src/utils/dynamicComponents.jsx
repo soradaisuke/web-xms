@@ -495,7 +495,7 @@ function generateRecordPage(
 
 function generateRecordFormPage({
   namespace,
-  formPageConfig = {},
+  idIdentifier,
   formProps = {},
   api: { path, host, defaultBody } = {},
   table
@@ -511,6 +511,7 @@ function generateRecordFormPage({
     const pageConfig = useMemo(
       () => ({
         formProps,
+        idIdentifier,
         fetch,
         create,
         edit,
@@ -526,7 +527,7 @@ function generateRecordFormPage({
     return (
       <PageConfigContext.Provider value={pageConfig}>
         <PageDataContext.Provider value={storeDataJS}>
-          <RecordFormPage {...props} {...formPageConfig} />
+          <RecordFormPage {...props} />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );

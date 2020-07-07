@@ -5,14 +5,19 @@ import { isFunction } from 'lodash';
 import PropTypes from 'prop-types';
 import RecordLink from './RecordLink';
 import ActionConfig from '../actions/Action';
-import RecordModal from './RecordModal';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import usePageConfig from '../hooks/usePageConfig';
 import useForm from '../hooks/useForm';
 import useActionConfig from '../hooks/useActionConfig';
 
-function Action({ action, record, records, onComplete, disabledRecordModal }) {
+function Action({
+  action,
+  record,
+  records,
+  onComplete,
+  disabledRecordModal
+}) {
   const form = useForm();
   const { table } = usePageConfig();
   const { params, disabled, invisible, onOk } = useActionConfig({
@@ -105,8 +110,12 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
           records
         }
       : {
-          columns: table.getColumns()
+          columns: table.getColumns(),
+          actions: table.getFormActions()
         };
+    // eslint-disable-next-line global-require
+    const RecordModal = require('./RecordModal').default;
+
     return (
       <RecordModal
         {...action.getModalProps()}

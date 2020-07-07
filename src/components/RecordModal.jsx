@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { useEventCallback } from '@qt/react';
-import { Form } from 'antd';
+import { Form, Row } from 'antd';
 import ActivatorModal from './ActivatorModal';
+import ActionComponent from './Action';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
@@ -22,6 +23,23 @@ const formItemLayout = {
   }
 };
 
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0
+    },
+    sm: {
+      span: 16,
+      offset: 8
+    },
+    md: {
+      span: 18,
+      offset: 6
+    }
+  }
+};
+
 function RecordModal({
   children,
   onOk,
@@ -29,6 +47,7 @@ function RecordModal({
   title,
   record,
   records,
+  actions,
   ...props
 }) {
   const user = useUser();
@@ -71,6 +90,21 @@ function RecordModal({
             <FormItem key={column.getTitle()} record={record} column={column} />
           ))}
         </Form>
+        {
+          actions && actions.size > 0 && (
+            <Form.Item {...tailFormItemLayout}>
+              <Row type="flex" align="middle">
+                {actions.map(a => (
+                  <ActionComponent
+                    key={a.getTitle()}
+                    action={a}
+                    record={record}
+                  />
+                ))}
+              </Row>
+            </Form.Item>
+          )
+        }
       </ActivatorModal>
     </FormContext.Provider>
   );
@@ -80,12 +114,14 @@ RecordModal.propTypes = {
   children: PropTypes.node.isRequired,
   onOk: PropTypes.func.isRequired,
   columns: PropTypes.instanceOf(Immutable.List),
+  actions: PropTypes.instanceOf(Immutable.List),
   title: PropTypes.string,
   record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   records: PropTypes.array // eslint-disable-line react/forbid-prop-types
 };
 
 RecordModal.defaultProps = {
+  actions: null,
   title: '',
   columns: Immutable.List(),
   record: null,

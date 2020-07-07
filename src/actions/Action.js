@@ -111,6 +111,10 @@ export default class Action {
     return this.config.get('reload');
   }
 
+  isFormAction() {
+    return this.config.get('form');
+  }
+
   getButtonProps() {
     if (!this.buttonProps) {
       this.buttonProps = this.config.get('buttonProps', Immutable.Map()).toJS();

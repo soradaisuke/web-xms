@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import { Card, Row, Form, Button, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
 import { router } from 'dva';
+import Immutable from 'immutable';
 import Page from './Page';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
@@ -56,11 +57,13 @@ function RecordFormPage() {
 
   const history = useHistory();
 
-  const { formProps, table, reset, fetch } = usePageConfig();
+  const { formProps, idIdentifier, table, reset, fetch } = usePageConfig();
 
   const [form] = Form.useForm();
 
-  const { id } = useParams();
+  const params = useParams();
+
+  const id = params[idIdentifier];
   const isEdit = id !== 'new';
 
   const columns = useMemo(() => {
@@ -93,12 +96,18 @@ function RecordFormPage() {
   }, [fetch, id]);
 
   const renderActions = useMemo(
-    () =>
-      table
-        .getActions()
-        .filter(
-          action => !(action instanceof (isEdit ? CreateAction : EditAction))
-        ),
+    () => {
+      let result = Immutable.List([
+        isEdit
+          ? table.getEditAction()?.setLink(null)
+          : table.getCreateAction()?.setLink(null)
+      ]);
+      result = result.concat(table.getFormActions());
+
+      return isEdit && table.getDeleteAction()
+        ? result.push(table.getDeleteAction())
+        : result;
+    },
     [table, isEdit]
   );
 
@@ -133,7 +142,7 @@ function RecordFormPage() {
                 />
               ))}
               <Form.Item {...tailFormItemLayout}>
-                <Row type="flex" align="middle" className="form-actions">
+                <Row type="flex" align="middle" className="actions">
                   <Popconfirm
                     key="重置"
                     title="确认重置表单？"
@@ -145,6 +154,7 @@ function RecordFormPage() {
                   </Popconfirm>
                   {renderActions.map(a => (
                     <ActionComponent
+                      key={a.getTitle()}
                       disabledRecordModal={
                         a instanceof CreateAction || a instanceof EditAction
                       }
