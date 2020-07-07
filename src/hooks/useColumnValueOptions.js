@@ -7,7 +7,7 @@ export default function useColumnValueOptions(
   column,
   generateFunc,
   forForm,
-  value
+  initialValueOptions
 ) {
   const parentFilterValue = useParentFilterValue(column);
   const filters = useMemo(
@@ -19,7 +19,7 @@ export default function useColumnValueOptions(
     [column, forForm, parentFilterValue]
   );
 
-  const [options, setOptions] = useState(null);
+  const [options, setOptions] = useState(initialValueOptions);
 
   useEffect(() => {
     if (!options) {
@@ -43,30 +43,10 @@ export default function useColumnValueOptions(
         );
 
         return () => request.cancel();
-      } else if (column.getValueOptionsInitialValueRequest()) {
-        const request = makeCancelablePromise(
-          column.getValueOptionsInitialValueRequest()(value)
-        );
-        request.then(
-          data => setOptions(generateFunc(data)),
-          e => {
-            console.log(e);
-          }
-        );
-
-        return () => request.cancel();
       }
     }
     return () => {};
-  }, [
-    column,
-    options,
-    parentFilterValue,
-    filters,
-    generateFunc,
-    forForm,
-    value
-  ]);
+  }, [column, options, parentFilterValue, filters, generateFunc, forForm]);
 
   const onSearch = useEventCallback(async v => {
     const searchRequest = column.getValueOptionsSearchRequest();

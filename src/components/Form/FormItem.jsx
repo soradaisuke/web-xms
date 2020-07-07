@@ -181,6 +181,15 @@ function FormItem({
       inner = (
         <TreeSelect
           forForm
+          initialValueOptions={
+            record &&
+            Object.keys(record).length > 0 &&
+            column.getFormItemNormalizeInitialValueOptions()
+              ? column.getFormItemNormalizeInitialValueOptions()(
+                  get(record, column.getKey())
+                )
+              : null
+          }
           style={{ width: '100%' }}
           column={column}
           {...formItemComponentProps}
@@ -305,6 +314,7 @@ function FormItem({
     commonFormItemProps,
     formItemComponentProps,
     formItemProps.shouldUpdate,
+    record,
     user
   ]);
 

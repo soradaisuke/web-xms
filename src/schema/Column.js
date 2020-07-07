@@ -90,10 +90,6 @@ export default class Column {
     return this.config.get('valueOptionsSearchRequest');
   }
 
-  getValueOptionsInitialValueRequest() {
-    return this.config.get('valueOptionsInitialValueRequest');
-  }
-
   getParentKey() {
     return this.config.get('parentKey');
   }
@@ -380,6 +376,10 @@ export default class Column {
 
   getFormItemNormalizeInitialValue() {
     return this.config.getIn(['form', 'normalizeInitialValue']);
+  }
+
+  getFormItemNormalizeInitialValueOptions() {
+    return this.config.getIn(['form', 'normalizeInitialValueOptions']);
   }
 
   getFormItemComponentProps() {

@@ -7,13 +7,12 @@ import Column from '../../schema/Column';
 import './Tree.less';
 
 const FilterTreeSelect = React.forwardRef(
-  ({ column, forForm, ...props }, ref) => {
+  ({ column, forForm, initialValueOptions, ...props }, ref) => {
     const [options, onSearch] = useColumnValueOptions(
       column,
       generateTreeData,
       forForm,
-      // eslint-disable-next-line react/prop-types
-      props.value
+      initialValueOptions
     );
 
     return (
@@ -34,11 +33,14 @@ const FilterTreeSelect = React.forwardRef(
 
 FilterTreeSelect.propTypes = {
   column: PropTypes.instanceOf(Column).isRequired,
-  forForm: PropTypes.bool
+  forForm: PropTypes.bool,
+  // eslint-disable-next-line react/forbid-prop-types
+  initialValueOptions: PropTypes.array
 };
 
 FilterTreeSelect.defaultProps = {
-  forForm: false
+  forForm: false,
+  initialValueOptions: null
 };
 
 export default React.memo(FilterTreeSelect);
