@@ -1,4 +1,4 @@
-import { forEach, flow } from 'lodash';
+import { forEach, flow, toString } from 'lodash';
 import { replace } from 'lodash/fp';
 
 const translateSlashes = replace(/\//g, '{slashes}');
@@ -8,7 +8,7 @@ const translateQuestionMark = replace(/\?/g, '{qmark}');
 const translateBackslash = replace(/\\/g, '{bslash}');
 
 function translatePatterns(text) {
-  let result = text;
+  let result = toString(text);
   const match = text.match(/\{(.*)\}/g);
   if (match) {
     forEach(match, pattern => {
