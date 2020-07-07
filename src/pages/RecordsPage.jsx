@@ -17,6 +17,7 @@ import useUser from '../hooks/useUser';
 import usePageConfig from '../hooks/usePageConfig';
 import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
+import useActionParams from '../hooks/useActionParams';
 // import ResizableTitle from '../components/Table/ResizableTitle';
 
 const { Column } = Table;
@@ -41,9 +42,19 @@ function RecordsPage({ isLoading }) {
   } = usePageConfig();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const rowActions = useMemo(() => table.getRowActions(), [table]);
-  const multipleActions = useMemo(() => table.getMultipleActions(), [table]);
-  const globalActions = useMemo(() => table.getGlobalActions(), [table]);
+  const params = useActionParams();
+  const rowActions = useMemo(
+    () => table.getRowActions().filter(a => a.isVisible(params)),
+    [table, params]
+  );
+  const multipleActions = useMemo(
+    () => table.getMultipleActions().filter(a => a.isVisible(params)),
+    [table, params]
+  );
+  const globalActions = useMemo(
+    () => table.getGlobalActions().filter(a => a.isVisible(params)),
+    [table, params]
+  );
   const columns = useMemo(
     () => table.getColumns().filter(column => column.canShowInTable(user)),
     [table, user]
@@ -259,17 +270,15 @@ function RecordsPage({ isLoading }) {
     return (
       globalActions.size > 0 && (
         <Group title="操作">
-          <div className="actions">
-            {globalActions &&
-              globalActions.map(action => (
-                <Action
-                  key={action.getTitle()}
-                  action={action}
-                  records={action.isMultipleAction() ? selectedRows : null}
-                  onComplete={fetch}
-                />
-              ))}
-          </div>
+          {globalActions &&
+            globalActions.map(action => (
+              <Action
+                key={action.getTitle()}
+                action={action}
+                records={action.isMultipleAction() ? selectedRows : null}
+                onComplete={fetch}
+              />
+            ))}
         </Group>
       )
     );
@@ -313,7 +322,7 @@ function RecordsPage({ isLoading }) {
             render={(
               record // eslint-disable-line react/jsx-no-bind
             ) => (
-              <div className="actions">
+              <>
                 {rowActions.map(action => (
                   <Action
                     key={action.getTitle()}
@@ -322,7 +331,7 @@ function RecordsPage({ isLoading }) {
                     onComplete={fetch}
                   />
                 ))}
-              </div>
+              </>
             )}
           />
         ) : null}

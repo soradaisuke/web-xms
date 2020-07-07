@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import { isFunction } from 'lodash';
 
 export default class Action {
   constructor(config = {}) {
@@ -133,5 +134,13 @@ export default class Action {
 
   getIcon() {
     return this.config.getIn(['buttonProps', 'icon'], this.config.get('icon'));
+  }
+
+  isVisible(params) {
+    const invisible = this.getInvisible();
+    if (isFunction(invisible)) {
+      return !invisible(params);
+    }
+    return !invisible;
   }
 }

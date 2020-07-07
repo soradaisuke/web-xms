@@ -1,16 +1,12 @@
 import { useMemo } from 'react';
-import { router } from 'dva';
 import { useEventCallback } from '@qt/react';
 import { isFunction, get, filter, map } from 'lodash';
 import usePageConfig from './usePageConfig';
-import useUser from './useUser';
-import usePageData from './usePageData';
+import useActionParams from './useActionParams';
 import visiblePromise from '../utils/visiblePromise';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
-
-const { useParams } = router;
 
 export default function useActionConfig({
   action,
@@ -18,21 +14,7 @@ export default function useActionConfig({
   records,
   onComplete
 }) {
-  const { parentPageData, ...pageData } = usePageData();
-  const user = useUser();
-  const matchParams = useParams();
-
-  const params = useMemo(
-    () => ({
-      record,
-      records,
-      user,
-      matchParams,
-      pageData,
-      parentPageData
-    }),
-    [record, records, user, matchParams, pageData, parentPageData]
-  );
+  const params = useActionParams({ record, records });
 
   const filteredRecords = useMemo(
     () =>
@@ -62,13 +44,7 @@ export default function useActionConfig({
     return isFunction(enable) && !enable(params);
   }, [action, params, filteredRecords, records]);
 
-  const invisible = useMemo(() => {
-    const invis = action.getInvisible();
-    if (isFunction(invis)) {
-      return invis(params);
-    }
-    return invis;
-  }, [action, params]);
+  const invisible = useMemo(() => !action.isVisible(params), [action, params]);
 
   const { edit, remove, create, table } = usePageConfig();
 
