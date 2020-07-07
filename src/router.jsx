@@ -5,7 +5,7 @@ import { useEventCallback } from '@qt/react';
 import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
-import dynamic from 'dva/dynamic';
+import { dynamic } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import useUser from './hooks/useUser';
 import Menu from './components/Menu';

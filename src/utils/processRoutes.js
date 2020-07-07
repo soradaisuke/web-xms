@@ -1,6 +1,6 @@
 import React from 'react';
 import { startsWith, isFunction, filter } from 'lodash';
-import dynamic from 'dva/dynamic';
+import { dynamic } from 'dva';
 import {
   dynamicRecordsComponent,
   dynamicRecordComponent,

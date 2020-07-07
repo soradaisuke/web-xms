@@ -1,5 +1,4 @@
 /* eslint-disable react/no-multi-comp */
-import dynamic from 'dva/dynamic';
 import React, { useMemo, useCallback } from 'react';
 import {
   withRouter,
@@ -7,7 +6,7 @@ import {
   useHistory,
   useParams
 } from 'react-router-dom';
-import { useSelector, useDispatch } from 'dva';
+import { useSelector, useDispatch, dynamic } from 'dva';
 import { parse } from 'query-string';
 import {
   isFunction,
