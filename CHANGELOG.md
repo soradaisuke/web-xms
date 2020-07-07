@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.18](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.17...v3.0.0-beta.18) (2020-07-07)
+
+
+### Features
+
+* **QTLIVE-1444:** 删除FormPageConfig，Action里增加form，为true时，该操作可在RecordModal和RecordFormPage使用 ([659a8db](https://git2.qingtingfm.com/zhibo/xms/commit/659a8dbdadaab7ba2259fba4ce1d891763062038))
+
+
+### Bug Fixes
+
+* **NoTicket:** 提早判断action可见性 ([76f3657](https://git2.qingtingfm.com/zhibo/xms/commit/76f3657b48183ccb736298737509aa654f2b3535))
+
 ## [3.0.0-beta.17](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.16...v3.0.0-beta.17) (2020-07-07)
 
 
