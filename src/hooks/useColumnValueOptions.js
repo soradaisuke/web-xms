@@ -19,7 +19,7 @@ export default function useColumnValueOptions(
     [column, forForm, parentFilterValue]
   );
 
-  const [options, setOptions] = useState(initialValueOptions);
+  const [options, setOptions] = useState(generateFunc(initialValueOptions));
 
   useEffect(() => {
     if (!options) {
