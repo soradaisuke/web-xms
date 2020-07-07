@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.17](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.16...v3.0.0-beta.17) (2020-07-07)
+
+
+### Bug Fixes
+
+* **NoTicket:** warning ([45f8993](https://git2.qingtingfm.com/zhibo/xms/commit/45f89938dfd1690709c5d30d4457081a2db1f8fa))
+* **NoTicket:** 使用dva/router替换react-router-dom ([debcf4e](https://git2.qingtingfm.com/zhibo/xms/commit/debcf4e13935e1ccd2fb3b72474a247940e49ff8))
+
 ## [3.0.0-beta.16](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.15...v3.0.0-beta.16) (2020-07-07)
 
 
