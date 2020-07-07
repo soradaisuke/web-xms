@@ -429,10 +429,10 @@ function generateRecordsPage(
     );
     const storeData = useSelector(state => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
-    const parentPagaData = usePageData();
+    const parentPageData = usePageData();
     const pageData = useMemo(
-      () => ({ ...storeDataJS, filter, page, pagesize, sort, parentPagaData }),
-      [filter, page, pagesize, sort, storeDataJS, parentPagaData]
+      () => ({ ...storeDataJS, filter, page, pagesize, sort, parentPageData }),
+      [filter, page, pagesize, sort, storeDataJS, parentPageData]
     );
 
     return (
