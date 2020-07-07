@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.11](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.10...v3.0.0-beta.11) (2020-07-07)
+
+
+### Features
+
+* **NoTicket:** TreeSelect支持数组类型的ObjectColumn ([3c8c303](https://git2.qingtingfm.com/zhibo/xms/commit/3c8c303a6da868e1a6919a448d92cd31838807e9))
+
 ## [3.0.0-beta.10](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.9...v3.0.0-beta.10) (2020-07-06)
 
 
