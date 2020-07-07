@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { router } from 'dva';
 import { useEventCallback } from '@qt/react';
 import { isFunction, get, filter, map } from 'lodash';
 import usePageConfig from './usePageConfig';
@@ -9,6 +9,8 @@ import visiblePromise from '../utils/visiblePromise';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
+
+const { useParams } = router;
 
 export default function useActionConfig({
   action,

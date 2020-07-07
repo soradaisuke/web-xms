@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { NavLink, useLocation, useRouteMatch } from 'react-router-dom';
+import { router, useSelector } from 'dva';
 import { isFunction, isString, split, take, join } from 'lodash';
-import { useSelector } from 'dva';
+
 import pathToText from '../../utils/pathToText';
+
+const { NavLink, useLocation, useRouteMatch } = router;
 
 function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
   const { pathname } = useLocation();

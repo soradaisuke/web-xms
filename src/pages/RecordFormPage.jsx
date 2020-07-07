@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import { Card, Row, Form, Button, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
-import { useParams, useHistory } from 'react-router-dom';
+import { router } from 'dva';
 import Page from './Page';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
@@ -13,6 +13,8 @@ import DeleteAction from '../actions/DeleteAction';
 import FormItem from '../components/Form/FormItem';
 import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
+
+const { useParams, useHistory } = router;
 
 const formItemLayout = {
   labelCol: {

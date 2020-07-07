@@ -2,10 +2,9 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
-import { Route, Switch, Router, Redirect } from 'react-router-dom';
 import { filter, find, map, forEach } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
-import { dynamic } from 'dva';
+import { dynamic, router } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
 import useUser from './hooks/useUser';
 import Menu from './components/Menu';
@@ -15,6 +14,7 @@ import Watermark from './components/Watermark';
 import 'moment/locale/zh-cn';
 import './router.less';
 
+const { Route, Switch, Router, Redirect } = router;
 const { Content, Sider, Header } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (

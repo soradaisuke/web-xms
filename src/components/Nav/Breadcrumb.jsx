@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom';
+import { router } from 'dva';
 import { forEach } from 'lodash';
 import { Breadcrumb } from 'antd';
 import BreadcrumbContent from './BreadcrumbContent';
+
+const { matchPath, useLocation } = router;
 
 function addBreadcrumbItem({ pathname, routes, items }) {
   forEach(

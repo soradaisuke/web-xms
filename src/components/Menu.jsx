@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash/fp';
-import { Link, withRouter, matchPath } from 'react-router-dom';
+import { router } from 'dva';
 import { Menu } from 'antd';
 import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
 import history from '../utils/history';
 
+const { Link, withRouter, matchPath } = router;
 const { SubMenu } = Menu;
 
 const validMenues = filter(({ title, inline }) => !!title && !inline);

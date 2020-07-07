@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { router } from 'dva';
 import { isFunction, startsWith } from 'lodash';
 import textToPath from '../utils/textToPath';
 import usePageData from '../hooks/usePageData';
 
-function RecordLink({
-  link,
-  record,
-  buttonProps,
-  children
-}) {
+const { Link } = router;
 
+function RecordLink({ link, record, buttonProps, children }) {
   const { filter } = usePageData();
 
   const url = useMemo(() => {
@@ -32,7 +28,9 @@ function RecordLink({
   }
 
   return (
-    <Link to={!startsWith(url, '/') ? `${window.location.pathname}/${url}` : url}>
+    <Link
+      to={!startsWith(url, '/') ? `${window.location.pathname}/${url}` : url}
+    >
       <Button type="link" {...buttonProps}>
         {buttonProps.children || children}
       </Button>

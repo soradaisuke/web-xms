@@ -1,12 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import React, { useMemo, useCallback } from 'react';
-import {
-  withRouter,
-  useLocation,
-  useHistory,
-  useParams
-} from 'react-router-dom';
-import { useSelector, useDispatch, dynamic } from 'dva';
+import { useSelector, useDispatch, dynamic, router } from 'dva';
 import { parse } from 'query-string';
 import {
   isFunction,
@@ -29,6 +23,8 @@ import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
 import PageConfigContext from '../contexts/PageConfigContext';
 import usePageData from '../hooks/usePageData';
+
+const { withRouter, useLocation, useHistory, useParams } = router;
 
 function generateService({ fetch, create, edit, remove } = {}) {
   return {
