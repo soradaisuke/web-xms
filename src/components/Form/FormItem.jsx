@@ -173,6 +173,22 @@ function FormItem({
       } else {
         inner = <Radio column={column} {...formItemComponentProps} />;
       }
+    } else if (column instanceof BooleanColumn) {
+      const options = column.getValueOptions();
+      const checkedChildren = options
+        .find(option => option.get('value'))
+        .get('text');
+      const unCheckedChildren = options
+        .find(option => !option.get('value'))
+        .get('text');
+
+      inner = (
+        <Switch
+          checkedChildren={checkedChildren}
+          unCheckedChildren={unCheckedChildren}
+          {...formItemComponentProps}
+        />
+      );
     } else if (
       column.getFilters(null, 'disableInForm') ||
       column.getValueOptionsSearchRequest() ||
@@ -209,22 +225,6 @@ function FormItem({
       inner = (
         <UploadImage
           ssoToken={user ? user.get('sso_token') : ''}
-          {...formItemComponentProps}
-        />
-      );
-    } else if (column instanceof BooleanColumn) {
-      const options = column.getValueOptions();
-      const checkedChildren = options
-        .find(option => option.get('value'))
-        .get('text');
-      const unCheckedChildren = options
-        .find(option => !option.get('value'))
-        .get('text');
-
-      inner = (
-        <Switch
-          checkedChildren={checkedChildren}
-          unCheckedChildren={unCheckedChildren}
           {...formItemComponentProps}
         />
       );
