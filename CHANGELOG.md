@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.19](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.18...v3.0.0-beta.19) (2020-07-07)
+
+
+### Bug Fixes
+
+* **NoTicket:** 移除react-router依赖 ([573e516](https://git2.qingtingfm.com/zhibo/xms/commit/573e516a8badac1655a69c77a1eb89f40f40c3b4))
+
 ## [3.0.0-beta.18](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.17...v3.0.0-beta.18) (2020-07-07)
 
 
