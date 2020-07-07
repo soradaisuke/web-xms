@@ -1,9 +1,7 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { Card, Row, Form, Button, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
 import { useParams, useHistory } from 'react-router-dom';
-import TableType from '../schema/Table';
 import Page from './Page';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
@@ -13,6 +11,7 @@ import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
 import FormItem from '../components/Form/FormItem';
+import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
 
 const formItemLayout = {
@@ -45,7 +44,9 @@ const tailFormItemLayout = {
   }
 };
 
-function RecordFormPage({ record, table, reset, fetch }) {
+function RecordFormPage() {
+  const pageData = usePageData();
+  const { record } = pageData;
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +54,7 @@ function RecordFormPage({ record, table, reset, fetch }) {
 
   const history = useHistory();
 
-  const { formProps } = usePageConfig();
+  const { formProps, table, reset, fetch } = usePageConfig();
 
   const [form] = Form.useForm();
 
@@ -169,18 +170,5 @@ function RecordFormPage({ record, table, reset, fetch }) {
     </FormContext.Provider>
   );
 }
-
-RecordFormPage.propTypes = {
-  table: PropTypes.instanceOf(TableType).isRequired,
-  reset: PropTypes.func,
-  fetch: PropTypes.func,
-  record: PropTypes.object // eslint-disable-line react/forbid-prop-types
-};
-
-RecordFormPage.defaultProps = {
-  reset: null,
-  fetch: null,
-  record: null
-};
 
 export default React.memo(RecordFormPage);

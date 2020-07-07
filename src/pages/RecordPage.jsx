@@ -9,11 +9,14 @@ import EditableDescriptionCell from '../components/Editable/EditableDescriptionC
 import EditableDescriptions from '../components/Editable/EditableDescriptions';
 import usePageConfig from '../hooks/usePageConfig';
 import useUser from '../hooks/useUser';
+import usePageData from '../hooks/usePageData';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 
-function RecordPage({ isLoading, record, routes }) {
+function RecordPage({ isLoading, routes }) {
+  const pageData = usePageData();
+  const { record } = pageData;
   const {
     component: Component,
     inline,
@@ -30,10 +33,7 @@ function RecordPage({ isLoading, record, routes }) {
         .filter(column => column.canShowInDescription({ user, record })),
     [record, table, user]
   );
-  const actions = useMemo(
-    () => table.getActions().filter(action => action.isVisible(user)),
-    [user, table]
-  );
+  const actions = useMemo(() => table.getActions(), [table]);
 
   const renderRouteChunk = useCallback(
     chunk => {
@@ -191,7 +191,6 @@ function RecordPage({ isLoading, record, routes }) {
 }
 
 RecordPage.propTypes = {
-  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   routes: PropTypes.arrayOf(
     PropTypes.shape({
       component: PropTypes.bode
@@ -202,7 +201,6 @@ RecordPage.propTypes = {
 
 RecordPage.defaultProps = {
   routes: [],
-  record: null,
   isLoading: false
 };
 

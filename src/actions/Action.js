@@ -1,5 +1,4 @@
 import Immutable from 'immutable';
-import { isFunction } from 'lodash';
 
 export default class Action {
   constructor(config = {}) {
@@ -92,6 +91,10 @@ export default class Action {
     return this.config.get('enable');
   }
 
+  getInvisible() {
+    return this.config.get('invisible');
+  }
+
   getRender() {
     return this.config.get('render');
   }
@@ -105,19 +108,6 @@ export default class Action {
 
   needReload() {
     return this.config.get('reload');
-  }
-
-  isVisible(user) {
-    const invisible = this.config.get('invisible');
-    if (isFunction(invisible)) {
-      if (!user) {
-        return false;
-      }
-
-      return !invisible({ user });
-    }
-
-    return !invisible;
   }
 
   getButtonProps() {

@@ -7,7 +7,7 @@ import {
   useHistory,
   useParams
 } from 'react-router-dom';
-import { useSelector, shallowEqual, useDispatch } from 'dva';
+import { useSelector, useDispatch } from 'dva';
 import { parse } from 'query-string';
 import {
   isFunction,
@@ -29,6 +29,7 @@ import RecordsPage from '../pages/RecordsPage';
 import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
 import PageConfigContext from '../contexts/PageConfigContext';
+import usePageData from '../hooks/usePageData';
 
 function generateService({ fetch, create, edit, remove } = {}) {
   return {
@@ -279,16 +280,6 @@ function generateRecordsPage(
       [queries.pagesize]
     );
     const sort = useMemo(() => queries.sort || '', [queries.sort]);
-
-    const { records, total, isLoading } = useSelector(
-      state => ({
-        records: state[namespace].get('records'),
-        total: state[namespace].get('total'),
-        isLoading: state.loading.effects[`${namespace}/fetchAll`]
-      }),
-      shallowEqual
-    );
-
     const history = useHistory();
     const matchParams = useParams();
 
@@ -433,24 +424,21 @@ function generateRecordsPage(
       [fetch, create, edit, remove, updatePage]
     );
 
-    const pageDataValue = useMemo(() => ({ filter, records }), [
-      filter,
-      records
-    ]);
+    const isLoading = useSelector(
+      state => state.loading.effects[`${namespace}/fetchAll`]
+    );
+    const storeData = useSelector(state => state[namespace]);
+    const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
+    const parentPagaData = usePageData();
+    const pageData = useMemo(
+      () => ({ ...storeDataJS, filter, page, pagesize, sort, parentPagaData }),
+      [filter, page, pagesize, sort, storeDataJS, parentPagaData]
+    );
 
     return (
       <PageConfigContext.Provider value={pageConfig}>
-        <PageDataContext.Provider value={pageDataValue}>
-          <RecordsPage
-            {...props}
-            records={records}
-            total={total}
-            isLoading={isLoading}
-            filter={filter}
-            page={page}
-            pagesize={pagesize}
-            sort={sort}
-          />
+        <PageDataContext.Provider value={pageData}>
+          <RecordsPage {...props} isLoading={isLoading} />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );
@@ -472,42 +460,36 @@ function generateRecordPage(
   component
 ) {
   function Page(props) {
-    const { record, isLoading } = useSelector(
-      state => ({
-        record: state[namespace].get('record'),
-        isLoading: state.loading.effects[`${namespace}/fetch`]
-      }),
-      shallowEqual
+    const isLoading = useSelector(
+      state => state.loading.effects[`${namespace}/fetch`]
     );
-
     const apiPath = useApiPath({ path, host });
     const fetch = useFetch({ apiPath, namespace });
     const edit = useEdit({ apiPath, namespace, ignoreId: true });
     const remove = useRemove({ apiPath, namespace });
     const reset = useReset({ namespace });
+    const storeData = useSelector(state => state[namespace]);
+    const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
+    const pageConfig = useMemo(
+      () => ({
+        layout,
+        formProps,
+        descriptionsProps,
+        inline,
+        table,
+        component,
+        fetch,
+        edit,
+        remove,
+        reset
+      }),
+      [fetch, reset, edit, remove]
+    );
 
     return (
-      <PageConfigContext.Provider
-        value={{
-          layout,
-          formProps,
-          descriptionsProps,
-          inline,
-          table,
-          component,
-          fetch,
-          edit,
-          remove,
-          reset
-        }}
-      >
-        <PageDataContext.Provider value={record}>
-          <RecordPage
-            {...props}
-            isLoading={isLoading}
-            record={record}
-            inline={inline}
-          />
+      <PageConfigContext.Provider value={pageConfig}>
+        <PageDataContext.Provider value={storeDataJS}>
+          <RecordPage {...props} isLoading={isLoading} inline={inline} />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );
@@ -524,7 +506,6 @@ function generateRecordFormPage({
   table
 }) {
   function Page(props) {
-    const record = useSelector(state => state[namespace].get('record'));
     const apiPath = useApiPath({ path, host });
     const createApiDefaultBody = useCreateApiDefaultBody(defaultBody);
     const fetch = useFetch({ apiPath, namespace });
@@ -532,29 +513,25 @@ function generateRecordFormPage({
     const edit = useEdit({ apiPath, namespace });
     const remove = useRemove({ apiPath, namespace });
     const reset = useReset({ namespace });
+    const pageConfig = useMemo(
+      () => ({
+        formProps,
+        fetch,
+        create,
+        edit,
+        remove,
+        reset,
+        table
+      }),
+      [create, edit, fetch, remove, reset]
+    );
+    const storeData = useSelector(state => state[namespace]);
+    const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
 
     return (
-      <PageConfigContext.Provider
-        value={{
-          formProps,
-          create,
-          edit,
-          remove,
-          table
-        }}
-      >
-        <PageDataContext.Provider value={record}>
-          <RecordFormPage
-            {...props}
-            {...formPageConfig}
-            table={table}
-            record={record}
-            fetch={fetch}
-            create={create}
-            edit={edit}
-            remove={remove}
-            reset={reset}
-          />
+      <PageConfigContext.Provider value={pageConfig}>
+        <PageDataContext.Provider value={storeDataJS}>
+          <RecordFormPage {...props} {...formPageConfig} />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>
     );

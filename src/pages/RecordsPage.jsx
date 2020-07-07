@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import Immutable from 'immutable';
 import classNames from 'classnames';
 import { Table, Card, Button, Form } from 'antd';
 import { split, startsWith, map, get, isBoolean, groupBy } from 'lodash';
@@ -16,6 +15,7 @@ import FormItem from '../components/Filter/FormItem';
 import PageFilterFormContext from '../contexts/PageFilterFormContext';
 import useUser from '../hooks/useUser';
 import usePageConfig from '../hooks/usePageConfig';
+import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
 // import ResizableTitle from '../components/Table/ResizableTitle';
 
@@ -25,15 +25,9 @@ function showTotal(total, range) {
   return `${range[0]}-${range[1]}，共${total}个`;
 }
 
-function RecordsPage({
-  page,
-  pagesize,
-  sort,
-  filter,
-  isLoading,
-  records,
-  total
-}) {
+function RecordsPage({ isLoading }) {
+  const pageData = usePageData();
+  const { page, pagesize, sort, filter, records, total } = pageData;
   const [form] = Form.useForm();
   const user = useUser();
   const {
@@ -47,19 +41,9 @@ function RecordsPage({
   } = usePageConfig();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const dataSource = useMemo(() => records.toJS(), [records]);
-  const rowActions = useMemo(
-    () => table.getRowActions().filter(action => action.isVisible(user)),
-    [user, table]
-  );
-  const multipleActions = useMemo(
-    () => table.getMultipleActions().filter(action => action.isVisible(user)),
-    [user, table]
-  );
-  const globalActions = useMemo(
-    () => table.getGlobalActions().filter(action => action.isVisible(user)),
-    [user, table]
-  );
+  const rowActions = useMemo(() => table.getRowActions(), [table]);
+  const multipleActions = useMemo(() => table.getMultipleActions(), [table]);
+  const globalActions = useMemo(() => table.getGlobalActions(), [table]);
   const columns = useMemo(
     () => table.getColumns().filter(column => column.canShowInTable(user)),
     [table, user]
@@ -281,9 +265,7 @@ function RecordsPage({
                 <Action
                   key={action.getTitle()}
                   action={action}
-                  records={
-                    action.isMultipleAction() ? selectedRows : dataSource
-                  }
+                  records={action.isMultipleAction() ? selectedRows : null}
                   onComplete={fetch}
                 />
               ))}
@@ -291,7 +273,7 @@ function RecordsPage({
         </Group>
       )
     );
-  }, [fetch, globalActions, dataSource, selectedRows]);
+  }, [fetch, globalActions, selectedRows]);
 
   const tableChildren = useMemo(() => {
     return (
@@ -309,7 +291,7 @@ function RecordsPage({
         }}
         rowClassName={() => 'editable-row'}
         loading={isLoading}
-        dataSource={dataSource}
+        dataSource={records}
         rowKey={table.getPrimaryKey()}
         rowSelection={rowSelection}
         onChange={onTableChange}
@@ -348,7 +330,7 @@ function RecordsPage({
     );
   }, [
     columns,
-    dataSource,
+    records,
     fetch,
     isLoading,
     onTableChange,
@@ -383,23 +365,11 @@ function RecordsPage({
 }
 
 RecordsPage.propTypes = {
-  isLoading: PropTypes.bool,
-  page: PropTypes.number,
-  pagesize: PropTypes.number,
-  filter: PropTypes.object, // eslint-disable-line react/forbid-prop-types
-  records: PropTypes.instanceOf(Immutable.List), // eslint-disable-line react/no-unused-prop-types
-  sort: PropTypes.string,
-  total: PropTypes.number
+  isLoading: PropTypes.bool
 };
 
 RecordsPage.defaultProps = {
-  isLoading: false,
-  filter: {},
-  records: Immutable.List(),
-  page: 1,
-  pagesize: 10,
-  sort: '',
-  total: 0
+  isLoading: false
 };
 
 export default React.memo(RecordsPage);

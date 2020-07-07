@@ -5,7 +5,6 @@ import { isFunction } from 'lodash';
 import PropTypes from 'prop-types';
 import RecordLink from './RecordLink';
 import ActionConfig from '../actions/Action';
-import useUser from '../hooks/useUser';
 import RecordModal from './RecordModal';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -14,10 +13,9 @@ import useForm from '../hooks/useForm';
 import useActionConfig from '../hooks/useActionConfig';
 
 function Action({ action, record, records, onComplete, disabledRecordModal }) {
-  const user = useUser();
   const form = useForm();
   const { table } = usePageConfig();
-  const { params, disabled, onOk } = useActionConfig({
+  const { params, disabled, invisible, onOk } = useActionConfig({
     action,
     record,
     records,
@@ -77,7 +75,7 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
     }
   }, [action, params, onOk, disabledRecordModal, onFormOk]);
 
-  if (!action.isVisible(user) || (disabled && action.isRowAction() && record)) {
+  if (invisible || (disabled && action.isRowAction() && record)) {
     return null;
   }
 

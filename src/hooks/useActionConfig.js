@@ -4,6 +4,7 @@ import { useEventCallback } from '@qt/react';
 import { isFunction, get, filter, map } from 'lodash';
 import usePageConfig from './usePageConfig';
 import useUser from './useUser';
+import usePageData from './usePageData';
 import visiblePromise from '../utils/visiblePromise';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -15,6 +16,7 @@ export default function useActionConfig({
   records,
   onComplete
 }) {
+  const { parentPagaData, ...pageData } = usePageData();
   const user = useUser();
   const matchParams = useParams();
 
@@ -23,9 +25,11 @@ export default function useActionConfig({
       record,
       records,
       user,
-      matchParams
+      matchParams,
+      pageData,
+      parentPagaData
     }),
-    [record, records, user, matchParams]
+    [record, records, user, matchParams, pageData, parentPagaData]
   );
 
   const filteredRecords = useMemo(
@@ -55,6 +59,14 @@ export default function useActionConfig({
 
     return isFunction(enable) && !enable(params);
   }, [action, params, filteredRecords, records]);
+
+  const invisible = useMemo(() => {
+    const invis = action.getInvisible();
+    if (isFunction(invis)) {
+      return invis(params);
+    }
+    return invis;
+  }, [action, params]);
 
   const { edit, remove, create, table } = usePageConfig();
 
@@ -134,5 +146,5 @@ export default function useActionConfig({
     ]
   );
 
-  return { params, disabled, onOk };
+  return { params, disabled, invisible, onOk };
 }
