@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.12](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.11...v3.0.0-beta.12) (2020-07-07)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复BooleanColumn在form里的展示 ([99b0a51](https://git2.qingtingfm.com/zhibo/xms/commit/99b0a51e09274a5c69806770606a7cb143e34e7e))
+
 ## [3.0.0-beta.11](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.10...v3.0.0-beta.11) (2020-07-07)
 
 
