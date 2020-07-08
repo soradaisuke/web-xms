@@ -12,14 +12,14 @@ export default function useActionConfig({
   action,
   record,
   records,
-  onComplete
+  onComplete,
 }) {
   const params = useActionParams({ record, records });
 
   const filteredRecords = useMemo(
     () =>
       action.isMultipleAction() && !action.isGlobalAction()
-        ? filter(records || [], r =>
+        ? filter(records || [], (r) =>
             isFunction(action.getEnable())
               ? action.getEnable()({ ...params, records: null, record: r })
               : true
@@ -36,7 +36,7 @@ export default function useActionConfig({
     if (action.isGlobalAction()) {
       return (
         (action.isMultipleAction() && records && records.length === 0) ||
-        action.isEnable(params)
+        !action.isEnable(params)
       );
     }
 
@@ -65,7 +65,7 @@ export default function useActionConfig({
       data = {},
       loadingMessage = action.getHandlingMessage(),
       throwError = false,
-      reload = action.needReload()
+      reload = action.needReload(),
     } = {}) => {
       if (isFunction(handler)) {
         let promise;
@@ -73,17 +73,17 @@ export default function useActionConfig({
         if (action.isGlobalAction()) {
           promise = handler({
             ...params,
-            ...data
+            ...data,
           });
         } else if (filteredRecords) {
           promise = Promise.all(
-            map(filteredRecords, r =>
+            map(filteredRecords, (r) =>
               handler({
                 ...params,
                 records: null,
                 record: r,
                 id: get(r, table.getPrimaryKey()),
-                ...data
+                ...data,
               })
             )
           );
@@ -91,7 +91,7 @@ export default function useActionConfig({
           promise = handler({
             ...params,
             id: get(record, table.getPrimaryKey()),
-            ...data
+            ...data,
           });
         }
 
@@ -107,7 +107,7 @@ export default function useActionConfig({
             if (reload && isFunction(onComplete)) {
               onComplete();
             }
-          }
+          },
         });
       }
 
@@ -119,7 +119,7 @@ export default function useActionConfig({
       record,
       handler,
       filteredRecords,
-      onComplete
+      onComplete,
     ]
   );
 
