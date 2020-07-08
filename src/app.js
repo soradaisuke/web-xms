@@ -1,22 +1,22 @@
 import dva from 'dva';
 import createLoading from 'dva-loading';
 import { merge } from 'lodash';
-import history from './utils/history';
+import { createBrowserHistory } from 'history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';
 import defaultConfig from './defaultConfig';
-import router from './router';
+import routerConfig from './router';
 import audio from './models/audio';
 import loginRoute from './routes/login';
 import showError from './utils/showError';
 
 export default function xms(config = {}) {
   const app = dva({
-    history,
+    history: createBrowserHistory(),
     onError(err) {
       console.log(err.message);
-    }
+    },
   });
 
   app.use(createLoading());
@@ -42,7 +42,7 @@ export default function xms(config = {}) {
     }
     app.model(audio);
     app.routes = processRoutes({ app, routes });
-    app.router(router);
+    app.router(routerConfig);
   } catch (err) {
     showError(err.message);
   }

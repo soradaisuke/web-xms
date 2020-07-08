@@ -25,7 +25,7 @@ dynamic.setDefaultLoadingComponent(() => (
 
 function getValidRoutes(routes, user) {
   return filter(
-    map(routes, route => {
+    map(routes, (route) => {
       let newRoute = route;
       if (route.enable) {
         if (user && route.enable(user)) {
@@ -38,13 +38,13 @@ function getValidRoutes(routes, user) {
       if (newRoute && newRoute.routes) {
         newRoute = {
           ...newRoute,
-          routes: getValidRoutes(newRoute.routes, user)
+          routes: getValidRoutes(newRoute.routes, user),
         };
       }
 
       return newRoute;
     }),
-    route => !!route
+    (route) => !!route
   );
 }
 
@@ -54,11 +54,11 @@ function renderRoute({
   title,
   breadcrumb,
   routes: subRoutes,
-  component: Component
+  component: Component,
 }) {
   const children = [];
   if ((title || breadcrumb || Component) && !inline) {
-    const inlineRoutes = subRoutes ? filter(subRoutes, r => r.inline) : [];
+    const inlineRoutes = subRoutes ? filter(subRoutes, (r) => r.inline) : [];
 
     children.push(
       <Route
@@ -70,7 +70,7 @@ function renderRoute({
     );
   }
   if (subRoutes && subRoutes.length > 0) {
-    return children.concat(subRoutes.map(route => renderRoute(route)));
+    return children.concat(subRoutes.map((route) => renderRoute(route)));
   }
 
   return children;
@@ -81,15 +81,15 @@ function ConnectedRouter({ history, app }) {
 
   const {
     routes: unCheckRoutes,
-    config: { name, api: { auth } = {} }
+    config: { name, api: { auth } = {} },
   } = app;
 
   const routes = useMemo(() => getValidRoutes(unCheckRoutes, user), [
     unCheckRoutes,
-    user
+    user,
   ]);
   const homeRoute = useMemo(() => find(routes, ({ path }) => path === '/'), [
-    routes
+    routes,
   ]);
   const firstAvaliableNonHomeRoutePath = useMemo(() => {
     let nonHomeRoutePath;
@@ -97,7 +97,7 @@ function ConnectedRouter({ history, app }) {
     function findFirstAvaliableNonHomeRoute({
       path,
       routes: subRoutes,
-      component
+      component,
     }) {
       if (path !== '/' && !!component) {
         nonHomeRoutePath = path;
@@ -106,19 +106,19 @@ function ConnectedRouter({ history, app }) {
           ? filter(subRoutes, ({ inline }) => !inline)
           : [];
         if (nonInlineRoutes && nonInlineRoutes.length > 0) {
-          forEach(nonInlineRoutes, r => findFirstAvaliableNonHomeRoute(r));
+          forEach(nonInlineRoutes, (r) => findFirstAvaliableNonHomeRoute(r));
         }
       }
       return !nonHomeRoutePath;
     }
 
-    forEach(routes, r => findFirstAvaliableNonHomeRoute(r));
+    forEach(routes, (r) => findFirstAvaliableNonHomeRoute(r));
 
     return nonHomeRoutePath;
   }, [routes]);
 
   const [collapsed, setCollapsed] = useState(false);
-  const onCollapse = useEventCallback(c => setCollapsed(c));
+  const onCollapse = useEventCallback((c) => setCollapsed(c));
 
   return (
     <ConfigProvider locale={zhCN}>
@@ -147,7 +147,7 @@ function ConnectedRouter({ history, app }) {
             <Content className="xms-content">
               <Breadcrumb routes={routes} />
               <Switch>
-                {map(routes, route => renderRoute(route))}
+                {map(routes, (route) => renderRoute(route))}
                 {(!auth || !!user) &&
                 !homeRoute &&
                 firstAvaliableNonHomeRoutePath ? (
@@ -155,7 +155,7 @@ function ConnectedRouter({ history, app }) {
                     from="/"
                     to={{
                       pathname: firstAvaliableNonHomeRoutePath,
-                      state: { unmatch: true }
+                      state: { unmatch: true },
                     }}
                   />
                 ) : null}
@@ -173,14 +173,15 @@ ConnectedRouter.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   history: PropTypes.object.isRequired,
   app: PropTypes.shape({
+    // eslint-disable-next-line react/forbid-prop-types
     routes: PropTypes.array.isRequired,
     config: PropTypes.shape({
       name: PropTypes.string,
       api: PropTypes.shape({
-        auth: PropTypes.string
-      })
-    }).isRequired
-  }).isRequired
+        auth: PropTypes.string,
+      }),
+    }).isRequired,
+  }).isRequired,
 };
 
 // eslint-disable-next-line react/prop-types

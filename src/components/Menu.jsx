@@ -1,19 +1,17 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash/fp';
-import { router } from 'dva';
+import { router, useLocation, useHistory } from 'dva';
 import { Menu } from 'antd';
-import { createSelector } from 'reselect';
 import { forEach } from 'lodash';
-import history from '../utils/history';
 
-const { Link, withRouter, matchPath } = router;
+const { Link, matchPath } = router;
 const { SubMenu } = Menu;
 
 const validMenues = filter(({ title, inline }) => !!title && !inline);
 
 function findNextKey({ pathname, routes, selectedKeys, openKeys }) {
-  forEach(routes, route => {
+  forEach(routes, (route) => {
     if (matchPath(pathname, { path: route.path })) {
       selectedKeys.push(route.path);
 
@@ -26,17 +24,6 @@ function findNextKey({ pathname, routes, selectedKeys, openKeys }) {
     }
   });
 }
-
-const selector = createSelector(
-  [props => props.location.pathname, props => props.routes],
-  (pathname, routes) => {
-    const selectedKeys = [];
-    const openKeys = [];
-    findNextKey({ pathname, routes, selectedKeys, openKeys });
-
-    return { selectedKeys, openKeys };
-  }
-);
 
 function renderMenus(routes) {
   return validMenues(routes).map(
@@ -60,41 +47,44 @@ function renderMenus(routes) {
   );
 }
 
-class NavMenu extends React.PureComponent {
-  static propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    location: PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
-    routes: PropTypes.array.isRequired // eslint-disable-line react/forbid-prop-types
-  };
+function NavMenu({ routes }) {
+  const location = useLocation();
+  const history = useHistory();
+  const { pathname, state } = location;
 
-  componentDidUpdate() {
-    const { location } = this.props;
-    if (location.state?.unmatch) {
-      history.replace(location.pathname);
+  useEffect(() => {
+    if (state?.unmatch) {
+      history.replace(pathname);
     }
-  }
+  }, [state, history, pathname]);
 
-  render() {
-    const { selectedKeys, openKeys } = selector(this.props);
-    const {
-      routes,
-      location: { state }
-    } = this.props;
+  const { selectedKeys, openKeys } = useMemo(() => {
+    // eslint-disable-next-line no-shadow
+    const selectedKeys = [];
+    // eslint-disable-next-line no-shadow
+    const openKeys = [];
+    findNextKey({ pathname, routes, selectedKeys, openKeys });
 
-    if (state?.unmatch) return null;
+    return { selectedKeys, openKeys };
+  }, [pathname, routes]);
 
-    return (
-      <Menu
-        className="xms-menu"
-        theme="dark"
-        mode="inline"
-        selectedKeys={selectedKeys}
-        defaultOpenKeys={openKeys}
-      >
-        {renderMenus(routes)}
-      </Menu>
-    );
-  }
+  if (state?.unmatch) return null;
+
+  return (
+    <Menu
+      className="xms-menu"
+      theme="dark"
+      mode="inline"
+      selectedKeys={selectedKeys}
+      defaultOpenKeys={openKeys}
+    >
+      {renderMenus(routes)}
+    </Menu>
+  );
 }
 
-export default withRouter(NavMenu);
+NavMenu.propTypes = {
+  routes: PropTypes.array.isRequired, // eslint-disable-line react/forbid-prop-types
+};
+
+export default React.memo(NavMenu);
