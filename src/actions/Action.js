@@ -143,8 +143,26 @@ export default class Action {
   isVisible(params) {
     const invisible = this.getInvisible();
     if (isFunction(invisible)) {
-      return !invisible(params);
+      try {
+        return !invisible(params);
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
     }
-    return !invisible;
+    return true;
+  }
+
+  isEnable(params) {
+    const enable = this.getEnable();
+    if (isFunction(enable)) {
+      try {
+        return enable(params);
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+    return true;
   }
 }

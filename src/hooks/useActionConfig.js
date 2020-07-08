@@ -33,15 +33,14 @@ export default function useActionConfig({
       return filteredRecords.length === 0;
     }
 
-    const enable = action.getEnable();
     if (action.isGlobalAction()) {
       return (
         (action.isMultipleAction() && records && records.length === 0) ||
-        (isFunction(enable) && !enable(params))
+        action.isEnable(params)
       );
     }
 
-    return isFunction(enable) && !enable(params);
+    return !action.isEnable(params);
   }, [action, params, filteredRecords, records]);
 
   const invisible = useMemo(() => !action.isVisible(params), [action, params]);

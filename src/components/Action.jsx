@@ -11,13 +11,7 @@ import usePageConfig from '../hooks/usePageConfig';
 import useForm from '../hooks/useForm';
 import useActionConfig from '../hooks/useActionConfig';
 
-function Action({
-  action,
-  record,
-  records,
-  onComplete,
-  disabledRecordModal
-}) {
+function Action({ action, record, records, onComplete, disabledRecordModal }) {
   const form = useForm();
   const { table } = usePageConfig();
   const { params, disabled, invisible, onOk } = useActionConfig({
@@ -80,7 +74,7 @@ function Action({
     }
   }, [action, params, onOk, disabledRecordModal, onFormOk]);
 
-  if (invisible || (disabled && action.isRowAction() && record)) {
+  if (invisible) {
     return null;
   }
 
