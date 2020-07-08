@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.21](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.20...v3.0.0-beta.21) (2020-07-08)
+
+
+### Bug Fixes
+
+* **NoTicket:** 优化Action的enable和invisible逻辑 ([0a1d002](https://git2.qingtingfm.com/zhibo/xms/commit/0a1d002583bdd94cb0533bd09d852903e8579e17))
+* **NoTicket:** 修复依赖 ([621a306](https://git2.qingtingfm.com/zhibo/xms/commit/621a30661b58f97697e828abb1de8a098eb9f20e))
+
 ## [3.0.0-beta.20](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.19...v3.0.0-beta.20) (2020-07-08)
 
 
