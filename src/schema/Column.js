@@ -158,14 +158,10 @@ export default class Column {
     return this.getTableSortDirections().length > 0;
   }
 
-  canShowInTable(user) {
+  canShowInTable(params) {
     const invisible = this.config.getIn(['table', 'invisible']);
     if (isFunction(invisible)) {
-      if (!user) {
-        return false;
-      }
-
-      return !invisible({ user });
+      return !invisible(params);
     }
 
     return !invisible;

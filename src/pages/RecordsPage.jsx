@@ -13,7 +13,6 @@ import FilterDropDown from '../components/Filter/FilterDropDown';
 import FilterIcon from '../components/Filter/FilterIcon';
 import FormItem from '../components/Filter/FormItem';
 import PageFilterFormContext from '../contexts/PageFilterFormContext';
-import useUser from '../hooks/useUser';
 import usePageConfig from '../hooks/usePageConfig';
 import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
@@ -30,7 +29,6 @@ function RecordsPage({ isLoading }) {
   const pageData = usePageData();
   const { page, pagesize, sort, filter, records, total } = pageData;
   const [form] = Form.useForm();
-  const user = useUser();
   const {
     component: Component,
     inline,
@@ -56,8 +54,8 @@ function RecordsPage({ isLoading }) {
     [table, params]
   );
   const columns = useMemo(
-    () => table.getColumns().filter(column => column.canShowInTable(user)),
-    [table, user]
+    () => table.getColumns().filter(column => column.canShowInTable(params)),
+    [table, params]
   );
   const [widths] = useState(columns.map(c => c.getTableWidth()));
   const filterColumns = useMemo(
