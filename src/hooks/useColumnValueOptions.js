@@ -14,7 +14,7 @@ export default function useColumnValueOptions(
     () =>
       column.getFilters(
         parentFilterValue,
-        forForm ? 'disableInForm' : 'disableInFilter'
+        forForm ? 'disabledInForm' : 'disabledInFilter'
       ),
     [column, forForm, parentFilterValue]
   );
@@ -35,7 +35,7 @@ export default function useColumnValueOptions(
               generateFunc(
                 column.getFilters(
                   parentFilterValue,
-                  forForm ? 'disableInForm' : 'disableInFilter'
+                  forForm ? 'disabledInForm' : 'disabledInFilter'
                 )
               )
             ),
@@ -48,7 +48,7 @@ export default function useColumnValueOptions(
     return () => {};
   }, [column, options, parentFilterValue, filters, generateFunc, forForm]);
 
-  const onSearch = useEventCallback(async v => {
+  const onSearch = useEventCallback(async (v) => {
     const searchRequest = column.getValueOptionsSearchRequest();
 
     if (searchRequest) {

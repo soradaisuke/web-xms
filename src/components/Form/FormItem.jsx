@@ -26,20 +26,20 @@ function FormItem({
   column,
   record,
   formItemComponentProps: extraFormItemComponentProps,
-  hideLabel
+  hideLabel,
 }) {
   const user = useUser();
   const disabled = useMemo(() => column.isImmutableInForm({ user, record }), [
     column,
     user,
-    record
+    record,
   ]);
 
   const formItemComponentProps = useMemo(
     () => ({
       ...column.getFormItemComponentProps(),
       ...extraFormItemComponentProps,
-      disabled
+      disabled,
     }),
     [column, disabled, extraFormItemComponentProps]
   );
@@ -61,15 +61,15 @@ function FormItem({
       r = concat(r, [
         {
           type: 'url',
-          message: '格式不正确，要求为网络地址'
-        }
+          message: '格式不正确，要求为网络地址',
+        },
       ]);
     }
     if (column.getFormRequired()) {
       r = concat(r, [
         {
-          required: true
-        }
+          required: true,
+        },
       ]);
     }
     if (column instanceof ObjectColumn && !column.isArray()) {
@@ -92,8 +92,8 @@ function FormItem({
               }
             }
             cb();
-          }
-        }
+          },
+        },
       ]);
     }
 
@@ -102,9 +102,9 @@ function FormItem({
 
   const normalize = useMemo(() => {
     if (column instanceof NumberColumn && column.isArray()) {
-      return value => map(value, v => toNumber(v));
+      return (value) => map(value, (v) => toNumber(v));
     }
-    return value => value;
+    return (value) => value;
   }, [column]);
 
   const initialValue = useMemo(() => {
@@ -123,7 +123,7 @@ function FormItem({
 
   useEffect(() => {
     form.setFieldsValue({
-      [column.getFormItemName()]: initialValue
+      [column.getFormItemName()]: initialValue,
     });
   }, [column, form, initialValue]);
 
@@ -134,7 +134,7 @@ function FormItem({
       ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
       name: column.getFormItemName(),
-      rules
+      rules,
     }),
     [column, hideLabel, normalize, rules, valuePropName]
   );
@@ -158,7 +158,7 @@ function FormItem({
             );
           }
           return false;
-        }
+        },
       };
     }
     return commonFormItemProps;
@@ -176,10 +176,10 @@ function FormItem({
     } else if (column instanceof BooleanColumn) {
       const options = column.getValueOptions();
       const checkedChildren = options
-        .find(option => option.get('value'))
+        .find((option) => option.get('value'))
         .get('text');
       const unCheckedChildren = options
-        .find(option => !option.get('value'))
+        .find((option) => !option.get('value'))
         .get('text');
 
       inner = (
@@ -190,7 +190,7 @@ function FormItem({
         />
       );
     } else if (
-      column.getFilters(null, 'disableInForm') ||
+      column.getFilters(null, 'disabledInForm') ||
       column.getValueOptionsSearchRequest() ||
       column.getValueOptionsRequest()
     ) {
@@ -297,7 +297,7 @@ function FormItem({
           const curValue = getFieldValue(key);
 
           if (isArray(value)) {
-            if (!find(value, v => v === curValue)) {
+            if (!find(value, (v) => v === curValue)) {
               return null;
             }
           } else if (value !== curValue) {
@@ -315,7 +315,7 @@ function FormItem({
     formItemComponentProps,
     formItemProps.shouldUpdate,
     record,
-    user
+    user,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
@@ -328,13 +328,13 @@ FormItem.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   formItemComponentProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
-  hideLabel: PropTypes.bool
+  hideLabel: PropTypes.bool,
 };
 
 FormItem.defaultProps = {
   record: null,
   formItemComponentProps: {},
-  hideLabel: false
+  hideLabel: false,
 };
 
 export default React.memo(FormItem);

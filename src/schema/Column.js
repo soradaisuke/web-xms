@@ -7,17 +7,17 @@ import {
   get,
   filter,
   forEach,
-  flatten
+  flatten,
 } from 'lodash';
 import Immutable from 'immutable';
 
 function generateValidOptions(options, disableKey) {
   if (options && options.length > 0) {
     return map(
-      filter(options, o => !disableKey || !get(o, disableKey)),
-      o => ({
+      filter(options, (o) => !disableKey || !get(o, disableKey)),
+      (o) => ({
         ...o,
-        children: generateValidOptions(o.children)
+        children: generateValidOptions(o.children),
       })
     );
   }
@@ -28,8 +28,8 @@ function generateValidOptions(options, disableKey) {
 function generateFilters(options) {
   return Immutable.Map({
     normal: generateValidOptions(options),
-    disableInFilter: generateValidOptions(options, 'disableInFilter'),
-    disableInForm: generateValidOptions(options, 'disableInForm')
+    disabledInFilter: generateValidOptions(options, 'disabledInFilter'),
+    disabledInForm: generateValidOptions(options, 'disabledInForm'),
   });
 }
 
@@ -40,7 +40,7 @@ function findOption(options, value) {
 
   let option;
 
-  forEach(options, o => {
+  forEach(options, (o) => {
     if (isEqual(o.value, value)) {
       option = o;
     }
@@ -173,8 +173,8 @@ export default class Column {
     if (this.getParentKey() && key !== 'search') {
       if (isArray(parentFilteredValue)) {
         const filters = filter(
-          map(parentFilteredValue, v => this.filters.getIn([v, key])),
-          v => !!v
+          map(parentFilteredValue, (v) => this.filters.getIn([v, key])),
+          (v) => !!v
         );
         if (parentFilteredValue.length !== filters.length) {
           return null;
@@ -441,11 +441,11 @@ export default class Column {
 
           if (isArray(parentFilteredValue)) {
             promise = Promise.all(
-              parentFilteredValue.map(v => {
+              parentFilteredValue.map((v) => {
                 if (this.filters.get(v)) {
                   return Promise.resolve(v);
                 }
-                return valueOptionsRequest(v).then(result => {
+                return valueOptionsRequest(v).then((result) => {
                   this.filters = this.filters.set(v, generateFilters(result));
                 });
               })
@@ -453,13 +453,15 @@ export default class Column {
               this.activeValueOptionsRequests[parentFilteredValue] = null;
             });
           } else {
-            promise = valueOptionsRequest(parentFilteredValue).then(result => {
-              this.filters = this.filters.set(
-                parentFilteredValue,
-                generateFilters(result)
-              );
-              this.activeValueOptionsRequests[parentFilteredValue] = null;
-            });
+            promise = valueOptionsRequest(parentFilteredValue).then(
+              (result) => {
+                this.filters = this.filters.set(
+                  parentFilteredValue,
+                  generateFilters(result)
+                );
+                this.activeValueOptionsRequests[parentFilteredValue] = null;
+              }
+            );
           }
           this.activeValueOptionsRequests[parentFilteredValue] = promise;
 
@@ -468,7 +470,7 @@ export default class Column {
       } else if (!this.activeValueOptionsRequests[parentFilteredValue]) {
         this.activeValueOptionsRequests[
           parentFilteredValue
-        ] = valueOptionsRequest().then(result => {
+        ] = valueOptionsRequest().then((result) => {
           this.filters = generateFilters(result);
           this.activeValueOptionsRequests[parentFilteredValue] = null;
         });

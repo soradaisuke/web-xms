@@ -20,7 +20,7 @@ import './FilterDropDown.less';
 
 function resetChildColumn({ column, form }) {
   if (column.childColumn) {
-    forEach(column.childColumn, childColumn => {
+    forEach(column.childColumn, (childColumn) => {
       form.resetFields([childColumn.getFilterKey()]);
       // eslint-disable-next-line no-use-before-define
       resetColumn({ column: childColumn, form });
@@ -31,7 +31,7 @@ function resetChildColumn({ column, form }) {
 function resetColumn({ column, form }) {
   if (column.getFilterRequired() && column.getFilterDefault()) {
     form.setFieldsValue({
-      [column.getFilterKey()]: column.getFilterDefault()
+      [column.getFilterKey()]: column.getFilterDefault(),
     });
   } else {
     form.resetFields([column.getFilterKey()]);
@@ -44,7 +44,7 @@ function FilterDropDown({
   setSelectedKeys,
   selectedKeys,
   confirm: originConfirm,
-  clearFilters: originClear
+  clearFilters: originClear,
 }) {
   const form = usePgaeFilterForm();
 
@@ -52,7 +52,7 @@ function FilterDropDown({
     form.setFieldsValue({
       [column.getFilterKey()]: column.canFilterMultiple()
         ? selectedKeys
-        : selectedKeys[0]
+        : selectedKeys[0],
     });
     resetChildColumn({ column, form });
     originConfirm();
@@ -68,7 +68,7 @@ function FilterDropDown({
 
   const children = useMemo(() => {
     if (
-      column.getFilters(null, 'disableInFilter') ||
+      column.getFilters(null, 'disabledInFilter') ||
       column.getValueOptionsSearchRequest() ||
       column.getValueOptionsRequest()
     ) {
@@ -89,7 +89,7 @@ function FilterDropDown({
               style={{ marginBottom: 8, display: 'block' }}
               {...column.getFilterFormItemComponentProps()}
               value={selectedKeys.length > 0 ? selectedKeys[0] : undefined}
-              onChange={newDate => setSelectedKeys([newDate])}
+              onChange={(newDate) => setSelectedKeys([newDate])}
               presets={column.getFilterPresets()}
             />
           </>
@@ -101,7 +101,7 @@ function FilterDropDown({
           style={{ width: 188, marginBottom: 8, display: 'block' }}
           {...column.getFilterFormItemComponentProps()}
           value={selectedKeys.length > 0 ? selectedKeys[0] : undefined}
-          onChange={v => setSelectedKeys([v])}
+          onChange={(v) => setSelectedKeys([v])}
           presets={column.getFilterPresets()}
         />
       );
@@ -114,7 +114,7 @@ function FilterDropDown({
             style={{ marginBottom: 8, display: 'block' }}
             {...column.getFilterFormItemComponentProps()}
             value={selectedKeys.length > 0 ? selectedKeys[0] : null}
-            onChange={time => setSelectedKeys([time])}
+            onChange={(time) => setSelectedKeys([time])}
           />
         );
       }
@@ -124,7 +124,7 @@ function FilterDropDown({
           style={{ width: 188, marginBottom: 8, display: 'block' }}
           {...column.getFilterFormItemComponentProps()}
           value={selectedKeys.length > 0 ? selectedKeys[0] : null}
-          onChange={time => setSelectedKeys([time])}
+          onChange={(time) => setSelectedKeys([time])}
         />
       );
     }
@@ -136,7 +136,7 @@ function FilterDropDown({
             <InputNumber
               {...column.getFilterFormItemComponentProps()}
               value={get(selectedKeys, '[0][0]')}
-              onChange={value => {
+              onChange={(value) => {
                 let newValue = [];
                 try {
                   newValue = [...selectedKeys[0]];
@@ -150,7 +150,7 @@ function FilterDropDown({
             <InputNumber
               {...column.getFilterFormItemComponentProps()}
               value={get(selectedKeys, '[0][1]')}
-              onChange={value => {
+              onChange={(value) => {
                 let newValue = [];
                 try {
                   newValue = [...selectedKeys[0]];
@@ -169,7 +169,7 @@ function FilterDropDown({
           style={{ width: 188, marginBottom: 8, display: 'block' }}
           {...column.getFilterFormItemComponentProps()}
           value={selectedKeys.length > 0 ? selectedKeys[0] : null}
-          onChange={time => setSelectedKeys([time])}
+          onChange={(time) => setSelectedKeys([time])}
         />
       );
     }
@@ -180,7 +180,7 @@ function FilterDropDown({
           style={{ width: 188, marginBottom: 8, display: 'block' }}
           {...column.getFilterFormItemComponentProps()}
           value={selectedKeys[0]}
-          onChange={e =>
+          onChange={(e) =>
             setSelectedKeys(e.target.value ? [e.target.value] : [])
           }
           onPressEnter={confirm}
@@ -218,7 +218,7 @@ FilterDropDown.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   selectedKeys: PropTypes.array.isRequired,
   confirm: PropTypes.func.isRequired,
-  clearFilters: PropTypes.func.isRequired
+  clearFilters: PropTypes.func.isRequired,
 };
 
 export default React.memo(FilterDropDown);

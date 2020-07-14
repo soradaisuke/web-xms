@@ -24,7 +24,7 @@ function FormItem({ column }) {
       name: column.getFilterKey(),
       initialValue: column.getFilterRequired()
         ? column.getFilterDefault()
-        : undefined
+        : undefined,
     }),
     [column]
   );
@@ -33,7 +33,7 @@ function FormItem({ column }) {
     if (!column.canFilterOutside()) {
       return {
         noStyle: true,
-        ...commonFormItemProps
+        ...commonFormItemProps,
       };
     }
     if (column.parentColumn) {
@@ -41,7 +41,7 @@ function FormItem({ column }) {
         noStyle: true,
         shouldUpdate: (prevValues, curValues) =>
           get(prevValues, column.parentColumn.getFilterKey()) !==
-          get(curValues, column.parentColumn.getFilterKey())
+          get(curValues, column.parentColumn.getFilterKey()),
       };
     }
     return commonFormItemProps;
@@ -67,7 +67,7 @@ function FormItem({ column }) {
           );
         }
       } else if (
-        column.getFilters(null, 'disableInFilter') ||
+        column.getFilters(null, 'disabledInFilter') ||
         column.getValueOptionsSearchRequest() ||
         column.getValueOptionsRequest()
       ) {
@@ -138,7 +138,7 @@ function FormItem({ column }) {
 }
 
 FormItem.propTypes = {
-  column: PropTypes.instanceOf(Column).isRequired
+  column: PropTypes.instanceOf(Column).isRequired,
 };
 
 export default React.memo(FormItem);
