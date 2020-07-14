@@ -11,7 +11,7 @@ import {
   size,
   isBoolean,
   isUndefined,
-  split
+  split,
 } from 'lodash';
 import { generateUri } from '@qt/web-common';
 import Immutable from 'immutable';
@@ -26,7 +26,12 @@ import usePageData from '../hooks/usePageData';
 
 const { withRouter, useLocation, useHistory, useParams } = router;
 
-function generateService({ fetch, create, edit, remove } = {}) {
+function generateService({
+  retrieve: fetch,
+  create,
+  update: edit,
+  delete: remove,
+} = {}) {
   return {
     fetchAll: ({ path, page, pagesize, filter, order }) =>
       fetch?.({ path, query: { page, pagesize, filter, order } }) ??
@@ -35,8 +40,8 @@ function generateService({ fetch, create, edit, remove } = {}) {
           page,
           pagesize,
           order,
-          filter: JSON.stringify(filter)
-        }
+          filter: JSON.stringify(filter),
+        },
       }),
     fetch: ({ path, id }) =>
       fetch?.({ path, id }) ?? request.get(`${path}${id ? `/${id}` : ''}`),
@@ -48,7 +53,7 @@ function generateService({ fetch, create, edit, remove } = {}) {
       request.put(`${split(path, '?')[0]}${id ? `/${id}` : ''}`, { body }),
     remove: ({ path, id }) =>
       remove?.({ path, id }) ??
-      request.remove(`${split(path, '?')[0]}${id ? `/${id}` : ''}`)
+      request.remove(`${split(path, '?')[0]}${id ? `/${id}` : ''}`),
   };
 }
 
@@ -56,7 +61,7 @@ function generateModel({ namespace, service }) {
   const initialState = Immutable.fromJS({
     records: [],
     record: null,
-    total: 0
+    total: 0,
   });
 
   return {
@@ -73,7 +78,7 @@ function generateModel({ namespace, service }) {
       },
       reset() {
         return initialState;
-      }
+      },
     },
     effects: {
       fetchAll: [
@@ -87,25 +92,25 @@ function generateModel({ namespace, service }) {
               page,
               pagesize,
               filter,
-              order: sort
+              order: sort,
             });
             yield put({ type: 'saveRecords', payload: { total, records } });
           } catch (error) {
             yield put({
               type: 'saveRecords',
-              payload: { total: 0, records: [] }
+              payload: { total: 0, records: [] },
             });
             showError(error.message);
           }
         },
-        { type: 'takeLatest' }
+        { type: 'takeLatest' },
       ],
       fetch: [
         function* fetch({ payload: { path, id } }, { call, put }) {
           const record = yield call(service.fetch, { path, id });
           yield put({ type: 'saveRecord', payload: { record } });
         },
-        { type: 'takeLatest' }
+        { type: 'takeLatest' },
       ],
       *create({ payload: { path, body } }, { call }) {
         return yield call(service.create, { path, body });
@@ -115,8 +120,8 @@ function generateModel({ namespace, service }) {
       },
       *remove({ payload: { path, id } }, { call }) {
         return yield call(service.remove, { path, id });
-      }
-    }
+      },
+    },
   };
 }
 
@@ -168,8 +173,8 @@ function useCreate({ createApiDefaultBody, apiPath, namespace }) {
         type: `${namespace}/create`,
         payload: {
           path: apiPath,
-          body: { ...createApiDefaultBody, ...body }
-        }
+          body: { ...createApiDefaultBody, ...body },
+        },
       }),
     [dispatch, namespace, apiPath, createApiDefaultBody]
   );
@@ -182,7 +187,7 @@ function useFetch({ apiPath, namespace }) {
     ({ id } = {}) =>
       dispatch({
         type: `${namespace}/fetch`,
-        payload: { path: apiPath, id }
+        payload: { path: apiPath, id },
       }),
     [dispatch, namespace, apiPath]
   );
@@ -198,8 +203,8 @@ function useEdit({ apiPath, namespace, ignoreId }) {
         payload: {
           path: apiPath,
           id: ignoreId ? undefined : id,
-          body
-        }
+          body,
+        },
       }),
     [apiPath, dispatch, namespace, ignoreId]
   );
@@ -210,7 +215,7 @@ function useReset({ namespace }) {
 
   return useCallback(() => dispatch({ type: `${namespace}/reset` }), [
     dispatch,
-    namespace
+    namespace,
   ]);
 }
 
@@ -221,7 +226,7 @@ function useRemove({ apiPath, namespace }) {
     ({ id }) =>
       dispatch({
         type: `${namespace}/remove`,
-        payload: { path: apiPath, id }
+        payload: { path: apiPath, id },
       }),
     [apiPath, dispatch, namespace]
   );
@@ -234,7 +239,7 @@ function generateRecordsPage(
     table,
     tableProps = {},
     formProps = {},
-    filterFormProps = {}
+    filterFormProps = {},
   },
   component,
   inline
@@ -265,7 +270,7 @@ function generateRecordsPage(
     }, [queries.filter]);
 
     const page = useMemo(() => (queries.page ? toInteger(queries.page) : 1), [
-      queries.page
+      queries.page,
     ]);
     const pagesize = useMemo(
       () =>
@@ -327,11 +332,12 @@ function generateRecordsPage(
                 query: {
                   filter: JSON.stringify({
                     ...(table.getDefaultFilter() || {}),
-                    ...apiDefaultFilter
+                    ...apiDefaultFilter,
                   }),
-                  sort: table.getFixedSortOrder() || table.getDefaultSortOrder()
-                }
-              })
+                  sort:
+                    table.getFixedSortOrder() || table.getDefaultSortOrder(),
+                },
+              }),
             }
           );
           history.replace(
@@ -348,8 +354,8 @@ function generateRecordsPage(
             pagesize,
             sort,
             filter: { ...filter, ...fetchApiFixedFilter },
-            path: apiPath
-          }
+            path: apiPath,
+          },
         });
       },
       [
@@ -359,7 +365,7 @@ function generateRecordsPage(
         queries,
         globalQueries,
         history,
-        dispatch
+        dispatch,
       ]
     );
 
@@ -376,7 +382,7 @@ function generateRecordsPage(
           page,
           pagesize,
           sort,
-          filter: JSON.stringify(newFilter)
+          filter: JSON.stringify(newFilter),
         };
         forEach(newQuery, (v, key) => {
           if (key !== 'sort' && (isUndefined(v) || v === '')) {
@@ -390,7 +396,7 @@ function generateRecordsPage(
           ),
           {
             ...globalQueries,
-            ...generateQuery({ namespace, inline, query: newQuery })
+            ...generateQuery({ namespace, inline, query: newQuery }),
           }
         );
         history.push(uri.href.substring(uri.origin.length, uri.href.length));
@@ -414,15 +420,15 @@ function generateRecordsPage(
         create,
         edit,
         remove,
-        updatePage
+        updatePage,
       }),
       [fetch, create, edit, remove, updatePage]
     );
 
     const isLoading = useSelector(
-      state => state.loading.effects[`${namespace}/fetchAll`]
+      (state) => state.loading.effects[`${namespace}/fetchAll`]
     );
-    const storeData = useSelector(state => state[namespace]);
+    const storeData = useSelector((state) => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
     const parentPageData = usePageData();
     const pageData = useMemo(
@@ -450,20 +456,20 @@ function generateRecordPage(
     layout,
     inline,
     formProps = {},
-    descriptionsProps = {}
+    descriptionsProps = {},
   },
   component
 ) {
   function Page(props) {
     const isLoading = useSelector(
-      state => state.loading.effects[`${namespace}/fetch`]
+      (state) => state.loading.effects[`${namespace}/fetch`]
     );
     const apiPath = useApiPath({ path, host });
     const fetch = useFetch({ apiPath, namespace });
     const edit = useEdit({ apiPath, namespace, ignoreId: true });
     const remove = useRemove({ apiPath, namespace });
     const reset = useReset({ namespace });
-    const storeData = useSelector(state => state[namespace]);
+    const storeData = useSelector((state) => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
     const pageConfig = useMemo(
       () => ({
@@ -476,7 +482,7 @@ function generateRecordPage(
         fetch,
         edit,
         remove,
-        reset
+        reset,
       }),
       [fetch, reset, edit, remove]
     );
@@ -498,7 +504,7 @@ function generateRecordFormPage({
   idIdentifier,
   formProps = {},
   api: { path, host, defaultBody } = {},
-  table
+  table,
 }) {
   function Page(props) {
     const apiPath = useApiPath({ path, host });
@@ -517,11 +523,11 @@ function generateRecordFormPage({
         edit,
         remove,
         reset,
-        table
+        table,
       }),
       [create, edit, fetch, remove, reset]
     );
-    const storeData = useSelector(state => state[namespace]);
+    const storeData = useSelector((state) => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
 
     return (
@@ -541,19 +547,19 @@ function dynamicComponent({
   config,
   inline,
   component,
-  generateFunction
+  generateFunction,
 }) {
   const service = generateService(config.api);
   const model = generateModel({
     namespace: config.namespace,
-    service
+    service,
   });
 
   return dynamic({
     app,
     models: () => [Promise.resolve(model)],
     component: () =>
-      Promise.resolve(generateFunction(config, component, inline))
+      Promise.resolve(generateFunction(config, component, inline)),
   });
 }
 
@@ -563,7 +569,7 @@ export function dynamicRecordsComponent({ app, config, component, inline }) {
     config,
     component,
     inline,
-    generateFunction: generateRecordsPage
+    generateFunction: generateRecordsPage,
   });
 }
 
@@ -572,7 +578,7 @@ export function dynamicRecordComponent({ app, config, component }) {
     app,
     config,
     component,
-    generateFunction: generateRecordPage
+    generateFunction: generateRecordPage,
   });
 }
 
@@ -580,6 +586,6 @@ export function dynamicRecordFormComponent({ app, config }) {
   return dynamicComponent({
     app,
     config,
-    generateFunction: generateRecordFormPage
+    generateFunction: generateRecordFormPage,
   });
 }
