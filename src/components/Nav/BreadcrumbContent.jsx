@@ -9,22 +9,22 @@ const { NavLink, useLocation, useRouteMatch } = router;
 
 function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
   const { pathname } = useLocation();
-  const { params } = useRouteMatch(path);
-  const data = useSelector(state => state[namespace]);
-  const dataJS = useMemo(() => data?.toJS() ?? {}, [data]);
+  const { params: matchParams } = useRouteMatch(path);
+  const data = useSelector((state) => state[namespace]);
+  const pageData = useMemo(() => data?.toJS() ?? {}, [data]);
   const breadcrumbTitle = useMemo(() => {
     let bTitle;
     if (isFunction(breadcrumb)) {
       bTitle = breadcrumb({
-        ...params,
-        ...dataJS
+        matchParams,
+        pageData,
       });
     } else if (isString(breadcrumb)) {
       bTitle = breadcrumb;
     }
 
     return pathToText(bTitle) || title;
-  }, [breadcrumb, title, params, dataJS]);
+  }, [breadcrumb, title, matchParams, pageData]);
   const to = useMemo(
     () => join(take(split(pathname, '/'), split(path, '/').length), '/'),
     [pathname, path]
@@ -44,13 +44,13 @@ BreadcrumbContent.propTypes = {
   path: PropTypes.string.isRequired,
   breadcrumb: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   namespace: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
 };
 
 BreadcrumbContent.defaultProps = {
   title: '',
   breadcrumb: null,
-  namespace: null
+  namespace: null,
 };
 
 export default React.memo(BreadcrumbContent);
