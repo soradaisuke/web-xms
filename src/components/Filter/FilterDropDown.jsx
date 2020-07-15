@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { get, set, forEach } from 'lodash';
+import { forEach } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, InputNumber, Input } from 'antd';
 import { useEventCallback } from '@qt/react';
@@ -132,44 +132,24 @@ function FilterDropDown({
     if (column instanceof NumberColumn) {
       if (column.canFilterRange()) {
         return (
-          <div style={{ marginBottom: 8, display: 'block' }}>
-            <InputNumber
-              {...column.getFilterFormItemComponentProps()}
-              value={get(selectedKeys, '[0][0]')}
-              onChange={(value) => {
-                let newValue = [];
-                try {
-                  newValue = [...selectedKeys[0]];
-                } catch (e) {
-                  newValue = [];
-                }
-                setSelectedKeys([set(newValue, '[0]', value)]);
-              }}
-            />
-            {' ~ '}
-            <InputNumber
-              {...column.getFilterFormItemComponentProps()}
-              value={get(selectedKeys, '[0][1]')}
-              onChange={(value) => {
-                let newValue = [];
-                try {
-                  newValue = [...selectedKeys[0]];
-                } catch (e) {
-                  newValue = [];
-                }
-                setSelectedKeys([set(newValue, '[1]', value)]);
-              }}
-            />
-          </div>
+          <InputRangeNumber
+            style={{ width: 188, marginBottom: 8, display: 'block' }}
+            {...column.getFilterFormItemComponentProps()}
+            value={selectedKeys.length > 0 ? selectedKeys[0] : null}
+            onChange={(time) => setSelectedKeys([time])}
+          />
         );
       }
 
       return (
-        <InputRangeNumber
+        <InputNumber
           style={{ width: 188, marginBottom: 8, display: 'block' }}
           {...column.getFilterFormItemComponentProps()}
-          value={selectedKeys.length > 0 ? selectedKeys[0] : null}
-          onChange={(time) => setSelectedKeys([time])}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={confirm}
         />
       );
     }

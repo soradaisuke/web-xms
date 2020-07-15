@@ -215,10 +215,6 @@ export default class Column {
     return this.config.getIn(['table', 'filterGroup'], '');
   }
 
-  getFilterPresets() {
-    return this.config.getIn(['table', 'filterPresets'], Immutable.List([]));
-  }
-
   canFilter() {
     return this.config.getIn(['table', 'filter']);
   }
@@ -306,10 +302,6 @@ export default class Column {
 
   canFormItemExpandable() {
     return this.config.getIn(['form', 'expandable'], false);
-  }
-
-  getFormPresets() {
-    return this.config.getIn(['form', 'presets'], Immutable.List([]));
   }
 
   getFormRequired() {

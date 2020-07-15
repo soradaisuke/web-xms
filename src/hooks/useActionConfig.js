@@ -20,9 +20,7 @@ export default function useActionConfig({
     () =>
       action.isMultipleAction() && !action.isGlobalAction()
         ? filter(records || [], (r) =>
-            isFunction(action.getEnable())
-              ? action.getEnable()({ ...params, records: null, record: r })
-              : true
+            action.isEnable({ ...params, records: null, record: r })
           )
         : null,
     [action, records, params]
