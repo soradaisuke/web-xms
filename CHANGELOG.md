@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-15](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-14...v2.14.0-15) (2020-07-16)
+
+
+### Bug Fixes
+
+* **TBS-850:** 因css优先级高于标签属性导致列表Image设置的width不起作用 ([0edcc0c](https://git2.qingtingfm.com/zhibo/xms/commit/0edcc0c135963ccca48b881ff1420e92fe1590c3))
+
 ## [2.14.0-14](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-13...v2.14.0-14) (2020-07-01)
 
 
