@@ -9,7 +9,12 @@ export default class ImageColumn extends StringColumn {
   renderInTableValueDefault({ value }) {
     const src = generateUpYunImageUrl(value);
     const width = this.getTableWidth();
-    return <ZoomImg src={src} thumbnailWidth={width} />;
+    return (
+      <ZoomImg
+        src={src}
+        thumbnailWidth={isNumber(width) ? width - 32 : width}
+      />
+    );
   }
 
   renderInDescriptionDefault({ value }) {

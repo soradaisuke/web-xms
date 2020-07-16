@@ -30,18 +30,12 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
   }, [scaleY, setScaleY]);
 
   const activator = useMemo(() => {
-    const imgProps = {};
-
-    if (thumbnailWidth) {
-      imgProps.width = thumbnailWidth;
-    }
-
     return (
       <img
         alt=""
         className={classNames(imgClassName, 'zoom-img-activator')}
         src={src}
-        {...imgProps}
+        style={thumbnailWidth ? { width: thumbnailWidth } : null}
       />
     );
   }, [src]);
