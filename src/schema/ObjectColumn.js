@@ -21,4 +21,8 @@ export default class ObjectColumn extends Column {
       this.columns.forEach(column => column.resetFilters());
     }
   }
+
+  isArray() {
+    return this.columns?.size > 0;
+  }
 }

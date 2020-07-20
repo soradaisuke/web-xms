@@ -1,8 +1,13 @@
 import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, InputNumber, Input, Select, Switch } from 'antd';
+import { Form, InputNumber, Input, Select, Switch, Card, Popconfirm, Button, Space } from 'antd';
 import { get, concat, map, find, isArray, isPlainObject, trim } from 'lodash';
 import { toNumber } from 'lodash/fp';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  MinusCircleOutlined
+} from '@ant-design/icons';
 import UploadImage from './UploadImage';
 import ObjectInputTextArea from './ObjectInputTextArea';
 import TreeSelect from '../Filter/TreeSelect';
@@ -21,12 +26,16 @@ import ImageColumn from '../../schema/ImageColumn';
 import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
 import useForm from '../../hooks/useForm';
+import usePageConfig from '../../hooks/usePageConfig';
+import './FormItem.less';
 
 function FormItem({
   column,
   record,
   formItemComponentProps: extraFormItemComponentProps,
+  commonFormItemProps: extraCommonFormItemProps,
   hideLabel,
+  shouldSetInitialValue,
 }) {
   const user = useUser();
   const disabled = useMemo(() => column.isImmutableInForm({ user, record }), [
@@ -107,25 +116,40 @@ function FormItem({
     return (value) => value;
   }, [column]);
 
-  const initialValue = useMemo(() => {
+  const {
+    initialValue,
+    initialListItemValue
+  } = useMemo(() => {
+    let initialValueInner = column.getFormItemInitialValue();
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        return column.getFormItemNormalizeInitialValue()(curValue);
+        initialValueInner = column.getFormItemNormalizeInitialValue()(curValue);
       }
-      return curValue;
+      initialValueInner = curValue;
     }
 
-    return column.getFormItemInitialValue();
+    return {
+      initialValue: initialValueInner,
+      initialListItemValue: column.getColumns?.()?.reduce(
+        (result, c) => ({
+          ...result,
+          [c.getFormItemName()]: c.getFormItemInitialValue()
+        }),
+        {}
+      )
+    };
   }, [record, column]);
 
   const form = useForm();
 
   useEffect(() => {
-    form.setFieldsValue({
-      [column.getFormItemName()]: initialValue,
-    });
-  }, [column, form, initialValue]);
+    if (shouldSetInitialValue) {
+      form.setFieldsValue({
+        [column.getFormItemName()]: initialValue,
+      });
+    }
+  }, [column, form, initialValue, shouldSetInitialValue]);
 
   const commonFormItemProps = useMemo(
     () => ({
@@ -135,8 +159,9 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       name: column.getFormItemName(),
       rules,
+      ...extraCommonFormItemProps,
     }),
-    [column, hideLabel, normalize, rules, valuePropName]
+    [column, hideLabel, normalize, rules, valuePropName, extraCommonFormItemProps]
   );
 
   const formItemProps = useMemo(() => {
@@ -163,6 +188,8 @@ function FormItem({
     }
     return commonFormItemProps;
   }, [column, commonFormItemProps]);
+
+  const { idIdentifier } = usePageConfig();
 
   const children = useMemo(() => {
     let inner;
@@ -279,13 +306,63 @@ function FormItem({
         />
       );
     } else if (column instanceof ObjectColumn) {
-      inner = (
-        <ObjectInputTextArea
-          style={{ width: '100%' }}
-          placeholder={`输入${column.getTitle()}`}
-          {...formItemComponentProps}
-        />
-      );
+      if (!column.isArray()) {
+        inner = (
+          <ObjectInputTextArea
+            style={{ width: '100%' }}
+            placeholder={`输入${column.getTitle()}`}
+            {...formItemComponentProps}
+          />
+        );
+      } else {
+        const { name } = commonFormItemProps;
+        const WrapComponent = idIdentifier ? React.Fragment : Card;
+        const WrapItemsComponent = idIdentifier ? Space : React.Fragment;
+        const deleteButton = idIdentifier
+          ? <MinusCircleOutlined className="dynamic-delete-in-page" />
+          : <DeleteOutlined className="dynamic-delete" />;
+
+        inner = (
+          <Form.List name={name}>
+            {(fields, { add, remove }) => (
+              <div>
+                {fields.map(field =>
+                  <Form.Item key={field.key}>
+                    <WrapComponent className={idIdentifier ? 'dynamic-card' : null}>
+                      <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
+                        {column.getColumns().map(dColumn => (
+                          <FormItem
+                            shouldSetInitialValue={false}
+                            key={dColumn.getFormItemName()}
+                            column={dColumn}
+                            record={record}
+                            commonFormItemProps={{
+                              ...field,
+                              name: [field.name, dColumn.getFormItemName()],
+                              fieldKey: [field.fieldKey, dColumn.getFormItemName()]
+                            }}
+                          />
+                        ))}
+                        <Popconfirm
+                          title="确认删除？"
+                          onConfirm={() => remove(field.name)}
+                        >
+                          {deleteButton}
+                        </Popconfirm>
+                      </WrapItemsComponent>
+                    </WrapComponent>
+                  </Form.Item>
+                )}
+                <Form.Item>
+                  <Button type="primary" onClick={() => add(initialListItemValue)}>
+                    <PlusOutlined /> 添加
+                  </Button>
+                </Form.Item>
+              </div>
+            )}
+          </Form.List>
+        );
+      }
     }
 
     if (formItemProps.shouldUpdate) {
@@ -316,6 +393,8 @@ function FormItem({
     formItemProps.shouldUpdate,
     record,
     user,
+    idIdentifier,
+    initialListItemValue,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
@@ -328,12 +407,17 @@ FormItem.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   formItemComponentProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
+  commonFormItemProps: PropTypes.object,
+  // eslint-disable-next-line react/forbid-prop-types
   hideLabel: PropTypes.bool,
+  shouldSetInitialValue: PropTypes.bool,
 };
 
 FormItem.defaultProps = {
+  shouldSetInitialValue: true,
   record: null,
   formItemComponentProps: {},
+  commonFormItemProps: {},
   hideLabel: false,
 };
 

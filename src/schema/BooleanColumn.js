@@ -2,6 +2,16 @@ import Immutable from 'immutable';
 import Column from './Column';
 
 export default class BooleanColumn extends Column {
+  constructor(config) {
+    super({
+      ...config,
+      form: {
+        initialValue: false,
+        ...(config.form || {})
+      }
+    });
+  }
+
   getValueOptions() {
     return (
       super.getValueOptions() ||

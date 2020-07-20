@@ -3,6 +3,7 @@ import { Card, Row, Form, Button, Popconfirm } from 'antd';
 import { useEventCallback } from '@qt/react';
 import { router } from 'dva';
 import Immutable from 'immutable';
+import { split, join } from 'lodash';
 import Page from './Page';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
@@ -119,6 +120,11 @@ function RecordFormPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const backToListPage = useEventCallback(() => {
+    const { pathname } = window.location;
+    history.push(join(split(pathname, '/').slice(-2), '/'));
+  }, [history])
+
   return (
     <FormContext.Provider value={form}>
       <Page
@@ -168,7 +174,7 @@ function RecordFormPage() {
                         a instanceof DeleteAction
                           ? a instanceof EditAction
                             ? fetchInternal
-                            : history.goBack
+                            : backToListPage
                           : null
                       }
                     />
