@@ -133,7 +133,11 @@ class RecordForm extends React.PureComponent {
             }
             resolve(true);
           } catch (e) {
-            resolve(false);
+            if (e.confirmCanceled) {
+              reject();
+            } else {
+              resolve(false);
+            }
           }
         } else {
           reject();

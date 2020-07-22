@@ -158,6 +158,16 @@ export default class Action {
       columns = this.getColumns({ table, column });
     }
 
+    let confirmTitle = this.getConfirmTitle();
+    let confirmContent = this.getConfirmContent();
+
+    confirmTitle = isFunction(confirmTitle)
+      ? confirmTitle(params)
+      : confirmTitle;
+    confirmContent = isFunction(confirmContent)
+      ? confirmContent(params)
+      : confirmContent;
+
     if (columns) {
       return (
         <RecordModal
@@ -168,14 +178,37 @@ export default class Action {
           record={record}
           records={records}
           checkVisibility={this.checkVisibility()}
-          onOk={body =>
-            onClick({
+          onOk={body => {
+            if (confirmTitle) {
+              return new Promise((resolve, reject) => {
+                Modal.confirm({
+                  title: confirmTitle,
+                  content: confirmContent,
+                  onOk: () => {
+                    resolve(
+                      onClick({
+                        data: { body },
+                        loadingMessage: null,
+                        throwError: false,
+                        reload: true
+                      })
+                    );
+                  },
+                  onCancel: () => {
+                    const e = new Error();
+                    e.confirmCanceled = true;
+                    reject(e);
+                  }
+                });
+              });
+            }
+            return onClick({
               data: { body },
               loadingMessage: null,
               throwError: false,
               reload: true
-            })
-          }
+            });
+          }}
         >
           <Button {...buttonProps} />
         </RecordModal>
@@ -183,8 +216,6 @@ export default class Action {
     }
 
     const confirmType = this.getConfirmType();
-    const confirmTitle = this.getConfirmTitle();
-    const confirmContent = this.getConfirmContent();
 
     if (confirmType === 'pop' && !buttonProps.disabled) {
       return (
