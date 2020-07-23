@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-16](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-15...v2.14.0-16) (2020-07-23)
+
+
+### Features
+
+* **NoTicket:** RecordModal也支持confirm ([99dca1a](https://git2.qingtingfm.com/zhibo/xms/commit/99dca1a170cc7e1902d0be9fd3219f94b6ba6d2b))
+
 ## [2.14.0-15](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-14...v2.14.0-15) (2020-07-16)
 
 
