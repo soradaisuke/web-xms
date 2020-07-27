@@ -1,12 +1,22 @@
 import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, InputNumber, Input, Select, Switch, Card, Popconfirm, Button, Space } from 'antd';
+import {
+  Form,
+  InputNumber,
+  Input,
+  Select,
+  Switch,
+  Card,
+  Popconfirm,
+  Button,
+  Space,
+} from 'antd';
 import { get, concat, map, find, isArray, isPlainObject, trim } from 'lodash';
 import { toNumber } from 'lodash/fp';
 import {
   PlusOutlined,
   DeleteOutlined,
-  MinusCircleOutlined
+  MinusCircleOutlined,
 } from '@ant-design/icons';
 import UploadImage from './UploadImage';
 import ObjectInputTextArea from './ObjectInputTextArea';
@@ -116,10 +126,7 @@ function FormItem({
     return (value) => value;
   }, [column]);
 
-  const {
-    initialValue,
-    initialListItemValue
-  } = useMemo(() => {
+  const { initialValue, initialListItemValue } = useMemo(() => {
     let initialValueInner = column.getFormItemInitialValue();
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
@@ -134,10 +141,10 @@ function FormItem({
       initialListItemValue: column.getColumns?.()?.reduce(
         (result, c) => ({
           ...result,
-          [c.getFormItemName()]: c.getFormItemInitialValue()
+          [c.getFormItemName()]: c.getFormItemInitialValue(),
         }),
         {}
-      )
+      ),
     };
   }, [record, column]);
 
@@ -145,7 +152,8 @@ function FormItem({
 
   useEffect(() => {
     if (shouldSetInitialValue) {
-      form.setFieldsValue({
+      // eslint-disable-next-line no-unused-expressions
+      form?.setFieldsValue({
         [column.getFormItemName()]: initialValue,
       });
     }
@@ -161,7 +169,14 @@ function FormItem({
       rules,
       ...extraCommonFormItemProps,
     }),
-    [column, hideLabel, normalize, rules, valuePropName, extraCommonFormItemProps]
+    [
+      column,
+      hideLabel,
+      normalize,
+      rules,
+      valuePropName,
+      extraCommonFormItemProps,
+    ]
   );
 
   const formItemProps = useMemo(() => {
@@ -318,19 +333,23 @@ function FormItem({
         const { name } = commonFormItemProps;
         const WrapComponent = idIdentifier ? React.Fragment : Card;
         const WrapItemsComponent = idIdentifier ? Space : React.Fragment;
-        const deleteButton = idIdentifier
-          ? <MinusCircleOutlined className="dynamic-delete-in-page" />
-          : <DeleteOutlined className="dynamic-delete" />;
+        const deleteButton = idIdentifier ? (
+          <MinusCircleOutlined className="dynamic-delete-in-page" />
+        ) : (
+          <DeleteOutlined className="dynamic-delete" />
+        );
 
         inner = (
           <Form.List name={name}>
             {(fields, { add, remove }) => (
               <div>
-                {fields.map(field =>
+                {fields.map((field) => (
                   <Form.Item key={field.key}>
-                    <WrapComponent className={idIdentifier ? 'dynamic-card' : null}>
+                    <WrapComponent
+                      className={idIdentifier ? 'dynamic-card' : null}
+                    >
                       <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
-                        {column.getColumns().map(dColumn => (
+                        {column.getColumns().map((dColumn) => (
                           <FormItem
                             shouldSetInitialValue={false}
                             key={dColumn.getFormItemName()}
@@ -339,7 +358,10 @@ function FormItem({
                             commonFormItemProps={{
                               ...field,
                               name: [field.name, dColumn.getFormItemName()],
-                              fieldKey: [field.fieldKey, dColumn.getFormItemName()]
+                              fieldKey: [
+                                field.fieldKey,
+                                dColumn.getFormItemName(),
+                              ],
                             }}
                           />
                         ))}
@@ -352,9 +374,12 @@ function FormItem({
                       </WrapItemsComponent>
                     </WrapComponent>
                   </Form.Item>
-                )}
+                ))}
                 <Form.Item>
-                  <Button type="primary" onClick={() => add(initialListItemValue)}>
+                  <Button
+                    type="primary"
+                    onClick={() => add(initialListItemValue)}
+                  >
                     <PlusOutlined /> 添加
                   </Button>
                 </Form.Item>
