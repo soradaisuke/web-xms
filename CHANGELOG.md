@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.26](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.25...v3.0.0-beta.26) (2020-07-27)
+
+
+### Features
+
+* **QTLIVE-1377:** 重构DynamicItem ([3f155f8](https://git2.qingtingfm.com/zhibo/xms/commit/3f155f84cbfd7529fd0b090e213a90b73d54075d))
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复inlineEdit error ([40145be](https://git2.qingtingfm.com/zhibo/xms/commit/40145bea0cad28c09e126fcee5f64c552294bd47))
+
 ## [3.0.0-beta.25](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.24...v3.0.0-beta.25) (2020-07-15)
 
 
