@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.29](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.28...v3.0.0-beta.29) (2020-07-28)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复ObjectColumn的array属性 ([fb13600](https://git2.qingtingfm.com/zhibo/xms/commit/fb13600286aedbf47225217380eff1c69bed3889))
+
 ## [3.0.0-beta.28](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.27...v3.0.0-beta.28) (2020-07-28)
 
 
