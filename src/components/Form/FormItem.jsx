@@ -396,7 +396,7 @@ function FormItem({
         if (
           column.getFormItemAvailableWhen().find((value, key) => {
             const curValue = getFieldValue(key);
-            if (value instanceof Immutable.Map) {
+            if (value instanceof Immutable.List) {
               if (!value.find((v) => v === curValue)) {
                 return true;
               }
