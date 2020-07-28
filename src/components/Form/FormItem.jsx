@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Immutable from 'immutable';
 import {
   Form,
   InputNumber,
@@ -11,7 +12,7 @@ import {
   Button,
   Space,
 } from 'antd';
-import { get, concat, map, find, isArray, isPlainObject, trim } from 'lodash';
+import { get, concat, map, isPlainObject, trim } from 'lodash';
 import { toNumber } from 'lodash/fp';
 import {
   PlusOutlined,
@@ -180,7 +181,7 @@ function FormItem({
   );
 
   const formItemProps = useMemo(() => {
-    if (column.parentColumn || column.getFormItemAvailableWhen().length > 0) {
+    if (column.parentColumn || column.getFormItemAvailableWhen().size > 0) {
       return {
         noStyle: true,
         shouldUpdate: (prevValues, curValues) => {
@@ -191,11 +192,10 @@ function FormItem({
           ) {
             return true;
           }
-          if (column.getFormItemAvailableWhen().length > 0) {
-            return !!find(
-              column.getFormItemAvailableWhen(),
-              ({ key }) => get(prevValues, key) !== get(curValues, key)
-            );
+          if (column.getFormItemAvailableWhen().size > 0) {
+            return !!column
+              .getFormItemAvailableWhen()
+              .find((_, key) => get(prevValues, key) !== get(curValues, key));
           }
           return false;
         },
@@ -393,18 +393,20 @@ function FormItem({
     if (formItemProps.shouldUpdate) {
       // eslint-disable-next-line react/prop-types
       return ({ getFieldValue }) => {
-        const dependencies = column.getFormItemAvailableWhen();
-        for (let i = 0; i < dependencies.length; i += 1) {
-          const { key, value } = dependencies[i];
-          const curValue = getFieldValue(key);
-
-          if (isArray(value)) {
-            if (!find(value, (v) => v === curValue)) {
-              return null;
+        if (
+          column.getFormItemAvailableWhen().find((value, key) => {
+            const curValue = getFieldValue(key);
+            if (value instanceof Immutable.Map) {
+              if (!value.find((v) => v === curValue)) {
+                return true;
+              }
+            } else if (value !== curValue) {
+              return true;
             }
-          } else if (value !== curValue) {
-            return null;
-          }
+            return false;
+          })
+        ) {
+          return null;
         }
         return <Form.Item {...commonFormItemProps}>{inner}</Form.Item>;
       };

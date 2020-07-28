@@ -309,13 +309,7 @@ export default class Column {
   }
 
   getFormItemAvailableWhen() {
-    if (!this.formItemAvailableWhen) {
-      this.formItemAvailableWhen = this.config
-        .getIn(['form', 'availableWhen'], Immutable.List())
-        .toJS();
-    }
-
-    return this.formItemAvailableWhen;
+    return this.config.getIn(['form', 'availableWhen'], Immutable.Map());
   }
 
   getFormItemProps() {
