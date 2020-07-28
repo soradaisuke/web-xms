@@ -18,11 +18,11 @@ export default class ObjectColumn extends Column {
     super.resetFilters();
 
     if (this.columns && this.columns.size) {
-      this.columns.forEach(column => column.resetFilters());
+      this.columns.forEach((column) => column.resetFilters());
     }
   }
 
   isArray() {
-    return this.columns?.size > 0;
+    return super.isArray() || this.columns?.size > 0;
   }
 }
