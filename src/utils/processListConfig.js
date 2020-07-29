@@ -15,12 +15,12 @@ export default function processListConfig({ config, path, useFormPage }) {
     actions: new TableActions(
       map(actions, action => {
         if (action instanceof CreateAction && useFormPage) {
-          return action.setLink('new/edit');
+          return action.setLink(`${path}/new/edit`);
         }
 
         if (action instanceof EditAction && useFormPage) {
           return action.setLink(
-            record => `${get(record, newTable.getPrimaryKey())}/edit`
+            record => `${path}/${get(record, newTable.getPrimaryKey())}/edit`
           );
         }
 
