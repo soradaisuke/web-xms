@@ -4,7 +4,13 @@ import TableActions from '../actions/TableActions';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
 
-export default function processListConfig({ config, path, useFormPage }) {
+export default function processListConfig({
+  config,
+  path,
+  useFormPage,
+  inline,
+  prefix
+}) {
   const { table = [], actions = [] } = config;
   const newTable = new Table(table);
 
@@ -15,12 +21,19 @@ export default function processListConfig({ config, path, useFormPage }) {
     actions: new TableActions(
       map(actions, action => {
         if (action instanceof CreateAction && useFormPage) {
-          return action.setLink(`${path}/new/edit`);
+          return action.setLink(
+            `${
+              prefix && inline ? `${path.slice(prefix.length + 1)}/` : ''
+            }new/edit`
+          );
         }
 
         if (action instanceof EditAction && useFormPage) {
           return action.setLink(
-            record => `${path}/${get(record, newTable.getPrimaryKey())}/edit`
+            record =>
+              `${
+                prefix && inline ? `${path.slice(prefix.length + 1)}/` : ''
+              }${get(record, newTable.getPrimaryKey())}/edit`
           );
         }
 
