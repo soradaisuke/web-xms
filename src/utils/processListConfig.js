@@ -6,6 +6,8 @@ import EditAction from '../actions/EditAction';
 export default function processListConfig({
   config,
   path,
+  prefix,
+  inline,
   useFormPage
 }) {
   const { columns = [], actions = [] } = config;
@@ -18,12 +20,19 @@ export default function processListConfig({
       columns,
       map(actions, action => {
         if (action instanceof CreateAction && useFormPage) {
-          return action.setLink('new/edit');
+          return action.setLink(
+            `${
+              prefix && inline ? `${path.slice(prefix.length + 1)}/` : ''
+            }new/edit`
+          );
         }
 
         if (action instanceof EditAction && useFormPage) {
           return action.setLink(
-            ({ record }) => `${get(record, newTable.getPrimaryKey())}/edit`
+            record =>
+              `${
+                prefix && inline ? `${path.slice(prefix.length + 1)}/` : ''
+              }${get(record, newTable.getPrimaryKey())}/edit`
           );
         }
 

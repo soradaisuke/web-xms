@@ -78,6 +78,8 @@ export default function processRoutes({ app, routes }) {
         processedConfig = processListConfig({
           config,
           path,
+          prefix,
+          inline,
           useFormPage
         });
         component = dynamicRecordsComponent({
