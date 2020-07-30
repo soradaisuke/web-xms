@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.31](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.30...v3.0.0-beta.31) (2020-07-30)
+
+
+### Features
+
+* **NoTicket:** DynamicPaginationTableTransfer ([c9709a8](https://git2.qingtingfm.com/zhibo/xms/commit/c9709a8ed1820568d14c814226ff46e315ff99ff))
+
+
+### Bug Fixes
+
+* **NoTicket:** inline的页面新建跳转错误 ([29310e1](https://git2.qingtingfm.com/zhibo/xms/commit/29310e141e672174be5af177f3be213eebce8b26))
+
 ## [3.0.0-beta.30](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.29...v3.0.0-beta.30) (2020-07-28)
 
 
