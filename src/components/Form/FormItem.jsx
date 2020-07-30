@@ -38,6 +38,7 @@ import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
 import useForm from '../../hooks/useForm';
 import usePageConfig from '../../hooks/usePageConfig';
+import { resetChildColumn } from '../../utils/resetChildColumn';
 import './FormItem.less';
 
 function FormItem({
@@ -55,13 +56,18 @@ function FormItem({
     record,
   ]);
 
+  const form = useForm();
+
   const formItemComponentProps = useMemo(
     () => ({
       ...column.getFormItemComponentProps(),
       ...extraFormItemComponentProps,
+      onChange: () => {
+        resetChildColumn({ column, form, forForm: true });
+      },
       disabled,
     }),
-    [column, disabled, extraFormItemComponentProps]
+    [column, disabled, extraFormItemComponentProps, form]
   );
 
   const valuePropName = useMemo(() => {
@@ -149,8 +155,6 @@ function FormItem({
       ),
     };
   }, [record, column]);
-
-  const form = useForm();
 
   useEffect(() => {
     if (shouldSetInitialValue) {
@@ -409,7 +413,15 @@ function FormItem({
         ) {
           return null;
         }
-        return <Form.Item {...commonFormItemProps}>{inner}</Form.Item>;
+        const parentValue = getFieldValue(column.parentColumn.getFormItemName());
+        return (
+          <Form.Item
+            key={JSON.stringify(parentValue)}
+            {...commonFormItemProps}
+          >
+            {inner}
+          </Form.Item>
+        );
       };
     }
 

@@ -154,6 +154,8 @@ function RecordsPage({ isLoading }) {
       if (column.canFilter() && !column.canFilterOutside()) {
         let filteredValue = get(filter, column.getFilterKey());
 
+        const parentFilteredValue = get(filter, column.parentColumn?.getFilterKey());
+
         if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
           if (column.canFilterRange() || !column.canFilterMultiple()) {
             filteredValue = [filteredValue];
@@ -168,7 +170,7 @@ function RecordsPage({ isLoading }) {
         filterProps.filteredValue = filteredValue;
         filterProps.filterMultiple = column.canFilterMultiple();
         filterProps.filterDropdown = dropDownParams => (
-          <FilterDropDown column={column} {...dropDownParams} />
+          <FilterDropDown key={parentFilteredValue} column={column} {...dropDownParams} />
         );
         filterProps.filterIcon = filtered => (
           <FilterIcon column={column} filtered={filtered} />

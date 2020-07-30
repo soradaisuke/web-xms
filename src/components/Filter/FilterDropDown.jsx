@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { forEach } from 'lodash';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, InputNumber, Input } from 'antd';
 import { useEventCallback } from '@qt/react';
@@ -16,28 +15,8 @@ import DurationColumn from '../../schema/DurationColumn';
 import DateTimeColumn from '../../schema/DateTimeColumn';
 import Column from '../../schema/Column';
 import usePgaeFilterForm from '../../hooks/usePageFilterForm';
+import { resetChildColumn, resetColumn } from '../../utils/resetChildColumn';
 import './FilterDropDown.less';
-
-function resetChildColumn({ column, form }) {
-  if (column.childColumn) {
-    forEach(column.childColumn, (childColumn) => {
-      form.resetFields([childColumn.getFilterKey()]);
-      // eslint-disable-next-line no-use-before-define
-      resetColumn({ column: childColumn, form });
-    });
-  }
-}
-
-function resetColumn({ column, form }) {
-  if (column.getFilterRequired() && column.getFilterDefault()) {
-    form.setFieldsValue({
-      [column.getFilterKey()]: column.getFilterDefault(),
-    });
-  } else {
-    form.resetFields([column.getFilterKey()]);
-  }
-  resetChildColumn({ column, form });
-}
 
 function FilterDropDown({
   column,

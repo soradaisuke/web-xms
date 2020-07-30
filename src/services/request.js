@@ -13,7 +13,7 @@ async function generateRequest(path, options = {}) {
   newOptions.headers = newOptions.headers || {};
   if (
     options.method &&
-    includes(['POST', 'PUT', 'PATCH'], options.method) !== -1 &&
+    includes(['POST', 'PUT', 'PATCH'], options.method) &&
     isPlainObject(newOptions.body)
   ) {
     newOptions.headers['Content-Type'] = 'application/json;charset=utf-8';

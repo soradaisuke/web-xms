@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { makeCancelablePromise } from '@qt/web-common';
 import { useEventCallback } from '@qt/react';
 import useParentFilterValue from './useParentFilterValue';
+import useParentFormValue from './useParentFormValue';
 
 export default function useColumnValueOptions(
   column,
@@ -10,13 +11,15 @@ export default function useColumnValueOptions(
   initialValueOptions
 ) {
   const parentFilterValue = useParentFilterValue(column);
+  const parentFormValue = useParentFormValue(column);
+  const parentValue = forForm ? parentFormValue : parentFilterValue;
   const filters = useMemo(
     () =>
       column.getFilters(
-        parentFilterValue,
+        parentValue,
         forForm ? 'disabledInForm' : 'disabledInFilter'
       ),
-    [column, forForm, parentFilterValue]
+    [column, forForm, parentValue]
   );
 
   const [options, setOptions] = useState(generateFunc(initialValueOptions));
@@ -27,14 +30,14 @@ export default function useColumnValueOptions(
         setOptions(generateFunc(filters));
       } else if (column.getValueOptionsRequest()) {
         const request = makeCancelablePromise(
-          column.fetchValueOptions(parentFilterValue)
+          column.fetchValueOptions(parentValue)
         );
         request.then(
           () =>
             setOptions(
               generateFunc(
                 column.getFilters(
-                  parentFilterValue,
+                  parentValue,
                   forForm ? 'disabledInForm' : 'disabledInFilter'
                 )
               )
@@ -46,7 +49,7 @@ export default function useColumnValueOptions(
       }
     }
     return () => {};
-  }, [column, options, parentFilterValue, filters, generateFunc, forForm]);
+  }, [column, options, parentValue, filters, generateFunc, forForm]);
 
   const onSearch = useEventCallback(async (v) => {
     const searchRequest = column.getValueOptionsSearchRequest();

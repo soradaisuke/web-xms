@@ -15,6 +15,8 @@ import NumberColumn from '../../schema/NumberColumn';
 import StringColumn from '../../schema/StringColumn';
 import DurationColumn from '../../schema/DurationColumn';
 import DateTimeColumn from '../../schema/DateTimeColumn';
+import usePageFilterForm from '../../hooks/usePageFilterForm';
+import { resetChildColumn } from '../../utils/resetChildColumn';
 
 function FormItem({ column }) {
   const commonFormItemProps = useMemo(
@@ -47,6 +49,17 @@ function FormItem({ column }) {
     return commonFormItemProps;
   }, [column, commonFormItemProps]);
 
+  const form = usePageFilterForm();
+
+  const formItemComponentProps = useMemo(
+    () => ({
+      onChange: () => {
+        resetChildColumn({ column, form });
+      }
+    }),
+    [column, form]
+  );
+
   const children = useMemo(() => {
     let inner;
     if (column.canFilterOutside()) {
@@ -55,6 +68,7 @@ function FormItem({ column }) {
           inner = (
             <CheckBox
               column={column}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -62,6 +76,7 @@ function FormItem({ column }) {
           inner = (
             <Radio
               column={column}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -75,6 +90,7 @@ function FormItem({ column }) {
           <TreeSelect
             style={{ width: '100px' }}
             column={column}
+            {...formItemComponentProps}
             {...column.getFilterFormItemComponentProps()}
           />
         );
@@ -84,6 +100,7 @@ function FormItem({ column }) {
             <RangePicker
               presets={column.getFilterPresets()}
               format={column.getFormat()}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -92,6 +109,7 @@ function FormItem({ column }) {
             <DatePicker
               presets={column.getFilterPresets()}
               format={column.getFormat()}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -101,6 +119,7 @@ function FormItem({ column }) {
           inner = (
             <DurationRangePicker
               format={column.getFormat()}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -108,6 +127,7 @@ function FormItem({ column }) {
           inner = (
             <DurationPicker
               format={column.getFormat()}
+              {...formItemComponentProps}
               {...column.getFilterFormItemComponentProps()}
             />
           );
@@ -115,24 +135,34 @@ function FormItem({ column }) {
       } else if (column instanceof NumberColumn) {
         if (column.canFilterRange()) {
           inner = (
-            <InputRangeNumber {...column.getFilterFormItemComponentProps()} />
+            <InputRangeNumber {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />
           );
         } else {
-          inner = <InputNumber {...column.getFilterFormItemComponentProps()} />;
+          inner = <InputNumber {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />;
         }
       } else if (column instanceof StringColumn) {
         inner = (
-          <Input allowClear {...column.getFilterFormItemComponentProps()} />
+          <Input allowClear {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />
         );
       }
     }
 
     if (formItemProps.shouldUpdate) {
-      return () => <Form.Item {...commonFormItemProps}>{inner}</Form.Item>;
+      return ({ getFieldValue }) => { // eslint-disable-line react/prop-types
+        const parentValue = getFieldValue(column.parentColumn.getFilterKey());
+        return (
+          <Form.Item
+            key={JSON.stringify(parentValue)}
+            {...commonFormItemProps}
+          >
+            {inner}
+          </Form.Item>
+        );
+      };
     }
 
     return inner;
-  }, [column, commonFormItemProps, formItemProps.shouldUpdate]);
+  }, [column, commonFormItemProps, formItemProps.shouldUpdate, formItemComponentProps]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
 }
