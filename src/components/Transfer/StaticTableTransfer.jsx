@@ -4,7 +4,7 @@ import { Transfer, Table } from 'antd';
 import difference from 'lodash/difference';
 
 // Customize Table Transfer
-const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
+const StaticTableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   <Transfer {...restProps} showSelectAll={false}>
     {({
       direction,
@@ -12,15 +12,17 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
       onItemSelectAll,
       onItemSelect,
       selectedKeys: listSelectedKeys,
-      disabled: listDisabled
+      disabled: listDisabled,
     }) => {
       const columns = direction === 'left' ? leftColumns : rightColumns;
 
       const rowSelection = {
-        getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
+        getCheckboxProps: (item) => ({
+          disabled: listDisabled || item.disabled,
+        }),
         onSelectAll(selected, selectedRows) {
           const treeSelectedKeys = selectedRows
-            .filter(item => !item.disabled)
+            .filter((item) => !item.disabled)
             .map(({ key }) => key);
           const diffKeys = selected
             ? difference(treeSelectedKeys, listSelectedKeys)
@@ -30,7 +32,7 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
         onSelect({ key }, selected) {
           onItemSelect(key, selected);
         },
-        selectedRowKeys: listSelectedKeys
+        selectedRowKeys: listSelectedKeys,
       };
 
       return (
@@ -44,7 +46,7 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
             onClick: () => {
               if (itemDisabled || listDisabled) return;
               onItemSelect(key, !listSelectedKeys.includes(key));
-            }
+            },
           })}
         />
       );
@@ -52,11 +54,11 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   </Transfer>
 );
 
-TableTransfer.propTypes = {
+StaticTableTransfer.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   leftColumns: PropTypes.array.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
-  rightColumns: PropTypes.array.isRequired
+  rightColumns: PropTypes.array.isRequired,
 };
 
-export default React.memo(TableTransfer);
+export default React.memo(StaticTableTransfer);
