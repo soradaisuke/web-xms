@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.37](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.36...v3.0.0-beta.37) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 总是显示arrow td ([2a7c33a](https://git2.qingtingfm.com/zhibo/xms/commit/2a7c33aa087d33cec4899c37ae339989992837e1))
+
 ## [3.0.0-beta.36](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.35...v3.0.0-beta.36) (2020-07-31)
 
 
