@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.36](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.35...v3.0.0-beta.36) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** DatePicker非预期的默认值 ([643b4be](https://git2.qingtingfm.com/zhibo/xms/commit/643b4bef5f1eee31ad4af73d06cc01225a20bf26))
+
 ## [3.0.0-beta.35](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.34...v3.0.0-beta.35) (2020-07-31)
 
 
