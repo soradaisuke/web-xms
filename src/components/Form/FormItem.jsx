@@ -12,7 +12,7 @@ import {
   Button,
   Space,
 } from 'antd';
-import { get, concat, map, isPlainObject, trim } from 'lodash';
+import { get, concat, map, isPlainObject, trim, isFunction } from 'lodash';
 import { toNumber } from 'lodash/fp';
 import {
   PlusOutlined,
@@ -394,6 +394,9 @@ function FormItem({
         if (
           column.getFormItemAvailableWhen().find((value, key) => {
             const curValue = getFieldValue(key);
+            if (isFunction(value)) {
+              return value(curValue);
+            }
             if (value instanceof Immutable.List) {
               if (!value.find((v) => v === curValue)) {
                 return true;
