@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.34](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.33...v3.0.0-beta.34) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 级联筛选/表单项的值和选项更新错误 ([900fafb](https://git2.qingtingfm.com/zhibo/xms/commit/900fafbd6177a10ab4614166c934a492027b63a4))
+
 ## [3.0.0-beta.33](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.32...v3.0.0-beta.33) (2020-07-31)
 
 
