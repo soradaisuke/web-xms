@@ -42,6 +42,7 @@ import { resetChildColumn } from '../../utils/resetChildColumn';
 import './FormItem.less';
 
 function FormItem({
+  isEdit,
   column,
   record,
   formItemComponentProps: extraFormItemComponentProps,
@@ -50,11 +51,10 @@ function FormItem({
   shouldSetInitialValue,
 }) {
   const user = useUser();
-  const disabled = useMemo(() => column.isImmutableInForm({ user, record }), [
-    column,
-    user,
-    record,
-  ]);
+  const disabled = useMemo(
+    () => isEdit && column.isImmutableInForm({ user, record }),
+    [column, user, record, isEdit]
+  );
 
   const form = useForm();
 
@@ -356,6 +356,7 @@ function FormItem({
                       <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
                         {column.getColumns().map((dColumn) => (
                           <FormItem
+                            isEdit
                             shouldSetInitialValue={false}
                             key={dColumn.getFormItemName()}
                             column={dColumn}
@@ -413,12 +414,11 @@ function FormItem({
         ) {
           return null;
         }
-        const parentValue = getFieldValue(column.parentColumn?.getFormItemName());
+        const parentValue = getFieldValue(
+          column.parentColumn?.getFormItemName()
+        );
         return (
-          <Form.Item
-            key={JSON.stringify(parentValue)}
-            {...commonFormItemProps}
-          >
+          <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
             {inner}
           </Form.Item>
         );
@@ -451,6 +451,7 @@ FormItem.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   hideLabel: PropTypes.bool,
   shouldSetInitialValue: PropTypes.bool,
+  isEdit: PropTypes.bool,
 };
 
 FormItem.defaultProps = {
@@ -459,6 +460,7 @@ FormItem.defaultProps = {
   formItemComponentProps: {},
   commonFormItemProps: {},
   hideLabel: false,
+  isEdit: false,
 };
 
 export default React.memo(FormItem);

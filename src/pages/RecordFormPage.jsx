@@ -22,30 +22,30 @@ const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 8 },
-    md: { span: 6 }
+    md: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 16 },
-    md: { span: 18 }
-  }
+    md: { span: 18 },
+  },
 };
 
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
       span: 24,
-      offset: 0
+      offset: 0,
     },
     sm: {
       span: 16,
-      offset: 8
+      offset: 8,
     },
     md: {
       span: 18,
-      offset: 6
-    }
-  }
+      offset: 6,
+    },
+  },
 };
 
 function RecordFormPage() {
@@ -71,9 +71,9 @@ function RecordFormPage() {
     if (isEdit) {
       return table
         .getColumns()
-        .filter(c => c.canShowInEditFrom({ record, user }));
+        .filter((c) => c.canShowInEditFrom({ record, user }));
     }
-    return table.getColumns().filter(c => c.canShowInCreateFrom({ user }));
+    return table.getColumns().filter((c) => c.canShowInCreateFrom({ user }));
   }, [isEdit, record, table, user]);
 
   const onConfirmReset = useEventCallback(() => {
@@ -89,28 +89,25 @@ function RecordFormPage() {
           setIsLoading(false);
           setError(null);
         })
-        .catch(e => {
+        .catch((e) => {
           setIsLoading(true);
           setError(e);
         });
     }
   }, [fetch, id]);
 
-  const renderActions = useMemo(
-    () => {
-      let result = Immutable.List([
-        isEdit
-          ? table.getEditAction()?.setLink(null)
-          : table.getCreateAction()?.setLink(null)
-      ]);
-      result = result.concat(table.getFormActions());
+  const renderActions = useMemo(() => {
+    let result = Immutable.List([
+      isEdit
+        ? table.getEditAction()?.setLink(null)
+        : table.getCreateAction()?.setLink(null),
+    ]);
+    result = result.concat(table.getFormActions());
 
-      return isEdit && table.getDeleteAction()
-        ? result.push(table.getDeleteAction())
-        : result;
-    },
-    [table, isEdit]
-  );
+    return isEdit && table.getDeleteAction()
+      ? result.push(table.getDeleteAction())
+      : result;
+  }, [table, isEdit]);
 
   useEffect(() => {
     reset();
@@ -123,7 +120,7 @@ function RecordFormPage() {
   const backToListPage = useEventCallback(() => {
     const { pathname } = window.location;
     history.push(join(split(pathname, '/').slice(-2), '/'));
-  }, [history])
+  }, [history]);
 
   return (
     <FormContext.Provider value={form}>
@@ -140,8 +137,9 @@ function RecordFormPage() {
               {...formProps}
               form={form}
             >
-              {columns.map(column => (
+              {columns.map((column) => (
                 <FormItem
+                  isEdit={isEdit}
                   key={column.getTitle()}
                   record={record}
                   column={column}
@@ -158,7 +156,7 @@ function RecordFormPage() {
                       重置
                     </Button>
                   </Popconfirm>
-                  {renderActions.map(a => (
+                  {renderActions.map((a) => (
                     <ActionComponent
                       key={a.getTitle()}
                       disabledRecordModal={
