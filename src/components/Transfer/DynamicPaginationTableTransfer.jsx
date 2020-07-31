@@ -3,7 +3,7 @@ import React, {
   useCallback,
   useEffect,
   isValidElement,
-  useMemo,
+  useMemo
 } from 'react';
 import { Button, message } from 'antd';
 import { isString, map, isEqual } from 'lodash';
@@ -41,7 +41,7 @@ function DynamicPaginationTableTransfer({
   const [leftTablePagination, setLeftTablePagination] = useState({
     current: 1,
     pageSize: leftTableProps?.pagination?.pageSize || 10,
-    total: 0,
+    total: 0
   });
   const [leftLoading, setLeftLoading] = useState(false);
   const [rightLoading, setRightLoading] = useState(false);
@@ -52,12 +52,12 @@ function DynamicPaginationTableTransfer({
   const getLeftDataSource = useEventCallback(
     async (page, pageSize) => {
       setLeftLoading(true);
-      await request(fetch.left, { page, pagesize: pageSize }, (res) => {
+      await request(fetch.left, { page, pagesize: pageSize }, res => {
         setLeftTableDataSource(res.items);
         setLeftTablePagination({
           current: page,
           pageSize,
-          total: res.total,
+          total: res.total
         });
       });
       setLeftLoading(false);
@@ -67,12 +67,12 @@ function DynamicPaginationTableTransfer({
 
   const getRightDataSource = useCallback(async () => {
     setRightLoading(true);
-    await request(fetch.right, { page: 1, pagesize: 99 }, (res) => {
+    await request(fetch.right, { page: 1, pagesize: 99 }, res => {
       setRightTableDataSource(res.items);
       const keys = map(res.items, getKey);
       setTargetKeys({
         initial: keys,
-        recently: keys,
+        recently: keys
       });
     });
     setRightLoading(false);
@@ -94,7 +94,7 @@ function DynamicPaginationTableTransfer({
     (val, direction, moveKeys) => {
       setTargetKeys({
         ...targetKeys,
-        recently: val,
+        recently: val
       });
       // eslint-disable-next-line no-unused-expressions
       onChange?.(val, direction, moveKeys);
@@ -135,7 +135,7 @@ function DynamicPaginationTableTransfer({
 
   useEffect(() => {
     getLeftDataSource(1, leftTablePagination.pageSize);
-  }, [getLeftDataSource, leftTablePagination]);
+  }, [getLeftDataSource, leftTablePagination.pageSize]);
 
   useEffect(() => {
     getRightDataSource();
@@ -152,12 +152,12 @@ function DynamicPaginationTableTransfer({
           loading: leftLoading,
           pagination: {
             ...(leftTableProps?.pagination || {}),
-            ...leftTablePagination,
-          },
+            ...leftTablePagination
+          }
         }}
         rightTableProps={{
           ...(rightTableProps ?? {}),
-          loading: rightLoading,
+          loading: rightLoading
         }}
         dataSource={leftTableDataSource}
         targetDataSource={rightTableDataSource}
@@ -171,7 +171,7 @@ function DynamicPaginationTableTransfer({
 DynamicPaginationTableTransfer.propTypes = {
   fetch: PropTypes.shape({
     left: PropTypes.func,
-    right: PropTypes.func,
+    right: PropTypes.func
   }).isRequired,
   onChange: PropTypes.func,
   onCancel: PropTypes.func,
@@ -179,7 +179,7 @@ DynamicPaginationTableTransfer.propTypes = {
   footer: PropTypes.oneOfType([
     PropTypes.element,
     PropTypes.string,
-    PropTypes.arrayOf(PropTypes.element),
+    PropTypes.arrayOf(PropTypes.element)
   ]),
   okText: PropTypes.string,
   cancelText: PropTypes.string,
@@ -187,7 +187,7 @@ DynamicPaginationTableTransfer.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   leftTableProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
-  rightTableProps: PropTypes.object,
+  rightTableProps: PropTypes.object
 };
 
 DynamicPaginationTableTransfer.defaultProps = {
@@ -199,7 +199,7 @@ DynamicPaginationTableTransfer.defaultProps = {
   okText: '确定',
   cancelText: '取消',
   leftTableProps: {},
-  rightTableProps: {},
+  rightTableProps: {}
 };
 
 export default React.memo(DynamicPaginationTableTransfer);
