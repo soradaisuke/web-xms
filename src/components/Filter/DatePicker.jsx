@@ -30,7 +30,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
     <DatePicker
       allowClear
       {...props}
-      value={moment(value).isValid() ? moment(value) : null}
+      value={value ? moment(value) : null}
       onChange={onChangeDate}
       renderExtraFooter={renderExtraFooter}
     />
