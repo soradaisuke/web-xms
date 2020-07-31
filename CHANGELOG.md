@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.39](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.38...v3.0.0-beta.39) (2020-07-31)
+
+
+### Features
+
+* **NoTicket:** 优化placeholder配置 ([8efd1d4](https://git2.qingtingfm.com/zhibo/xms/commit/8efd1d45a131be08b0a41ca61b15d1d703f2bebe))
+
 ## [3.0.0-beta.38](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.37...v3.0.0-beta.38) (2020-07-31)
 
 
