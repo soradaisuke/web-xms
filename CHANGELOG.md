@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.38](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.37...v3.0.0-beta.38) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** picker='time'时值无法转成正确的moment ([981ddbc](https://git2.qingtingfm.com/zhibo/xms/commit/981ddbc7c9d740cd30146d72604662bca3bab75c))
+* **NoTicket:** 修复新建时无法输入immutable属性的column ([b43d2fa](https://git2.qingtingfm.com/zhibo/xms/commit/b43d2fa4a0321bed45c5110a8f5aca3fe5605404))
+
 ## [3.0.0-beta.37](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.36...v3.0.0-beta.37) (2020-07-31)
 
 
