@@ -51,26 +51,24 @@ function DraggableBodyRow({
       {...restProps}
     >
       {children}
-      {showArrowUp || showArrowDown ? (
-        <td>
-          {showArrowUp && (
-            <ArrowUpOutlined
-              onClick={(e) => {
-                e.stopPropagation();
-                moveRow(index, index - 1);
-              }}
-            />
-          )}
-          {showArrowDown && (
-            <ArrowDownOutlined
-              onClick={(e) => {
-                e.stopPropagation();
-                moveRow(index, index + 1);
-              }}
-            />
-          )}
-        </td>
-      ) : null}
+      <td>
+        {showArrowUp && (
+          <ArrowUpOutlined
+            onClick={(e) => {
+              e.stopPropagation();
+              moveRow(index, index - 1);
+            }}
+          />
+        )}
+        {showArrowDown && (
+          <ArrowDownOutlined
+            onClick={(e) => {
+              e.stopPropagation();
+              moveRow(index, index + 1);
+            }}
+          />
+        )}
+      </td>
     </tr>
   );
 }
