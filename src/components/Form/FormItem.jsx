@@ -62,6 +62,7 @@ function FormItem({
     () => ({
       ...column.getFormItemComponentProps(),
       ...extraFormItemComponentProps,
+      placeholder: column.getFormPlaceholder(),
       onChange: () => {
         resetChildColumn({ column, form, forForm: true });
       },
@@ -281,18 +282,13 @@ function FormItem({
           <Select
             allowClear
             style={{ width: '100%' }}
-            placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
             mode="tags"
           />
         );
       } else {
         inner = (
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder={`输入${column.getTitle()}`}
-            {...formItemComponentProps}
-          />
+          <InputNumber style={{ width: '100%' }} {...formItemComponentProps} />
         );
       }
     } else if (column instanceof StringColumn) {
@@ -301,7 +297,6 @@ function FormItem({
           <Select
             allowClear
             style={{ width: '100%' }}
-            placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
             mode="tags"
           />
@@ -312,7 +307,6 @@ function FormItem({
           <Input.TextArea
             allowClear
             style={{ width: '100%' }}
-            placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
           />
         );
@@ -321,7 +315,6 @@ function FormItem({
         <Input
           allowClear
           style={{ width: '100%' }}
-          placeholder={`输入${column.getTitle()}`}
           {...formItemComponentProps}
         />
       );
@@ -330,7 +323,6 @@ function FormItem({
         inner = (
           <ObjectInputTextArea
             style={{ width: '100%' }}
-            placeholder={`输入${column.getTitle()}`}
             {...formItemComponentProps}
           />
         );

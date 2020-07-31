@@ -308,6 +308,13 @@ export default class Column {
     return this.config.getIn(['form', 'required'], false);
   }
 
+  getFormPlaceholder() {
+    return this.config.getIn(
+      ['form', 'formItemComponentProps', 'placeholder'],
+      this.config.getIn(['form', 'placeholder'], `请输入${this.getTitle()}`)
+    );
+  }
+
   getFormItemAvailableWhen() {
     return this.config.getIn(['form', 'availableWhen'], Immutable.Map());
   }
