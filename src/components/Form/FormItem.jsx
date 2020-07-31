@@ -413,7 +413,7 @@ function FormItem({
         ) {
           return null;
         }
-        const parentValue = getFieldValue(column.parentColumn.getFormItemName());
+        const parentValue = getFieldValue(column.parentColumn?.getFormItemName());
         return (
           <Form.Item
             key={JSON.stringify(parentValue)}
