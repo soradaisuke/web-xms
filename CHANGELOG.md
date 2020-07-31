@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.32](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.31...v3.0.0-beta.32) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复DatePicker清空时错误 ([528ea7c](https://git2.qingtingfm.com/zhibo/xms/commit/528ea7cbb379720669516484b7b9c93e8a8d5bb3))
+* **NoTicket:** 增加DraggableHeaderRow ([58747ca](https://git2.qingtingfm.com/zhibo/xms/commit/58747caf2c1d2c17abecd6de1cb3963afcc684c1))
+
 ## [3.0.0-beta.31](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.30...v3.0.0-beta.31) (2020-07-30)
 
 
