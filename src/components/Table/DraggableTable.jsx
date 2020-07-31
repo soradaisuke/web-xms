@@ -4,14 +4,18 @@ import { DndProvider, createDndContext } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useEventCallback } from '@qt/react';
 import PropTypes from 'prop-types';
-import DragableBodyRow from './DragableBodyRow';
+import DraggableBodyRow from './DraggableBodyRow';
+import DraggableHeaderRow from './DraggableHeaderRow';
 import getKeyByRowKey from '../../utils/getKeyByRowKey';
 
 const dndContext = createDndContext(HTML5Backend);
 
 const components = {
+  header: {
+    row: DraggableHeaderRow,
+  },
   body: {
-    row: DragableBodyRow,
+    row: DraggableBodyRow,
   },
 };
 

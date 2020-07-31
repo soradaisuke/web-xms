@@ -46,11 +46,14 @@ function PaginationTableTransfer({
   }, [dataSource, getKey, rightDataSource]);
 
   useEffect(() => {
-    setTotalDataSource(
-      uniqBy(concat(totalDataSource, dataSource, targetDataSource), getKey)
+    setTotalDataSource((prev) => uniqBy(concat(prev, dataSource), getKey));
+  }, [dataSource, getKey]);
+
+  useEffect(() => {
+    setTotalDataSource((prev) =>
+      uniqBy(concat(prev, targetDataSource), getKey)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataSource, getKey, targetDataSource]);
+  }, [getKey, targetDataSource]);
 
   const onDraggableTableChange = useEventCallback(
     (val) => {

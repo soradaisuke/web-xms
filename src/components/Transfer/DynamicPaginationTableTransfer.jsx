@@ -59,8 +59,8 @@ function DynamicPaginationTableTransfer({
           pageSize,
           total: res.total,
         });
-        setLeftLoading(false);
       });
+      setLeftLoading(false);
     },
     [fetch.left]
   );

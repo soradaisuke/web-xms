@@ -3,11 +3,11 @@ import { useDrag, useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-import './DragableBodyRow.less';
+import './DraggableBodyRow.less';
 
-const type = 'DragableBodyRow';
+const type = 'DraggableBodyRow';
 
-function DragableBodyRow({
+function DraggableBodyRow({
   index,
   moveRow,
   className,
@@ -75,7 +75,7 @@ function DragableBodyRow({
   );
 }
 
-DragableBodyRow.propTypes = {
+DraggableBodyRow.propTypes = {
   moveRow: PropTypes.func,
   index: PropTypes.number,
   showArrowUp: PropTypes.bool,
@@ -84,7 +84,7 @@ DragableBodyRow.propTypes = {
   children: PropTypes.node,
 };
 
-DragableBodyRow.defaultProps = {
+DraggableBodyRow.defaultProps = {
   moveRow: () => {},
   index: 0,
   showArrowUp: false,
@@ -93,4 +93,4 @@ DragableBodyRow.defaultProps = {
   children: null,
 };
 
-export default React.memo(DragableBodyRow);
+export default React.memo(DraggableBodyRow);
