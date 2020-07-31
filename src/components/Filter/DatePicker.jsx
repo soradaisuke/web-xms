@@ -43,12 +43,13 @@ FilterDatePicker.propTypes = {
   format: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.string),
     PropTypes.string
-  ]).isRequired,
+  ]),
   value: PropTypes.string,
   presets: PropTypes.instanceOf(Immutable.List),
 };
 
 FilterDatePicker.defaultProps = {
+  format: null,
   value: undefined,
   presets: null,
 };

@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import Immutable from 'immutable';
 import { DatePicker, Tag } from 'antd';
-import { isUndefined } from 'lodash';
 import { useEventCallback } from '@qt/react';
 
 const { RangePicker } = DatePicker;
 
-function FilterRangePicker({ value, onChange, presets, ...props }) {
+function FilterRangePicker({ value, onChange, presets, format, ...props }) {
   const onChangeDate = useEventCallback((_, strings) => {
     onChange(strings);
   });
@@ -33,7 +32,8 @@ function FilterRangePicker({ value, onChange, presets, ...props }) {
     <RangePicker
       allowClear
       {...props}
-      value={!isUndefined(value) ? [moment(value[0]), moment(value[1])] : null}
+      format={format}
+      value={value ? [moment(value[0], format), moment(value[1], format)] : null}
       onChange={onChangeDate}
       renderExtraFooter={renderExtraFooter}
     />
@@ -42,11 +42,16 @@ function FilterRangePicker({ value, onChange, presets, ...props }) {
 
 FilterRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
+  format: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.string
+  ]),
   value: PropTypes.arrayOf(PropTypes.string),
   presets: PropTypes.instanceOf(Immutable.List)
 };
 
 FilterRangePicker.defaultProps = {
+  format: null,
   value: undefined,
   presets: null
 };
