@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.33](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.32...v3.0.0-beta.33) (2020-07-31)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复TableTransfer循环获取数据 ([e4c6c04](https://git2.qingtingfm.com/zhibo/xms/commit/e4c6c0427db164821a20c0ce4ceb43276df77aef))
+
 ## [3.0.0-beta.32](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.31...v3.0.0-beta.32) (2020-07-31)
 
 
