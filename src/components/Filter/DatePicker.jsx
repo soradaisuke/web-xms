@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import Immutable from 'immutable';
 import { DatePicker, Tag } from 'antd';
-import { isUndefined } from 'lodash';
 import { useEventCallback } from '@qt/react';
 
 function FilterDatePicker({ value, onChange, presets, ...props }) {
@@ -13,7 +12,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
 
   const renderExtraFooter = useCallback(
     () =>
-      presets?.map(preset => (
+      presets?.map((preset) => (
         <Tag
           color="blue"
           key={preset.get('value')}
@@ -31,7 +30,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
     <DatePicker
       allowClear
       {...props}
-      value={!isUndefined(value) ? moment(value) : null}
+      value={moment(value).isValid() ? moment(value) : null}
       onChange={onChangeDate}
       renderExtraFooter={renderExtraFooter}
     />
@@ -41,12 +40,12 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
 FilterDatePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string,
-  presets: PropTypes.instanceOf(Immutable.List)
+  presets: PropTypes.instanceOf(Immutable.List),
 };
 
 FilterDatePicker.defaultProps = {
   value: undefined,
-  presets: null
+  presets: null,
 };
 
 export default React.memo(FilterDatePicker);

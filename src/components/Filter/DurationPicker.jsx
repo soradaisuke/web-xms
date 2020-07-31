@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { TimePicker } from 'antd';
-import { isUndefined } from 'lodash';
+import { isNumber } from 'lodash';
 import { useEventCallback } from '@qt/react';
 
 function DurationPicker({ value, onChange, ...props }) {
-  const onChangeTime = useEventCallback(newValue => {
+  const onChangeTime = useEventCallback((newValue) => {
     onChange(newValue.diff(moment().startOf('day'), 's'));
   });
 
@@ -14,13 +14,7 @@ function DurationPicker({ value, onChange, ...props }) {
     <TimePicker
       allowClear
       {...props}
-      value={
-        !isUndefined(value)
-          ? moment()
-              .startOf('day')
-              .add(value, 's')
-          : null
-      }
+      value={!isNumber(value) ? moment().startOf('day').add(value, 's') : null}
       onChange={onChangeTime}
     />
   );
@@ -28,11 +22,11 @@ function DurationPicker({ value, onChange, ...props }) {
 
 DurationPicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.number
+  value: PropTypes.number,
 };
 
 DurationPicker.defaultProps = {
-  value: undefined
+  value: undefined,
 };
 
 export default React.memo(DurationPicker);

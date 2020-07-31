@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { isUndefined } from 'lodash';
 import { useEventCallback } from '@qt/react';
 import { TimePicker } from 'antd';
 
@@ -16,7 +15,7 @@ function DurationRangePicker({ value, onChange, ...props }) {
     <RangePicker
       allowClear
       {...props}
-      value={!isUndefined(value) ? [moment(value[0]), moment(value[1])] : null}
+      value={value ? [moment(value[0]), moment(value[1])] : null}
       onChange={onChangeDate}
     />
   );
@@ -24,11 +23,11 @@ function DurationRangePicker({ value, onChange, ...props }) {
 
 DurationRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.arrayOf(PropTypes.number)
+  value: PropTypes.arrayOf(PropTypes.number),
 };
 
 DurationRangePicker.defaultProps = {
-  value: undefined
+  value: undefined,
 };
 
 export default React.memo(DurationRangePicker);
