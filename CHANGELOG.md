@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.40](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.39...v3.0.0-beta.40) (2020-07-31)
+
+
+### Features
+
+* **NoTicket:** form.availableWhen的value支持函数 ([53badd5](https://git2.qingtingfm.com/zhibo/xms/commit/53badd5a97256e21a416b71752ea75d0a9e0de39))
+
+
+### Bug Fixes
+
+* **NoTicket:** RangePicker在moment初始化的时候也传入format & format改成非required ([971df68](https://git2.qingtingfm.com/zhibo/xms/commit/971df68bf7da29f5ee895cae30dd879fb5a4c350))
+
 ## [3.0.0-beta.39](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.38...v3.0.0-beta.39) (2020-07-31)
 
 
