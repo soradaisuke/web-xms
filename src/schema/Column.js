@@ -277,6 +277,11 @@ export default class Column {
     );
   }
 
+
+  getFormRender() {
+    return this.config.getIn(['form', 'render']);
+  }
+
   isImmutableInForm({ user, record }) {
     const immutableInForm = this.config.getIn(['form', 'immutable']);
     if (isFunction(immutableInForm)) {

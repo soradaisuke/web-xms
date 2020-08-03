@@ -82,7 +82,11 @@ function FormItem({
   }, [column]);
 
   const rules = useMemo(() => {
-    let r = column.getFormItemRules();
+    let r = column.getFormItemRules().map(rule =>
+      isFunction(rule)
+        ? (...p) => rule(...p, record)
+        : rule
+    );
 
     if (column instanceof UrlColumn) {
       r = concat(r, [
@@ -125,7 +129,7 @@ function FormItem({
     }
 
     return r;
-  }, [column]);
+  }, [column, record]);
 
   const normalize = useMemo(() => {
     if (column instanceof NumberColumn && column.isArray()) {
@@ -215,7 +219,9 @@ function FormItem({
   const children = useMemo(() => {
     let inner;
 
-    if (column.canFormItemExpandable()) {
+    if (column.getFormRender()) {
+      inner = (column.getFormRender())(formItemComponentProps);
+    } else if (column.canFormItemExpandable()) {
       if (column.isArray()) {
         inner = <CheckBox column={column} {...formItemComponentProps} />;
       } else {
@@ -395,7 +401,7 @@ function FormItem({
           column.getFormItemAvailableWhen().find((value, key) => {
             const curValue = getFieldValue(key);
             if (isFunction(value)) {
-              return value(curValue);
+              return !value(curValue);
             }
             if (value instanceof Immutable.List) {
               if (!value.find((v) => v === curValue)) {
