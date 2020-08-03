@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.50](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.49...v3.0.0-beta.50) (2020-08-03)
+
+
+### Features
+
+* **NoTicket:** 支持form.render & 函数的rule的最后一个参数传record & availableWhen的函数返回true时是显示的意思 ([f5da742](https://git2.qingtingfm.com/zhibo/xms/commit/f5da742bf3e2d8f9f4993cde7d5494fc9ed21e11))
+* **NoTicket:** export ActivatorModal ([7d35345](https://git2.qingtingfm.com/zhibo/xms/commit/7d3534535c45328635731d33dab05c917f10052a))
+
 ## [3.0.0-beta.49](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.48...v3.0.0-beta.49) (2020-08-03)
 
 
