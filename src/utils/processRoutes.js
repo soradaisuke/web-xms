@@ -4,7 +4,7 @@ import { dynamic } from 'dva';
 import {
   dynamicRecordsComponent,
   dynamicRecordComponent,
-  dynamicRecordFormComponent
+  dynamicRecordFormComponent,
 } from './dynamicComponents';
 import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
@@ -51,14 +51,16 @@ export default function processRoutes({ app, routes }) {
       return rs;
     }
 
-    return (rs || []).map(r => {
+    return (rs || []).map((r) => {
       valiadateRoute(r, prefix);
 
       const route = migrateRoute(r, app);
 
       const { config = {}, path, models, inline, routes: subRoutes } = route;
       const { useFormPage } = config;
-      const inlineRoutes = subRoutes ? filter(subRoutes, sr => sr.inline) : [];
+      const inlineRoutes = subRoutes
+        ? filter(subRoutes, (sr) => sr.inline)
+        : [];
       let { component } = route;
       let processedConfig = {};
 
@@ -70,7 +72,7 @@ export default function processRoutes({ app, routes }) {
         component = dynamic({
           component,
           models,
-          app
+          app,
         });
       }
 
@@ -80,13 +82,13 @@ export default function processRoutes({ app, routes }) {
           path,
           prefix,
           inline,
-          useFormPage
+          useFormPage,
         });
         component = dynamicRecordsComponent({
           app,
           component,
           inline,
-          config: processedConfig
+          config: processedConfig,
         });
       } else if (
         !!component ||
@@ -97,12 +99,14 @@ export default function processRoutes({ app, routes }) {
         component = dynamicRecordComponent({
           app,
           component,
-          config: processedConfig
+          inline,
+          config: processedConfig,
         });
       } else if (config.type === 'form') {
         component = dynamicRecordFormComponent({
           app,
-          config: processFormConfig({ config, path })
+          inline,
+          config: processFormConfig({ config, path }),
         });
       }
 
@@ -114,8 +118,8 @@ export default function processRoutes({ app, routes }) {
           config: {
             ...processedConfig,
             idIdentifier,
-            type: 'form'
-          }
+            type: 'form',
+          },
         };
         if (!route.routes) {
           route.routes = [formPageRoute];
@@ -128,7 +132,7 @@ export default function processRoutes({ app, routes }) {
         ...route,
         component,
         namespace: processedConfig.namespace,
-        routes: processRoutesInternal(route.routes, route.path)
+        routes: processRoutesInternal(route.routes, route.path),
       };
     });
   }
