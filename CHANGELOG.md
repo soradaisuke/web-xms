@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.46](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.45...v3.0.0-beta.46) (2020-08-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** 没有传递inline到RecordPage ([847df54](https://git2.qingtingfm.com/zhibo/xms/commit/847df54e8c70b8588a594fa133582f8b70578cae))
+
 ## [3.0.0-beta.45](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.44...v3.0.0-beta.45) (2020-08-03)
 
 
