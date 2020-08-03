@@ -141,6 +141,13 @@ export default class Column {
     );
   }
 
+  getTableFixed() {
+    return this.config.getIn(
+      ['table', 'columnProps', 'fixed'],
+      this.config.getIn(['table', 'fixed'], false)
+    );
+  }
+
   getTableSortDirections() {
     if (!this.sortDirections) {
       this.sortDirections = this.config

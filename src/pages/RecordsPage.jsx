@@ -36,42 +36,42 @@ function RecordsPage({ isLoading }) {
     fetch: fetchEffect,
     updatePage,
     tableProps,
-    filterFormProps
+    filterFormProps,
   } = usePageConfig();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const params = useActionParams();
   const rowActions = useMemo(
-    () => table.getRowActions().filter(a => a.isVisible(params)),
+    () => table.getRowActions().filter((a) => a.isVisible(params)),
     [table, params]
   );
   const multipleActions = useMemo(
-    () => table.getMultipleActions().filter(a => a.isVisible(params)),
+    () => table.getMultipleActions().filter((a) => a.isVisible(params)),
     [table, params]
   );
   const globalActions = useMemo(
-    () => table.getGlobalActions().filter(a => a.isVisible(params)),
+    () => table.getGlobalActions().filter((a) => a.isVisible(params)),
     [table, params]
   );
   const columns = useMemo(
-    () => table.getColumns().filter(column => column.canShowInTable(params)),
+    () => table.getColumns().filter((column) => column.canShowInTable(params)),
     [table, params]
   );
-  const [widths] = useState(columns.map(c => c.getTableWidth()));
+  const [widths] = useState(columns.map((c) => c.getTableWidth()));
   const filterColumns = useMemo(
-    () => columns.filter(column => column.canFilter()),
+    () => columns.filter((column) => column.canFilter()),
     [columns]
   );
   const hasOutsideFilter = useMemo(
-    () => filterColumns.filter(column => column.canFilterOutside()).size > 0,
+    () => filterColumns.filter((column) => column.canFilterOutside()).size > 0,
     [filterColumns]
   );
   const hasTableFilter = useMemo(
-    () => filterColumns.filter(column => !column.canFilterOutside()).size > 0,
+    () => filterColumns.filter((column) => !column.canFilterOutside()).size > 0,
     [filterColumns]
   );
   const groupedFilterColumns = useMemo(
-    () => groupBy(filterColumns.toArray(), column => column.getFilterGroup()),
+    () => groupBy(filterColumns.toArray(), (column) => column.getFilterGroup()),
     [filterColumns]
   );
 
@@ -80,12 +80,12 @@ function RecordsPage({ isLoading }) {
     setSelectedRowKeys(rowKeys);
   });
 
-  const onFilterFinish = useEventCallback(f => {
+  const onFilterFinish = useEventCallback((f) => {
     updatePage({
       page,
       pagesize,
       sort,
-      filter: f
+      filter: f,
     });
   });
 
@@ -106,7 +106,7 @@ function RecordsPage({ isLoading }) {
       page: newPage,
       pagesize: newPageSize,
       sort: newSort,
-      filter
+      filter,
     });
   });
 
@@ -129,7 +129,7 @@ function RecordsPage({ isLoading }) {
       multipleActions.size > 0
         ? {
             selectedRowKeys,
-            onChange: onTableSelectChange
+            onChange: onTableSelectChange,
           }
         : null,
     [multipleActions, selectedRowKeys, onTableSelectChange]
@@ -143,7 +143,7 @@ function RecordsPage({ isLoading }) {
       page,
       pagesize,
       sort,
-      filter
+      filter,
     });
   }, [fetchEffect, filter, page, pagesize, sort]);
 
@@ -154,7 +154,10 @@ function RecordsPage({ isLoading }) {
       if (column.canFilter() && !column.canFilterOutside()) {
         let filteredValue = get(filter, column.getFilterKey());
 
-        const parentFilteredValue = get(filter, column.parentColumn?.getFilterKey());
+        const parentFilteredValue = get(
+          filter,
+          column.parentColumn?.getFilterKey()
+        );
 
         if (filteredValue || filteredValue === 0 || isBoolean(filteredValue)) {
           if (column.canFilterRange() || !column.canFilterMultiple()) {
@@ -169,10 +172,14 @@ function RecordsPage({ isLoading }) {
           !(filteredValue.length === 1 && filteredValue[0] === null);
         filterProps.filteredValue = filteredValue;
         filterProps.filterMultiple = column.canFilterMultiple();
-        filterProps.filterDropdown = dropDownParams => (
-          <FilterDropDown key={parentFilteredValue} column={column} {...dropDownParams} />
+        filterProps.filterDropdown = (dropDownParams) => (
+          <FilterDropDown
+            key={parentFilteredValue}
+            column={column}
+            {...dropDownParams}
+          />
         );
-        filterProps.filterIcon = filtered => (
+        filterProps.filterIcon = (filtered) => (
           <FilterIcon column={column} filtered={filtered} />
         );
       }
@@ -180,16 +187,17 @@ function RecordsPage({ isLoading }) {
         <Column
           {...column.getTableColumnProps()}
           {...filterProps}
+          fixed={column.getTableFixed()}
           width={widths.get(index)}
           title={column.getTitle()}
           dataIndex={column.getKey()}
           key={column.getKey()}
           sorter={column.canSortInTable()}
           sortDirections={column.getTableSortDirections()}
-          onCell={record => ({
+          onCell={(record) => ({
             record,
             column,
-            onComplete: fetch
+            onComplete: fetch,
           })}
           // onHeaderCell={() => ({
           //   width: widths.get(index),
@@ -207,7 +215,7 @@ function RecordsPage({ isLoading }) {
   );
 
   useEffect(() => {
-    table.columns.forEach(column => {
+    table.columns.forEach((column) => {
       column.resetFilters();
     });
   }, [table.columns]);
@@ -232,7 +240,7 @@ function RecordsPage({ isLoading }) {
           {map(groupedFilterColumns, (cs, name) => (
             <React.Fragment key={name}>
               {name && <Form.Item label={name} />}
-              {cs.map(column => (
+              {cs.map((column) => (
                 <FormItem key={column.getFilterKey()} column={column} />
               ))}
               <div className="line-break" style={{ width: '100%' }} />
@@ -263,7 +271,7 @@ function RecordsPage({ isLoading }) {
     hasOutsideFilter,
     hasTableFilter,
     onFilterFinish,
-    onResetFilters
+    onResetFilters,
   ]);
 
   const globalActionsChildren = useMemo(() => {
@@ -271,7 +279,7 @@ function RecordsPage({ isLoading }) {
       globalActions.size > 0 && (
         <Group title="操作">
           {globalActions &&
-            globalActions.map(action => (
+            globalActions.map((action) => (
               <Action
                 key={action.getTitle()}
                 action={action}
@@ -295,8 +303,8 @@ function RecordsPage({ isLoading }) {
           // },
           body: {
             row: EditableTableRow,
-            cell: EditableTableCell
-          }
+            cell: EditableTableCell,
+          },
         }}
         rowClassName={() => 'editable-row'}
         loading={isLoading}
@@ -311,7 +319,7 @@ function RecordsPage({ isLoading }) {
           ...(tableProps.pagination ?? {}),
           total,
           current: page,
-          pageSize: pagesize
+          pageSize: pagesize,
         }}
       >
         {columns.map((column, index) => renderColumn(column, index))}
@@ -323,7 +331,7 @@ function RecordsPage({ isLoading }) {
               record // eslint-disable-line react/jsx-no-bind
             ) => (
               <>
-                {rowActions.map(action => (
+                {rowActions.map((action) => (
                   <Action
                     key={action.getTitle()}
                     action={action}
@@ -350,7 +358,7 @@ function RecordsPage({ isLoading }) {
     rowSelection,
     table,
     tableProps,
-    total
+    total,
   ]);
 
   return (
@@ -374,11 +382,11 @@ function RecordsPage({ isLoading }) {
 }
 
 RecordsPage.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
 };
 
 RecordsPage.defaultProps = {
-  isLoading: false
+  isLoading: false,
 };
 
 export default React.memo(RecordsPage);
