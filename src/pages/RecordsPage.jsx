@@ -2,7 +2,15 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Table, Card, Button, Form } from 'antd';
-import { split, startsWith, map, get, isBoolean, groupBy } from 'lodash';
+import {
+  split,
+  startsWith,
+  map,
+  get,
+  isBoolean,
+  groupBy,
+  isEqual,
+} from 'lodash';
 import { useEventCallback } from '@qt/react';
 import EditableTableCell from '../components/Editable/EditableTableCell';
 import EditableTableRow from '../components/Editable/EditableTableRow';
@@ -82,14 +90,14 @@ function RecordsPage({ isLoading }) {
 
   const onFilterFinish = useEventCallback((f) => {
     updatePage({
-      page,
+      page: 1,
       pagesize,
       sort,
       filter: f,
     });
   });
 
-  const onTableChange = useEventCallback((pagination, _, sorter) => {
+  const onTableChange = useEventCallback((pagination, filters, sorter) => {
     let newPage = pagination.current;
     const newPageSize = pagination.pageSize;
     let newSort = '';
@@ -99,6 +107,10 @@ function RecordsPage({ isLoading }) {
     }
 
     if (sort !== newSort) {
+      newPage = 1;
+    }
+
+    if (!isEqual(filter, filters)) {
       newPage = 1;
     }
 
