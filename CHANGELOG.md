@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.43](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.42...v3.0.0-beta.43) (2020-08-03)
+
+
+### Features
+
+* **NoTicket:** 快捷fixed设置 ([f15536e](https://git2.qingtingfm.com/zhibo/xms/commit/f15536ef26a6079c961bd784e42ce8eed628ddb8))
+
 ## [3.0.0-beta.42](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.41...v3.0.0-beta.42) (2020-08-03)
 
 
