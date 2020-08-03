@@ -100,7 +100,7 @@ function RecordsPage({ isLoading }) {
   const onTableChange = useEventCallback((pagination, filters, sorter) => {
     let newPage = pagination.current;
     const newPageSize = pagination.pageSize;
-    let newSort = '';
+    let newSort = table.getFixedSortOrder();
 
     if (sorter && sorter.columnKey && sorter.order) {
       newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
@@ -120,7 +120,7 @@ function RecordsPage({ isLoading }) {
       sort: newSort,
       filter,
     });
-  });
+  }, [table]);
 
   const onResetFilters = useEventCallback(() => {
     form.resetFields();
@@ -340,6 +340,7 @@ function RecordsPage({ isLoading }) {
             title="操作"
             key="action"
             render={(
+              _,
               record // eslint-disable-line react/jsx-no-bind
             ) => (
               <>
