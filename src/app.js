@@ -1,7 +1,7 @@
 import dva from 'dva';
 import createLoading from 'dva-loading';
 import { merge } from 'lodash';
-import { createBrowserHistory } from 'history';
+import history from './utils/history';
 import request from './services/request';
 import processRoutes from './utils/processRoutes';
 import generateUserModel from './utils/generateUserModel';
@@ -13,7 +13,7 @@ import showError from './utils/showError';
 
 export default function xms(config = {}) {
   const app = dva({
-    history: createBrowserHistory(),
+    history,
     onError(err) {
       console.log(err.message);
     },
