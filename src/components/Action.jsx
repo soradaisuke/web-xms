@@ -18,7 +18,7 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
     action,
     record,
     records,
-    onComplete
+    onComplete,
   });
 
   const buttonProps = useMemo(
@@ -29,21 +29,21 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
       icon: action.getIcon(),
       children: action.getShape() !== 'circle' ? action.getTitle() : null,
       ...action.getButtonProps(),
-      disabled
+      disabled,
     }),
     [action, disabled]
   );
 
   const onFormOk = useEventCallback(
-    f =>
+    (f) =>
       (f || form)
         .validateFields()
-        .then(async values => {
+        .then(async (values) => {
           try {
             await onOk({
               data: { body: values },
               throwError: true,
-              reload: true
+              reload: true,
             });
             return true;
           } catch (e) {
@@ -63,11 +63,14 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
     const onOkInternal = disabledRecordModal ? onFormOk : onOk;
     if (action.showConfirmModal()) {
       const confirmTitle = action.getConfirmTitle();
+      const confirmContent = action.getConfirmContent();
       Modal.confirm({
         title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
-        content: action.getConfirmContent(),
+        content: isFunction(confirmContent)
+          ? confirmContent(params)
+          : confirmContent,
         ...action.getConfirmProps(),
-        onOk: onOkInternal
+        onOk: onOkInternal,
       });
     } else {
       onOkInternal();
@@ -101,11 +104,11 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
     const props = action.getColumns()
       ? {
           columns: action.getColumns(),
-          records
+          records,
         }
       : {
           columns: table.getColumns(),
-          actions: table.getFormActions()
+          actions: table.getFormActions(),
         };
     // eslint-disable-next-line global-require
     const RecordModal = require('./RecordModal').default;
@@ -148,14 +151,14 @@ Action.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   records: PropTypes.array,
   onComplete: PropTypes.func,
-  disabledRecordModal: PropTypes.bool
+  disabledRecordModal: PropTypes.bool,
 };
 
 Action.defaultProps = {
   record: null,
   records: null,
   onComplete: null,
-  disabledRecordModal: false
+  disabledRecordModal: false,
 };
 
 export default React.memo(Action);
