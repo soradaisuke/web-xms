@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.42](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.41...v3.0.0-beta.42) (2020-08-03)
+
+
+### Features
+
+* **NoTicket:** export history ([ad4ac77](https://git2.qingtingfm.com/zhibo/xms/commit/ad4ac77200eaa0f86a928ec2345871ba36335e63))
+
 ## [3.0.0-beta.41](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.40...v3.0.0-beta.41) (2020-08-03)
 
 
