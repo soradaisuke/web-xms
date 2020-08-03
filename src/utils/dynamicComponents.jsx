@@ -232,18 +232,16 @@ function useRemove({ apiPath, namespace }) {
   );
 }
 
-function generateRecordsPage(
-  {
-    api: { host, path, fixedFilter, defaultBody, defaultFilter },
-    namespace,
-    table,
-    tableProps = {},
-    formProps = {},
-    filterFormProps = {},
-  },
+function generateRecordsPage({
+  api: { host, path, fixedFilter, defaultBody, defaultFilter },
+  namespace,
+  table,
+  tableProps = {},
+  formProps = {},
+  filterFormProps = {},
   component,
-  inline
-) {
+  inline,
+}) {
   function Page(props) {
     const location = useLocation();
     const { queries, globalQueries } = useMemo(() => {
@@ -448,18 +446,16 @@ function generateRecordsPage(
   return Page;
 }
 
-function generateRecordPage(
-  {
-    namespace,
-    api: { path, host } = {},
-    table,
-    layout,
-    inline,
-    formProps = {},
-    descriptionsProps = {},
-  },
-  component
-) {
+function generateRecordPage({
+  namespace,
+  api: { path, host } = {},
+  table,
+  layout,
+  inline,
+  formProps = {},
+  descriptionsProps = {},
+  component,
+}) {
   function Page(props) {
     const isLoading = useSelector(
       (state) => state.loading.effects[`${namespace}/fetch`]
@@ -559,7 +555,7 @@ function dynamicComponent({
     app,
     models: () => [Promise.resolve(model)],
     component: () =>
-      Promise.resolve(generateFunction(config, component, inline)),
+      Promise.resolve(generateFunction({ ...config, component, inline })),
   });
 }
 
