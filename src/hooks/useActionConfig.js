@@ -97,13 +97,13 @@ export default function useActionConfig({
           promise,
           loadingMessage,
           throwError,
-          onComplete: () => {
+          onComplete: (...args) => {
             const onActionComplete = action.getOnComplete();
             if (isFunction(onActionComplete)) {
-              onActionComplete();
+              onActionComplete(...args);
             }
             if (reload && isFunction(onComplete)) {
-              onComplete();
+              onComplete(...args);
             }
           },
         });
