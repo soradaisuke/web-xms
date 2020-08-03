@@ -569,19 +569,21 @@ export function dynamicRecordsComponent({ app, config, component, inline }) {
   });
 }
 
-export function dynamicRecordComponent({ app, config, component }) {
+export function dynamicRecordComponent({ app, config, component, inline }) {
   return dynamicComponent({
     app,
     config,
     component,
+    inline,
     generateFunction: generateRecordPage,
   });
 }
 
-export function dynamicRecordFormComponent({ app, config }) {
+export function dynamicRecordFormComponent({ app, config, inline }) {
   return dynamicComponent({
     app,
     config,
+    inline,
     generateFunction: generateRecordFormPage,
   });
 }
