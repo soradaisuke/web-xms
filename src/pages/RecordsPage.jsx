@@ -48,11 +48,8 @@ function RecordsPage({ isLoading }) {
   } = usePageConfig();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const params = useActionParams();
-  const rowActions = useMemo(
-    () => table.getRowActions().filter((a) => a.isVisible(params)),
-    [table, params]
-  );
+  const params = useActionParams({ records });
+  const rowActions = useMemo(() => table.getRowActions(), [table]);
   const multipleActions = useMemo(
     () => table.getMultipleActions().filter((a) => a.isVisible(params)),
     [table, params]
