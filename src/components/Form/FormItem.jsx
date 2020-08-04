@@ -63,8 +63,10 @@ function FormItem({
       ...column.getFormItemComponentProps(),
       ...extraFormItemComponentProps,
       placeholder: column.getFormPlaceholder(),
-      onChange: () => {
+      onChange: (...args) => {
         resetChildColumn({ column, form, forForm: true });
+        // eslint-disable-next-line no-unused-expressions
+        extraFormItemComponentProps?.onChange?.(...args);
       },
       disabled,
     }),

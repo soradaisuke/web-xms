@@ -8,7 +8,7 @@ import usePageConfig from '../../hooks/usePageConfig';
 import useUser from '../../hooks/useUser';
 import StringColumn from '../../schema/StringColumn';
 import NumberColumn from '../../schema/NumberColumn';
-// import BooleanColumn from '../../schema/BooleanColumn';
+import BooleanColumn from '../../schema/BooleanColumn';
 import useActionConfig from '../../hooks/useActionConfig';
 import FormItem from '../Form/FormItem';
 import './EditableTableCell.less';
@@ -23,7 +23,7 @@ function EditableCell({ children, record, column, onComplete }) {
   const { disabled, onOk } = useActionConfig({
     action: table.getEditAction(),
     record,
-    onComplete
+    onComplete,
   });
 
   useEffect(() => {
@@ -33,14 +33,14 @@ function EditableCell({ children, record, column, onComplete }) {
   }, [editing]);
 
   const toggleEdit = useEventCallback(() => {
-    setEditing(pre => !pre);
+    setEditing((pre) => !pre);
     form.setFieldsValue({
-      [column.getFormItemName()]: get(record, column.getFormItemName())
+      [column.getFormItemName()]: get(record, column.getFormItemName()),
     });
   }, []);
 
   const onFormItemRef = useEventCallback(
-    node => {
+    (node) => {
       editor.current = node;
     },
     [editor]
@@ -56,15 +56,6 @@ function EditableCell({ children, record, column, onComplete }) {
     }
   }, [form, column, toggleEdit, onOk]);
 
-  // const onChange = useEventCallback(
-  //   value => {
-  //     submit({
-  //       [column.getFormItemName()]: value
-  //     });
-  //   },
-  //   [submit, column]
-  // );
-
   if (disabled || !column.canEdit({ user, value, values: record, record })) {
     return children;
   }
@@ -79,22 +70,10 @@ function EditableCell({ children, record, column, onComplete }) {
           formItemComponentProps={{
             ref: onFormItemRef,
             onPressEnter: save,
-            onBlur: save
+            onBlur: save,
           }}
         />
       );
-      //   return column.renderInForm({
-      //     form,
-      //     record,
-      //     user,
-      //     hideFormLabel: true,
-      //     isEdit: true,
-      //     formComponentProps: {
-      //       ref: onFormItemRef,
-      //       onPressEnter: save,
-      //       onBlur: save
-      //     }
-      //   });
     }
 
     return (
@@ -104,15 +83,18 @@ function EditableCell({ children, record, column, onComplete }) {
     );
   }
 
-  // if (column instanceof BooleanColumn) {
-  //   return column.renderInFormItem({
-  //     isEdit: true,
-  //     formComponentProps: {
-  //       checked: get(record, column.getKey()),
-  //       onChange: save
-  //     }
-  //   });
-  // }
+  if (column instanceof BooleanColumn) {
+    return (
+      <FormItem
+        isEdit
+        hideLabel
+        column={column}
+        formItemComponentProps={{
+          onChange: save,
+        }}
+      />
+    );
+  }
 
   return children;
 }
@@ -122,14 +104,14 @@ EditableCell.propTypes = {
   onComplete: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   children: PropTypes.any,
-  record: PropTypes.object // eslint-disable-line react/forbid-prop-types
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 EditableCell.defaultProps = {
   column: null,
   onComplete: null,
   children: null,
-  record: {}
+  record: {},
 };
 
 export default React.memo(EditableCell);
