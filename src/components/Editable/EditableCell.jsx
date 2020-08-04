@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react';
+import React, { useState, useRef, useContext, useEffect, useMemo } from 'react';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { useEventCallback, ClickableDiv } from '@qt/react';
@@ -56,24 +56,56 @@ function EditableCell({ children, record, column, onComplete }) {
     }
   }, [form, column, toggleEdit, onOk]);
 
-  if (disabled || !column.canEdit({ user, value, values: record, record })) {
+  const disableInlineEdit = useMemo(
+    () => disabled || !column.canEdit({ user, value, values: record, record }),
+    [disabled, user, value, record, column]
+  );
+
+  useEffect(() => {
+    if (column instanceof BooleanColumn && !disableInlineEdit) {
+      form.setFieldsValue({
+        [column.getFormItemName()]: get(record, column.getFormItemName()),
+      });
+    }
+  }, [record, form, column, disableInlineEdit]);
+
+  const props = useMemo(() => {
+    const p = {
+      isEdit: true,
+      hideLabel: true,
+      column,
+      record,
+    };
+
+    if (column instanceof StringColumn || column instanceof NumberColumn) {
+      return {
+        ...p,
+        formItemComponentProps: {
+          ref: onFormItemRef,
+          onPressEnter: save,
+          onBlur: save,
+        },
+      };
+    }
+    if (column instanceof BooleanColumn) {
+      return {
+        ...p,
+        formItemComponentProps: {
+          onChange: save,
+        },
+      };
+    }
+
+    return p;
+  }, [column, record, onFormItemRef, save]);
+
+  if (disableInlineEdit) {
     return children;
   }
 
   if (column instanceof StringColumn || column instanceof NumberColumn) {
     if (editing) {
-      return (
-        <FormItem
-          isEdit
-          hideLabel
-          column={column}
-          formItemComponentProps={{
-            ref: onFormItemRef,
-            onPressEnter: save,
-            onBlur: save,
-          }}
-        />
-      );
+      return <FormItem {...props} />;
     }
 
     return (
@@ -84,16 +116,7 @@ function EditableCell({ children, record, column, onComplete }) {
   }
 
   if (column instanceof BooleanColumn) {
-    return (
-      <FormItem
-        isEdit
-        hideLabel
-        column={column}
-        formItemComponentProps={{
-          onChange: save,
-        }}
-      />
-    );
+    return <FormItem {...props} />;
   }
 
   return children;

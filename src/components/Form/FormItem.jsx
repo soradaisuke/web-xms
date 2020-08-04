@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import {
@@ -38,6 +38,7 @@ import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
 import useForm from '../../hooks/useForm';
 import usePageConfig from '../../hooks/usePageConfig';
+import { EditableContext } from '../Editable/EditableTableRow';
 import { resetChildColumn } from '../../utils/resetChildColumn';
 import './FormItem.less';
 
@@ -56,7 +57,9 @@ function FormItem({
     [column, user, record, isEdit]
   );
 
-  const form = useForm();
+  const commonForm = useForm();
+  const editableForm = useContext(EditableContext);
+  const form = commonForm || editableForm;
 
   const formItemComponentProps = useMemo(
     () => ({
@@ -216,11 +219,16 @@ function FormItem({
 
   const { idIdentifier } = usePageConfig();
 
+  const renderParams = useMemo(
+    () => ({ ...formItemComponentProps, form, record }),
+    [formItemComponentProps, form, record]
+  );
+
   const children = useMemo(() => {
     let inner;
 
     if (column.getFormRender()) {
-      inner = column.getFormRender()(formItemComponentProps);
+      inner = column.getFormRender();
     } else if (column.canFormItemExpandable()) {
       if (column.isArray()) {
         inner = <CheckBox column={column} {...formItemComponentProps} />;
@@ -420,19 +428,20 @@ function FormItem({
         );
         return (
           <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
-            {inner}
+            {isFunction(inner) ? inner(renderParams) : inner}
           </Form.Item>
         );
       };
     }
 
-    return inner;
+    return isFunction(inner) ? inner(renderParams) : inner;
   }, [
     column,
     commonFormItemProps,
     formItemComponentProps,
     formItemProps.shouldUpdate,
     record,
+    renderParams,
     user,
     idIdentifier,
     initialListItemValue,
