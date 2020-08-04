@@ -7,9 +7,9 @@ import { useEventCallback } from '@qt/react';
 
 const { RangePicker } = DatePicker;
 
-function FilterRangePicker({ value, onChange, presets, format, ...props }) {
-  const onChangeDate = useEventCallback((_, strings) => {
-    onChange(strings);
+function FilterRangePicker({ value, onChange, presets, ...props }) {
+  const onChangeDate = useEventCallback((dates) => {
+    onChange(dates ? [dates[0]?.toISOString(), dates[1]?.toISOString()] : null);
   });
 
   const renderExtraFooter = useCallback(
@@ -32,8 +32,7 @@ function FilterRangePicker({ value, onChange, presets, format, ...props }) {
     <RangePicker
       allowClear
       {...props}
-      format={format}
-      value={value ? [moment(value[0], format), moment(value[1], format)] : null}
+      value={value ? [moment(value[0]), moment(value[1])] : null}
       onChange={onChangeDate}
       renderExtraFooter={renderExtraFooter}
     />
@@ -42,16 +41,11 @@ function FilterRangePicker({ value, onChange, presets, format, ...props }) {
 
 FilterRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  format: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.string),
-    PropTypes.string
-  ]),
   value: PropTypes.arrayOf(PropTypes.string),
   presets: PropTypes.instanceOf(Immutable.List)
 };
 
 FilterRangePicker.defaultProps = {
-  format: null,
   value: undefined,
   presets: null
 };

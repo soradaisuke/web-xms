@@ -5,9 +5,9 @@ import Immutable from 'immutable';
 import { DatePicker, Tag } from 'antd';
 import { useEventCallback } from '@qt/react';
 
-function FilterDatePicker({ value, onChange, presets, format, ...props }) {
-  const onChangeDate = useEventCallback((_, string) => {
-    onChange(string);
+function FilterDatePicker({ value, onChange, presets, ...props }) {
+  const onChangeDate = useEventCallback((date) => {
+    onChange(date?.toISOString());
   });
 
   const renderExtraFooter = useCallback(
@@ -30,8 +30,7 @@ function FilterDatePicker({ value, onChange, presets, format, ...props }) {
     <DatePicker
       allowClear
       {...props}
-      format={format}
-      value={value ? moment(value, format) : null}
+      value={value ? moment(value) : null}
       onChange={onChangeDate}
       renderExtraFooter={renderExtraFooter}
     />
@@ -40,16 +39,11 @@ function FilterDatePicker({ value, onChange, presets, format, ...props }) {
 
 FilterDatePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
-  format: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.string),
-    PropTypes.string
-  ]),
   value: PropTypes.string,
   presets: PropTypes.instanceOf(Immutable.List),
 };
 
 FilterDatePicker.defaultProps = {
-  format: null,
   value: undefined,
   presets: null,
 };
