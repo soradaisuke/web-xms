@@ -82,11 +82,9 @@ function FormItem({
   }, [column]);
 
   const rules = useMemo(() => {
-    let r = column.getFormItemRules().map(rule =>
-      isFunction(rule)
-        ? (...p) => rule(...p, record)
-        : rule
-    );
+    let r = column
+      .getFormItemRules()
+      .map((rule) => (isFunction(rule) ? (...p) => rule(...p, record) : rule));
 
     if (column instanceof UrlColumn) {
       r = concat(r, [
@@ -220,7 +218,7 @@ function FormItem({
     let inner;
 
     if (column.getFormRender()) {
-      inner = (column.getFormRender())(formItemComponentProps);
+      inner = column.getFormRender()(formItemComponentProps);
     } else if (column.canFormItemExpandable()) {
       if (column.isArray()) {
         inner = <CheckBox column={column} {...formItemComponentProps} />;
@@ -307,8 +305,7 @@ function FormItem({
             mode="tags"
           />
         );
-      }
-      if (column.getFormMultipleLine()) {
+      } else if (column.getFormMultipleLine()) {
         inner = (
           <Input.TextArea
             allowClear
@@ -316,14 +313,15 @@ function FormItem({
             {...formItemComponentProps}
           />
         );
+      } else {
+        inner = (
+          <Input
+            allowClear
+            style={{ width: '100%' }}
+            {...formItemComponentProps}
+          />
+        );
       }
-      inner = (
-        <Input
-          allowClear
-          style={{ width: '100%' }}
-          {...formItemComponentProps}
-        />
-      );
     } else if (column instanceof ObjectColumn) {
       if (!column.isArray()) {
         inner = (
