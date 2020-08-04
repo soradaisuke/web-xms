@@ -97,30 +97,33 @@ function RecordsPage({ isLoading }) {
     });
   });
 
-  const onTableChange = useEventCallback((pagination, filters, sorter) => {
-    let newPage = pagination.current;
-    const newPageSize = pagination.pageSize;
-    let newSort = table.getFixedSortOrder();
+  const onTableChange = useEventCallback(
+    (pagination, filters, sorter) => {
+      let newPage = pagination.current;
+      const newPageSize = pagination.pageSize;
+      let newSort = table.getFixedSortOrder() || '';
 
-    if (sorter && sorter.columnKey && sorter.order) {
-      newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
-    }
+      if (sorter && sorter.columnKey && sorter.order) {
+        newSort = `${sorter.columnKey} ${sorter.order.replace('end', '')}`;
+      }
 
-    if (sort !== newSort) {
-      newPage = 1;
-    }
+      if (sort !== newSort) {
+        newPage = 1;
+      }
 
-    if (!isEqual(filter, filters)) {
-      newPage = 1;
-    }
+      if (!isEqual(filter, filters)) {
+        newPage = 1;
+      }
 
-    updatePage({
-      page: newPage,
-      pagesize: newPageSize,
-      sort: newSort,
-      filter,
-    });
-  }, [table]);
+      updatePage({
+        page: newPage,
+        pagesize: newPageSize,
+        sort: newSort,
+        filter,
+      });
+    },
+    [table]
+  );
 
   const onResetFilters = useEventCallback(() => {
     form.resetFields();
