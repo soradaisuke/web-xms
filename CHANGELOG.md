@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.52](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.51...v3.0.0-beta.52) (2020-08-04)
+
+
+### Bug Fixes
+
+* **NoTicket:** multipleLine不生效 ([22fc40e](https://git2.qingtingfm.com/zhibo/xms/commit/22fc40ed91446fe16d23e1f0bc72a210ccd9bfd1))
+* **NoTicket:** row action针对每一行数据判断可见性 ([3456629](https://git2.qingtingfm.com/zhibo/xms/commit/3456629b6368bb3da98770a7e547488e72f4ca9c))
+* **NoTicket:** 无法翻页 ([49e4ff1](https://git2.qingtingfm.com/zhibo/xms/commit/49e4ff1c5c4de2c084292104e591f261528e068b))
+
 ## [3.0.0-beta.51](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.50...v3.0.0-beta.51) (2020-08-04)
 
 
