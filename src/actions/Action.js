@@ -80,6 +80,10 @@ export default class Action {
     return this.config.get('handlingMessage');
   }
 
+  getSuccessMessage() {
+    return this.config.get('successMessage');
+  }
+
   getColumns() {
     return this.columns;
   }

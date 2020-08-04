@@ -64,6 +64,7 @@ export default function useActionConfig({
     ({
       data: preData = {},
       loadingMessage = action.getHandlingMessage(),
+      successMessage = action.getSuccessMessage(),
       throwError = false,
       reload = action.needReload(),
     } = {}) => {
@@ -103,6 +104,7 @@ export default function useActionConfig({
         return visiblePromise({
           promise,
           loadingMessage,
+          successMessage,
           throwError,
           onComplete: (...args) => {
             const onActionComplete = action.getOnComplete();
