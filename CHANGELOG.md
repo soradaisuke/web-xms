@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.56](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.55...v3.0.0-beta.56) (2020-08-04)
+
+
+### Features
+
+* **NoTicket:** FileColumn ([ffd1919](https://git2.qingtingfm.com/zhibo/xms/commit/ffd1919d33a3e115844de4c5d2d5f301ecf93c50))
+
 ## [3.0.0-beta.55](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.54...v3.0.0-beta.55) (2020-08-04)
 
 
