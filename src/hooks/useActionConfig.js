@@ -58,13 +58,20 @@ export default function useActionConfig({
     return action?.getHandler(defaultHandler);
   }, [action, create, edit, remove]);
 
+  const normalize = useMemo(() => action.getNormalize(), [action]);
+
   const onOk = useEventCallback(
     ({
-      data = {},
+      data: preData = {},
       loadingMessage = action.getHandlingMessage(),
       throwError = false,
       reload = action.needReload(),
     } = {}) => {
+      const data = preData;
+      if (data.body && isFunction(normalize)) {
+        data.body = normalize(data.body);
+      }
+
       if (isFunction(handler)) {
         let promise;
 
@@ -116,6 +123,7 @@ export default function useActionConfig({
       params,
       record,
       handler,
+      normalize,
       filteredRecords,
       onComplete,
     ]

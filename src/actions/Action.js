@@ -12,10 +12,10 @@ export default class Action {
   }
 
   findCascadeColumn() {
-    this.columns.forEach(column => {
+    this.columns.forEach((column) => {
       const parentKey = column.getParentKey();
       if (parentKey) {
-        const parentColumn = this.columns.find(c => c.getKey() === parentKey);
+        const parentColumn = this.columns.find((c) => c.getKey() === parentKey);
         if (parentColumn) {
           // eslint-disable-next-line no-param-reassign
           column.parentColumn = parentColumn;
@@ -138,6 +138,10 @@ export default class Action {
 
   getIcon() {
     return this.config.getIn(['buttonProps', 'icon'], this.config.get('icon'));
+  }
+
+  getNormalize() {
+    return this.config.get('normalize');
   }
 
   isVisible(params) {
