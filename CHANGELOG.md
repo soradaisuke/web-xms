@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.51](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.50...v3.0.0-beta.51) (2020-08-04)
+
+
+### Bug Fixes
+
+* **NoTicket:** invisible的Table Column设置了fixedSort后不能点下一页 ([0d629ba](https://git2.qingtingfm.com/zhibo/xms/commit/0d629ba12c5d529cc7c112d1605938d75f8a0407))
+
 ## [3.0.0-beta.50](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.49...v3.0.0-beta.50) (2020-08-03)
 
 
