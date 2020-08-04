@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.57](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.56...v3.0.0-beta.57) (2020-08-04)
+
+
+### Features
+
+* **NoTicket:** 可配置action的successMessage ([b4d10f6](https://git2.qingtingfm.com/zhibo/xms/commit/b4d10f677b985ec975ae99d593b651509899da17))
+
 ## [3.0.0-beta.56](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.55...v3.0.0-beta.56) (2020-08-04)
 
 
