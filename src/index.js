@@ -10,8 +10,8 @@ export Page from './pages/Page';
 export DynamicPaginationTableTransfer from './components/Transfer/DynamicPaginationTableTransfer';
 
 // export textToPath from './utils/textToPath';
-// export UploadImage from './components/Form/UploadImage';
-export UploadFile from './components/UploadFile';
+export UploadImage from './components/Form/UploadImage';
+export UploadFile from './components/Form/UploadFile';
 // export ZoomImg from './components/ZoomImg';
 // export AudioPlayer from './components/Common/AudioPlayer';
 // export InputModal from './components/InputModal';

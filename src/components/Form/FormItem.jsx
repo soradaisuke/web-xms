@@ -20,6 +20,7 @@ import {
   MinusCircleOutlined,
 } from '@ant-design/icons';
 import UploadImage from './UploadImage';
+import UploadFile from './UploadFile';
 import ObjectInputTextArea from './ObjectInputTextArea';
 import TreeSelect from '../Filter/TreeSelect';
 import Radio from '../Filter/Radio';
@@ -34,6 +35,7 @@ import DurationColumn from '../../schema/DurationColumn';
 import DateTimeColumn from '../../schema/DateTimeColumn';
 import BooleanColumn from '../../schema/BooleanColumn';
 import ImageColumn from '../../schema/ImageColumn';
+import FileColumn from '../../schema/FileColumn';
 import ObjectColumn from '../../schema/ObjectColumn';
 import useUser from '../../hooks/useUser';
 import useForm from '../../hooks/useForm';
@@ -284,12 +286,9 @@ function FormItem({
     } else if (column instanceof DurationColumn) {
       inner = <DurationPicker {...formItemComponentProps} />;
     } else if (column instanceof ImageColumn) {
-      inner = (
-        <UploadImage
-          ssoToken={user ? user.get('sso_token') : ''}
-          {...formItemComponentProps}
-        />
-      );
+      inner = <UploadImage {...formItemComponentProps} />;
+    } else if (column instanceof FileColumn) {
+      inner = <UploadFile {...formItemComponentProps} />;
     } else if (column instanceof NumberColumn) {
       if (column.isArray()) {
         inner = (
@@ -442,7 +441,6 @@ function FormItem({
     formItemProps.shouldUpdate,
     record,
     renderParams,
-    user,
     idIdentifier,
     initialListItemValue,
   ]);

@@ -1,21 +1,22 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
-import shortId from 'shortid';
+import { connect } from 'dva';
 import { generateDeviceId } from '@qt/web-common';
 import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Upload, Col, Row, Modal } from 'antd';
 import { wrappedUploadImage as uploadImage } from '../../utils/uploadFile';
 import getImageSize from '../../utils/getImageSize';
 import showError from '../../utils/showError';
+import 'react-image-crop/dist/ReactCrop.css';
 
-export default class UploadImage extends React.PureComponent {
+class UploadImage extends React.PureComponent {
   static displayName = 'UploadImage';
 
   static propTypes = {
-    onChange: PropTypes.func, // eslint-disable-line react/require-default-props
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.string,
     title: PropTypes.string,
     ssoToken: PropTypes.string,
     fileMaxSize: PropTypes.number, // 单位MB
@@ -23,15 +24,16 @@ export default class UploadImage extends React.PureComponent {
       maxWidth: PropTypes.number,
       minWidth: PropTypes.number,
       maxHeight: PropTypes.number,
-      minHeight: PropTypes.number
+      minHeight: PropTypes.number,
     }),
     modalWidth: PropTypes.string,
     bucket: PropTypes.string,
     needCrop: PropTypes.bool,
-    aspect: PropTypes.number
+    aspect: PropTypes.number,
   };
 
   static defaultProps = {
+    value: undefined,
     title: '',
     ssoToken: '',
     modalWidth: '500px',
@@ -41,10 +43,10 @@ export default class UploadImage extends React.PureComponent {
       maxWidth: 0,
       minWidth: 0,
       maxHeight: 0,
-      minHeight: 0
+      minHeight: 0,
     },
     needCrop: false,
-    aspect: 0
+    aspect: 0,
   };
 
   constructor(props) {
@@ -57,7 +59,7 @@ export default class UploadImage extends React.PureComponent {
           aspect,
           width: 60,
           x: 0,
-          y: 0
+          y: 0,
         },
         fileSrc: '',
         cropVisible: false,
@@ -65,14 +67,14 @@ export default class UploadImage extends React.PureComponent {
           x: 0,
           y: 0,
           width: 0,
-          height: 0
+          height: 0,
         },
-        fileLoading: false
+        fileLoading: false,
       },
       previewImage: '',
       previewVisible: false,
       imageLoading: false,
-      fileList: null
+      fileList: null,
     };
   }
 
@@ -91,7 +93,7 @@ export default class UploadImage extends React.PureComponent {
     } else if (preImageUrl !== imageUrl) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        fileList: imageUrl ? [{ uid: shortId.generate(), url: imageUrl }] : []
+        fileList: imageUrl ? [{ uid: imageUrl, url: imageUrl }] : [],
       });
     }
   }
@@ -101,7 +103,7 @@ export default class UploadImage extends React.PureComponent {
       url,
       value,
       onChange,
-      limit: { maxWidth, minWidth, maxHeight, minHeight }
+      limit: { maxWidth, minWidth, maxHeight, minHeight },
     } = this.props;
     const imageUrl = url || value || '';
     if (!imageUrl) return;
@@ -117,21 +119,21 @@ export default class UploadImage extends React.PureComponent {
           onChange('');
         } else {
           this.setState({
-            fileList: [{ uid: shortId.generate(), url: imageUrl }]
+            fileList: [{ uid: imageUrl, url: imageUrl }],
           });
         }
       });
     } else {
       this.setState({
-        fileList: [{ uid: shortId.generate(), url: imageUrl }]
+        fileList: [{ uid: imageUrl, url: imageUrl }],
       });
     }
   };
 
-  onClickPreview = file => {
+  onClickPreview = (file) => {
     this.setState({
       previewImage: file.url || file.thumbUrl,
-      previewVisible: true
+      previewVisible: true,
     });
   };
 
@@ -142,13 +144,13 @@ export default class UploadImage extends React.PureComponent {
 
   onClickCancel = () => {
     this.setState({
-      previewVisible: false
+      previewVisible: false,
     });
   };
 
-  checkFile = file => {
+  checkFile = (file) => {
     const {
-      limit: { maxWidth, minWidth, maxHeight, minHeight }
+      limit: { maxWidth, minWidth, maxHeight, minHeight },
     } = this.props;
 
     if (!(maxWidth || minWidth || maxHeight || minHeight)) return null;
@@ -167,10 +169,10 @@ export default class UploadImage extends React.PureComponent {
     });
   };
 
-  uploadImage = async options => {
+  uploadImage = async (options) => {
     const { ssoToken, onChange, bucket, needCrop } = this.props;
     const {
-      cropParameter: { pixelCrop }
+      cropParameter: { pixelCrop },
     } = this.state;
 
     const upYunSyncPreprocessor = needCrop
@@ -178,7 +180,7 @@ export default class UploadImage extends React.PureComponent {
       : '';
 
     this.setState({
-      imageLoading: true
+      imageLoading: true,
     });
 
     try {
@@ -187,27 +189,27 @@ export default class UploadImage extends React.PureComponent {
         ssoToken,
         bucket,
         upYunSyncPreprocessor,
-        deviceId: generateDeviceId()
+        deviceId: generateDeviceId(),
       });
       onChange(url);
       this.setState({
-        imageLoading: false
+        imageLoading: false,
       });
       this.setCropState({ cropVisible: false });
     } catch (e) {
       showError(e.message || e, '上传失败');
       this.setState({
-        imageLoading: false
+        imageLoading: false,
       });
     }
   };
 
-  setCropState = cropParameter => {
-    this.setState(prevState => ({
+  setCropState = (cropParameter) => {
+    this.setState((prevState) => ({
       cropParameter: {
         ...prevState.cropParameter,
-        ...cropParameter
-      }
+        ...cropParameter,
+      },
     }));
   };
 
@@ -219,7 +221,7 @@ export default class UploadImage extends React.PureComponent {
     this.setCropState({ cropVisible: false });
   };
 
-  generateFileSrc = file =>
+  generateFileSrc = (file) =>
     new Promise((resolve, reject) => {
       try {
         const reader = new FileReader();
@@ -234,23 +236,23 @@ export default class UploadImage extends React.PureComponent {
       }
     });
 
-  customRequest = options => {
+  customRequest = (options) => {
     // NOTE: customRequest不能是async方法
     const { needCrop } = this.props;
     if (needCrop) {
       this.setCropState({ fileLoading: true });
       this.generateFileSrc(options.file)
-        .then(fileSrc => {
+        .then((fileSrc) => {
           this.setCropState({
             fileSrc,
             cropVisible: true,
             handleCropOk: () => {
               this.uploadImage(options);
             },
-            fileLoading: false
+            fileLoading: false,
           });
         })
-        .catch(e => {
+        .catch((e) => {
           showError(e);
           this.setCropState({ fileLoading: false });
         });
@@ -259,7 +261,7 @@ export default class UploadImage extends React.PureComponent {
     }
   };
 
-  beforeUpload = file => {
+  beforeUpload = (file) => {
     const { fileMaxSize } = this.props;
     const isJPG = file.type === 'image/jpeg';
     const isPNG = file.type === 'image/png';
@@ -276,7 +278,7 @@ export default class UploadImage extends React.PureComponent {
   renderCropModal() {
     const {
       cropParameter: { fileSrc, crop, cropVisible, handleCropOk },
-      imageLoading
+      imageLoading,
     } = this.state;
     return (
       <Modal
@@ -312,7 +314,7 @@ export default class UploadImage extends React.PureComponent {
       previewImage,
       imageLoading,
       fileList,
-      cropParameter: { fileLoading }
+      cropParameter: { fileLoading },
     } = this.state;
     const uploadButton = (
       <div>
@@ -354,3 +356,9 @@ export default class UploadImage extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  ssoToken: state.user?.get('sso_token'),
+});
+
+export default connect(mapStateToProps)(UploadImage);
