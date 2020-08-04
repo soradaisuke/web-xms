@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.53](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.52...v3.0.0-beta.53) (2020-08-04)
+
+
+### Features
+
+* **NoTicket:** Boolean支持inlineEdit ([e7dad32](https://git2.qingtingfm.com/zhibo/xms/commit/e7dad324be50c43ff0211794d5fae17050cbcf98))
+* **NoTicket:** 支持normalize编辑和新建数据 ([b5e9fba](https://git2.qingtingfm.com/zhibo/xms/commit/b5e9fba4db1cebd1b3a87282d0329b4688bbc7c8))
+
 ## [3.0.0-beta.52](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.51...v3.0.0-beta.52) (2020-08-04)
 
 
