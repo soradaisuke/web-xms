@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.55](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.54...v3.0.0-beta.55) (2020-08-04)
+
+
+### Bug Fixes
+
+* **NoTicket:** DatePicker & RangePicker onChange时用toISOString ([acac8d9](https://git2.qingtingfm.com/zhibo/xms/commit/acac8d9229236f72eb6274767e29756f59f0aa7d))
+
 ## [3.0.0-beta.54](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.53...v3.0.0-beta.54) (2020-08-04)
 
 
