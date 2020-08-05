@@ -112,7 +112,7 @@ class RecordForm extends React.PureComponent {
     return new Promise((resolve, reject) => {
       form.validateFields(async (err, values) => {
         if (!err) {
-          const formatValues = {};
+          const formatValues = { ...values };
           forEach(generatePaths(values), key => {
             const value = get(values, key);
             const column = columns.find(c => c.getFormKey() === key);
