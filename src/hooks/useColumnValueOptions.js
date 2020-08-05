@@ -55,10 +55,10 @@ export default function useColumnValueOptions(
     const searchRequest = column.getValueOptionsSearchRequest();
 
     if (searchRequest) {
-      const data = await searchRequest(v);
+      const data = await searchRequest({ value: v, parentValue });
       setOptions(generateFunc(data));
     }
-  });
+  }, [parentValue]);
 
   return [options, onSearch];
 }
