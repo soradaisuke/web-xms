@@ -24,7 +24,12 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
   const buttonProps = useMemo(
     () => ({
       className: 'action-button',
-      type: action.getLink() && !disabled ? 'link' : action.getType(),
+      type: action.getLink() &&
+        !disabled &&
+        !(action instanceof CreateAction) &&
+        !(action instanceof EditAction)
+          ? 'link'
+          : action.getType(),
       shape: action.getShape(),
       icon: action.getIcon(),
       children: action.getShape() !== 'circle' ? action.getTitle() : null,
