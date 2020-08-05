@@ -255,7 +255,7 @@ function FormItem({
       );
     } else if (
       column.getFilters(null, 'disabledInForm') ||
-      column.getValueOptionsSearchRequest() ||
+      (column.getValueOptionsSearchRequest() && column.getUseValueOptionsSearchRequest() !== Column.SEARCH_REQUEST_TYPES.FILTER) ||
       column.getValueOptionsRequest()
     ) {
       inner = (

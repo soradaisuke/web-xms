@@ -83,7 +83,7 @@ function FormItem({ column }) {
         }
       } else if (
         column.getFilters(null, 'disabledInFilter') ||
-        column.getValueOptionsSearchRequest() ||
+        (column.getValueOptionsSearchRequest() && column.getUseValueOptionsSearchRequest() !== Column.SEARCH_REQUEST_TYPES.FORM) ||
         column.getValueOptionsRequest()
       ) {
         inner = (

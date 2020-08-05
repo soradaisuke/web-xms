@@ -55,6 +55,12 @@ function findOption(options, value) {
 }
 
 export default class Column {
+  static SEARCH_REQUEST_TYPES = {
+    FILTER: 'filter',
+    FORM: 'form',
+    ALL: 'all'
+  }
+
   constructor(config = {}) {
     this.config = Immutable.fromJS(config);
 
@@ -172,6 +178,10 @@ export default class Column {
     }
 
     return !invisible;
+  }
+
+  getUseValueOptionsSearchRequest() {
+    return this.config.get('useValueOptionsSearchRequest', Column.SEARCH_REQUEST_TYPES.ALL);
   }
 
   // filter
