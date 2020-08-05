@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.58](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.57...v3.0.0-beta.58) (2020-08-05)
+
+
+### Features
+
+* **NoTicket:** 增加useValueOptionsSearchRequest: 'all' | 'filter' | 'form'(default: 'all') ([ccc807a](https://git2.qingtingfm.com/zhibo/xms/commit/ccc807a5f7286d2c9daf1d4234b977cde470d5d7))
+
+
+### Bug Fixes
+
+* **NoTicket:** setLink时取参数错误 & upgrade @qt/web-common ([10a0f70](https://git2.qingtingfm.com/zhibo/xms/commit/10a0f70f7778830aaa3b1dbc93a790f84b606840))
+* **NoTicket:** useFormPage时新建和修改默认不用link的样式 ([24b522c](https://git2.qingtingfm.com/zhibo/xms/commit/24b522cd195a46885ce1b9e998d26c392be5f3a3))
+
 ## [3.0.0-beta.57](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.56...v3.0.0-beta.57) (2020-08-04)
 
 
