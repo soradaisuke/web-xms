@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.59](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.58...v3.0.0-beta.59) (2020-08-05)
+
+
+### Features
+
+* **NoTicket:** searchRequest传值修改成({ value, parentValue }) ([9b632ed](https://git2.qingtingfm.com/zhibo/xms/commit/9b632ed1a29426a2cc2c3321bfdb2a3e65d60547))
+
+
+### Bug Fixes
+
+* **NoTicket:** 表格外筛选有筛选时无法正确下一页 ([ecab38a](https://git2.qingtingfm.com/zhibo/xms/commit/ecab38a849befa2b2590f22a9d2ba9e0b3f5ae75))
+
 ## [3.0.0-beta.58](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.57...v3.0.0-beta.58) (2020-08-05)
 
 
