@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0-18](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-17...v2.14.0-18) (2020-08-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** 自定义renderInForm的object的类型的值无法正确操作 ([197aae5](https://git2.qingtingfm.com/zhibo/xms/commit/197aae5640a0d5cf4a26a9e2d96765f6fb3842f2))
+* **NoTicket:** inline的页面新建跳转错误 ([fa218d3](https://git2.qingtingfm.com/zhibo/xms/commit/fa218d3a34aaf4ba21ebc1c5810397b18ca7fc7c))
+
 ## [2.14.0-17](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-16...v2.14.0-17) (2020-07-29)
 
 
