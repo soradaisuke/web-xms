@@ -10,6 +10,7 @@ import {
   isBoolean,
   groupBy,
   isEqual,
+  set,
 } from 'lodash';
 import { useEventCallback } from '@qt/react';
 import EditableTableCell from '../components/Editable/EditableTableCell';
@@ -67,6 +68,10 @@ function RecordsPage({ isLoading }) {
     () => columns.filter((column) => column.canFilter()),
     [columns]
   );
+  const tableFilterColumns = useMemo(
+    () => filterColumns.filter(column => !column.canFilterOutside()),
+    [filterColumns]
+  );
   const hasOutsideFilter = useMemo(
     () => filterColumns.filter((column) => column.canFilterOutside()).size > 0,
     [filterColumns]
@@ -107,8 +112,11 @@ function RecordsPage({ isLoading }) {
       if (sort !== newSort) {
         newPage = 1;
       }
-
-      if (!isEqual(filter, filters)) {
+      const tableFilter = {};
+      tableFilterColumns.forEach(column => {
+        set(tableFilter, column.getFilterKey(), get(filter, column.getFilterKey()));
+      });
+      if (!isEqual(tableFilter, filters)) {
         newPage = 1;
       }
 
@@ -119,7 +127,7 @@ function RecordsPage({ isLoading }) {
         filter,
       });
     },
-    [table]
+    [table, tableFilterColumns]
   );
 
   const onResetFilters = useEventCallback(() => {
