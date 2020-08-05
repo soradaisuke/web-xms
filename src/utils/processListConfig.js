@@ -29,7 +29,7 @@ export default function processListConfig({
 
         if (action instanceof EditAction && useFormPage) {
           return action.setLink(
-            record =>
+            ({ record }) =>
               `${
                 prefix && inline ? `${path.slice(prefix.length + 1)}/` : ''
               }${get(record, newTable.getPrimaryKey())}/edit`
