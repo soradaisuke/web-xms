@@ -23,20 +23,20 @@ function RecordPage({ isLoading, routes }) {
     layout,
     table,
     fetch,
-    descriptionsProps
+    descriptionsProps,
   } = usePageConfig();
   const user = useUser();
   const columns = useMemo(
     () =>
       table
         .getColumns()
-        .filter(column => column.canShowInDescription({ user, record })),
+        .filter((column) => column.canShowInDescription({ user, record })),
     [record, table, user]
   );
   const actions = useMemo(() => table.getActions(), [table]);
 
   const renderRouteChunk = useCallback(
-    chunk => {
+    (chunk) => {
       if (chunk && chunk.length) {
         const chunkLayout = chunk[0].layout || layout;
 
@@ -97,7 +97,7 @@ function RecordPage({ isLoading, routes }) {
 
     return (
       <Descriptions.Item label="操作">
-        {actions.map(action => (
+        {actions.map((action) => (
           <Action
             key={action.getTitle()}
             action={action}
@@ -115,8 +115,8 @@ function RecordPage({ isLoading, routes }) {
     }
 
     const children = (
-      <EditableDescriptions {...descriptionsProps}>
-        {columns.map(column => (
+      <EditableDescriptions column={2} {...descriptionsProps}>
+        {columns.map((column) => (
           <Descriptions.Item
             {...column.getDescriptionItemProps()}
             label={column.getTitle()}
@@ -164,7 +164,7 @@ function RecordPage({ isLoading, routes }) {
           },
           []
         ),
-        chunk => renderRouteChunk(chunk)
+        (chunk) => renderRouteChunk(chunk)
       );
     }
 
@@ -193,15 +193,15 @@ function RecordPage({ isLoading, routes }) {
 RecordPage.propTypes = {
   routes: PropTypes.arrayOf(
     PropTypes.shape({
-      component: PropTypes.bode
+      component: PropTypes.bode,
     })
   ),
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
 };
 
 RecordPage.defaultProps = {
   routes: [],
-  isLoading: false
+  isLoading: false,
 };
 
 export default RecordPage;
