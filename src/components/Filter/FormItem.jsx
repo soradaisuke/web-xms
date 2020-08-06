@@ -55,7 +55,7 @@ function FormItem({ column }) {
     () => ({
       onChange: () => {
         resetChildColumn({ column, form });
-      }
+      },
     }),
     [column, form]
   );
@@ -83,12 +83,14 @@ function FormItem({ column }) {
         }
       } else if (
         column.getFilters(null, 'disabledInFilter') ||
-        (column.getValueOptionsSearchRequest() && column.getUseValueOptionsSearchRequest() !== Column.SEARCH_REQUEST_TYPES.FORM) ||
+        (column.getValueOptionsSearchRequest() &&
+          column.getUseValueOptionsSearchRequest() !==
+            Column.SEARCH_REQUEST_TYPES.FORM) ||
         column.getValueOptionsRequest()
       ) {
         inner = (
           <TreeSelect
-            style={{ width: '100px' }}
+            style={{ width: column.canFilterMultiple() ? '200px' : '100px' }}
             column={column}
             {...formItemComponentProps}
             {...column.getFilterFormItemComponentProps()}
@@ -135,26 +137,36 @@ function FormItem({ column }) {
       } else if (column instanceof NumberColumn) {
         if (column.canFilterRange()) {
           inner = (
-            <InputRangeNumber {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />
+            <InputRangeNumber
+              {...formItemComponentProps}
+              {...column.getFilterFormItemComponentProps()}
+            />
           );
         } else {
-          inner = <InputNumber {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />;
+          inner = (
+            <InputNumber
+              {...formItemComponentProps}
+              {...column.getFilterFormItemComponentProps()}
+            />
+          );
         }
       } else if (column instanceof StringColumn) {
         inner = (
-          <Input allowClear {...formItemComponentProps} {...column.getFilterFormItemComponentProps()} />
+          <Input
+            allowClear
+            {...formItemComponentProps}
+            {...column.getFilterFormItemComponentProps()}
+          />
         );
       }
     }
 
     if (formItemProps.shouldUpdate) {
-      return ({ getFieldValue }) => { // eslint-disable-line react/prop-types
+      return ({ getFieldValue }) => {
+        // eslint-disable-line react/prop-types
         const parentValue = getFieldValue(column.parentColumn?.getFilterKey());
         return (
-          <Form.Item
-            key={JSON.stringify(parentValue)}
-            {...commonFormItemProps}
-          >
+          <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
             {inner}
           </Form.Item>
         );
@@ -162,7 +174,12 @@ function FormItem({ column }) {
     }
 
     return inner;
-  }, [column, commonFormItemProps, formItemProps.shouldUpdate, formItemComponentProps]);
+  }, [
+    column,
+    commonFormItemProps,
+    formItemProps.shouldUpdate,
+    formItemComponentProps,
+  ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
 }
