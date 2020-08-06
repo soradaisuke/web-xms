@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.60](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.59...v3.0.0-beta.60) (2020-08-06)
+
+
+### Features
+
+* **NoTicket:** Descriptions默认column改为2 ([3a5ca81](https://git2.qingtingfm.com/zhibo/xms/commit/3a5ca813a3e32c2e6036c5d96b7434b781ca5532))
+* **NoTicket:** TreeSelect修改默认style ([c880028](https://git2.qingtingfm.com/zhibo/xms/commit/c88002809eaef98b2fc4610c4fc939e6a29d314d))
+
+
+### Bug Fixes
+
+* **NoTicket:** 详情页有undefined的column时报错（component不能返回undefined） ([89b165c](https://git2.qingtingfm.com/zhibo/xms/commit/89b165cfe9c1cc67b79c4aa500360ff779ab1a07))
+
 ## [3.0.0-beta.59](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.58...v3.0.0-beta.59) (2020-08-05)
 
 
