@@ -129,7 +129,7 @@ function EditableDescriptionCell({ record, column, onComplete }) {
     return valueNode;
   }, [column, valueNode, record, onComplete]);
 
-  return childrenNode;
+  return childrenNode ?? null;
 }
 
 EditableDescriptionCell.propTypes = {

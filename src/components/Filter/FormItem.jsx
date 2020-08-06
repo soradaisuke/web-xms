@@ -162,8 +162,8 @@ function FormItem({ column }) {
     }
 
     if (formItemProps.shouldUpdate) {
+      // eslint-disable-next-line react/prop-types
       return ({ getFieldValue }) => {
-        // eslint-disable-line react/prop-types
         const parentValue = getFieldValue(column.parentColumn?.getFilterKey());
         return (
           <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
