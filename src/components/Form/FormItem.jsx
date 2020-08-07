@@ -42,6 +42,9 @@ import useForm from '../../hooks/useForm';
 import usePageConfig from '../../hooks/usePageConfig';
 import { EditableContext } from '../Editable/EditableTableRow';
 import { resetChildColumn } from '../../utils/resetChildColumn';
+import FormListItemContext from '../../contexts/FormListItemContext';
+import useFormListItemPrefix from '../../hooks/useFormListItemPrefix';
+import getFullFormItemName from '../../utils/getFullFormItemName';
 import './FormItem.less';
 
 function FormItem({
@@ -61,6 +64,7 @@ function FormItem({
 
   const commonForm = useForm();
   const editableForm = useContext(EditableContext);
+  const prefix = useFormListItemPrefix();
   const form = commonForm || editableForm;
 
   const formItemComponentProps = useMemo(
@@ -69,13 +73,13 @@ function FormItem({
       ...extraFormItemComponentProps,
       placeholder: column.getFormPlaceholder(),
       onChange: (...args) => {
-        resetChildColumn({ column, form, forForm: true });
+        resetChildColumn({ column, form, forForm: true, prefix });
         // eslint-disable-next-line no-unused-expressions
         extraFormItemComponentProps?.onChange?.(...args);
       },
       disabled,
     }),
-    [column, disabled, extraFormItemComponentProps, form]
+    [column, disabled, extraFormItemComponentProps, form, prefix]
   );
 
   const valuePropName = useMemo(() => {
@@ -181,11 +185,12 @@ function FormItem({
       valuePropName,
       ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
-      name: column.getFormItemName(),
       rules,
       ...extraCommonFormItemProps,
+      name: prefix ? [prefix[1], column.getFormItemName()] : column.getFormItemName(),
     }),
     [
+      prefix,
       column,
       hideLabel,
       normalize,
@@ -360,21 +365,23 @@ function FormItem({
                     >
                       <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
                         {column.getColumns().map((dColumn) => (
-                          <FormItem
-                            isEdit
-                            shouldSetInitialValue={false}
-                            key={dColumn.getFormItemName()}
-                            column={dColumn}
-                            record={record}
-                            commonFormItemProps={{
-                              ...field,
-                              name: [field.name, dColumn.getFormItemName()],
-                              fieldKey: [
-                                field.fieldKey,
-                                dColumn.getFormItemName(),
-                              ],
-                            }}
-                          />
+                          <FormListItemContext.Provider value={[name, field.name]}>
+                            <FormItem
+                              isEdit
+                              shouldSetInitialValue={false}
+                              key={dColumn.getFormItemName()}
+                              column={dColumn}
+                              record={record}
+                              commonFormItemProps={{
+                                ...field,
+                                // name: [field.name, dColumn.getFormItemName()],
+                                fieldKey: [
+                                  field.fieldKey,
+                                  dColumn.getFormItemName(),
+                                ],
+                              }}
+                            />
+                          </FormListItemContext.Provider>
                         ))}
                         <Popconfirm
                           title="确认删除？"
@@ -423,7 +430,7 @@ function FormItem({
           return null;
         }
         const parentValue = getFieldValue(
-          column.parentColumn?.getFormItemName()
+          getFullFormItemName({ prefix, column: column.parentColumn })
         );
         return (
           <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
@@ -443,6 +450,7 @@ function FormItem({
     renderParams,
     idIdentifier,
     initialListItemValue,
+    prefix,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;

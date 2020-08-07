@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import { isFunction } from 'lodash';
+import findCascadeColumn from '../utils/findCascadeColumn';
 
 export default class Action {
   constructor(config = {}) {
@@ -7,24 +8,8 @@ export default class Action {
 
     if (config.columns) {
       this.columns = Immutable.List(config.columns);
-      this.findCascadeColumn();
+      findCascadeColumn(this.columns);
     }
-  }
-
-  findCascadeColumn() {
-    this.columns.forEach((column) => {
-      const parentKey = column.getParentKey();
-      if (parentKey) {
-        const parentColumn = this.columns.find((c) => c.getKey() === parentKey);
-        if (parentColumn) {
-          // eslint-disable-next-line no-param-reassign
-          column.parentColumn = parentColumn;
-          parentColumn.childColumn = (parentColumn.childColumn || []).concat(
-            column
-          );
-        }
-      }
-    });
   }
 
   isRowAction() {

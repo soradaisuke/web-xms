@@ -1,25 +1,31 @@
 import { forEach } from 'lodash';
+import getFullFormItemName from './getFullFormItemName';
 
-export function resetChildColumn({ column, form, forForm }) {
+export function resetChildColumn({ column, form, forForm, prefix }) {
   if (column.childColumn) {
     forEach(column.childColumn, (childColumn) => {
-      form.resetFields([forForm ? childColumn.getFormItemName() : childColumn.getFilterKey()]);
+      form.resetFields([
+        forForm
+          ? getFullFormItemName({ prefix, column: childColumn })
+          : childColumn.getFilterKey()
+      ]);
       // eslint-disable-next-line no-use-before-define
-      resetColumn({ column: childColumn, form, forForm });
+      resetColumn({ column: childColumn, form, forForm, prefix });
     });
   }
 }
 
-export function resetColumn({ column, form, forForm }) {
-  const key = forForm ? column.getFormItemName() : column.getFilterKey()
+export function resetColumn({ column, form, forForm, prefix }) {
   if (!forForm && column.getFilterRequired() && column.getFilterDefault()) {
     form.setFieldsValue({
-      [key]: column.getFilterDefault(),
+      [column.getFilterKey()]: column.getFilterDefault(),
     });
   } else {
-    form.resetFields([key]);
+    form.resetFields([
+      getFullFormItemName({ prefix, column })
+    ]);
   }
-  resetChildColumn({ column, form });
+  resetChildColumn({ column, form, prefix });
 }
 
 export default {

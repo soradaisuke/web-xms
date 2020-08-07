@@ -5,7 +5,7 @@ export default function findCascadeColumn(columns) {
   columns.forEach(column => {
     const parentKey = column.getParentKey();
     if (parentKey) {
-      const parentColumn = columns.find(c => isEqual(c.getKey(), parentKey));
+      const parentColumn = columns.find(c => isEqual(c.getKey(), parentKey.toArray?.() ?? parentKey));
       if (parentColumn) {
         // eslint-disable-next-line no-param-reassign
         column.parentColumn = parentColumn;

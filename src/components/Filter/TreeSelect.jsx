@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { TreeSelect } from 'antd';
 import generateTreeData from '../../utils/generateTreeData';
 import useColumnValueOptions from '../../hooks/useColumnValueOptions';
@@ -7,7 +8,7 @@ import Column from '../../schema/Column';
 import './Tree.less';
 
 const FilterTreeSelect = React.forwardRef(
-  ({ column, forForm, initialValueOptions, ...props }, ref) => {
+  ({ column, forForm, initialValueOptions, className, ...props }, ref) => {
     const [options, onSearch] = useColumnValueOptions(
       column,
       generateTreeData,
@@ -18,6 +19,7 @@ const FilterTreeSelect = React.forwardRef(
     return (
       <TreeSelect
         {...props}
+        className={classNames('treeselect', className)}
         ref={ref}
         allowClear
         showSearch
@@ -33,12 +35,14 @@ const FilterTreeSelect = React.forwardRef(
 
 FilterTreeSelect.propTypes = {
   column: PropTypes.instanceOf(Column).isRequired,
+  className: PropTypes.string,
   forForm: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
   initialValueOptions: PropTypes.array
 };
 
 FilterTreeSelect.defaultProps = {
+  className: '',
   forForm: false,
   initialValueOptions: null
 };
