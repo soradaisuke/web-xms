@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.61](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.60...v3.0.0-beta.61) (2020-08-07)
+
+
+### Bug Fixes
+
+* **QTLIVE-1740:** [qt-xms-site]动态增减的表单项级联关系不对 & parentKey数组时无法正确获取parentKey ([86f668f](https://git2.qingtingfm.com/zhibo/xms/commit/86f668f04229f94148586fb11ce180f029e9f61b))
+
 ## [3.0.0-beta.60](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.59...v3.0.0-beta.60) (2020-08-06)
 
 
