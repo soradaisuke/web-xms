@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.62](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.61...v3.0.0-beta.62) (2020-08-10)
+
+
+### Bug Fixes
+
+* **NoTicket:** form.initialValue直接作为formItem的的props里的initialValue ([b84e3a4](https://git2.qingtingfm.com/zhibo/xms/commit/b84e3a47b40157394fec36758c79378b0c3d6a49))
+
 ## [3.0.0-beta.61](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.60...v3.0.0-beta.61) (2020-08-07)
 
 
