@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.63](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.62...v3.0.0-beta.63) (2020-08-10)
+
+
+### Bug Fixes
+
+* **NoTicket:** initialValue数据配置时被转成immutable的数据赋值时应转回成js ([de59c6a](https://git2.qingtingfm.com/zhibo/xms/commit/de59c6ac6c2749a00d831a21fd673424e71661ee))
+
 ## [3.0.0-beta.62](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.61...v3.0.0-beta.62) (2020-08-10)
 
 
