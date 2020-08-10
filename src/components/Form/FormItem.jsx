@@ -148,7 +148,7 @@ function FormItem({
   }, [column]);
 
   const { initialValue, initialListItemValue } = useMemo(() => {
-    let initialValueInner = column.getFormItemInitialValue();
+    let initialValueInner;
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
@@ -187,7 +187,7 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue: column.getFormItemInitialValue(),
+      initialValue: column.getFormItemInitialValue()?.toJS?.() ?? column.getFormItemInitialValue(),
       name: prefix ? [prefix[1], column.getFormItemName()] : column.getFormItemName(),
     }),
     [
