@@ -112,7 +112,7 @@ function FormItem({
         },
       ]);
     }
-    if (column instanceof ObjectColumn && !column.isArray()) {
+    if (column instanceof ObjectColumn && !column.isArray() && !column.getFormRender()) {
       r = concat(r, [
         {
           validator: (_, value, cb) => {
@@ -171,13 +171,13 @@ function FormItem({
   }, [record, column]);
 
   useEffect(() => {
-    if (shouldSetInitialValue) {
+    if (shouldSetInitialValue && isEdit) {
       // eslint-disable-next-line no-unused-expressions
       form?.setFieldsValue({
         [column.getFormItemName()]: initialValue,
       });
     }
-  }, [column, form, initialValue, shouldSetInitialValue]);
+  }, [column, form, initialValue, shouldSetInitialValue, isEdit]);
 
   const commonFormItemProps = useMemo(
     () => ({
@@ -187,6 +187,7 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
+      initialValue: column.getFormItemInitialValue(),
       name: prefix ? [prefix[1], column.getFormItemName()] : column.getFormItemName(),
     }),
     [
