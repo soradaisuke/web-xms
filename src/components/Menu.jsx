@@ -8,7 +8,7 @@ import { forEach } from 'lodash';
 const { Link, matchPath } = router;
 const { SubMenu } = Menu;
 
-const validMenues = filter(({ title, inline }) => !!title && !inline);
+const validMenues = filter(({ title, inline, hideInMenu }) => !!title && !inline && !hideInMenu);
 
 function findNextKey({ pathname, routes, selectedKeys, openKeys }) {
   forEach(routes, (route) => {
