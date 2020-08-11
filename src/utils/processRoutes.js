@@ -91,7 +91,6 @@ export default function processRoutes({ app, routes }) {
           config: processedConfig,
         });
       } else if (
-        !!component ||
         inlineRoutes.length > 0 ||
         config.type === 'descriptions'
       ) {
