@@ -1,11 +1,12 @@
+import shortId from 'shortid';
 import Table from '../schema/Table';
 
-export default function processSingleConfig({ config, path }) {
+export default function processSingleConfig({ config }) {
   const { columns = [], actions = [] } = config;
 
   return {
     ...config,
-    namespace: path.replace(/(\/|:)/g, '@'),
+    namespace: shortId.generate(),
     table: new Table(columns, actions)
   };
 }

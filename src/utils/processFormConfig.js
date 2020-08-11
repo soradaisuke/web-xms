@@ -1,6 +1,8 @@
-export default function processFormConfig({ config, path }) {
+import shortId from 'shortid';
+
+export default function processFormConfig({ config }) {
   return {
     ...config,
-    namespace: path.replace(/(\/|:)/g, '@')
+    namespace: shortId.generate()
   };
 }

@@ -1,4 +1,5 @@
 import { map, get } from 'lodash';
+import shortId from 'shortid';
 import Table from '../schema/Table';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -15,7 +16,7 @@ export default function processListConfig({
 
   return {
     ...config,
-    namespace: path.replace(/(\/|:)/g, '@'),
+    namespace: shortId.generate(),
     table: new Table(
       columns,
       map(actions, action => {
