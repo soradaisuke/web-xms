@@ -297,7 +297,7 @@ function RecordsPage({ isLoading }) {
   const globalActionsChildren = useMemo(() => {
     return (
       globalActions.size > 0 && (
-        <Group title="操作">
+        <Group title="操作" className="actions">
           {globalActions &&
             globalActions.map((action) => (
               <Action
@@ -347,6 +347,7 @@ function RecordsPage({ isLoading }) {
           <Column
             title="操作"
             key="action"
+            className="actions"
             render={(
               _,
               record // eslint-disable-line react/jsx-no-bind
