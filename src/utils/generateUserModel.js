@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
 import Cookie from 'js-cookie';
+import { isArray, set, reduce } from 'lodash';
 import { isProduction } from '@qt/env';
 import { generateUri } from '@qt/web-common';
 import request from '../services/request';
@@ -47,7 +48,23 @@ export default function generateUserModel({ auth, login, logout }) {
         try {
           if (!login || path !== '/login') {
             const user = yield call(service.auth);
-            yield put({ type: 'save', payload: { user } });
+            let permissions = user?.permission || user?.permissions;
+            if (isArray(permissions)) {
+              permissions = reduce(
+                permissions,
+                (pMap, p) => set(pMap, p, true),
+                {}
+              );
+            }
+            yield put({
+              type: 'save',
+              payload: {
+                user: {
+                  ...(user || {}),
+                  permissions
+                }
+              }
+            });
           }
         } catch (e) {
           if (login) {

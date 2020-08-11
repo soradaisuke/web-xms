@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
-import { filter, find, map, forEach } from 'lodash';
+import { filter, find, map, forEach, isFunction, isString, isArray } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
 import { dynamic, router } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -27,10 +27,20 @@ function getValidRoutes(routes, user) {
   return filter(
     map(routes, (route) => {
       let newRoute = route;
-      if (route.enable) {
-        if (user && route.enable(user)) {
-          newRoute = route;
-        } else {
+      if (route.enable && !(user && route.enable(user))) {
+        newRoute = null;
+      }
+
+      if (route.permissions) {
+        const configPermissions = isString(route.permissions) ? [route.permissions] : route.permissions;
+        const userPermissions = user?.get('permissions');
+        if (!userPermissions || !userPermissions.size) {
+          newRoute = null;
+        } else if (isFunction(configPermissions) && !configPermissions(userPermissions)) {
+          newRoute = null;
+        } else if (isArray(configPermissions) &&
+          !find(configPermissions, p => userPermissions.get(p))
+        ) {
           newRoute = null;
         }
       }
