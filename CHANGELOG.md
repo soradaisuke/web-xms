@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.64](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.63...v3.0.0-beta.64) (2020-08-12)
+
+
+### Features
+
+* **QTLIVE-1741:** [3.0]对于配置了component但是没有config的页面，不用Page组件包裹 ([1bd58e4](https://git2.qingtingfm.com/zhibo/xms/commit/1bd58e4a5c876f074f0d6b7194237a13c776bd9c))
+* **QTLIVE-1742:** [3.0]页面支持配置permissions ([a149c80](https://git2.qingtingfm.com/zhibo/xms/commit/a149c80883d7355f7bfa67baad30e6c58dc3f501))
+* **QTLIVE-1831:** hideInMenu ([d09cdd7](https://git2.qingtingfm.com/zhibo/xms/commit/d09cdd7a48a5a4bd6b12ec765e1aa60ce96f3b5e))
+* **QTLIVE-1853:** [3.0]namespace用shortid生成，不要用完整的path ([88b4836](https://git2.qingtingfm.com/zhibo/xms/commit/88b48361381ca1ce2037eba1d5720847244b13eb))
+
+
+### Bug Fixes
+
+* **QTDP-684:** actions的按钮应有间距 ([1240284](https://git2.qingtingfm.com/zhibo/xms/commit/1240284312f88ebc5c5456e13fc9031cf12c30ba))
+
 ## [3.0.0-beta.63](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.62...v3.0.0-beta.63) (2020-08-10)
 
 
