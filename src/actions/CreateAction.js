@@ -3,9 +3,10 @@ import Action from './Action';
 export default class CreateAction extends Action {
   constructor(config = {}) {
     super({
+      successMessage: '新建成功',
       ...config,
       global: true,
-      multiple: false
+      multiple: false,
     });
   }
 

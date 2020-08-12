@@ -4,6 +4,13 @@ import { EditOutlined } from '@ant-design/icons';
 import Action from './Action';
 
 export default class EditAction extends Action {
+  constructor(config = {}) {
+    super({
+      successMessage: '编辑成功',
+      ...config,
+    });
+  }
+
   getShape() {
     return this.config.get('shape', 'circle');
   }
@@ -29,7 +36,7 @@ export default class EditAction extends Action {
         records,
         user,
         matchParams,
-        id: get(record, table.getPrimaryKey())
+        id: get(record, table.getPrimaryKey()),
       })
     );
   }

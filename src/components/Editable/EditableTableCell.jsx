@@ -36,10 +36,7 @@ function renderInTable({ column, value, parentFilterValue }) {
 
   if (column instanceof DurationColumn) {
     return isNumber(value)
-      ? moment()
-          .startOf('day')
-          .add(value, 's')
-          .format(column.getFormat())
+      ? moment().startOf('day').add(value, 's').format(column.getFormat())
       : '';
   }
 
@@ -72,13 +69,7 @@ function renderInTable({ column, value, parentFilterValue }) {
   return value;
 }
 
-function EditableTableCell({
-  children,
-  record,
-  column,
-  onComplete,
-  ...restProps
-}) {
+function EditableTableCell({ children, record, column, reload, ...restProps }) {
   const parentFilterValue = useParentFilterValue(column);
   const value = useMemo(() => get(record, column?.getKey()), [column, record]);
   const valueNode = useMemo(() => {
@@ -89,7 +80,7 @@ function EditableTableCell({
     const render = column.getTableRender();
 
     if (isFunction(render)) {
-      return render({ value, record, reload: onComplete });
+      return render({ value, record, reload });
     }
 
     const link = column.getTableLink();
@@ -105,12 +96,12 @@ function EditableTableCell({
     if (column.isArray()) {
       return (
         <>
-          {map(value, v => (
+          {map(value, (v) => (
             <React.Fragment key={v}>
               {renderInTable({
                 value: v,
                 column,
-                parentFilterValue
+                parentFilterValue,
               })}
               <br />
             </React.Fragment>
@@ -119,18 +110,18 @@ function EditableTableCell({
       );
     }
     return renderInTable({ value, parentFilterValue, column });
-  }, [column, value, parentFilterValue, children, record, onComplete]);
+  }, [column, value, parentFilterValue, children, record, reload]);
 
   const childrenNode = useMemo(() => {
     if (column && column.canInlineEdit()) {
       return (
-        <EditableCell record={record} column={column} onComplete={onComplete}>
+        <EditableCell record={record} column={column} reload={reload}>
           {valueNode}
         </EditableCell>
       );
     }
     return valueNode;
-  }, [column, valueNode, record, onComplete]);
+  }, [column, valueNode, record, reload]);
 
   return <td {...restProps}>{childrenNode}</td>;
 }
@@ -139,15 +130,15 @@ EditableTableCell.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   children: PropTypes.any,
   column: PropTypes.instanceOf(Column),
-  onComplete: PropTypes.func,
-  record: PropTypes.object // eslint-disable-line react/forbid-prop-types
+  reload: PropTypes.func,
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 EditableTableCell.defaultProps = {
   children: null,
   column: null,
-  onComplete: null,
-  record: {}
+  reload: null,
+  record: {},
 };
 
 export default React.memo(EditableTableCell);

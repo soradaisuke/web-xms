@@ -13,6 +13,7 @@ export default function useActionConfig({
   record,
   records,
   onComplete,
+  reload: reloadFunc,
 }) {
   const params = useActionParams({ record, records });
 
@@ -111,7 +112,10 @@ export default function useActionConfig({
             if (isFunction(onActionComplete)) {
               onActionComplete(...args);
             }
-            if (reload && isFunction(onComplete)) {
+            if (reload && isFunction(reloadFunc)) {
+              reload(...args);
+            }
+            if (isFunction(onComplete)) {
               onComplete(...args);
             }
           },
@@ -127,6 +131,7 @@ export default function useActionConfig({
       handler,
       normalize,
       filteredRecords,
+      reloadFunc,
       onComplete,
     ]
   );

@@ -102,7 +102,7 @@ function RecordPage({ isLoading, routes }) {
             key={action.getTitle()}
             action={action}
             record={record}
-            onComplete={fetch}
+            reload={fetch}
           />
         ))}
       </Descriptions.Item>
@@ -125,7 +125,7 @@ function RecordPage({ isLoading, routes }) {
             <EditableDescriptionCell
               record={record}
               column={column}
-              onComplete={fetch}
+              reload={fetch}
             />
           </Descriptions.Item>
         ))}

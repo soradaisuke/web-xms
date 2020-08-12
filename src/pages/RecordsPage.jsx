@@ -69,7 +69,7 @@ function RecordsPage({ isLoading }) {
     [columns]
   );
   const tableFilterColumns = useMemo(
-    () => filterColumns.filter(column => !column.canFilterOutside()),
+    () => filterColumns.filter((column) => !column.canFilterOutside()),
     [filterColumns]
   );
   const hasOutsideFilter = useMemo(
@@ -113,8 +113,12 @@ function RecordsPage({ isLoading }) {
         newPage = 1;
       }
       const tableFilter = {};
-      tableFilterColumns.forEach(column => {
-        set(tableFilter, column.getFilterKey(), get(filter, column.getFilterKey()));
+      tableFilterColumns.forEach((column) => {
+        set(
+          tableFilter,
+          column.getFilterKey(),
+          get(filter, column.getFilterKey())
+        );
       });
       if (!isEqual(tableFilter, filters)) {
         newPage = 1;
@@ -217,7 +221,7 @@ function RecordsPage({ isLoading }) {
           onCell={(record) => ({
             record,
             column,
-            onComplete: fetch,
+            reload: fetch,
           })}
           // onHeaderCell={() => ({
           //   width: widths.get(index),
@@ -304,7 +308,7 @@ function RecordsPage({ isLoading }) {
                 key={action.getTitle()}
                 action={action}
                 records={action.isMultipleAction() ? selectedRows : null}
-                onComplete={fetch}
+                reload={fetch}
               />
             ))}
         </Group>
@@ -358,7 +362,7 @@ function RecordsPage({ isLoading }) {
                     key={action.getTitle()}
                     action={action}
                     record={record}
-                    onComplete={fetch}
+                    reload={fetch}
                   />
                 ))}
               </>

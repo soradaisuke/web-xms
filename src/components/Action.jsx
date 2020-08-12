@@ -11,20 +11,29 @@ import usePageConfig from '../hooks/usePageConfig';
 import useForm from '../hooks/useForm';
 import useActionConfig from '../hooks/useActionConfig';
 
-function Action({ action, record, records, onComplete, disabledRecordModal }) {
+function Action({
+  action,
+  record,
+  records,
+  onComplete,
+  reload,
+  disabledRecordModal,
+}) {
   const form = useForm();
   const { table } = usePageConfig();
   const { params, disabled, invisible, onOk } = useActionConfig({
     action,
     record,
     records,
+    reload,
     onComplete,
   });
 
   const buttonProps = useMemo(
     () => ({
       className: 'action-button',
-      type: action.getLink() &&
+      type:
+        action.getLink() &&
         !disabled &&
         !(action instanceof CreateAction) &&
         !(action instanceof EditAction)
@@ -87,7 +96,7 @@ function Action({ action, record, records, onComplete, disabledRecordModal }) {
   }
 
   if (isFunction(action.getRender())) {
-    return action.getRender()({ ...params, reload: onComplete });
+    return action.getRender()({ ...params, reload });
   }
 
   if (action.getLink() && !disabled) {
@@ -156,10 +165,12 @@ Action.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   records: PropTypes.array,
   onComplete: PropTypes.func,
+  reload: PropTypes.func,
   disabledRecordModal: PropTypes.bool,
 };
 
 Action.defaultProps = {
+  reload: null,
   record: null,
   records: null,
   onComplete: null,

@@ -13,7 +13,7 @@ import useActionConfig from '../../hooks/useActionConfig';
 import FormItem from '../Form/FormItem';
 import './EditableTableCell.less';
 
-function EditableCell({ children, record, column, onComplete }) {
+function EditableCell({ children, record, column, reload }) {
   const [editing, setEditing] = useState(false);
   const editor = useRef();
   const form = useContext(EditableContext);
@@ -23,7 +23,7 @@ function EditableCell({ children, record, column, onComplete }) {
   const { disabled, onOk } = useActionConfig({
     action: table.getEditAction(),
     record,
-    onComplete,
+    reload,
   });
 
   useEffect(() => {
@@ -124,7 +124,7 @@ function EditableCell({ children, record, column, onComplete }) {
 
 EditableCell.propTypes = {
   column: PropTypes.instanceOf(Column),
-  onComplete: PropTypes.func,
+  reload: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types
   children: PropTypes.any,
   record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
@@ -132,7 +132,7 @@ EditableCell.propTypes = {
 
 EditableCell.defaultProps = {
   column: null,
-  onComplete: null,
+  reload: null,
   children: null,
   record: {},
 };

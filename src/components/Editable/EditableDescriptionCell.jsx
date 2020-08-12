@@ -37,10 +37,7 @@ function renderInDescription({ column, value, parentFilterValue }) {
 
   if (column instanceof DurationColumn) {
     return isNumber(value)
-      ? moment()
-          .startOf('day')
-          .add(value, 's')
-          .format(column.getFormat())
+      ? moment().startOf('day').add(value, 's').format(column.getFormat())
       : '';
   }
 
@@ -75,7 +72,7 @@ function renderInDescription({ column, value, parentFilterValue }) {
   return value;
 }
 
-function EditableDescriptionCell({ record, column, onComplete }) {
+function EditableDescriptionCell({ record, column, reload }) {
   const parentFilterValue = useParentFilterValue(column);
   const value = useMemo(() => get(record, column?.getKey()), [column, record]);
   const valueNode = useMemo(() => {
@@ -86,7 +83,7 @@ function EditableDescriptionCell({ record, column, onComplete }) {
     const render = column.getDescriptionRender();
 
     if (isFunction(render)) {
-      return render({ value, record, reload: onComplete });
+      return render({ value, record, reload });
     }
 
     const link = column.getDescriptionLink();
@@ -102,12 +99,12 @@ function EditableDescriptionCell({ record, column, onComplete }) {
     if (column.isArray()) {
       return (
         <>
-          {map(value, v => (
+          {map(value, (v) => (
             <React.Fragment key={toKey(v)}>
               {renderInDescription({
                 value: v,
                 column,
-                parentFilterValue
+                parentFilterValue,
               })}
               <br />
             </React.Fragment>
@@ -116,32 +113,32 @@ function EditableDescriptionCell({ record, column, onComplete }) {
       );
     }
     return renderInDescription({ value, parentFilterValue, column });
-  }, [column, value, parentFilterValue, record, onComplete]);
+  }, [column, value, parentFilterValue, record, reload]);
 
   const childrenNode = useMemo(() => {
     if (column && column.canInlineEdit()) {
       return (
-        <EditableCell record={record} column={column} onComplete={onComplete}>
+        <EditableCell record={record} column={column} reload={reload}>
           {valueNode}
         </EditableCell>
       );
     }
     return valueNode;
-  }, [column, valueNode, record, onComplete]);
+  }, [column, valueNode, record, reload]);
 
   return childrenNode ?? null;
 }
 
 EditableDescriptionCell.propTypes = {
   column: PropTypes.instanceOf(Column),
-  onComplete: PropTypes.func,
-  record: PropTypes.object // eslint-disable-line react/forbid-prop-types
+  reload: PropTypes.func,
+  record: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 EditableDescriptionCell.defaultProps = {
   column: null,
-  onComplete: null,
-  record: {}
+  reload: null,
+  record: {},
 };
 
 export default React.memo(EditableDescriptionCell);

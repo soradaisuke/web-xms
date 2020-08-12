@@ -3,6 +3,13 @@ import { DeleteOutlined } from '@ant-design/icons';
 import Action from './Action';
 
 export default class DeleteAction extends Action {
+  constructor(config = {}) {
+    super({
+      successMessage: '删除成功',
+      ...config,
+    });
+  }
+
   getType() {
     return this.config.get('type', 'danger');
   }
