@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.65](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.64...v3.0.0-beta.65) (2020-08-12)
+
+
+### Bug Fixes
+
+* **QTDP-686:** 新建页面新建或删除成功后直接返回上一页 & 新建编辑删除操作增加默认successMessage ([ecfde61](https://git2.qingtingfm.com/zhibo/xms/commit/ecfde61a5c80f203d68b52a2727c36463060d89b))
+
 ## [3.0.0-beta.64](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.63...v3.0.0-beta.64) (2020-08-12)
 
 
