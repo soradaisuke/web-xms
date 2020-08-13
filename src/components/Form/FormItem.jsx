@@ -112,7 +112,11 @@ function FormItem({
         },
       ]);
     }
-    if (column instanceof ObjectColumn && !column.isArray() && !column.getFormRender()) {
+    if (
+      column instanceof ObjectColumn &&
+      !column.isArray() &&
+      !column.getFormRender()
+    ) {
       r = concat(r, [
         {
           validator: (_, value, cb) => {
@@ -187,8 +191,12 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue: column.getFormItemInitialValue()?.toJS?.() ?? column.getFormItemInitialValue(),
-      name: prefix ? [prefix[1], column.getFormItemName()] : column.getFormItemName(),
+      initialValue:
+        column.getFormItemInitialValue()?.toJS?.() ??
+        column.getFormItemInitialValue(),
+      name: prefix
+        ? [prefix[1], column.getFormItemName()]
+        : column.getFormItemName(),
     }),
     [
       prefix,
@@ -261,7 +269,9 @@ function FormItem({
       );
     } else if (
       column.getFilters(null, 'disabledInForm') ||
-      (column.getValueOptionsSearchRequest() && column.getUseValueOptionsSearchRequest() !== Column.SEARCH_REQUEST_TYPES.FILTER) ||
+      (column.getValueOptionsSearchRequest() &&
+        column.getUseValueOptionsSearchRequest() !==
+          Column.SEARCH_REQUEST_TYPES.FILTER) ||
       column.getValueOptionsRequest()
     ) {
       inner = (
@@ -294,7 +304,12 @@ function FormItem({
     } else if (column instanceof ImageColumn) {
       inner = <UploadImage {...formItemComponentProps} />;
     } else if (column instanceof FileColumn) {
-      inner = <UploadFile {...formItemComponentProps} />;
+      inner = (
+        <UploadFile
+          platform={column.getPlatform()}
+          {...formItemComponentProps}
+        />
+      );
     } else if (column instanceof NumberColumn) {
       if (column.isArray()) {
         inner = (
@@ -366,7 +381,9 @@ function FormItem({
                     >
                       <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
                         {column.getColumns().map((dColumn) => (
-                          <FormListItemContext.Provider value={[name, field.name]}>
+                          <FormListItemContext.Provider
+                            value={[name, field.name]}
+                          >
                             <FormItem
                               isEdit
                               shouldSetInitialValue={false}
