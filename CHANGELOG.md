@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.66](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.65...v3.0.0-beta.66) (2020-08-13)
+
+
+### Bug Fixes
+
+* **NoTicket:** reload时报错reload.apply is not a function ([9b0f031](https://git2.qingtingfm.com/zhibo/xms/commit/9b0f0314a2eb916bd9d9e7ea091bbf58d35867ae))
+
 ## [3.0.0-beta.65](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.64...v3.0.0-beta.65) (2020-08-12)
 
 
