@@ -113,7 +113,7 @@ export default function useActionConfig({
               onActionComplete(...args);
             }
             if (reload && isFunction(reloadFunc)) {
-              reload(...args);
+              reloadFunc(...args);
             }
             if (isFunction(onComplete)) {
               onComplete(...args);
