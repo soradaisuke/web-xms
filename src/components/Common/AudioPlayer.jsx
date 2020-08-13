@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import {
   SoundOutlined,
   PauseOutlined,
-  CaretRightOutlined
+  CaretRightOutlined,
 } from '@ant-design/icons';
 import { Button, Slider, Radio } from 'antd';
 import { ClickableDiv } from '@qt/react';
@@ -21,7 +21,7 @@ export default class AudioPlayer extends React.PureComponent {
     loop: PropTypes.bool,
     showPlaybackRate: PropTypes.bool,
     showVolume: PropTypes.bool,
-    className: PropTypes.string
+    className: PropTypes.string,
   };
 
   static defaultProps = {
@@ -30,7 +30,7 @@ export default class AudioPlayer extends React.PureComponent {
     className: '',
     loop: false,
     showPlaybackRate: true,
-    showVolume: true
+    showVolume: true,
   };
 
   state = {
@@ -38,7 +38,7 @@ export default class AudioPlayer extends React.PureComponent {
     volume: 1.0,
     played: 0,
     playbackRate: 1.0,
-    seekTo: 0
+    seekTo: 0,
   };
 
   getProgressByEvent(event) {
@@ -54,11 +54,11 @@ export default class AudioPlayer extends React.PureComponent {
     this.setState({ playing: false });
   };
 
-  setVolume = value => {
+  setVolume = (value) => {
     this.setState({ volume: value / 100 });
   };
 
-  setPlaybackRate = v => {
+  setPlaybackRate = (v) => {
     this.setState({ playbackRate: v });
   };
 
@@ -66,7 +66,7 @@ export default class AudioPlayer extends React.PureComponent {
     this.addEventListeners();
     this.setState({
       seeking: true,
-      playing: false
+      playing: false,
     });
   };
 
@@ -74,21 +74,21 @@ export default class AudioPlayer extends React.PureComponent {
     this.removeEventListenrs();
     this.setState({
       seeking: false,
-      playing: true
+      playing: true,
     });
   };
 
-  onProgress = state => {
+  onProgress = (state) => {
     this.setState(state);
   };
 
-  onSeek = seconds => {
+  onSeek = (seconds) => {
     this.setState({
-      seekTo: seconds
+      seekTo: seconds,
     });
   };
 
-  onChangeProgress = e => {
+  onChangeProgress = (e) => {
     this.player.seekTo(this.getProgressByEvent(e));
   };
 
@@ -97,22 +97,22 @@ export default class AudioPlayer extends React.PureComponent {
     this.setState({ playing: loop });
   };
 
-  ref = player => {
+  ref = (player) => {
     this.player = player;
   };
 
-  onClickableRef = el => {
+  onClickableRef = (el) => {
     this.el = el;
   };
 
   onClickPlay = () => {
     const { playing } = this.state;
     this.setState({
-      playing: !playing
+      playing: !playing,
     });
   };
 
-  onChangeRate = e => {
+  onChangeRate = (e) => {
     this.setPlaybackRate(e.target.value);
   };
 
@@ -133,7 +133,7 @@ export default class AudioPlayer extends React.PureComponent {
       loop,
       showPlaybackRate,
       showVolume,
-      playbackRates
+      playbackRates,
     } = this.props;
     const {
       playing,
@@ -142,7 +142,7 @@ export default class AudioPlayer extends React.PureComponent {
       seekTo,
       seeking,
       playbackRate,
-      playedSeconds
+      playedSeconds,
     } = this.state;
     const duration =
       this.player && this.player.getDuration() ? this.player.getDuration() : 0;
@@ -200,7 +200,7 @@ export default class AudioPlayer extends React.PureComponent {
               buttonStyle="solid"
               className="audio-player-rates"
             >
-              {playbackRates.map(v => (
+              {playbackRates.map((v) => (
                 <Radio.Button key={v} value={v}>{`${v}x`}</Radio.Button>
               ))}
             </Radio.Group>

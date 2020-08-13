@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useEventCallback } from '@qt/react';
 import { isFunction, get, filter, map } from 'lodash';
+import hasPermissionFunc from '../utils/hasPermission';
 import usePageConfig from './usePageConfig';
 import useActionParams from './useActionParams';
 import visiblePromise from '../utils/visiblePromise';
@@ -16,6 +17,8 @@ export default function useActionConfig({
   reload: reloadFunc,
 }) {
   const params = useActionParams({ record, records });
+
+  const { user } = params;
 
   const filteredRecords = useMemo(
     () =>
@@ -43,6 +46,15 @@ export default function useActionConfig({
   }, [action, params, filteredRecords, records]);
 
   const invisible = useMemo(() => !action.isVisible(params), [action, params]);
+
+  const hasPermission = useMemo(
+    () =>
+      hasPermissionFunc({
+        configPermissions: action.getPermissions(),
+        userPermissions: user?.get('permissions'),
+      }),
+    [user, action]
+  );
 
   const { edit, remove, create, table } = usePageConfig();
 
@@ -136,5 +148,10 @@ export default function useActionConfig({
     ]
   );
 
-  return { params, disabled, invisible, onOk };
+  return {
+    invisible: invisible || !hasPermission,
+    params,
+    disabled,
+    onOk,
+  };
 }

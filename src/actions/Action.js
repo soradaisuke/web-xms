@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { isFunction } from 'lodash';
+import { isFunction, isUndefined } from 'lodash';
 import findCascadeColumn from '../utils/findCascadeColumn';
 
 export default class Action {
@@ -123,6 +123,16 @@ export default class Action {
       ['buttonProps', 'shape'],
       this.config.get('shape')
     );
+  }
+
+  getPermissions() {
+    if (isUndefined(this.permissions)) {
+      this.permissions = this.config.get('permissions', null);
+      if (Immutable.isList(this.permissions)) {
+        this.permissions = this.permissions.toJS();
+      }
+    }
+    return this.permissions;
   }
 
   getIcon() {

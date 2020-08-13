@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
-import { filter, find, map, isFunction, isString, isArray } from 'lodash';
+import { filter, find, map } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
 import { dynamic, router } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -14,6 +14,7 @@ import Watermark from './components/Watermark';
 import 'moment/locale/zh-cn';
 import './router.less';
 import WelcomePage from './pages/WelcomePage';
+import hasPermission from './utils/hasPermission';
 
 const { Route, Switch, Router } = router;
 const { Content, Sider, Header } = Layout;
@@ -32,24 +33,13 @@ function getValidRoutes(routes, user) {
         newRoute = null;
       }
 
-      if (route.permissions) {
-        const configPermissions = isString(route.permissions)
-          ? [route.permissions]
-          : route.permissions;
-        const userPermissions = user?.get('permissions');
-        if (!userPermissions || !userPermissions.size) {
-          newRoute = null;
-        } else if (
-          isFunction(configPermissions) &&
-          !configPermissions(userPermissions)
-        ) {
-          newRoute = null;
-        } else if (
-          isArray(configPermissions) &&
-          !find(configPermissions, (p) => userPermissions.get(p))
-        ) {
-          newRoute = null;
-        }
+      if (
+        !hasPermission({
+          configPermissions: route.permissions,
+          userPermissions: user?.get('permissions'),
+        })
+      ) {
+        newRoute = null;
       }
 
       if (newRoute && newRoute.routes) {
