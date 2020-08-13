@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
-import { filter, find, map, forEach, isFunction, isString, isArray } from 'lodash';
+import { filter, find, map, isFunction, isString, isArray } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
 import { dynamic, router } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
@@ -13,8 +13,9 @@ import Breadcrumb from './components/Nav/Breadcrumb';
 import Watermark from './components/Watermark';
 import 'moment/locale/zh-cn';
 import './router.less';
+import WelcomePage from './pages/WelcomePage';
 
-const { Route, Switch, Router, Redirect } = router;
+const { Route, Switch, Router } = router;
 const { Content, Sider, Header } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
@@ -32,14 +33,20 @@ function getValidRoutes(routes, user) {
       }
 
       if (route.permissions) {
-        const configPermissions = isString(route.permissions) ? [route.permissions] : route.permissions;
+        const configPermissions = isString(route.permissions)
+          ? [route.permissions]
+          : route.permissions;
         const userPermissions = user?.get('permissions');
         if (!userPermissions || !userPermissions.size) {
           newRoute = null;
-        } else if (isFunction(configPermissions) && !configPermissions(userPermissions)) {
+        } else if (
+          isFunction(configPermissions) &&
+          !configPermissions(userPermissions)
+        ) {
           newRoute = null;
-        } else if (isArray(configPermissions) &&
-          !find(configPermissions, p => userPermissions.get(p))
+        } else if (
+          isArray(configPermissions) &&
+          !find(configPermissions, (p) => userPermissions.get(p))
         ) {
           newRoute = null;
         }
@@ -101,32 +108,6 @@ function ConnectedRouter({ history, app }) {
   const homeRoute = useMemo(() => find(routes, ({ path }) => path === '/'), [
     routes,
   ]);
-  const firstAvaliableNonHomeRoutePath = useMemo(() => {
-    let nonHomeRoutePath;
-
-    function findFirstAvaliableNonHomeRoute({
-      path,
-      routes: subRoutes,
-      component,
-    }) {
-      if (path !== '/' && !!component) {
-        nonHomeRoutePath = path;
-      } else {
-        const nonInlineRoutes = subRoutes
-          ? filter(subRoutes, ({ inline }) => !inline)
-          : [];
-        if (nonInlineRoutes && nonInlineRoutes.length > 0) {
-          forEach(nonInlineRoutes, (r) => findFirstAvaliableNonHomeRoute(r));
-        }
-      }
-      return !nonHomeRoutePath;
-    }
-
-    forEach(routes, (r) => findFirstAvaliableNonHomeRoute(r));
-
-    return nonHomeRoutePath;
-  }, [routes]);
-
   const [collapsed, setCollapsed] = useState(false);
   const onCollapse = useEventCallback((c) => setCollapsed(c));
 
@@ -157,18 +138,12 @@ function ConnectedRouter({ history, app }) {
             <Content className="xms-content">
               <Breadcrumb routes={routes} />
               <Switch>
+                {!homeRoute && (
+                  <Route exact key="/" path="/">
+                    <WelcomePage title={name} />
+                  </Route>
+                )}
                 {map(routes, (route) => renderRoute(route))}
-                {(!auth || !!user) &&
-                !homeRoute &&
-                firstAvaliableNonHomeRoutePath ? (
-                  <Redirect
-                    from="/"
-                    to={{
-                      pathname: firstAvaliableNonHomeRoutePath,
-                      state: { unmatch: true },
-                    }}
-                  />
-                ) : null}
               </Switch>
             </Content>
           </Layout>
