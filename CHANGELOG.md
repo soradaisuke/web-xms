@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.67](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.66...v3.0.0-beta.67) (2020-08-13)
+
+
+### Features
+
+* **QTLIVE-1860:** [3.0]通用首页 ([6f52d97](https://git2.qingtingfm.com/zhibo/xms/commit/6f52d97e3f8f36bdeb02931453f0c283a4611abd))
+
 ## [3.0.0-beta.66](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.65...v3.0.0-beta.66) (2020-08-13)
 
 
