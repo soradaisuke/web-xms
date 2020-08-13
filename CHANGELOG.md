@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.68](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.67...v3.0.0-beta.68) (2020-08-13)
+
+
+### Bug Fixes
+
+* **NoTicket:** 支持上传文件到upyun ([88569a6](https://git2.qingtingfm.com/zhibo/xms/commit/88569a61e750243f1c4fa3e35d2be75f1d3869f9))
+
 ## [3.0.0-beta.67](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.66...v3.0.0-beta.67) (2020-08-13)
 
 
