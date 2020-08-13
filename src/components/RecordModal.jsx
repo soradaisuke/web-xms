@@ -76,6 +76,12 @@ function RecordModal({
 
   const onSubmit = useEventCallback(() => onOk(form), [form, onOk]);
 
+  const onVisibleChange = useEventCallback((visible) => {
+    if (!visible) {
+      form.resetFields();
+    }
+  });
+
   return (
     <FormContext.Provider value={form}>
       <ActivatorModal
@@ -84,6 +90,7 @@ function RecordModal({
         activator={children}
         title={title || defaultTilte}
         onOk={onSubmit}
+        onVisibleChange={onVisibleChange}
       >
         <Form {...formItemLayout} {...formProps} form={form}>
           {cols.map((column) => (
