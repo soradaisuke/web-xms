@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { UploadOutlined } from '@ant-design/icons';
 import { Upload, message, Button } from 'antd';
 import { split, last } from 'lodash';
-import { wrappedUploadFile as uploadFile } from '../../utils/uploadFile';
+import { uploadFile } from '../../utils/upload';
 
 class UploadFile extends React.PureComponent {
   static displayName = 'UploadFile';
@@ -15,6 +15,7 @@ class UploadFile extends React.PureComponent {
     generateFileName: PropTypes.func,
     title: PropTypes.string,
     ssoToken: PropTypes.string,
+    platform: PropTypes.oneOf(['aliyun', 'upyun']),
   };
 
   static defaultProps = {
@@ -22,6 +23,7 @@ class UploadFile extends React.PureComponent {
     generateFileName: null,
     title: '上传',
     ssoToken: '',
+    platform: 'aliyun',
   };
 
   state = {
@@ -49,7 +51,7 @@ class UploadFile extends React.PureComponent {
   };
 
   customRequest = async (options) => {
-    const { ssoToken, generateFileName } = this.props;
+    const { ssoToken, generateFileName, platform } = this.props;
     this.setState({
       loading: true,
     });
@@ -58,6 +60,7 @@ class UploadFile extends React.PureComponent {
       const url = await uploadFile(options.file, {
         ssoToken,
         fileName: generateFileName ? generateFileName(options.file) : null,
+        platform,
       });
       this.afterUpload(url, options.file);
     } catch (e) {

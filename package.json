@@ -23,7 +23,7 @@
   "dependencies": {
     "@qt/env": "^1.4.1",
     "@qt/react": "^1.14.1",
-    "@qt/web-common": "^1.12.2",
+    "@qt/web-common": "^1.13.0",
     "ali-oss": "^6.9.1",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",

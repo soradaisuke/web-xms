@@ -6,7 +6,7 @@ import { generateDeviceId } from '@qt/web-common';
 import ReactCrop from 'react-image-crop';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Upload, Col, Row, Modal } from 'antd';
-import { wrappedUploadImage as uploadImage } from '../../utils/uploadFile';
+import { uploadImage } from '../../utils/upload';
 import getImageSize from '../../utils/getImageSize';
 import showError from '../../utils/showError';
 import 'react-image-crop/dist/ReactCrop.css';

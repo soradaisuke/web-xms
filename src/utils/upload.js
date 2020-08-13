@@ -1,7 +1,7 @@
 import { split, drop, join } from 'lodash';
 import shortid from 'shortid';
 import { isProduction } from '@qt/env';
-import { uploadImage, uploadFile } from '@qt/web-common';
+import { uploadToAliyun, uploadToUpyun } from '@qt/web-common';
 import OSS from 'ali-oss';
 import request from '../services/request';
 import isTuboshu from './isTuboshu';
@@ -22,18 +22,18 @@ function generateFileName(file) {
   return `${Date.now()}_${shortid.generate()}.${postfix}`;
 }
 
-function uploadToAliyun(file, { fileName, ssoToken }) {
+function uploadToTuboshuAliyun(file, { fileName, ssoToken }) {
   const finalFileName = encodeURIComponent(fileName) || generateFileName(file);
 
   return request
     .post(`${uploadHost}/intra/v1/sts_token`, {
       params: {
         app_id: isProduction ? 'tuboshu' : 'tuboshudev',
-        sso_token: ssoToken
+        sso_token: ssoToken,
       },
       body: {
-        dir: split(window.location.host, '.')[0]
-      }
+        dir: split(window.location.host, '.')[0],
+      },
     })
     .then(
       async ({
@@ -43,14 +43,14 @@ function uploadToAliyun(file, { fileName, ssoToken }) {
         bucket,
         security_token: stsToken,
         resource,
-        cdn_domain: domain
+        cdn_domain: domain,
       }) => {
         const client = new OSS({
           endpoint: `https://oss-${region}.aliyuncs.com`,
           accessKeyId,
           accessKeySecret,
           bucket,
-          stsToken
+          stsToken,
         });
         await client.put(`/${resource}/${finalFileName}`, file);
         return `https://${domain}/${resource}/${finalFileName}`;
@@ -58,24 +58,28 @@ function uploadToAliyun(file, { fileName, ssoToken }) {
     );
 }
 
-export function wrappedUploadFile(file, { fileName, ssoToken }) {
+export function uploadFile(file, { fileName, ssoToken, platform = 'aliyun' }) {
   if (isTuboshu) {
-    return uploadToAliyun(file, { fileName, ssoToken });
+    return uploadToTuboshuAliyun(file, { fileName, ssoToken });
   }
-  return uploadFile(file, { fileName, ssoToken });
+  if (platform === 'upyun') {
+    return uploadToUpyun(file, { fileName, ssoToken });
+  }
+  return uploadToAliyun(file, { fileName, ssoToken });
 }
 
-export function wrappedUploadImage(
+export function uploadImage(
   file,
-  { ssoToken, bucket, upYunSyncPreprocessor, deviceId }
+  { fileName, ssoToken, bucket, upYunSyncPreprocessor, deviceId }
 ) {
   if (isTuboshu) {
-    return uploadToAliyun(file, { ssoToken });
+    return uploadToTuboshuAliyun(file, { fileName, ssoToken });
   }
-  return uploadImage(file, {
+  return uploadToUpyun(file, {
+    fileName,
     ssoToken,
     bucket,
     upYunSyncPreprocessor,
-    deviceId
+    deviceId,
   });
 }
