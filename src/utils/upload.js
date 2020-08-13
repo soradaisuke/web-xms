@@ -63,7 +63,7 @@ export function uploadFile(file, { fileName, ssoToken, platform = 'aliyun' }) {
     return uploadToTuboshuAliyun(file, { fileName, ssoToken });
   }
   if (platform === 'upyun') {
-    return uploadToUpyun(file, { fileName, ssoToken });
+    return uploadToUpyun(file, { fileName, ssoToken, removeEXIF: false });
   }
   return uploadToAliyun(file, { fileName, ssoToken });
 }
