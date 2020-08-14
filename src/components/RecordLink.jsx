@@ -14,11 +14,12 @@ function RecordLink({ link, record, buttonProps, children }) {
   const filter = pageData?.filter ?? null;
 
   const url = useMemo(() => {
-    if (isFunction(link)) {
-      return textToPath(link({ record, filter }));
+    const linkInternal = isFunction(link) ? link({ record, filter }) : link;
+    if (!startsWith(linkInternal, 'http')) {
+      return textToPath(linkInternal);
     }
 
-    return textToPath(link);
+    return linkInternal;
   }, [link, record, filter]);
 
   if (startsWith(url, 'http')) {
@@ -47,13 +48,13 @@ RecordLink.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   buttonProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 RecordLink.defaultProps = {
   buttonProps: {},
   children: null,
-  record: null
+  record: null,
 };
 
 export default React.memo(RecordLink);
