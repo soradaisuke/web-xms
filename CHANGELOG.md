@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.71](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.70...v3.0.0-beta.71) (2020-08-14)
+
+
+### Features
+
+* **QTLIVE-1866:** [3.0]Action也支持permissions & 修复播放组件UI ([d5badca](https://git2.qingtingfm.com/zhibo/xms/commit/d5badcabfbc6ea31407be9a2e571ac834365caa6))
+
+
+### Bug Fixes
+
+* **QTDP-703:** RecordLink里以http开头的链接不应经过textToPath ([b2a22f5](https://git2.qingtingfm.com/zhibo/xms/commit/b2a22f50ae8b49af238fbf0aa52aef0dcca732ba))
+* **QTLIVE-1886:** RecordModal每次打开时resetFields ([99d2555](https://git2.qingtingfm.com/zhibo/xms/commit/99d25551d3f5a029d5fe6fc2cbbbdd1111248c2b))
+
 ## [3.0.0-beta.70](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.69...v3.0.0-beta.70) (2020-08-13)
 
 
