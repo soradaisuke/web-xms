@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.72](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.71...v3.0.0-beta.72) (2020-08-18)
+
+
+### Bug Fixes
+
+* **QTDP-708:**  左侧数据应用菜单会被最下方的按钮挡着 ([12ae2e8](https://git2.qingtingfm.com/zhibo/xms/commit/12ae2e846d2df4b2a2c07e8546f84cf61a260f6c))
+
 ## [3.0.0-beta.71](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.70...v3.0.0-beta.71) (2020-08-14)
 
 
