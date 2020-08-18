@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.73](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.72...v3.0.0-beta.73) (2020-08-18)
+
+
+### Features
+
+* **NoTicket:** component支持ReactNode ([2b5f0b5](https://git2.qingtingfm.com/zhibo/xms/commit/2b5f0b5e82034d62ced635a5b8d9602b416abd6c))
+* **NoTicket:** icon支持传组件 ([fbfd803](https://git2.qingtingfm.com/zhibo/xms/commit/fbfd803ddcca07d9c30fa0df2cb74b1023ff72c4))
+
 ## [3.0.0-beta.72](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.71...v3.0.0-beta.72) (2020-08-18)
 
 
