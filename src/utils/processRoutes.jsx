@@ -65,7 +65,10 @@ export default function processRoutes({ app, routes }) {
       let processedConfig = {};
 
       if (isElement(component)) {
-        throw new Error(`${path}: component can not be React.Element`);
+        const c = component;
+        component = function NewComponent() {
+          return <>{c}</>;
+        };
       } else if (isComponent(component)) {
         // keep
       } else if (isFunction(component)) {
@@ -90,10 +93,7 @@ export default function processRoutes({ app, routes }) {
           inline,
           config: processedConfig,
         });
-      } else if (
-        inlineRoutes.length > 0 ||
-        config.type === 'descriptions'
-      ) {
+      } else if (inlineRoutes.length > 0 || config.type === 'descriptions') {
         processedConfig = processSingleConfig({ config, path });
         component = dynamicRecordComponent({
           app,
