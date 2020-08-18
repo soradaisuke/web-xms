@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { isValidElementType } from 'react-is';
 import PropTypes from 'prop-types';
 import { filter } from 'lodash/fp';
 import { router, useLocation, useHistory } from 'dva';
@@ -8,7 +9,18 @@ import { forEach } from 'lodash';
 const { Link, matchPath } = router;
 const { SubMenu } = Menu;
 
-const validMenues = filter(({ title, inline, hideInMenu }) => !!title && !inline && !hideInMenu);
+const validMenues = filter(
+  ({ title, inline, hideInMenu }) => !!title && !inline && !hideInMenu
+);
+
+function renderIcon(icon) {
+  if (isValidElementType(icon)) {
+    const Icon = icon;
+    return <Icon />;
+  }
+
+  return icon;
+}
 
 function findNextKey({ pathname, routes, selectedKeys, openKeys }) {
   forEach(routes, (route) => {
@@ -32,14 +44,14 @@ function renderMenus(routes) {
 
       if (subRoutes.length > 0) {
         return (
-          <SubMenu key={path} title={title} icon={icon}>
+          <SubMenu key={path} title={title} icon={renderIcon(icon)}>
             {renderMenus(subRoutes)}
           </SubMenu>
         );
       }
 
       return (
-        <Menu.Item key={path} icon={icon}>
+        <Menu.Item key={path} icon={renderIcon(icon)}>
           <Link to={path}>{title}</Link>
         </Menu.Item>
       );

@@ -1,5 +1,6 @@
 import React from 'react';
 import { startsWith, isFunction, filter, uniqueId } from 'lodash';
+import { isElement, isValidElementType } from 'react-is';
 import { dynamic } from 'dva';
 import {
   dynamicRecordsComponent,
@@ -10,31 +11,6 @@ import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
 import processFormConfig from './processFormConfig';
-
-function isClassComponent(component) {
-  return (
-    typeof component === 'function' &&
-    component.prototype &&
-    !!component.prototype.isReactComponent
-  );
-}
-
-// Ensure compatability with transformed code
-function isFunctionComponent(component) {
-  return (
-    typeof component === 'function' &&
-    String(component).includes('return') &&
-    String(component).includes('.createElement')
-  );
-}
-
-function isComponent(component) {
-  return isClassComponent(component) || isFunctionComponent(component);
-}
-
-function isElement(typeElement) {
-  return React.isValidElement(typeElement);
-}
 
 function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
@@ -69,7 +45,7 @@ export default function processRoutes({ app, routes }) {
         component = function NewComponent() {
           return <>{c}</>;
         };
-      } else if (isComponent(component)) {
+      } else if (isValidElementType(component)) {
         // keep
       } else if (isFunction(component)) {
         component = dynamic({
