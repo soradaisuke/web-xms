@@ -13,7 +13,11 @@ import { migrateRoute } from './migrate';
 import processFormConfig from './processFormConfig';
 
 function isDynamicComponent(component) {
-  return isFunction(component) && String(component).includes('import');
+  return (
+    isFunction(component) &&
+    (String(component).includes('import') ||
+      String(component).includes('Promise'))
+  );
 }
 
 function valiadateRoute({ path }, prefix = '/') {
