@@ -36,7 +36,14 @@ export default function processRoutes({ app, routes }) {
 
       const route = migrateRoute(r, app);
 
-      const { config = {}, path, models, inline, routes: subRoutes } = route;
+      const {
+        config = {},
+        path,
+        models,
+        inline,
+        routes: subRoutes,
+        ...others
+      } = route;
       const { useFormPage } = config;
       const inlineRoutes = subRoutes
         ? filter(subRoutes, (sr) => sr.inline)
@@ -70,6 +77,7 @@ export default function processRoutes({ app, routes }) {
           component,
           inline,
           config: processedConfig,
+          ...others,
         });
       } else if (inlineRoutes.length > 0 || config.type === 'descriptions') {
         processedConfig = processSingleConfig({ config, path });
@@ -78,12 +86,14 @@ export default function processRoutes({ app, routes }) {
           component,
           inline,
           config: processedConfig,
+          ...others,
         });
       } else if (config.type === 'form') {
         component = dynamicRecordFormComponent({
           app,
           inline,
           config: processFormConfig({ config, path }),
+          ...others,
         });
       }
 

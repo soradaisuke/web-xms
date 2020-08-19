@@ -538,13 +538,7 @@ function generateRecordFormPage({
   return withRouter(Page);
 }
 
-function dynamicComponent({
-  app,
-  config,
-  inline,
-  component,
-  generateFunction,
-}) {
+function dynamicComponent({ app, config, generateFunction, ...others }) {
   const service = generateService(config.api);
   const model = generateModel({
     namespace: config.namespace,
@@ -555,35 +549,27 @@ function dynamicComponent({
     app,
     models: () => [Promise.resolve(model)],
     component: () =>
-      Promise.resolve(generateFunction({ ...config, component, inline })),
+      Promise.resolve(generateFunction({ ...config, ...others })),
   });
 }
 
-export function dynamicRecordsComponent({ app, config, component, inline }) {
+export function dynamicRecordsComponent(params) {
   return dynamicComponent({
-    app,
-    config,
-    component,
-    inline,
+    ...params,
     generateFunction: generateRecordsPage,
   });
 }
 
-export function dynamicRecordComponent({ app, config, component, inline }) {
+export function dynamicRecordComponent(params) {
   return dynamicComponent({
-    app,
-    config,
-    component,
-    inline,
+    ...params,
     generateFunction: generateRecordPage,
   });
 }
 
-export function dynamicRecordFormComponent({ app, config, inline }) {
+export function dynamicRecordFormComponent(params) {
   return dynamicComponent({
-    app,
-    config,
-    inline,
+    ...params,
     generateFunction: generateRecordFormPage,
   });
 }
