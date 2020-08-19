@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.75](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.74...v3.0.0-beta.75) (2020-08-19)
+
+
+### Features
+
+* **NoTicket:** layout配置挪出config ([05b50f3](https://git2.qingtingfm.com/zhibo/xms/commit/05b50f3fcea64c8db7138a5737047485ca9fa8c9))
+
 ## [3.0.0-beta.74](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.73...v3.0.0-beta.74) (2020-08-19)
 
 
