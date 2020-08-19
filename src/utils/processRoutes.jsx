@@ -1,6 +1,6 @@
 import React from 'react';
 import { startsWith, isFunction, filter, uniqueId } from 'lodash';
-import { isElement, isValidElementType } from 'react-is';
+import { isElement } from 'react-is';
 import { dynamic } from 'dva';
 import {
   dynamicRecordsComponent,
@@ -11,6 +11,10 @@ import processListConfig from './processListConfig';
 import processSingleConfig from './processSingleConfig';
 import { migrateRoute } from './migrate';
 import processFormConfig from './processFormConfig';
+
+function isDynamicComponent(component) {
+  return isFunction(component) && String(component).includes('import');
+}
 
 function valiadateRoute({ path }, prefix = '/') {
   if (!path) {
@@ -45,9 +49,7 @@ export default function processRoutes({ app, routes }) {
         component = function NewComponent() {
           return <>{c}</>;
         };
-      } else if (isValidElementType(component)) {
-        // keep
-      } else if (isFunction(component)) {
+      } else if (isDynamicComponent(component)) {
         component = dynamic({
           component,
           models,
