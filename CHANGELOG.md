@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.77](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.76...v3.0.0-beta.77) (2020-08-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** 判断Dynamic import ([409537e](https://git2.qingtingfm.com/zhibo/xms/commit/409537ebf0c217074f1accf31bc3d7e188e00b0f))
+
 ## [3.0.0-beta.76](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.75...v3.0.0-beta.76) (2020-08-19)
 
 
