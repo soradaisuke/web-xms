@@ -1,5 +1,5 @@
 import React from 'react';
-import { startsWith, isFunction, filter, uniqueId } from 'lodash';
+import { startsWith, isFunction, filter, uniqueId, includes } from 'lodash';
 import { isElement } from 'react-is';
 import { dynamic } from 'dva';
 import {
@@ -13,10 +13,15 @@ import { migrateRoute } from './migrate';
 import processFormConfig from './processFormConfig';
 
 function isDynamicComponent(component) {
+  if (!isFunction(component)) {
+    return false;
+  }
+
+  const str = String(component);
   return (
-    isFunction(component) &&
-    (String(component).includes('import') ||
-      String(component).includes('Promise'))
+    includes(str, 'import') ||
+    includes(str, 'Promise') ||
+    includes(str, '.then(')
   );
 }
 
