@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.78](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.77...v3.0.0-beta.78) (2020-08-21)
+
+
+### Features
+
+* **NoTicket:** 分组筛选标题加粗 ([11c23f6](https://git2.qingtingfm.com/zhibo/xms/commit/11c23f67fe4c10fd92eface720e002e7dfc8e311))
+
+
+### Bug Fixes
+
+* **NoTicket:** Select不设置width，改为minWidth ([9514f8d](https://git2.qingtingfm.com/zhibo/xms/commit/9514f8d393ffff61cfb22a029645194e2b8a42c9))
+
 ## [3.0.0-beta.77](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.76...v3.0.0-beta.77) (2020-08-20)
 
 
