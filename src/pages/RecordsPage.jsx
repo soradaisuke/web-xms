@@ -263,7 +263,9 @@ function RecordsPage({ isLoading }) {
         >
           {map(groupedFilterColumns, (cs, name) => (
             <React.Fragment key={name}>
-              {name && <Form.Item label={name} />}
+              {name && (
+                <Form.Item label={name} style={{ fontWeight: 'bold' }} />
+              )}
               {cs.map((column) => (
                 <FormItem key={column.getFilterKey()} column={column} />
               ))}
