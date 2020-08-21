@@ -90,7 +90,7 @@ function FormItem({ column }) {
       ) {
         inner = (
           <TreeSelect
-            style={{ width: column.canFilterMultiple() ? '200px' : '100px' }}
+            style={{ minWidth: '120px' }}
             column={column}
             {...formItemComponentProps}
             {...column.getFilterFormItemComponentProps()}
