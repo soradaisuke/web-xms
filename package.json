@@ -24,6 +24,7 @@
     "@qt/env": "^1.5.0",
     "@qt/react": "^1.19.3",
     "@qt/web-common": "^1.14.0",
+    "ali-oss": "^6.10.0",
     "classnames": "^2.2.6",
     "glamor": "^2.20.40",
     "history": "^4.10.1",

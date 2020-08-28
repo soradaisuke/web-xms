@@ -23,6 +23,7 @@ import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
 import PageConfigContext from '../contexts/PageConfigContext';
 import usePageData from '../hooks/usePageData';
+import useUser from '../hooks/useUser';
 
 const { withRouter, useLocation, useHistory, useParams } = router;
 
@@ -280,16 +281,17 @@ function generateRecordsPage({
     const sort = useMemo(() => queries.sort || '', [queries.sort]);
     const history = useHistory();
     const matchParams = useParams();
+    const user = useUser();
 
     const fetchApiFixedFilter = useMemo(() => {
       if (isFunction(fixedFilter)) {
-        return fixedFilter(matchParams);
+        return fixedFilter(matchParams, user);
       }
       if (isPlainObject(fixedFilter)) {
         return fixedFilter;
       }
       return null;
-    }, [matchParams]);
+    }, [matchParams, user]);
 
     const createApiDefaultBody = useCreateApiDefaultBody(defaultBody);
 
