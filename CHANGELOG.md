@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.80](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.79...v3.0.0-beta.80) (2020-08-28)
+
+
+### Features
+
+* **NoTicket:** inline页面的Tabs的selectedTab写在query里 ([cea40d1](https://git2.qingtingfm.com/zhibo/xms/commit/cea40d1e64fac132f2e974f2fed2da19e4052aa8))
+
 ## [3.0.0-beta.79](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.78...v3.0.0-beta.79) (2020-08-28)
 
 
