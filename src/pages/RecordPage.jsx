@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Tabs, Card, Collapse, Descriptions } from 'antd';
 import { map, reduce } from 'lodash';
 import classNames from 'classnames';
+import md5 from 'md5';
 import Page from './Page';
 import Action from '../components/Action';
 import EditableDescriptionCell from '../components/Editable/EditableDescriptionCell';
@@ -14,15 +15,16 @@ import usePageData from '../hooks/usePageData';
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
 
-function RecordPage({ isLoading, routes }) {
+function RecordPage({ isLoading, routes: r }) {
   const pageData = usePageData();
-  const { record } = pageData;
+  const { record, tab } = pageData;
   const {
     component: Component,
     inline,
     layout,
     table,
     fetch,
+    onChangeTab,
     descriptionsProps,
   } = usePageConfig();
   const user = useUser();
@@ -34,6 +36,14 @@ function RecordPage({ isLoading, routes }) {
     [record, table, user]
   );
   const actions = useMemo(() => table.getActions(), [table]);
+  const routes = useMemo(
+    () =>
+      map(r, (route) => ({
+        ...route,
+        tabKey: md5(route.path),
+      })),
+    [r]
+  );
 
   const renderRouteChunk = useCallback(
     (chunk) => {
@@ -62,9 +72,9 @@ function RecordPage({ isLoading, routes }) {
                 key={chunk[0].path}
                 className={classNames('content-card', inline ? 'inline' : '')}
               >
-                <Tabs>
-                  {map(chunk, ({ component: Com, path, title = '' }) => (
-                    <TabPane tab={title} key={path}>
+                <Tabs activeKey={tab || chunk[0].tabKey} onChange={onChangeTab}>
+                  {map(chunk, ({ component: Com, title = '', tabKey }) => (
+                    <TabPane tab={title} key={tabKey}>
                       <Com inline />
                     </TabPane>
                   ))}
@@ -87,7 +97,7 @@ function RecordPage({ isLoading, routes }) {
 
       return null;
     },
-    [layout, inline]
+    [layout, inline, tab, onChangeTab]
   );
 
   const actionsNode = useMemo(() => {

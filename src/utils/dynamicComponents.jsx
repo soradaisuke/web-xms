@@ -1,5 +1,5 @@
 /* eslint-disable react/no-multi-comp */
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector, useDispatch, dynamic, router } from 'dva';
 import { parse } from 'query-string';
 import {
@@ -13,6 +13,7 @@ import {
   isUndefined,
   split,
 } from 'lodash';
+import { useEventCallback } from '@qt/react';
 import { generateUri } from '@qt/web-common';
 import Immutable from 'immutable';
 import PageDataContext from '../contexts/PageDataContext';
@@ -168,7 +169,7 @@ function useCreateApiDefaultBody(defaultBody) {
 function useCreate({ createApiDefaultBody, apiPath, namespace }) {
   const dispatch = useDispatch();
 
-  return useCallback(
+  return useEventCallback(
     ({ body }) =>
       dispatch({
         type: `${namespace}/create`,
@@ -184,7 +185,7 @@ function useCreate({ createApiDefaultBody, apiPath, namespace }) {
 function useFetch({ apiPath, namespace }) {
   const dispatch = useDispatch();
 
-  return useCallback(
+  return useEventCallback(
     ({ id } = {}) =>
       dispatch({
         type: `${namespace}/fetch`,
@@ -197,7 +198,7 @@ function useFetch({ apiPath, namespace }) {
 function useEdit({ apiPath, namespace, ignoreId }) {
   const dispatch = useDispatch();
 
-  return useCallback(
+  return useEventCallback(
     ({ id, body }) =>
       dispatch({
         type: `${namespace}/edit`,
@@ -214,7 +215,7 @@ function useEdit({ apiPath, namespace, ignoreId }) {
 function useReset({ namespace }) {
   const dispatch = useDispatch();
 
-  return useCallback(() => dispatch({ type: `${namespace}/reset` }), [
+  return useEventCallback(() => dispatch({ type: `${namespace}/reset` }), [
     dispatch,
     namespace,
   ]);
@@ -223,7 +224,7 @@ function useReset({ namespace }) {
 function useRemove({ apiPath, namespace }) {
   const dispatch = useDispatch();
 
-  return useCallback(
+  return useEventCallback(
     ({ id }) =>
       dispatch({
         type: `${namespace}/remove`,
@@ -309,7 +310,7 @@ function generateRecordsPage({
 
     const dispatch = useDispatch();
 
-    const fetch = useCallback(
+    const fetch = useEventCallback(
       // eslint-disable-next-line no-shadow
       ({ page, pagesize, sort, filter = {} }) => {
         if (
@@ -369,7 +370,7 @@ function generateRecordsPage({
       ]
     );
 
-    const updatePage = useCallback(
+    const updatePage = useEventCallback(
       // eslint-disable-next-line no-shadow
       ({ page, pagesize, sort, filter }) => {
         const newFilter = { ...(filter || {}) };
@@ -462,6 +463,27 @@ function generateRecordPage({
     const isLoading = useSelector(
       (state) => state.loading.effects[`${namespace}/fetch`]
     );
+    const location = useLocation();
+    const { queries } = useMemo(() => {
+      const q = parse(location.search);
+
+      return { queries: q };
+    }, [location.search]);
+
+    const history = useHistory();
+    const onChangeTab = useEventCallback((newTab) => {
+      const uri = generateUri(
+        window.location.href.substring(
+          0,
+          window.location.href.length - window.location.search.length
+        ),
+        {
+          ...queries,
+          tab: newTab,
+        }
+      );
+      history.replace(uri.href.substring(uri.origin.length, uri.href.length));
+    });
     const apiPath = useApiPath({ path, host });
     const fetch = useFetch({ apiPath, namespace });
     const edit = useEdit({ apiPath, namespace, ignoreId: true });
@@ -481,13 +503,18 @@ function generateRecordPage({
         edit,
         remove,
         reset,
+        onChangeTab,
       }),
-      [fetch, reset, edit, remove]
+      [fetch, reset, edit, remove, onChangeTab]
     );
+    const pageData = useMemo(() => ({ ...storeDataJS, tab: queries.tab }), [
+      storeDataJS,
+      queries.tab,
+    ]);
 
     return (
       <PageConfigContext.Provider value={pageConfig}>
-        <PageDataContext.Provider value={storeDataJS}>
+        <PageDataContext.Provider value={pageData}>
           <RecordPage {...props} isLoading={isLoading} inline={inline} />
         </PageDataContext.Provider>
       </PageConfigContext.Provider>

@@ -30,6 +30,7 @@
     "history": "^4.10.1",
     "js-cookie": "^v3.0.0-rc.0",
     "lodash": "^4.17.20",
+    "md5": "^2.3.0",
     "moment": "^2.27.0",
     "prop-types": "^15.7.2",
     "query-string": "^5.1.1",
