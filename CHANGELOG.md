@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.79](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.78...v3.0.0-beta.79) (2020-08-28)
+
+
+### Features
+
+* **NoTicket:** 更新依赖 ([4bab400](https://git2.qingtingfm.com/zhibo/xms/commit/4bab400f81ee544a7a684bdbccd65ae3ae8369d1))
+* **NoTicket:** config.api.fixedFIlter参数增加user ([9a953e1](https://git2.qingtingfm.com/zhibo/xms/commit/9a953e1601ae3fbce49d005626dba7974723aa8e))
+
 ## [3.0.0-beta.78](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.77...v3.0.0-beta.78) (2020-08-21)
 
 
