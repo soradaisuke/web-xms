@@ -7,6 +7,8 @@ import {
   startsWith,
   map,
   get,
+  isArray,
+  isNil,
   isBoolean,
   groupBy,
   isEqual,
@@ -91,11 +93,19 @@ function RecordsPage({ isLoading }) {
   });
 
   const onFilterFinish = useEventCallback((f) => {
+    const newFilter = { ...f };
+    filterColumns.forEach(column => {
+      const filterValue = newFilter[column.getFilterKey()];
+      if (column.getFilterRequired() &&
+      (isNil(filterValue) || (isArray(filterValue) && filterValue.length === 0))) {
+        set(newFilter, column.getFilterKey(), column.getFilterDefault());
+      }
+    });
     updatePage({
       page: 1,
       pagesize,
       sort,
-      filter: f,
+      filter: newFilter,
     });
   });
 

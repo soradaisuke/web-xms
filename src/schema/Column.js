@@ -221,7 +221,10 @@ export default class Column {
   }
 
   getFilterDefault() {
-    return this.config.getIn(['table', 'filterDefault']);
+    if (!this.filterDefault) {
+      this.filterDefault = this.config.getIn(['table', 'filterDefault'])?.toJS?.();
+    }
+    return this.filterDefault;
   }
 
   getFilterRequired() {
