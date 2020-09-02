@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.82](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.81...v3.0.0-beta.82) (2020-09-02)
+
+
+### Bug Fixes
+
+* **NoTicket:** 日期预设不起作用 & filter的一些bug ([fe3f7ec](https://git2.qingtingfm.com/zhibo/xms/commit/fe3f7ecc646c37da497e357e7058a5c62966302a))
+
 ## [3.0.0-beta.81](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.80...v3.0.0-beta.81) (2020-09-02)
 
 
