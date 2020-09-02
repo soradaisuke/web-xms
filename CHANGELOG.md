@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.81](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.80...v3.0.0-beta.81) (2020-09-02)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复菜单过长不能滚动 ([6c4e64f](https://git2.qingtingfm.com/zhibo/xms/commit/6c4e64fb91f4cdd93d4d9ae0922fdd5cbeb5a1f0))
+* **NoTicket:** filterRequired为true且filterDefault为数组时resetFilter错误 & export InputModal ([9d48454](https://git2.qingtingfm.com/zhibo/xms/commit/9d484549ae0adb58434bd8dcd35b90ad0ab988d4))
+
 ## [3.0.0-beta.80](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.79...v3.0.0-beta.80) (2020-08-28)
 
 
