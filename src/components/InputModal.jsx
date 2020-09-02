@@ -42,7 +42,7 @@ function InputModal({ activator, title, required, onOk }) {
             }
           ]}
         >
-          <TextArea autosize placeholder="请输入" />
+          <TextArea autoSize placeholder="请输入" />
         </FormItem>
       </Form>
     </ActivatorModal>

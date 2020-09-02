@@ -17,7 +17,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
           color="blue"
           key={preset.get('value')}
           onClick={() => {
-            onChangeDate(null, preset.get('value'));
+            onChangeDate(preset.get('value'));
           }}
         >
           {preset.get('text')}

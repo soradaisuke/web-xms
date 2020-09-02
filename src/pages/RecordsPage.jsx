@@ -67,8 +67,8 @@ function RecordsPage({ isLoading }) {
   );
   const [widths] = useState(columns.map((c) => c.getTableWidth()));
   const filterColumns = useMemo(
-    () => columns.filter((column) => column.canFilter()),
-    [columns]
+    () => table.getColumns().filter((column) => column.canFilter()),
+    [table]
   );
   const tableFilterColumns = useMemo(
     () => filterColumns.filter((column) => !column.canFilterOutside()),
@@ -99,6 +99,9 @@ function RecordsPage({ isLoading }) {
       if (column.getFilterRequired() &&
       (isNil(filterValue) || (isArray(filterValue) && filterValue.length === 0))) {
         set(newFilter, column.getFilterKey(), column.getFilterDefault());
+        form.setFieldsValue({
+          [column.getFilterKey()]: column.getFilterDefault()
+        });
       }
     });
     updatePage({

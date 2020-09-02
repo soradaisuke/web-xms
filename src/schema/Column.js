@@ -222,7 +222,10 @@ export default class Column {
 
   getFilterDefault() {
     if (!this.filterDefault) {
-      this.filterDefault = this.config.getIn(['table', 'filterDefault'])?.toJS?.();
+      this.filterDefault = this.config.getIn(['table', 'filterDefault']);
+      if (this.filterDefault?.toJS) {
+        this.filterDefault = this.filterDefault.toJS();
+      }
     }
     return this.filterDefault;
   }
