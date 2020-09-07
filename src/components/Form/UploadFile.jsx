@@ -5,6 +5,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Upload, message, Button } from 'antd';
 import { split, last } from 'lodash';
 import { uploadFile } from '../../utils/upload';
+import { TOKEN_KEY } from '../../constants';
 
 class UploadFile extends React.PureComponent {
   static displayName = 'UploadFile';
@@ -94,7 +95,7 @@ class UploadFile extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  ssoToken: state.user?.get('sso_token'),
+  ssoToken: state.user?.get(TOKEN_KEY) || state.user?.get('sso_token'),
 });
 
 export default connect(mapStateToProps)(UploadFile);

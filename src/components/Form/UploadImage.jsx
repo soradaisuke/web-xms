@@ -10,6 +10,7 @@ import { uploadImage } from '../../utils/upload';
 import getImageSize from '../../utils/getImageSize';
 import showError from '../../utils/showError';
 import 'react-image-crop/dist/ReactCrop.css';
+import { TOKEN_KEY } from '../../constants';
 
 class UploadImage extends React.PureComponent {
   static displayName = 'UploadImage';
@@ -358,7 +359,7 @@ class UploadImage extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  ssoToken: state.user?.get('sso_token'),
+  ssoToken: state.user?.get(TOKEN_KEY) || state.user?.get('sso_token'),
 });
 
 export default connect(mapStateToProps)(UploadImage);

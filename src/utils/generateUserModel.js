@@ -5,6 +5,7 @@ import { isArray, set, reduce } from 'lodash';
 import { isProduction } from '@qt/env';
 import { generateUri } from '@qt/web-common';
 import request from '../services/request';
+import { TOKEN_KEY } from '../constants';
 
 const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;
 
@@ -23,10 +24,10 @@ function generateService({ auth, login, logout }) {
           body.append('password', password);
           return request.post(login, {
             body: new URLSearchParams(body),
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           });
         }
-      : null
+      : null,
   };
 }
 
@@ -39,7 +40,7 @@ export default function generateUserModel({ auth, login, logout }) {
     reducers: {
       save(state, { payload: { user } }) {
         return Immutable.fromJS(user);
-      }
+      },
     },
     effects: {
       *auth(_, { call, put }) {
@@ -61,16 +62,16 @@ export default function generateUserModel({ auth, login, logout }) {
               payload: {
                 user: {
                   ...(user || {}),
-                  permissions
-                }
-              }
+                  permissions,
+                },
+              },
             });
           }
         } catch (e) {
           if (login) {
             if (path !== '/login' && (!queries || queries.auth !== '1')) {
               const loginUrl = generateUri(`${window.location.origin}/login`, {
-                return_url: generateUri(window.location.href, { auth: 1 })
+                return_url: generateUri(window.location.href, { auth: 1 }),
               });
               window.location.replace(loginUrl);
             } else {
@@ -78,7 +79,7 @@ export default function generateUserModel({ auth, login, logout }) {
             }
           } else if (!queries || queries.auth !== '1') {
             const loginUrl = generateUri(`${ENTRY_HOST}/v1/sso/login.html`, {
-              return_url: generateUri(window.location.href, { auth: 1 })
+              return_url: generateUri(window.location.href, { auth: 1 }),
             });
             window.location.replace(loginUrl);
           } else {
@@ -90,8 +91,10 @@ export default function generateUserModel({ auth, login, logout }) {
         if (logout) {
           yield call(service.logout);
         } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
+          Cookie.remove(TOKEN_KEY, { domain: '.qingtingfm.com' });
           Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
         } else {
+          Cookie.remove(TOKEN_KEY, { domain: '.qingting.fm' });
           Cookie.remove('sso_token', { domain: '.qingting.fm' });
         }
         window.location.replace(window.location.origin);
@@ -100,12 +103,12 @@ export default function generateUserModel({ auth, login, logout }) {
         if (login) {
           yield call(service.login, { account, password });
         }
-      }
+      },
     },
     subscriptions: {
       setup({ dispatch }) {
         dispatch({ type: 'auth' });
-      }
-    }
+      },
+    },
   };
 }
