@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.83](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.82...v3.0.0-beta.83) (2020-09-08)
+
+
+### Features
+
+* **NoTicket:** token key优先使用stg_sso_token | prod_sso_token ([723ac11](https://git2.qingtingfm.com/zhibo/xms/commit/723ac1115b77b62f2e924895cfbadbc2c96a4864))
+
 ## [3.0.0-beta.82](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.81...v3.0.0-beta.82) (2020-09-02)
 
 
