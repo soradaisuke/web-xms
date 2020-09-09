@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'dva';
 import { makeCancelablePromise } from '@qt/web-core';
 import { Upload, Icon, message, Button } from 'antd';
+import { TOKEN_KEY } from '../constants';
 import { wrappedUploadFile as uploadFile } from '../utils/uploadFile';
 
 class UploadFile extends React.PureComponent {
@@ -49,7 +50,7 @@ class UploadFile extends React.PureComponent {
 
     makeCancelablePromise(
       uploadFile(options.file, {
-        ssoToken: user ? user.get('sso_token') : '',
+        ssoToken: user ? user.get(TOKEN_KEY) || user.get('sso_token') : '',
         fileName: generateFileName ? generateFileName(options.file) : null
       })
     ).then(

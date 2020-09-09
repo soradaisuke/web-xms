@@ -3,6 +3,7 @@ import { parse } from 'query-string';
 import Cookie from 'js-cookie';
 import { generateUri, isProduction } from '@qt/web-core';
 import request from '../services/request';
+import { TOKEN_KEY } from '../constants';
 
 const ENTRY_HOST = `//entry${isProduction ? '' : '.staging'}.qingtingfm.com`;
 
@@ -78,8 +79,10 @@ export default function generateUserModel({ auth, login, logout }) {
           if (logout) {
             yield call(service.logout);
           } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
+            Cookie.remove(TOKEN_KEY, { domain: '.qingtingfm.com' });
             Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
           } else {
+            Cookie.remove(TOKEN_KEY, { domain: '.qingting.fm' });
             Cookie.remove('sso_token', { domain: '.qingting.fm' });
           }
           window.location.replace(window.location.origin);
