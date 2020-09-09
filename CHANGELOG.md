@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-18...v2.14.0) (2020-09-09)
+
+
+### Features
+
+* **NoTicket:** token key优先使用stg_sso_token | prod_sso_token ([7441503](https://git2.qingtingfm.com/zhibo/xms/commit/7441503018d466b5b9ad2589106d0ceaa448846c))
+
 ## [2.14.0-18](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-17...v2.14.0-18) (2020-08-05)
 
 
