@@ -189,7 +189,7 @@ export default class Action {
                       onClick({
                         data: { body },
                         loadingMessage: null,
-                        throwError: false,
+                        throwError: true,
                         reload: true
                       })
                     );
@@ -205,7 +205,7 @@ export default class Action {
             return onClick({
               data: { body },
               loadingMessage: null,
-              throwError: false,
+              throwError: true,
               reload: true
             });
           }}
