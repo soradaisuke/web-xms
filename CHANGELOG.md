@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0...v2.14.1) (2020-09-14)
+
+
+### Bug Fixes
+
+* **NoTicket:** 新建/编辑弹窗-api报错时不关闭弹窗 ([d72cfb3](https://git2.qingtingfm.com/zhibo/xms/commit/d72cfb31fcb869d73fead2060a2d66f658128223))
+
 ## [2.14.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0-18...v2.14.0) (2020-09-09)
 
 
