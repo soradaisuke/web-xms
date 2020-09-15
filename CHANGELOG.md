@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.84](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.83...v3.0.0-beta.84) (2020-09-15)
+
+
+### Bug Fixes
+
+* **NoTicket:** Action直接配置在config里的icon不起作用 ([4960b59](https://git2.qingtingfm.com/zhibo/xms/commit/4960b590c26413b4c18b7096f06351d3f18d6bb8))
+
 ## [3.0.0-beta.83](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.82...v3.0.0-beta.83) (2020-09-08)
 
 
