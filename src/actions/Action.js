@@ -136,7 +136,10 @@ export default class Action {
   }
 
   getIcon() {
-    return this.config.getIn(['buttonProps', 'icon'], this.config.get('icon'));
+    return this.config.getIn(
+      ['buttonProps', 'icon'],
+      this.config.get('icon')?.toJS?.() ?? this.config.get('icon')
+    );
   }
 
   getNormalize() {
