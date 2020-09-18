@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.85](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.84...v3.0.0-beta.85) (2020-09-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 多选行内数据无法处理 ([28779cc](https://git2.qingtingfm.com/zhibo/xms/commit/28779ccc32cdacfb48054af68b3b21fc8d5907db))
+
 ## [3.0.0-beta.84](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.83...v3.0.0-beta.84) (2020-09-15)
 
 
