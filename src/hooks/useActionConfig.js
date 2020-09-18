@@ -22,8 +22,8 @@ export default function useActionConfig({
 
   const filteredRecords = useMemo(
     () =>
-      action.isMultipleAction() && !action.isGlobalAction()
-        ? filter(records || [], (r) =>
+      records && action.isMultipleAction() && !action.isGlobalAction()
+        ? filter(records, (r) =>
             action.isEnable({ ...params, records: null, record: r })
           )
         : null,
