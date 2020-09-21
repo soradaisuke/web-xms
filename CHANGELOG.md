@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.86](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.85...v3.0.0-beta.86) (2020-09-21)
+
+
+### Bug Fixes
+
+* **NoTicket:** Form里expandable的disabledInForm不起作用 ([6279205](https://git2.qingtingfm.com/zhibo/xms/commit/6279205a7f6bb1f1f9017d9a633dc14b5b8991ec))
+
 ## [3.0.0-beta.85](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.84...v3.0.0-beta.85) (2020-09-18)
 
 
