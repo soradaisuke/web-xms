@@ -5,17 +5,23 @@ import generateRadioOrCheckboxOptions from '../../utils/generateRadioOrCheckboxO
 import useColumnValueOptions from '../../hooks/useColumnValueOptions';
 import Column from '../../schema/Column';
 
-function FilterRadio({ column, ...props }) {
+function FilterRadio({ column, forForm, ...props }) {
   const [options] = useColumnValueOptions(
     column,
-    generateRadioOrCheckboxOptions
+    generateRadioOrCheckboxOptions,
+    forForm
   );
 
   return <Radio.Group {...props} options={options} />;
 }
 
 FilterRadio.propTypes = {
-  column: PropTypes.instanceOf(Column).isRequired
+  column: PropTypes.instanceOf(Column).isRequired,
+  forForm: PropTypes.bool,
+};
+
+FilterRadio.defaultProps = {
+  forForm: false,
 };
 
 export default React.memo(FilterRadio);

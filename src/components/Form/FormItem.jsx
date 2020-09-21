@@ -247,9 +247,11 @@ function FormItem({
       inner = column.getFormRender();
     } else if (column.canFormItemExpandable()) {
       if (column.isArray()) {
-        inner = <CheckBox column={column} {...formItemComponentProps} />;
+        inner = (
+          <CheckBox forForm column={column} {...formItemComponentProps} />
+        );
       } else {
-        inner = <Radio column={column} {...formItemComponentProps} />;
+        inner = <Radio forForm column={column} {...formItemComponentProps} />;
       }
     } else if (column instanceof BooleanColumn) {
       const options = column.getValueOptions();
