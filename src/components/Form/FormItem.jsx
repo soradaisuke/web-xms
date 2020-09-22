@@ -433,7 +433,13 @@ function FormItem({
       return ({ getFieldValue }) => {
         if (
           column.getFormItemAvailableWhen().find((value, key) => {
-            const curValue = getFieldValue(key);
+            let parsedKey = key;
+            try {
+              parsedKey = JSON.parse(key);
+            } catch (e) {
+              // JSON parse failed
+            }
+            const curValue = getFieldValue(parsedKey);
             if (isFunction(value)) {
               return !value(curValue);
             }
