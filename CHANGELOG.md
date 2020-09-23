@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.88](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.87...v3.0.0-beta.88) (2020-09-23)
+
+
+### Bug Fixes
+
+* **NoTicket:** form.setFieldsValue不支持数组的namePath，改用form.setFields ([e511c14](https://git2.qingtingfm.com/zhibo/xms/commit/e511c1485731943030da467ba7c74d3639ab01a8))
+
 ## [3.0.0-beta.87](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.86...v3.0.0-beta.87) (2020-09-23)
 
 
