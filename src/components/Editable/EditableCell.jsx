@@ -34,9 +34,12 @@ function EditableCell({ children, record, column, reload }) {
 
   const toggleEdit = useEventCallback(() => {
     setEditing((pre) => !pre);
-    form.setFieldsValue({
-      [column.getFormItemName()]: get(record, column.getFormItemName()),
-    });
+    form.setFields([
+      {
+        name: column.getFormItemName(),
+        value: get(record, column.getFormItemName()),
+      },
+    ]);
   }, []);
 
   const onFormItemRef = useEventCallback(
@@ -63,9 +66,12 @@ function EditableCell({ children, record, column, reload }) {
 
   useEffect(() => {
     if (column instanceof BooleanColumn && !disableInlineEdit) {
-      form.setFieldsValue({
-        [column.getFormItemName()]: get(record, column.getFormItemName()),
-      });
+      form.setFields([
+        {
+          name: column.getFormItemName(),
+          value: get(record, column.getFormItemName()),
+        },
+      ]);
     }
   }, [record, form, column, disableInlineEdit]);
 

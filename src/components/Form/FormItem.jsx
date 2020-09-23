@@ -177,9 +177,12 @@ function FormItem({
   useEffect(() => {
     if (shouldSetInitialValue && isEdit) {
       // eslint-disable-next-line no-unused-expressions
-      form?.setFieldsValue({
-        [column.getFormItemName()]: initialValue,
-      });
+      form?.setFields([
+        {
+          name: column.getFormItemName(),
+          value: initialValue,
+        },
+      ]);
     }
   }, [column, form, initialValue, shouldSetInitialValue, isEdit]);
 

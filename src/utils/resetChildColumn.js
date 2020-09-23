@@ -7,7 +7,7 @@ export function resetChildColumn({ column, form, forForm, prefix }) {
       form.resetFields([
         forForm
           ? getFullFormItemName({ prefix, column: childColumn })
-          : childColumn.getFilterKey()
+          : childColumn.getFilterKey(),
       ]);
       // eslint-disable-next-line no-use-before-define
       resetColumn({ column: childColumn, form, forForm, prefix });
@@ -17,18 +17,19 @@ export function resetChildColumn({ column, form, forForm, prefix }) {
 
 export function resetColumn({ column, form, forForm, prefix }) {
   if (!forForm && column.getFilterRequired() && column.getFilterDefault()) {
-    form.setFieldsValue({
-      [column.getFilterKey()]: column.getFilterDefault(),
-    });
-  } else {
-    form.resetFields([
-      getFullFormItemName({ prefix, column })
+    form.setFields([
+      {
+        name: column.getFilterKey(),
+        value: column.getFilterDefault(),
+      },
     ]);
+  } else {
+    form.resetFields([getFullFormItemName({ prefix, column })]);
   }
   resetChildColumn({ column, form, prefix });
 }
 
 export default {
   resetChildColumn,
-  resetColumn
+  resetColumn,
 };

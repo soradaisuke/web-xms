@@ -94,14 +94,20 @@ function RecordsPage({ isLoading }) {
 
   const onFilterFinish = useEventCallback((f) => {
     const newFilter = { ...f };
-    filterColumns.forEach(column => {
+    filterColumns.forEach((column) => {
       const filterValue = newFilter[column.getFilterKey()];
-      if (column.getFilterRequired() &&
-      (isNil(filterValue) || (isArray(filterValue) && filterValue.length === 0))) {
+      if (
+        column.getFilterRequired() &&
+        (isNil(filterValue) ||
+          (isArray(filterValue) && filterValue.length === 0))
+      ) {
         set(newFilter, column.getFilterKey(), column.getFilterDefault());
-        form.setFieldsValue({
-          [column.getFilterKey()]: column.getFilterDefault()
-        });
+        form.setFields([
+          {
+            name: column.getFilterKey(),
+            value: column.getFilterDefault(),
+          },
+        ]);
       }
     });
     updatePage({

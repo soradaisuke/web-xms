@@ -28,11 +28,12 @@ function FilterDropDown({
   const form = usePgaeFilterForm();
 
   const confirm = useEventCallback(() => {
-    form.setFieldsValue({
-      [column.getFilterKey()]: column.canFilterMultiple()
-        ? selectedKeys
-        : selectedKeys[0],
-    });
+    form.setFields([
+      {
+        name: column.getFilterKey(),
+        value: column.canFilterMultiple() ? selectedKeys : selectedKeys[0],
+      },
+    ]);
     resetChildColumn({ column, form });
     originConfirm();
     form.submit();
