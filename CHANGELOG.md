@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.87](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.86...v3.0.0-beta.87) (2020-09-23)
+
+
+### Bug Fixes
+
+* **NoTicket:** availableWhen的key支持数组（key通过JSON.stringify转换） ([2100dd9](https://git2.qingtingfm.com/zhibo/xms/commit/2100dd9dac5cc86d217e03bdcab898b6f3755be9))
+
 ## [3.0.0-beta.86](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.85...v3.0.0-beta.86) (2020-09-21)
 
 
