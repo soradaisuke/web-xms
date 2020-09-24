@@ -4,13 +4,14 @@ import { DndProvider, createDndContext } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useEventCallback } from '@qt/react';
 import PropTypes from 'prop-types';
+import { merge } from 'lodash';
 import DraggableBodyRow from './DraggableBodyRow';
 import DraggableHeaderRow from './DraggableHeaderRow';
 import getKeyByRowKey from '../../utils/getKeyByRowKey';
 
 const dndContext = createDndContext(HTML5Backend);
 
-const components = {
+const dragComponents = {
   header: {
     row: DraggableHeaderRow,
   },
@@ -26,6 +27,7 @@ function DraggableTable({
   dataSource,
   pagination,
   rowKey,
+  components,
   ...tableProps
 }) {
   const [current, setCurrent] = useState();
@@ -80,7 +82,7 @@ function DraggableTable({
     <DndProvider manager={dndContext.dragDropManager}>
       <Table
         dataSource={dataSource}
-        components={components}
+        components={merge(dragComponents, components)}
         pagination={pagination}
         onRow={composeOnRow}
         rowKey={rowKey}
@@ -91,11 +93,13 @@ function DraggableTable({
   );
 }
 
+/* eslint-disable react/forbid-prop-types */
 DraggableTable.propTypes = {
   dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRow: PropTypes.func,
   onDataSourceChange: PropTypes.func.isRequired,
   onChange: PropTypes.func,
+  components: PropTypes.object,
   rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   pagination: PropTypes.shape({
     current: PropTypes.number,
@@ -109,6 +113,7 @@ DraggableTable.defaultProps = {
   onRow: () => {},
   pagination: null,
   rowKey: 'id',
+  components: {},
 };
 
 export default React.memo(DraggableTable);

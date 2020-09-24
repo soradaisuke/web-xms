@@ -8,6 +8,7 @@ export Group from './components/Group';
 export ActivatorModal from './components/ActivatorModal';
 export Page from './pages/Page';
 export DynamicPaginationTableTransfer from './components/Transfer/DynamicPaginationTableTransfer';
+export DraggableTable from './components/Table/DraggableTable';
 
 // export textToPath from './utils/textToPath';
 export UploadImage from './components/Form/UploadImage';
