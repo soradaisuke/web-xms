@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.15.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.2...v2.15.0) (2020-09-28)
+
+
+### Features
+
+* **NoTicket:** 增加Column的table.filter: ({ user }) => boolean支持 ([86c4d02](https://git2.qingtingfm.com/zhibo/xms/commit/86c4d02bb368b07217d4cce9274e2c34ae9e33f4))
+* **QTLIVE-2222:** generateInitialValue里增加matchParams ([7bdba15](https://git2.qingtingfm.com/zhibo/xms/commit/7bdba15a1ae1b5b7201844d5353b71f9b080adee))
+
 ### [2.14.2](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.1...v2.14.2) (2020-09-27)
 
 ### [2.14.1](https://git2.qingtingfm.com/zhibo/xms/compare/v2.14.0...v2.14.1) (2020-09-14)
