@@ -83,7 +83,7 @@ export default class Table {
 
   findHasFilter() {
     this.hasFilter =
-      this.columns.findIndex(column => column.canFilterInTable()) !== -1;
+      this.columns.findIndex(column => column.hasConfigedFilter()) !== -1;
   }
 
   getColumns() {

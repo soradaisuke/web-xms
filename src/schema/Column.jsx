@@ -255,25 +255,33 @@ export default class Column {
 
   shouldRenderTableFilter(user) {
     return (
-      this.canFilterInTable() &&
+      this.canFilterInTable({ user }) &&
       !this.shouldRenderOutsideFilter(user) &&
-      !this.shouldRenderExpandFilter()
+      !this.shouldRenderExpandFilter(user)
     );
   }
 
   shouldRenderOutsideFilter(user) {
     return (
-      this.canFilterInTable() &&
+      this.canFilterInTable({ user }) &&
       !this.canFilterExpand() &&
       (this.isFilterOutside() || !this.canShowInTable(user))
     );
   }
 
-  shouldRenderExpandFilter() {
-    return this.canFilterInTable() && this.canFilterExpand();
+  shouldRenderExpandFilter(user) {
+    return this.canFilterInTable({ user }) && this.canFilterExpand();
   }
 
-  canFilterInTable() {
+  canFilterInTable({ user } = {}) {
+    const filterConfig = this.config.getIn(['table', 'filter']);
+    if (isFunction(filterConfig)) {
+      return filterConfig({ user });
+    }
+    return filterConfig;
+  }
+
+  hasConfigedFilter() {
     return this.config.getIn(['table', 'filter']);
   }
 

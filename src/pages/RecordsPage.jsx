@@ -325,6 +325,7 @@ class RecordsPage extends React.PureComponent {
       page,
       pagesize,
       sort,
+      user,
       table: { columns }
     } = this.props;
     this.setState({
@@ -332,7 +333,7 @@ class RecordsPage extends React.PureComponent {
     });
     const filter = {};
     columns.forEach(column => {
-      if (!column.canFilterInTable()) {
+      if (!column.canFilterInTable({ user })) {
         return;
       }
       this.checkFixedFilterValue({
@@ -398,7 +399,7 @@ class RecordsPage extends React.PureComponent {
     const isAutoTrigger =
       !column.shouldRenderOutsideFilter() || !filterGroupTrigger;
 
-    if (column.canFilterInTable() && shouldRenderTableFilter) {
+    if (column.canFilterInTable({ user }) && shouldRenderTableFilter) {
       const parentFilteredValue = column.parentColumn
         ? get(filter, column.parentColumn.getTableFilterKey())
         : null;
@@ -680,10 +681,10 @@ class RecordsPage extends React.PureComponent {
   }
 
   renderExpandFilterGroup() {
-    const { table } = this.props;
+    const { table, user } = this.props;
     const columns = table
       .getColumns()
-      .filter(column => column.shouldRenderExpandFilter());
+      .filter(column => column.shouldRenderExpandFilter(user));
     if (columns.size === 0) {
       return null;
     }
