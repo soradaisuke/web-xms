@@ -485,6 +485,7 @@ class RecordsPage extends React.PureComponent {
             <Col>
               <div>{column.getTitle()}</div>
               {column.renderInForm({
+                matchParams,
                 isFilter: true,
                 // treeData: generateTreeData(filterProps.filters || []),
                 formComponentProps: {

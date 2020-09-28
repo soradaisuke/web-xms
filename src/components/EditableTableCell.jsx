@@ -3,14 +3,17 @@ import PropTypes from 'prop-types';
 import { Form } from 'antd';
 import Immutable from 'immutable';
 import { ClickableDiv } from '@qt/react-core';
+import { connect } from 'dva';
+import { withRouter } from 'react-router-dom';
 import { EditableContext } from './EditableTableRow';
 import Column from '../schema/Column';
 import './EditableTableCell.less';
 
-export default class EditableTableCell extends React.PureComponent {
+class EditableTableCell extends React.PureComponent {
   static displayName = 'EditableTableCell';
 
   static propTypes = {
+    matchParams: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     form: PropTypes.shape({
       setFields: PropTypes.func.isRequired,
       validateFieldsAndScroll: PropTypes.func.isRequired,
@@ -56,7 +59,7 @@ export default class EditableTableCell extends React.PureComponent {
 
   renderCell = form => {
     this.form = form;
-    const { children, record, column, user, submit } = this.props;
+    const { children, record, column, user, submit, matchParams } = this.props;
     const { editing } = this.state;
     const columnCanEditInTable =
       column &&
@@ -71,6 +74,7 @@ export default class EditableTableCell extends React.PureComponent {
           form,
           record,
           user,
+          matchParams,
           hideFormLabel: true,
           isEdit: true,
           formComponentProps: {
@@ -112,3 +116,9 @@ export default class EditableTableCell extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = (_, props) => ({
+  matchParams: props.match.params
+});
+
+export default withRouter(connect(mapStateToProps)(EditableTableCell));

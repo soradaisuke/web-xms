@@ -685,21 +685,34 @@ export default class Column {
     return null;
   }
 
-  generateFormInitialValue({ isEdit = false, record = {}, parentValue } = {}) {
+  generateFormInitialValue({
+    isEdit = false,
+    record = {},
+    matchParams,
+    parentValue
+  } = {}) {
     let initialValue = this.getFormInitialValue();
     const generateInitialValue = this.getFormGenerateInitialValue();
 
     if (isEdit) {
       const preValue = get(record, this.getKey());
       if (isFunction(generateInitialValue)) {
-        initialValue = generateInitialValue({ value: preValue, parentValue });
+        initialValue = generateInitialValue({
+          value: preValue,
+          parentValue,
+          matchParams
+        });
       } else if (isArray(preValue)) {
         initialValue = map(preValue, v => this.formatFormFieldValue(v));
       } else {
         initialValue = this.formatFormFieldValue(preValue);
       }
     } else if (isFunction(generateInitialValue)) {
-      initialValue = generateInitialValue({ value: null, parentValue });
+      initialValue = generateInitialValue({
+        value: null,
+        parentValue,
+        matchParams
+      });
     }
 
     if (
@@ -719,6 +732,7 @@ export default class Column {
     form,
     isEdit,
     checkVisibility,
+    matchParams,
     isFilter = false,
     formComponentProps
   }) {
@@ -756,6 +770,7 @@ export default class Column {
     const initialValue = this.generateFormInitialValue({
       isEdit,
       record,
+      matchParams,
       parentValue
     });
 

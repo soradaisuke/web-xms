@@ -14,6 +14,7 @@ import {
   keys,
   concat
 } from 'lodash';
+import { withRouter } from 'react-router-dom';
 
 const formItemLayout = {
   labelCol: {
@@ -70,6 +71,7 @@ class RecordForm extends React.PureComponent {
       resetFields: PropTypes.func.isRequired
     }).isRequired,
     onOk: PropTypes.func.isRequired,
+    matchParams: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     renderActions: PropTypes.func,
     onRef: PropTypes.func,
     className: PropTypes.string,
@@ -160,13 +162,14 @@ class RecordForm extends React.PureComponent {
   }
 
   renderFormItem(column) {
-    const { user, form, record, checkVisibility } = this.props;
+    const { user, form, record, checkVisibility, matchParams } = this.props;
 
     return column.renderInForm({
       user,
       record,
       form,
       checkVisibility,
+      matchParams,
       isEdit: this.isEdit()
     });
   }
@@ -200,8 +203,9 @@ class RecordForm extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
-  user: state.user
+const mapStateToProps = (state, props) => ({
+  user: state.user,
+  matchParams: props.match.params
 });
 
-export default connect(mapStateToProps)(Form.create()(RecordForm));
+export default withRouter(connect(mapStateToProps)(Form.create()(RecordForm)));

@@ -1,15 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
+import { connect } from 'dva';
+import { withRouter } from 'react-router-dom';
 import { size, remove, map, set, get, unset, forEach } from 'lodash';
 import { Icon, Row, Card, Button, Col, Popconfirm } from 'antd';
 import './DynamicItem.less';
 
-export default class DynamicItem extends React.PureComponent {
+class DynamicItem extends React.PureComponent {
   static displayName = 'DynamicItem';
 
   static propTypes = {
     columns: PropTypes.instanceOf(Immutable.List).isRequired,
+    matchParams: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     user: PropTypes.instanceOf(Immutable.Map),
     // eslint-disable-next-line react/require-default-props
     onChange: PropTypes.func,
@@ -73,7 +76,7 @@ export default class DynamicItem extends React.PureComponent {
   }
 
   renderFormItems({ value, index }) {
-    const { columns, disabled, user } = this.props;
+    const { columns, disabled, user, matchParams } = this.props;
     return (
       <Col>
         {columns.map(column => {
@@ -86,6 +89,7 @@ export default class DynamicItem extends React.PureComponent {
             value: columnValue,
             values: value,
             parentValue,
+            matchParams,
             formComponentProps: {
               disabled:
                 disabled ||
@@ -171,3 +175,9 @@ export default class DynamicItem extends React.PureComponent {
     );
   }
 }
+
+const mapStateToProps = (_, props) => ({
+  matchParams: props.match.params
+});
+
+export default withRouter(connect(mapStateToProps)(DynamicItem));
