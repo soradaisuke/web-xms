@@ -22,9 +22,14 @@ function RecordLink({ link, record, buttonProps, children }) {
     return linkInternal;
   }, [link, record, filter]);
 
+  const style = useMemo(() => ({
+    userSelect: 'all',
+    ...(buttonProps.style || {})
+  }), [buttonProps]);
+
   if (startsWith(url, 'http')) {
     return (
-      <Button href={url} target="_blank" type="link" {...buttonProps}>
+      <Button href={url} target="_blank" type="link" {...buttonProps} style={style}>
         {buttonProps.children || children}
       </Button>
     );
@@ -34,7 +39,7 @@ function RecordLink({ link, record, buttonProps, children }) {
     <Link
       to={!startsWith(url, '/') ? `${window.location.pathname}/${url}` : url}
     >
-      <Button type="link" {...buttonProps}>
+      <Button type="link" {...buttonProps} style={style}>
         {buttonProps.children || children}
       </Button>
     </Link>
