@@ -19,6 +19,7 @@ import {
   DeleteOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
+import { useParams } from 'dva';
 import UploadImage from './UploadImage';
 import UploadFile from './UploadFile';
 import ObjectInputTextArea from './ObjectInputTextArea';
@@ -151,12 +152,14 @@ function FormItem({
     return (value) => value;
   }, [column]);
 
+  const matchParams = useParams();
+
   const { initialValue, initialListItemValue } = useMemo(() => {
     let initialValueInner;
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        initialValueInner = column.getFormItemNormalizeInitialValue()(curValue);
+        initialValueInner = column.getFormItemNormalizeInitialValue()(curValue, { matchParams });
       } else {
         initialValueInner = curValue;
       }
@@ -172,7 +175,7 @@ function FormItem({
         {}
       ),
     };
-  }, [record, column]);
+  }, [record, column, matchParams]);
 
   useEffect(() => {
     if (shouldSetInitialValue && isEdit) {
