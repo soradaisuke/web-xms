@@ -49,6 +49,7 @@ function RecordPage({ isLoading, routes: r }) {
     (chunk) => {
       if (chunk && chunk.length) {
         const chunkLayout = chunk[0].layout || layout;
+        const activeKey = tab || chunk[0].tabKey;
 
         switch (chunkLayout) {
           case 'collapse':
@@ -72,10 +73,10 @@ function RecordPage({ isLoading, routes: r }) {
                 key={chunk[0].path}
                 className={classNames('content-card', inline ? 'inline' : '')}
               >
-                <Tabs activeKey={tab || chunk[0].tabKey} onChange={onChangeTab}>
-                  {map(chunk, ({ component: Com, title = '', tabKey }) => (
+                <Tabs activeKey={activeKey} onChange={onChangeTab}>
+                  {map(chunk, ({ reloadOnVisible, component: Com, title = '', tabKey }) => (
                     <TabPane tab={title} key={tabKey}>
-                      <Com inline />
+                      {reloadOnVisible && activeKey !== tabKey ? null : <Com inline />}
                     </TabPane>
                   ))}
                 </Tabs>
