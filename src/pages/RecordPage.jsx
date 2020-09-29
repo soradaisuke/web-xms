@@ -129,6 +129,7 @@ function RecordPage({ isLoading, routes: r }) {
         {columns.map((column) => (
           <Descriptions.Item
             {...column.getDescriptionItemProps()}
+            style={{ whiteSpace: 'pre-wrap' }}
             label={column.getTitle()}
             key={column.getKey()}
           >

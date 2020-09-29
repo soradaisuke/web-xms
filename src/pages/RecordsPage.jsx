@@ -230,6 +230,7 @@ function RecordsPage({ isLoading }) {
         <Column
           {...column.getTableColumnProps()}
           {...filterProps}
+          className="xms-table-column"
           fixed={column.getTableFixed()}
           width={widths.get(index)}
           title={column.getTitle()}
