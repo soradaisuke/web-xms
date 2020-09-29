@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.90](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.89...v3.0.0-beta.90) (2020-09-29)
+
+
+### Features
+
+* **QTDP-858:** 错误弹窗支持\n ([d9634d1](https://git2.qingtingfm.com/zhibo/xms/commit/d9634d14657aa4704dedb70168a128aeac0f04a5))
+* **QTDP-860:** 表格列和详情页Descriptions.Item默认\n换行 ([0000f02](https://git2.qingtingfm.com/zhibo/xms/commit/0000f023c8f6cdfb984800492cc5ddb31769b9e9))
+* **QTLIVE-2222:** normalizeInitialValue增加参数matchParams: (value, { matchParams }) => initialValue ([6056831](https://git2.qingtingfm.com/zhibo/xms/commit/6056831b6a87839d136ac46f7e9c899f06d8df77))
+
 ## [3.0.0-beta.89](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.88...v3.0.0-beta.89) (2020-09-25)
 
 
