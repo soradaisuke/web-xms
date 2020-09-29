@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.91](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.90...v3.0.0-beta.91) (2020-09-29)
+
+
+### Features
+
+* **NoTicket:** 增加config.reloadOnVisible,当reloadOnVisible为true且是tabs 的 inline的页面在每次切换tab到当前时会重新渲染 ([15aac6a](https://git2.qingtingfm.com/zhibo/xms/commit/15aac6a81042e905d3f23985be7f3250a0998252))
+
+
+### Bug Fixes
+
+* **NoTicket:** RecordLink文本应可复制 ([21a6c0d](https://git2.qingtingfm.com/zhibo/xms/commit/21a6c0da4991085616af9a26a8592f9ee48ff711))
+
 ## [3.0.0-beta.90](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.89...v3.0.0-beta.90) (2020-09-29)
 
 
