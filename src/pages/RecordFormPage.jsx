@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import { Card, Row, Form, Button, Popconfirm } from 'antd';
-import { useEventCallback } from '@qt/react';
+import { Card, Row, Form } from 'antd';
 import { router } from 'dva';
 import Immutable from 'immutable';
 import Page from './Page';
@@ -75,9 +74,9 @@ function RecordFormPage() {
     return table.getColumns().filter((c) => c.canShowInCreateFrom({ user }));
   }, [isEdit, record, table, user]);
 
-  const onConfirmReset = useEventCallback(() => {
-    form.resetFields();
-  }, [form]);
+  // const onConfirmReset = useEventCallback(() => {
+  //   form.resetFields();
+  // }, [form]);
 
   const fetchInternal = useCallback(() => {
     if (fetch) {
@@ -141,7 +140,7 @@ function RecordFormPage() {
               ))}
               <Form.Item {...tailFormItemLayout}>
                 <Row type="flex" align="middle" className="actions">
-                  <Popconfirm
+                  {/* <Popconfirm
                     key="重置"
                     title="确认重置表单？"
                     onConfirm={onConfirmReset}
@@ -149,7 +148,7 @@ function RecordFormPage() {
                     <Button style={{ marginRight: 10 }} danger>
                       重置
                     </Button>
-                  </Popconfirm>
+                  </Popconfirm> */}
                   {renderActions.map((a) => (
                     <ActionComponent
                       key={a.getTitle()}

@@ -155,11 +155,16 @@ function FormItem({
   const matchParams = useParams();
 
   const { initialValue, initialListItemValue } = useMemo(() => {
-    let initialValueInner;
+    let initialValueInner = column.getFormItemInitialValue();
+    if (isFunction(initialValueInner)) {
+      initialValueInner = initialValueInner({ matchParams });
+    } else if (initialValueInner?.toJS) {
+      initialValueInner = initialValueInner.toJS();
+    }
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        initialValueInner = column.getFormItemNormalizeInitialValue()(curValue, { matchParams });
+        initialValueInner = column.getFormItemNormalizeInitialValue()({ value: curValue, matchParams });
       } else {
         initialValueInner = curValue;
       }
@@ -178,7 +183,7 @@ function FormItem({
   }, [record, column, matchParams]);
 
   useEffect(() => {
-    if (shouldSetInitialValue && isEdit) {
+    if (shouldSetInitialValue) {
       // eslint-disable-next-line no-unused-expressions
       form?.setFields([
         {
@@ -187,7 +192,7 @@ function FormItem({
         },
       ]);
     }
-  }, [column, form, initialValue, shouldSetInitialValue, isEdit]);
+  }, [column, form, initialValue, shouldSetInitialValue]);
 
   const commonFormItemProps = useMemo(
     () => ({
@@ -197,9 +202,6 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue:
-        column.getFormItemInitialValue()?.toJS?.() ??
-        column.getFormItemInitialValue(),
       name: prefix
         ? [prefix[1], column.getFormItemName()]
         : column.getFormItemName(),
