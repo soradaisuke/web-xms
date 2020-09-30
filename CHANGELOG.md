@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.92](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.91...v3.0.0-beta.92) (2020-09-30)
+
+
+### Features
+
+* **NoTicket:** 兼容2.0 ([7bc5f60](https://git2.qingtingfm.com/zhibo/xms/commit/7bc5f6050511cc210015b65968bc72134712209b))
+
+
+### Bug Fixes
+
+* **NoTicket:** export visiblePromise ([1493b42](https://git2.qingtingfm.com/zhibo/xms/commit/1493b42d24289c982bc8b457e568bbaa4e5dcbf4))
+* **QTLIVE-2187:** 新建时被依赖项有initialValue时依赖该项的formItem无法正确显示 & initialValue和normalizeInitialValue支持({ value, matchParams }) => value ([b4d7481](https://git2.qingtingfm.com/zhibo/xms/commit/b4d74817f489d7b6462cf91b33e536479047c9b3))
+
 ## [3.0.0-beta.91](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.90...v3.0.0-beta.91) (2020-09-29)
 
 
