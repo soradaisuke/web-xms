@@ -7,7 +7,7 @@ function migrateConfig({
   confirm: { componentProps, ...confirm } = {},
   ...config
 }) {
-  if (link && !includes(link.toString(), '(_ref)')) {
+  if (link && !includes(link.toString(), '(_ref')) {
     console.error(
       "Action's config.link(record) is deprecated, please use config.link({ record })"
     );
