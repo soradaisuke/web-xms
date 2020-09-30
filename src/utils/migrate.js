@@ -1,4 +1,4 @@
-import { includes } from 'lodash';
+import { includes, isFunction } from 'lodash';
 
 export function migrateRouteApi({
   fetchFixedFilter,
@@ -139,7 +139,11 @@ export function migrateRoute({ component, breadcrumb, config, ...other } = {}) {
     newRoute = { component };
   }
 
-  if (breadcrumb && !includes(breadcrumb.toString(), '(_ref')) {
+  if (
+    breadcrumb &&
+    isFunction(breadcrumb) &&
+    !includes(breadcrumb.toString(), '(_ref')
+  ) {
     console.error(
       'route.breadcrumb(matchParams) is deprecated, please use route.breadcrumb({ matchParams })'
     );

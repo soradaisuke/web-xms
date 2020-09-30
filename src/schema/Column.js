@@ -144,7 +144,7 @@ function migrateConfig({
       "Column's config.table.format is deprecated, please use config.format"
     );
   }
-  if (link && !includes(link.toString(), '(_ref')) {
+  if (link && isFunction(link) && !includes(link.toString(), '(_ref')) {
     console.error(
       "Column's config.table.link(record) is deprecated, please use config.table.link({ record })"
     );
