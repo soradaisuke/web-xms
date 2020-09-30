@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.94](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.93...v3.0.0-beta.94) (2020-09-30)
+
+
+### Bug Fixes
+
+* **NoTicket:** 检查函数参数 ([dc85f5a](https://git2.qingtingfm.com/zhibo/xms/commit/dc85f5af108edf4486721f762f4448aa8b5a26fa))
+
 ## [3.0.0-beta.93](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.92...v3.0.0-beta.93) (2020-09-30)
 
 
