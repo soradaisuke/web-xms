@@ -1,10 +1,36 @@
 import Immutable from 'immutable';
-import { isFunction, isUndefined } from 'lodash';
+import { isFunction, isUndefined, includes } from 'lodash';
 import findCascadeColumn from '../utils/findCascadeColumn';
+
+function migrateConfig({
+  link,
+  confirm: { componentProps, ...confirm } = {},
+  ...config
+}) {
+  if (link && !includes(link.toString(), '(_ref)')) {
+    console.error(
+      "Action's config.link(record) is deprecated, please use config.link({ record })"
+    );
+  }
+  if (componentProps) {
+    console.warn(
+      "Action's config.confirm.componentProps is deprecated, please use config.confirm.confirmProps"
+    );
+  }
+
+  return {
+    link,
+    confirm: {
+      confirmProps: componentProps,
+      ...(confirm ?? {}),
+    },
+    ...config,
+  };
+}
 
 export default class Action {
   constructor(config = {}) {
-    this.config = Immutable.fromJS(config);
+    this.config = Immutable.fromJS(migrateConfig(config));
 
     if (config.columns) {
       this.columns = Immutable.List(config.columns);

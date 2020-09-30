@@ -8,13 +8,24 @@ import {
   filter,
   forEach,
   flatten,
+  includes,
 } from 'lodash';
 import Immutable from 'immutable';
+
+function isOptionsDisabled(option, key) {
+  if (key === 'disabledInFilter') {
+    return get(option, 'disabledInFilter') || get(option, 'disableInFilter');
+  }
+  if (key === 'disabledInForm') {
+    return get(option, 'disabledInForm') || get(option, 'disabledInForm');
+  }
+  return false;
+}
 
 function generateValidOptions(options, disableKey) {
   if (options && options.length > 0) {
     return map(
-      filter(options, (o) => !disableKey || !get(o, disableKey)),
+      filter(options, (o) => !disableKey || !isOptionsDisabled(o, disableKey)),
       (o) => ({
         ...o,
         children: generateValidOptions(o.children),
@@ -54,15 +65,124 @@ function findOption(options, value) {
   return option;
 }
 
+function migrateConfig({
+  table: {
+    defaultSortOrder,
+    fixedSortOrder,
+    fixed,
+    link,
+    columnProps,
+    filterComponentProps,
+    format,
+    ...table
+  } = {},
+  form: {
+    componentProps,
+    generateInitialValue,
+    generateSubmitValue,
+    renderInFormItem,
+    radioOptions,
+    searchPlaceholder,
+    searchRequest,
+    ...form
+  } = {},
+  ...config
+}) {
+  if (defaultSortOrder) {
+    console.warn(
+      "Column's config.table.defaultSortOrder is deprecated, please use config.table.defaultSortDirection"
+    );
+  }
+  if (fixedSortOrder) {
+    console.warn(
+      "Column's config.table.fixedSortOrder is deprecated, please use config.table.fixedSortDirection"
+    );
+  }
+  if (defaultSortOrder) {
+    console.warn(
+      "Column's config.table.fixed is deprecated, please use config.table.columnProps"
+    );
+  }
+  if (componentProps) {
+    console.warn(
+      "Column's config.form.componentProps is deprecated, please use config.form.formItemComponentProps"
+    );
+  }
+  if (generateInitialValue) {
+    console.warn(
+      "Column's config.form.generateInitialValue is deprecated, please use config.form.normalizeInitialValue"
+    );
+  }
+  if (generateSubmitValue) {
+    console.error(
+      "Column's config.form.generateSubmitValue is deprecated, please use Action's config.normalize"
+    );
+  }
+  if (renderInFormItem) {
+    console.error(
+      "Column's config.form.renderInFormItem is deprecated, please use config.form.render"
+    );
+  }
+  if (radioOptions) {
+    console.error("Column's config.form.radioOptions is deprecated");
+  }
+  if (searchPlaceholder) {
+    console.error("Column's config.form.searchPlaceholder is deprecated");
+  }
+  if (searchRequest) {
+    console.warn(
+      "Column's config.form.searchRequest is deprecated, please use config.valueOptionsSearchRequest"
+    );
+  }
+  if (filterComponentProps) {
+    console.warn(
+      "Column's config.table.filterComponentProps is deprecated, please use config.table.filterFormItemComponentProps"
+    );
+  }
+  if (format) {
+    console.warn(
+      "Column's config.table.format is deprecated, please use config.format"
+    );
+  }
+  if (link && !includes(link.toString(), '(_ref)')) {
+    console.error(
+      "Column's config.table.link(record) is deprecated, please use config.table.link({ record })"
+    );
+  }
+
+  return {
+    table: {
+      defaultSortDirection: defaultSortOrder,
+      fixedSortDirection: fixedSortOrder,
+      link,
+      filterFormItemComponentProps: filterComponentProps,
+      columnProps: {
+        fixed,
+        ...(columnProps ?? {}),
+      },
+      ...(table ?? {}),
+    },
+    form: {
+      formItemComponentProps: componentProps,
+      normalizeInitialValue: generateInitialValue,
+      render: renderInFormItem,
+      ...form,
+    },
+    valueOptionsSearchRequest: searchRequest,
+    format,
+    ...config,
+  };
+}
+
 export default class Column {
   static SEARCH_REQUEST_TYPES = {
     FILTER: 'filter',
     FORM: 'form',
-    ALL: 'all'
-  }
+    ALL: 'all',
+  };
 
   constructor(config = {}) {
-    this.config = Immutable.fromJS(config);
+    this.config = Immutable.fromJS(migrateConfig(config));
 
     this.activeValueOptionsRequests = {};
 
@@ -181,7 +301,10 @@ export default class Column {
   }
 
   getUseValueOptionsSearchRequest() {
-    return this.config.get('useValueOptionsSearchRequest', Column.SEARCH_REQUEST_TYPES.ALL);
+    return this.config.get(
+      'useValueOptionsSearchRequest',
+      Column.SEARCH_REQUEST_TYPES.ALL
+    );
   }
 
   // filter
@@ -292,7 +415,6 @@ export default class Column {
       !this.isImmutableInForm({ user, record })
     );
   }
-
 
   getFormRender() {
     return this.config.getIn(['form', 'render']);
