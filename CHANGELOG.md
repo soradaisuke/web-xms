@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.96](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.95...v3.0.0-beta.96) (2020-10-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** route.config为空 ([5342e0e](https://git2.qingtingfm.com/zhibo/xms/commit/5342e0e87ce8c10757a3acb0577a16817f5929dd))
+
 ## [3.0.0-beta.95](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.94...v3.0.0-beta.95) (2020-10-06)
 
 
