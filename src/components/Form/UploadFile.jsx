@@ -73,7 +73,6 @@ class UploadFile extends React.PureComponent {
   render() {
     const { loading } = this.state;
     const { title, value, onChange, ...props } = this.props;
-    console.log(value);
     return (
       <Upload
         {...props}
