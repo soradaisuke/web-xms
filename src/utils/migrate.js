@@ -121,7 +121,11 @@ export function migrateConfig(config) {
 
 export function migrateRoute(route) {
   const { component, breadcrumb, config } = route;
-  const newRoute = merge({}, route, { config: migrateConfig(config) });
+  const newRoute = merge({}, route);
+
+  if (config) {
+    merge({}, { config: migrateConfig(config) });
+  }
 
   if (component && component.component) {
     console.warning(
