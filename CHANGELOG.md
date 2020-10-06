@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.95](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.94...v3.0.0-beta.95) (2020-10-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复兼容2.0导致的crash ([5186092](https://git2.qingtingfm.com/zhibo/xms/commit/51860925d3f91668664738b2ec45db47e8d79bdb))
+* **NoTicket:** 删除log ([3cab5a6](https://git2.qingtingfm.com/zhibo/xms/commit/3cab5a6d1a10be478be475a4ed3582a049514f58))
+
 ## [3.0.0-beta.94](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.93...v3.0.0-beta.94) (2020-09-30)
 
 
