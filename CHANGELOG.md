@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.97](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.96...v3.0.0-beta.97) (2020-10-13)
+
+
+### Features
+
+* **NoTicket:** migrate错误 ([ef63d24](https://git2.qingtingfm.com/zhibo/xms/commit/ef63d244ce0924405e32dee7aa974fa67b95ee3c))
+
+
+### Bug Fixes
+
+* **NoTicket:** 土拨鼠上传文件错误 ([4e22e71](https://git2.qingtingfm.com/zhibo/xms/commit/4e22e71d16b77a6e92f8f2dc31accf992c878bfe))
+
 ## [3.0.0-beta.96](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.95...v3.0.0-beta.96) (2020-10-06)
 
 
