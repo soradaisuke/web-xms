@@ -124,7 +124,7 @@ export function migrateRoute(route) {
   const newRoute = merge({}, route);
 
   if (config) {
-    merge({}, { config: migrateConfig(config) });
+    merge(newRoute, { config: migrateConfig(config) });
   }
 
   if (component && component.component) {
