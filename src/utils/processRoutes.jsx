@@ -82,27 +82,27 @@ export default function processRoutes({ app, routes }) {
           useFormPage,
         });
         component = dynamicRecordsComponent({
+          ...others,
           app,
           component,
           inline,
           config: processedConfig,
-          ...others,
         });
       } else if (inlineRoutes.length > 0 || config.type === 'descriptions') {
         processedConfig = processSingleConfig({ config, path });
         component = dynamicRecordComponent({
+          ...others,
           app,
           component,
           inline,
           config: processedConfig,
-          ...others,
         });
       } else if (config.type === 'form') {
         component = dynamicRecordFormComponent({
+          ...others,
           app,
           inline,
           config: processFormConfig({ config, path }),
-          ...others,
         });
       }
 
