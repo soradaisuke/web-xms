@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.99](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.98...v3.0.0-beta.99) (2020-10-14)
+
+
+### Bug Fixes
+
+* **NoTicket:** 自定义component被覆盖 ([1f4c7a6](https://git2.qingtingfm.com/zhibo/xms/commit/1f4c7a6a6c212f26c9a0f99c401ebefeb7a8c8b4))
+
 ## [3.0.0-beta.98](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.97...v3.0.0-beta.98) (2020-10-14)
 
 
