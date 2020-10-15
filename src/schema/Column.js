@@ -252,8 +252,12 @@ export default class Column {
     return this.config.getIn(['table', 'filterGroup'], '');
   }
 
-  canFilter() {
-    return this.config.getIn(['table', 'filter']);
+  canFilter(user) {
+    const configFilter = this.config.getIn(['table', 'filter']);
+    if (isFunction(configFilter)) {
+      return configFilter({ user });
+    }
+    return configFilter;
   }
 
   canFilterExpandable() {

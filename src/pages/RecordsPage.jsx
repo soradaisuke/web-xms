@@ -28,6 +28,7 @@ import usePageConfig from '../hooks/usePageConfig';
 import usePageData from '../hooks/usePageData';
 import './RecordsPage.less';
 import useActionParams from '../hooks/useActionParams';
+import useUser from '../hooks/useUser';
 // import ResizableTitle from '../components/Table/ResizableTitle';
 
 const { Column } = Table;
@@ -49,6 +50,7 @@ function RecordsPage({ isLoading }) {
     tableProps,
     filterFormProps,
   } = usePageConfig();
+  const user = useUser();
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const params = useActionParams({ records });
@@ -67,8 +69,8 @@ function RecordsPage({ isLoading }) {
   );
   const [widths] = useState(columns.map((c) => c.getTableWidth()));
   const filterColumns = useMemo(
-    () => table.getColumns().filter((column) => column.canFilter()),
-    [table]
+    () => table.getColumns().filter((column) => column.canFilter(user)),
+    [table, user]
   );
   const tableFilterColumns = useMemo(
     () => filterColumns.filter((column) => !column.canFilterOutside()),
@@ -194,7 +196,7 @@ function RecordsPage({ isLoading }) {
     (column, index) => {
       const filterProps = {};
 
-      if (column.canFilter() && !column.canFilterOutside()) {
+      if (column.canFilter(user) && !column.canFilterOutside()) {
         let filteredValue = get(filter, column.getFilterKey());
 
         const parentFilteredValue = get(
@@ -255,7 +257,7 @@ function RecordsPage({ isLoading }) {
         />
       );
     },
-    [fetch, filter, sort, widths]
+    [fetch, filter, sort, widths, user]
   );
 
   useEffect(() => {
