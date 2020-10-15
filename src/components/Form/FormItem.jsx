@@ -164,7 +164,7 @@ function FormItem({
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        initialValueInner = column.getFormItemNormalizeInitialValue()({ value: curValue, matchParams });
+        initialValueInner = column.getFormItemNormalizeInitialValue()({ record, value: curValue, matchParams });
       } else {
         initialValueInner = curValue;
       }

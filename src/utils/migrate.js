@@ -4,7 +4,7 @@ function isNotRefFunction(func) {
   return func && isFunction(func) && !includes(func.toString(), '(_ref');
 }
 
-export function migrateRouteApi(api) {
+export function migrateRouteApi(api = {}) {
   const { fetchFixedFilter, createDefaultBody } = api;
   const newApi = merge({}, api);
 

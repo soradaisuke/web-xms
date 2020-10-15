@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { useEventCallback } from '@qt/react';
 import { Form, Row } from 'antd';
+import classNames from 'classnames';
 import ActivatorModal from './ActivatorModal';
 import ActionComponent from './Action';
 import useUser from '../hooks/useUser';
 import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
 import FormItem from './Form/FormItem';
+import './RecordModal.less';
 
 const formItemLayout = {
   labelCol: {
@@ -48,6 +50,7 @@ function RecordModal({
   record,
   records,
   actions,
+  className,
   ...props
 }) {
   const user = useUser();
@@ -86,6 +89,7 @@ function RecordModal({
     <FormContext.Provider value={form}>
       <ActivatorModal
         {...props}
+        className={classNames(className, 'xms-modal')}
         destroyOnClose
         activator={children}
         title={title || defaultTilte}
@@ -123,6 +127,7 @@ function RecordModal({
 RecordModal.propTypes = {
   children: PropTypes.node.isRequired,
   onOk: PropTypes.func.isRequired,
+  className: PropTypes.string,
   columns: PropTypes.instanceOf(Immutable.List),
   actions: PropTypes.instanceOf(Immutable.List),
   title: PropTypes.string,
@@ -131,6 +136,7 @@ RecordModal.propTypes = {
 };
 
 RecordModal.defaultProps = {
+  className: '',
   actions: null,
   title: '',
   columns: Immutable.List(),
