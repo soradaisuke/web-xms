@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.100](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.99...v3.0.0-beta.100) (2020-10-15)
+
+
+### Features
+
+* **NoTicket:** 增加Column的table.filter: ({ user }) => boolean支持 ([fe8596f](https://git2.qingtingfm.com/zhibo/xms/commit/fe8596f85777e23bacc0680f525ae7059b1d56aa))
+
 ## [3.0.0-beta.99](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.98...v3.0.0-beta.99) (2020-10-14)
 
 
