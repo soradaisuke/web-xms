@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { makeCancelablePromise } from '@qt/web-common';
 import { useEventCallback } from '@qt/react';
+import { debounce } from 'lodash';
 import useParentFilterValue from './useParentFilterValue';
 import useParentFormValue from './useParentFormValue';
 
@@ -51,14 +52,14 @@ export default function useColumnValueOptions(
     return () => {};
   }, [column, options, parentValue, filters, generateFunc, forForm]);
 
-  const onSearch = useEventCallback(async (v) => {
+  const onSearch = useEventCallback(debounce(async (v) => {
     const searchRequest = column.getValueOptionsSearchRequest();
 
     if (searchRequest) {
       const data = await searchRequest({ value: v, parentValue });
       setOptions(generateFunc(data));
     }
-  }, [parentValue]);
+  }), 400);
 
   return [options, onSearch];
 }
