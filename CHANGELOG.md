@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.101](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.100...v3.0.0-beta.101) (2020-10-19)
+
+
+### Bug Fixes
+
+* **NoTicket:** 新建modal和新建页面里自定义render选项的选择框选择以后高度展示不全;useFormPage为true时报错;NormalizeInitialValue参数增加record ([1024497](https://git2.qingtingfm.com/zhibo/xms/commit/1024497a1c65e50ba54cc121f35502017734a77d))
+* **NoTicket:** onSearch增加debounce ([104fc47](https://git2.qingtingfm.com/zhibo/xms/commit/104fc47ac4f25338f6d40bb3ad52c76907c5d536))
+
 ## [3.0.0-beta.100](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.99...v3.0.0-beta.100) (2020-10-15)
 
 
