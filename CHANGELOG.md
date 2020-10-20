@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.103](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.102...v3.0.0-beta.103) (2020-10-20)
+
+
+### Features
+
+* **QTLIVE-2370:** Column支持form.initialValueOptionsRequest: async (record) => valueOptions & normalizeInitialValueOptions参数改为record ([88aafb4](https://git2.qingtingfm.com/zhibo/xms/commit/88aafb4f4ffe6f3bf306e2cfb7888a6e282863a7))
+
 ## [3.0.0-beta.102](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.101...v3.0.0-beta.102) (2020-10-20)
 
 
