@@ -408,6 +408,10 @@ export default class Column {
     );
   }
 
+  getFormItemInitialValueOptionsRequest() {
+    return this.config.getIn(['form', 'initialValueOptionsRequest']);
+  }
+
   getFormItemNormalizeInitialValue() {
     return this.config.getIn(['form', 'normalizeInitialValue']);
   }

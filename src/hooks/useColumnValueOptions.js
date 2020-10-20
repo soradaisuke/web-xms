@@ -23,7 +23,11 @@ export default function useColumnValueOptions(
     [column, forForm, parentValue]
   );
 
-  const [options, setOptions] = useState(generateFunc(initialValueOptions));
+  const [options, setOptions] = useState();
+
+  useEffect(() => {
+    setOptions(generateFunc(initialValueOptions));
+  }, [generateFunc, initialValueOptions]);
 
   useEffect(() => {
     if (!options) {

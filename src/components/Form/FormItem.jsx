@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useContext } from 'react';
+import React, { useMemo, useEffect, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import {
@@ -248,6 +248,13 @@ function FormItem({
     [formItemComponentProps, form, record]
   );
 
+  const [initialValueOptions, setInitialValueOptions] = useState(null);
+
+  useEffect(() => {
+    column.getFormItemInitialValueOptionsRequest()?.(record)
+      .then(v => setInitialValueOptions(v));
+  }, [column, record]);
+
   const children = useMemo(() => {
     let inner;
 
@@ -287,14 +294,14 @@ function FormItem({
       inner = (
         <TreeSelect
           forForm
-          initialValueOptions={
-            record &&
+          initialValueOptions={initialValueOptions || 
+            (record &&
             Object.keys(record).length > 0 &&
             column.getFormItemNormalizeInitialValueOptions()
               ? column.getFormItemNormalizeInitialValueOptions()(
-                  get(record, column.getKey())
+                  record
                 )
-              : null
+              : null)
           }
           style={{ width: '100%' }}
           column={column}
@@ -485,6 +492,7 @@ function FormItem({
     idIdentifier,
     initialListItemValue,
     prefix,
+    initialValueOptions
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
