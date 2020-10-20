@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.102](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.101...v3.0.0-beta.102) (2020-10-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** RecordLink里不使用textToPath ([63c49d1](https://git2.qingtingfm.com/zhibo/xms/commit/63c49d13357c771e96f37b64e607cd503aefb06d))
+* **QTLIVE-2369:** debounce参数错误 ([d252547](https://git2.qingtingfm.com/zhibo/xms/commit/d25254751094f7a80735824b7100924249b494f5))
+
 ## [3.0.0-beta.101](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.100...v3.0.0-beta.101) (2020-10-19)
 
 
