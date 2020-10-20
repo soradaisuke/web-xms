@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { router } from 'dva';
 import { isFunction, startsWith } from 'lodash';
-import textToPath from '../utils/textToPath';
 import usePageData from '../hooks/usePageData';
 
 const { Link } = router;
@@ -16,7 +15,7 @@ function RecordLink({ link, record, buttonProps, children }) {
   const url = useMemo(() => {
     const linkInternal = isFunction(link) ? link({ record, filter }) : link;
     if (!startsWith(linkInternal, 'http')) {
-      return textToPath(linkInternal);
+      return linkInternal;
     }
 
     return linkInternal;
