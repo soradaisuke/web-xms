@@ -59,7 +59,7 @@ export default function useColumnValueOptions(
       const data = await searchRequest({ value: v, parentValue });
       setOptions(generateFunc(data));
     }
-  }), 400);
+  }, 400));
 
   return [options, onSearch];
 }
