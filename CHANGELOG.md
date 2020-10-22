@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.104](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.103...v3.0.0-beta.104) (2020-10-22)
+
+
+### Features
+
+* **NoTicket:** onValuesChange增加form参数 ([c74d106](https://git2.qingtingfm.com/zhibo/xms/commit/c74d106246c27990e53fd62a4f2b3e9d1fc065c7))
+
 ## [3.0.0-beta.103](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.102...v3.0.0-beta.103) (2020-10-20)
 
 
