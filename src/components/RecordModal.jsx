@@ -85,6 +85,11 @@ function RecordModal({
     }
   });
 
+  const onValuesChange = useEventCallback(
+    (...args) => formProps?.onValuesChange?.(...args, form),
+    [formProps]
+  );
+
   return (
     <FormContext.Provider value={form}>
       <ActivatorModal
@@ -96,7 +101,12 @@ function RecordModal({
         onOk={onSubmit}
         onVisibleChange={onVisibleChange}
       >
-        <Form {...formItemLayout} {...formProps} form={form}>
+        <Form
+          {...formItemLayout}
+          {...formProps}
+          onValuesChange={onValuesChange}
+          form={form}
+        >
           {cols.map((column) => (
             <FormItem
               key={column.getTitle()}
