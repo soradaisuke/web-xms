@@ -77,6 +77,7 @@ function FormItem({
         resetChildColumn({ column, form, forForm: true, prefix });
         // eslint-disable-next-line no-unused-expressions
         extraFormItemComponentProps?.onChange?.(...args);
+        column.getFormItemComponentProps()?.onChange?.(...args, form);
       },
       disabled,
     }),
@@ -164,7 +165,11 @@ function FormItem({
     if (record && Object.keys(record).length > 0) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        initialValueInner = column.getFormItemNormalizeInitialValue()({ record, value: curValue, matchParams });
+        initialValueInner = column.getFormItemNormalizeInitialValue()({
+          record,
+          value: curValue,
+          matchParams,
+        });
       } else {
         initialValueInner = curValue;
       }
@@ -251,8 +256,9 @@ function FormItem({
   const [initialValueOptions, setInitialValueOptions] = useState(null);
 
   useEffect(() => {
-    column.getFormItemInitialValueOptionsRequest()?.(record)
-      .then(v => setInitialValueOptions(v));
+    column
+      .getFormItemInitialValueOptionsRequest()?.(record)
+      .then((v) => setInitialValueOptions(v));
   }, [column, record]);
 
   const children = useMemo(() => {
@@ -294,13 +300,12 @@ function FormItem({
       inner = (
         <TreeSelect
           forForm
-          initialValueOptions={initialValueOptions || 
+          initialValueOptions={
+            initialValueOptions ||
             (record &&
             Object.keys(record).length > 0 &&
             column.getFormItemNormalizeInitialValueOptions()
-              ? column.getFormItemNormalizeInitialValueOptions()(
-                  record
-                )
+              ? column.getFormItemNormalizeInitialValueOptions()(record)
               : null)
           }
           style={{ width: '100%' }}
@@ -492,7 +497,7 @@ function FormItem({
     idIdentifier,
     initialListItemValue,
     prefix,
-    initialValueOptions
+    initialValueOptions,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
