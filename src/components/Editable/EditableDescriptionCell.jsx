@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { removeUrlProtocol } from '@qt/web-common';
 import { map, isNumber, get, isFunction } from 'lodash';
-import LinesEllipsis from 'react-lines-ellipsis';
+import LinesEllipsis from '../LinesEllipsis';
 import Column from '../../schema/Column';
 import EditableCell from './EditableCell';
 import useParentFilterValue from '../../hooks/useParentFilterValue';
@@ -63,9 +63,6 @@ function renderInDescription({ column, value, parentFilterValue }) {
       <LinesEllipsis
         text={value || ''}
         maxLine={maxLines}
-        ellipsis="..."
-        trimRight
-        basedOn="letters"
       />
     );
   }
