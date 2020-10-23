@@ -8,12 +8,13 @@ import Column from '../../schema/Column';
 import './Tree.less';
 
 const FilterTreeSelect = React.forwardRef(
-  ({ column, forForm, initialValueOptions, className, ...props }, ref) => {
+  ({ column, forForm, initialValueOptions, className, isEdit, ...props }, ref) => {
     const [options, onSearch] = useColumnValueOptions(
       column,
       generateTreeData,
       forForm,
-      initialValueOptions
+      initialValueOptions,
+      isEdit
     );
 
     return (
@@ -35,6 +36,7 @@ const FilterTreeSelect = React.forwardRef(
 
 FilterTreeSelect.propTypes = {
   column: PropTypes.instanceOf(Column).isRequired,
+  isEdit: PropTypes.bool,
   className: PropTypes.string,
   forForm: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
@@ -42,6 +44,7 @@ FilterTreeSelect.propTypes = {
 };
 
 FilterTreeSelect.defaultProps = {
+  isEdit: false,
   className: '',
   forForm: false,
   initialValueOptions: null

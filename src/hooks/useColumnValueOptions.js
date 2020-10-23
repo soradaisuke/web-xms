@@ -9,7 +9,8 @@ export default function useColumnValueOptions(
   column,
   generateFunc,
   forForm,
-  initialValueOptions
+  initialValueOptions,
+  isEdit
 ) {
   const parentFilterValue = useParentFilterValue(column);
   const parentFormValue = useParentFormValue(column);
@@ -60,7 +61,7 @@ export default function useColumnValueOptions(
     const searchRequest = column.getValueOptionsSearchRequest();
 
     if (searchRequest) {
-      const data = await searchRequest({ value: v, parentValue });
+      const data = await searchRequest({ value: v, parentValue, isEdit });
       setOptions(generateFunc(data));
     }
   }, 400));

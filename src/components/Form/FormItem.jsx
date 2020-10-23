@@ -80,8 +80,9 @@ function FormItem({
         column.getFormItemComponentProps()?.onChange?.(...args, form);
       },
       disabled,
+      isEdit,
     }),
-    [column, disabled, extraFormItemComponentProps, form, prefix]
+    [column, disabled, extraFormItemComponentProps, form, prefix, isEdit]
   );
 
   const valuePropName = useMemo(() => {
