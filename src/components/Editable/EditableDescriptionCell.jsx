@@ -87,7 +87,13 @@ function EditableDescriptionCell({ record, column, reload }) {
 
     if (link) {
       return (
-        <RecordLink link={link} record={record}>
+        <RecordLink
+          buttonProps={{
+            style: column.getTableWidth() ? { whiteSpace: 'break-spaces' } : null
+          }}
+          link={link}
+          record={record}
+        >
           {renderInDescription({ value, parentFilterValue, column })}
         </RecordLink>
       );

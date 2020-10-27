@@ -287,10 +287,16 @@ export default class Column {
   }
 
   getFilterKey() {
-    return this.config.getIn(
-      ['table', 'filterFormItemProps', 'name'],
-      this.config.getIn(['table', 'filterKey'], this.getKey())
-    );
+    if (!this.filterKey) {
+      this.filterKey = this.config.getIn(
+        ['table', 'filterFormItemProps', 'name'],
+        this.config.getIn(['table', 'filterKey'], this.getKey())
+      );
+      if (this.filterKey.toArray) {
+        this.filterKey = this.filterKey.toArray();
+      }
+    }
+    return this.filterKey;
   }
 
   getFilterFormItemComponentProps() {

@@ -84,7 +84,13 @@ function EditableTableCell({ children, record, column, reload, ...restProps }) {
 
     if (link) {
       return (
-        <RecordLink link={link} record={record}>
+        <RecordLink
+          buttonProps={{
+            style: column.getTableWidth() ? { whiteSpace: 'break-spaces' } : null
+          }}
+          link={link}
+          record={record}
+        >
           {renderInTable({ value, parentFilterValue, column })}
         </RecordLink>
       );
