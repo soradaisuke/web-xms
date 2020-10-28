@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.106](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.105...v3.0.0-beta.106) (2020-10-28)
+
+
+### Features
+
+* **QTLIVE-2359:** 表格和详情中，超长文字显示省略号时可点击展开 ([3b44074](https://git2.qingtingfm.com/zhibo/xms/commit/3b440743b280938a20944c16b9ddac0317743f46))
+* **QTLIVE-2454:** valueOptionsSearchRequest带入参数isEdit ([98c6765](https://git2.qingtingfm.com/zhibo/xms/commit/98c676566b0bd82e506951043bb7c705f15687fa))
+* **QTLIVE-2455:** initialValueOptionsRequest和valueOptionsRequest返回的结果中支持设置默认选择项 ([de3e7fb](https://git2.qingtingfm.com/zhibo/xms/commit/de3e7fba3768b1b3b4d7895ca1b07969dad71084))
+
+
+### Bug Fixes
+
+* **NoTicket:** filterKey支持string [] & 配置了link的table column配置width不起作用 ([87e5953](https://git2.qingtingfm.com/zhibo/xms/commit/87e59535aedf44bb92ce8b7dc48c0710b0a35eea))
+
 ## [3.0.0-beta.105](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.104...v3.0.0-beta.105) (2020-10-22)
 
 
