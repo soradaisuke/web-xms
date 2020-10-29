@@ -1,4 +1,4 @@
-import { forEach } from 'lodash';
+import { forEach, isNil } from 'lodash';
 import getFullFormItemName from './getFullFormItemName';
 
 export function resetChildColumn({ column, form, forForm, prefix }) {
@@ -16,7 +16,7 @@ export function resetChildColumn({ column, form, forForm, prefix }) {
 }
 
 export function resetColumn({ column, form, forForm, prefix }) {
-  if (!forForm && column.getFilterRequired() && column.getFilterDefault()) {
+  if (!forForm && column.getFilterRequired() && !isNil(column.getFilterDefault())) {
     form.setFields([
       {
         name: column.getFilterKey(),

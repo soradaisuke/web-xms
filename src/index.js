@@ -11,6 +11,7 @@ export Page from './pages/Page';
 export DynamicPaginationTableTransfer from './components/Transfer/DynamicPaginationTableTransfer';
 export DraggableTable from './components/Table/DraggableTable';
 
+export showError from './utils/showError';
 export textToPath from './utils/textToPath';
 export UploadImage from './components/Form/UploadImage';
 export UploadFile from './components/Form/UploadFile';

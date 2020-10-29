@@ -15,6 +15,7 @@ import 'moment/locale/zh-cn';
 import './router.less';
 import WelcomePage from './pages/WelcomePage';
 import hasPermission from './utils/hasPermission';
+import isTuboshu from './utils/isTuboshu';
 
 const { Route, Switch, Router } = router;
 const { Content, Sider, Header } = Layout;
@@ -109,10 +110,11 @@ function ConnectedRouter({ history, app }) {
           <Sider
             className="xms-sider"
             collapsible
+            theme={isTuboshu ? 'light' : 'dark'}
             collapsed={collapsed}
             onCollapse={onCollapse}
           >
-            <div className="logo" />
+            <div className={classNames('logo',  isTuboshu ? 'tuboshu-logo' : '')} />
             {(!auth || !!user) && <Menu routes={routes} />}
           </Sider>
           <Layout

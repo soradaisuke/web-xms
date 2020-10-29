@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import { isNil } from 'lodash';
 import findCascadeColumn from '../utils/findCascadeColumn';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -38,7 +39,7 @@ export default class Table {
         }
       }
 
-      if (column.getFilterDefault()) {
+      if (!isNil(column.getFilterDefault())) {
         this.defaultFilter = this.defaultFilter || {};
         this.defaultFilter[column.getFilterKey()] = column.getFilterDefault();
       }
