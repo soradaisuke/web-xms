@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.109](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.108...v3.0.0-beta.109) (2020-10-29)
+
+
+### Bug Fixes
+
+* **QTDP-1035:** xms动态表单项删除按会和输入框重叠 ([eedd4c0](https://git2.qingtingfm.com/zhibo/xms/commit/eedd4c024cadb7db407e568c08834650a95b955e))
+
 ## [3.0.0-beta.108](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.107...v3.0.0-beta.108) (2020-10-29)
 
 
