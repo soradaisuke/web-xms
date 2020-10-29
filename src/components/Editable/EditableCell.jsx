@@ -37,7 +37,7 @@ function EditableCell({ children, record, column, reload }) {
     form.setFields([
       {
         name: column.getFormItemName(),
-        value: get(record, column.getFormItemName()),
+        value: get(record, column.getKey()),
       },
     ]);
   }, []);
@@ -69,7 +69,7 @@ function EditableCell({ children, record, column, reload }) {
       form.setFields([
         {
           name: column.getFormItemName(),
-          value: get(record, column.getFormItemName()),
+          value: get(record, column.getKey()),
         },
       ]);
     }
