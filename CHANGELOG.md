@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.108](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.107...v3.0.0-beta.108) (2020-10-29)
+
+
+### Bug Fixes
+
+* **NoTicket:** inlineEdit里value用的key应是table的key ([df3d866](https://git2.qingtingfm.com/zhibo/xms/commit/df3d86643d28bc9460eb52022cb5faf58e5c6e39))
+
 ## [3.0.0-beta.107](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.106...v3.0.0-beta.107) (2020-10-29)
 
 
