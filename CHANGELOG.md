@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.107](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.106...v3.0.0-beta.107) (2020-10-29)
+
+
+### Features
+
+* **NoTicket): 土拨鼠使用亮色主题 & export showError & fix filterDefault: false & fix(QTDP-1035:** xms动态表单项删除按钮会和输入框重叠 ([79e5d33](https://git2.qingtingfm.com/zhibo/xms/commit/79e5d330824c94c7fef06a8ba56dc9509beffa2b))
+
 ## [3.0.0-beta.106](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.105...v3.0.0-beta.106) (2020-10-28)
 
 
