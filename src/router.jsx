@@ -104,7 +104,6 @@ function ConnectedRouter({ history, app }) {
 
   return (
     <ConfigProvider locale={zhCN}>
-      <Watermark />
       <Router history={history}>
         <Layout className="xms-layout">
           <Sider
@@ -142,6 +141,7 @@ function ConnectedRouter({ history, app }) {
           <BackTop />
         </Layout>
       </Router>
+      <Watermark />
     </ConfigProvider>
   );
 }
