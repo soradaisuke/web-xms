@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.110](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.109...v3.0.0-beta.110) (2020-11-02)
+
+
+### Features
+
+* **NoTicket:** export RecordLink ([d37944e](https://git2.qingtingfm.com/zhibo/xms/commit/d37944ecfcd00afbf246a8d17f2375d139583d3c))
+
+
+### Bug Fixes
+
+* **NoTicket:** 忽略type为form时的table配置 ([0f9da08](https://git2.qingtingfm.com/zhibo/xms/commit/0f9da085bcc67af6b889d56e9d7c0efc5519ee3b))
+
 ## [3.0.0-beta.109](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.108...v3.0.0-beta.109) (2020-10-29)
 
 
