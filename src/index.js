@@ -18,6 +18,7 @@ export UploadFile from './components/Form/UploadFile';
 export ZoomImg from './components/ZoomImg';
 export AudioPlayer from './components/Common/AudioPlayer';
 export InputModal from './components/InputModal';
+export RecordLink from './components/RecordLink';
 
 // hooks
 export useUser from './hooks/useUser';
