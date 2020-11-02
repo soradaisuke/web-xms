@@ -62,7 +62,7 @@ export function migrateConfig(config) {
     console.warn('route.config.schema is deprecated, please use columns');
     merge(newConfig, { columns: schema });
   }
-  if (table) {
+  if (table && type !== 'form') {
     console.warn('route.config.table is deprecated, please use columns');
     merge(newConfig, { columns: table });
   }
