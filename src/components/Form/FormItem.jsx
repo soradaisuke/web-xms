@@ -236,9 +236,15 @@ function FormItem({
             return true;
           }
           if (column.getFormItemAvailableWhen().size > 0) {
-            return !!column
-              .getFormItemAvailableWhen()
-              .find((_, key) => get(prevValues, key) !== get(curValues, key));
+            return !!column.getFormItemAvailableWhen().find((_, key) => {
+              let parsedKey = key;
+              try {
+                parsedKey = JSON.parse(key);
+              } catch (e) {
+                // JSON parse failed
+              }
+              return get(prevValues, parsedKey) !== get(curValues, parsedKey);
+            });
           }
           return false;
         },
