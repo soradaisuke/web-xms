@@ -57,7 +57,7 @@ FilterTreeSelect.propTypes = {
 };
 
 FilterTreeSelect.defaultProps = {
-  value: null,
+  value: undefined,
   isEdit: false,
   className: '',
   forForm: false,
