@@ -408,10 +408,16 @@ export default class Column {
   }
 
   getFormItemInitialValue() {
-    return this.config.getIn(
-      ['form', 'formItemProps', 'initialValue'],
-      this.config.getIn(['form', 'initialValue'])
-    );
+    if (!this.formItemInitialValue) {
+      this.formItemInitialValue = this.config.getIn(
+        ['form', 'formItemProps', 'initialValue'],
+        this.config.getIn(['form', 'initialValue'])
+      );
+      if (this.formItemInitialValue?.toJS) {
+        this.formItemInitialValue = this.formItemInitialValue.toJS();
+      }
+    }
+    return this.formItemInitialValue;
   }
 
   getFormItemInitialValueOptionsRequest() {
