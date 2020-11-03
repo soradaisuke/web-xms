@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.112](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.111...v3.0.0-beta.112) (2020-11-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** initialValue是数组时会被转为List ([0044232](https://git2.qingtingfm.com/zhibo/xms/commit/0044232773d59e59eb7784b94cdb73d82af153d6))
+* **NoTicket:** 水印不显示 ([abe7c11](https://git2.qingtingfm.com/zhibo/xms/commit/abe7c11a14c6473360370614831ab4565f1017d0))
+
 ## [3.0.0-beta.111](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.110...v3.0.0-beta.111) (2020-11-03)
 
 
