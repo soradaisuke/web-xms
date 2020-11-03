@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import { Avatar, Menu, Dropdown, Icon } from 'antd';
+import { Avatar, Menu, Dropdown, Icon, Button } from 'antd';
 import { connect } from 'dva';
 import { ClickableDiv } from '@qt/react-core';
 import './User.less';
@@ -20,7 +20,11 @@ class User extends React.PureComponent {
     const { user, logout } = this.props;
 
     if (!user) {
-      return null;
+      return (
+        <Button type="primary" onClick={logout}>
+          登录
+        </Button>
+      );
     }
 
     return (
