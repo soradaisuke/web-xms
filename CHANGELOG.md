@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.111](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.110...v3.0.0-beta.111) (2020-11-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** availableWhen的key是json string时,shouldUpdtae不触发 ([3a32d1b](https://git2.qingtingfm.com/zhibo/xms/commit/3a32d1bec35fdcae982ed021e6f86fd71edbda95))
+* **QTLIVE-2592:** filterMultiple时，Select里有个默认值 ([614550c](https://git2.qingtingfm.com/zhibo/xms/commit/614550ce8c4e958a32bdb38909476b4fe6c97b26))
+
 ## [3.0.0-beta.110](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.109...v3.0.0-beta.110) (2020-11-02)
 
 
