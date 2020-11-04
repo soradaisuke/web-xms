@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.113](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.112...v3.0.0-beta.113) (2020-11-04)
+
+
+### Features
+
+* **QTLIVE-2582:** 无用户时右上角用户信息处显示登录按钮 ([6ec6ed7](https://git2.qingtingfm.com/zhibo/xms/commit/6ec6ed7dea4cc68e9b5e5439613dd10b432f4830))
+
 ## [3.0.0-beta.112](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.111...v3.0.0-beta.112) (2020-11-03)
 
 
