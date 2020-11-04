@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import { DownOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Dropdown } from 'antd';
+import { Avatar, Menu, Dropdown, Button } from 'antd';
 import { connect } from 'dva';
 import { ClickableDiv } from '@qt/react';
 import './User.less';
@@ -21,7 +21,11 @@ class User extends React.PureComponent {
     const { user, logout } = this.props;
 
     if (!user) {
-      return null;
+      return (
+        <Button type="primary" onClick={logout} style={{ marginLeft: 'auto' }}>
+          登录
+        </Button>
+      );
     }
 
     return (
