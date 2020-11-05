@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.114](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.113...v3.0.0-beta.114) (2020-11-05)
+
+
+### Features
+
+* **NoTicket:** export DatePickerWithPresets ([e16643d](https://git2.qingtingfm.com/zhibo/xms/commit/e16643d5d10848fed25625a2cbedf1ca9c5c99d8))
+
 ## [3.0.0-beta.113](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.112...v3.0.0-beta.113) (2020-11-04)
 
 
