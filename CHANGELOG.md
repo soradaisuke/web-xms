@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.116](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.115...v3.0.0-beta.116) (2020-11-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** initialListItemValue崩溃 ([1ae9906](https://git2.qingtingfm.com/zhibo/xms/commit/1ae9906adc072337af40184cbb981a7eb492d76a))
+
 ## [3.0.0-beta.115](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.114...v3.0.0-beta.115) (2020-11-06)
 
 
