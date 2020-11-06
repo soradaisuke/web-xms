@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.115](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.114...v3.0.0-beta.115) (2020-11-06)
+
+
+### Features
+
+* **QTLIVE-2622:** initialListItemValue支持动态函数 ([cc2c5d0](https://git2.qingtingfm.com/zhibo/xms/commit/cc2c5d0b1a5beb156d91830b6f02077f10082099))
+
 ## [3.0.0-beta.114](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.113...v3.0.0-beta.114) (2020-11-05)
 
 
