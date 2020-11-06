@@ -6,7 +6,7 @@ export default function processSingleConfig({ config, path }) {
 
   return {
     ...config,
-    namespace: crc.str(path),
+    namespace: String(crc.str(path)),
     table: new Table(columns, actions),
   };
 }

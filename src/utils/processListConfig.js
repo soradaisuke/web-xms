@@ -16,7 +16,7 @@ export default function processListConfig({
 
   return {
     ...config,
-    namespace: crc.str(path),
+    namespace: String(crc.str(path)),
     table: new Table(
       columns,
       map(actions, (action) => {
