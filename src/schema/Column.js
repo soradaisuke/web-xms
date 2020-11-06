@@ -420,6 +420,18 @@ export default class Column {
     return this.formItemInitialValue;
   }
 
+  getFormItemInitialListItemValue() {
+    if (!this.formItemInitialListItemValue) {
+      this.formItemInitialListItemValue = this.config.getIn(
+        this.config.getIn(['form', 'initialListItemValue'])
+      );
+      if (this.formItemInitialListItemValue?.toJS) {
+        this.formItemInitialListItemValue = this.formItemInitialListItemValue.toJS();
+      }
+    }
+    return this.formItemInitialListItemValue;
+  }
+
   getFormItemInitialValueOptionsRequest() {
     return this.config.getIn(['form', 'initialValueOptionsRequest']);
   }

@@ -48,6 +48,14 @@ import useFormListItemPrefix from '../../hooks/useFormListItemPrefix';
 import getFullFormItemName from '../../utils/getFullFormItemName';
 import './FormItem.less';
 
+function getColumnInitialValue(column, matchParams) {
+  const initialValue = column.getFormItemInitialValue();
+  if (isFunction(initialValue)) {
+    return initialValue({ matchParams });
+  }
+  return initialValue;
+}
+
 function FormItem({
   isEdit,
   column,
@@ -67,23 +75,6 @@ function FormItem({
   const editableForm = useContext(EditableContext);
   const prefix = useFormListItemPrefix();
   const form = commonForm || editableForm;
-
-  const formItemComponentProps = useMemo(
-    () => ({
-      ...column.getFormItemComponentProps(),
-      ...extraFormItemComponentProps,
-      placeholder: column.getFormPlaceholder(),
-      onChange: (...args) => {
-        resetChildColumn({ column, form, forForm: true, prefix });
-        // eslint-disable-next-line no-unused-expressions
-        extraFormItemComponentProps?.onChange?.(...args);
-        column.getFormItemComponentProps()?.onChange?.(...args, form);
-      },
-      disabled,
-      isEdit,
-    }),
-    [column, disabled, extraFormItemComponentProps, form, prefix, isEdit]
-  );
 
   const valuePropName = useMemo(() => {
     if (column instanceof BooleanColumn) {
@@ -156,37 +147,33 @@ function FormItem({
 
   const matchParams = useParams();
 
-  const { initialValue, initialListItemValue } = useMemo(() => {
-    let initialValueInner = column.getFormItemInitialValue();
-    if (isFunction(initialValueInner)) {
-      initialValueInner = initialValueInner({ matchParams });
-    } else if (initialValueInner?.toJS) {
-      initialValueInner = initialValueInner.toJS();
-    }
-    if (record && Object.keys(record).length > 0) {
+  const initialValue = useMemo(
+    () => getColumnInitialValue(column, matchParams),
+    [column, matchParams]
+  );
+  const initialListItemValue = useMemo(
+    () =>
+      column.getFormItemInitialListItemValue() ||
+      column.getColumns?.()?.reduce((result, c) => ({
+        ...result,
+        [c.getFormItemName()]: getColumnInitialValue(c, matchParams),
+      })),
+    [column, matchParams]
+  );
+  const initialEditValue = useMemo(() => {
+    if (isEdit) {
       const curValue = get(record, column.getKey());
       if (column.getFormItemNormalizeInitialValue()) {
-        initialValueInner = column.getFormItemNormalizeInitialValue()({
+        return column.getFormItemNormalizeInitialValue()({
           record,
           value: curValue,
           matchParams,
         });
-      } else {
-        initialValueInner = curValue;
       }
+      return curValue;
     }
-
-    return {
-      initialValue: initialValueInner,
-      initialListItemValue: column.getColumns?.()?.reduce(
-        (result, c) => ({
-          ...result,
-          [c.getFormItemName()]: c.getFormItemInitialValue(),
-        }),
-        {}
-      ),
-    };
-  }, [record, column, matchParams]);
+    return undefined;
+  }, [isEdit, record, column, matchParams]);
 
   useEffect(() => {
     if (shouldSetInitialValue) {
@@ -194,11 +181,44 @@ function FormItem({
       form?.setFields([
         {
           name: column.getFormItemName(),
-          value: initialValue,
+          value: isEdit ? initialEditValue : initialValue,
         },
       ]);
     }
-  }, [column, form, initialValue, shouldSetInitialValue]);
+  }, [
+    column,
+    form,
+    isEdit,
+    initialValue,
+    initialEditValue,
+    shouldSetInitialValue,
+  ]);
+
+  const formItemComponentProps = useMemo(
+    () => ({
+      ...column.getFormItemComponentProps(),
+      ...extraFormItemComponentProps,
+      initialValue,
+      placeholder: column.getFormPlaceholder(),
+      onChange: (...args) => {
+        resetChildColumn({ column, form, forForm: true, prefix });
+        // eslint-disable-next-line no-unused-expressions
+        extraFormItemComponentProps?.onChange?.(...args);
+        column.getFormItemComponentProps()?.onChange?.(...args, form);
+      },
+      disabled,
+      isEdit,
+    }),
+    [
+      column,
+      disabled,
+      extraFormItemComponentProps,
+      initialValue,
+      form,
+      prefix,
+      isEdit,
+    ]
+  );
 
   const commonFormItemProps = useMemo(
     () => ({
@@ -443,7 +463,13 @@ function FormItem({
                 <Form.Item>
                   <Button
                     type="primary"
-                    onClick={() => add(initialListItemValue)}
+                    onClick={() =>
+                      add(
+                        isFunction(initialListItemValue)
+                          ? initialListItemValue(renderParams)
+                          : initialListItemValue
+                      )
+                    }
                   >
                     <PlusOutlined /> 添加
                   </Button>
