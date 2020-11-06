@@ -104,6 +104,7 @@ function RecordModal({
         <Form
           {...formItemLayout}
           {...formProps}
+          preserve={false}
           onValuesChange={onValuesChange}
           form={form}
         >
