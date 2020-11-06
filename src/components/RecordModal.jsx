@@ -107,9 +107,10 @@ function RecordModal({
           onValuesChange={onValuesChange}
           form={form}
         >
-          {cols.map((column) => (
+          {cols.map((column, index) => (
             <FormItem
-              key={column.getTitle()}
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${column.getTitle()}${index}`}
               isEdit={isEdit}
               record={record}
               column={column}

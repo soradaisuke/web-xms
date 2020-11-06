@@ -201,7 +201,6 @@ function FormItem({
     () => ({
       ...column.getFormItemComponentProps(),
       ...extraFormItemComponentProps,
-      initialValue,
       placeholder: column.getFormPlaceholder(),
       onChange: (...args) => {
         resetChildColumn({ column, form, forForm: true, prefix });
@@ -212,15 +211,7 @@ function FormItem({
       disabled,
       isEdit,
     }),
-    [
-      column,
-      disabled,
-      extraFormItemComponentProps,
-      initialValue,
-      form,
-      prefix,
-      isEdit,
-    ]
+    [column, disabled, extraFormItemComponentProps, form, prefix, isEdit]
   );
 
   const commonFormItemProps = useMemo(
@@ -231,6 +222,7 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
+      initialValue,
       name: prefix
         ? [prefix[1], column.getFormItemName()]
         : column.getFormItemName(),
@@ -240,6 +232,7 @@ function FormItem({
       column,
       hideLabel,
       normalize,
+      initialValue,
       rules,
       valuePropName,
       extraCommonFormItemProps,
