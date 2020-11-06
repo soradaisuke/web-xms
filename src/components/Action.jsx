@@ -73,25 +73,30 @@ function Action({
     [form, onOk]
   );
 
-  const onClick = useEventCallback(() => {
-    const onOkInternal = disabledRecordModal ? onFormOk : onOk;
-    if (action.showConfirmModal()) {
-      const confirmTitle = action.getConfirmTitle();
-      const confirmContent = action.getConfirmContent();
-      return new Promise((resolve) => {
-        Modal.confirm({
-          title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
-          content: isFunction(confirmContent)
-            ? confirmContent(params)
-            : confirmContent,
-          ...action.getConfirmProps(),
-          onCancel: resolve(false),
-          onOk: () => resolve(onOkInternal()),
+  const onClick = useEventCallback(
+    (...args) => {
+      const onOkInternal = disabledRecordModal ? onFormOk : onOk;
+      if (action.showConfirmModal()) {
+        const confirmTitle = action.getConfirmTitle();
+        const confirmContent = action.getConfirmContent();
+        return new Promise((resolve) => {
+          Modal.confirm({
+            title: isFunction(confirmTitle)
+              ? confirmTitle(params)
+              : confirmTitle,
+            content: isFunction(confirmContent)
+              ? confirmContent(params)
+              : confirmContent,
+            ...action.getConfirmProps(),
+            onCancel: resolve(false),
+            onOk: () => resolve(onOkInternal(...args)),
+          });
         });
-      });
-    }
-    return onOkInternal();
-  }, [action, params, onOk, disabledRecordModal, onFormOk]);
+      }
+      return onOkInternal(...args);
+    },
+    [action, params, onOk, disabledRecordModal, onFormOk]
+  );
 
   if (invisible) {
     return null;
