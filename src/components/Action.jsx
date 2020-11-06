@@ -91,6 +91,30 @@ function Action({
     }
   }, [action, params, onOk, disabledRecordModal, onFormOk]);
 
+  const onRecordModalClick = useEventCallback(
+    (...args) => {
+      if (action.showConfirmModal()) {
+        const confirmTitle = action.getConfirmTitle();
+        const confirmContent = action.getConfirmContent();
+        return new Promise((resolve) => {
+          Modal.confirm({
+            title: isFunction(confirmTitle)
+              ? confirmTitle(params)
+              : confirmTitle,
+            content: isFunction(confirmContent)
+              ? confirmContent(params)
+              : confirmContent,
+            ...action.getConfirmProps(),
+            onCancel: () => resolve(false),
+            onOk: () => resolve(onFormOk(...args)),
+          });
+        });
+      }
+      return onFormOk(...args);
+    },
+    [action, params, onFormOk]
+  );
+
   if (invisible) {
     return null;
   }
@@ -134,7 +158,7 @@ function Action({
         key={action.getTitle()}
         title={action.getTitle()}
         record={record}
-        onOk={onFormOk}
+        onOk={onRecordModalClick}
       >
         <Button {...buttonProps} />
       </RecordModal>
