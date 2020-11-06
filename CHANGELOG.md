@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.120](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.119...v3.0.0-beta.120) (2020-11-06)
+
+
+### Features
+
+* **NoTicket:** RecordModal支持二次弹窗 ([67746e6](https://git2.qingtingfm.com/zhibo/xms/commit/67746e6fe5532ff0e46bd95d5ee4fb17192d1ff1))
+
+
+### Bug Fixes
+
+* **NoTicket:** RecordModal不保留表单 ([41239e5](https://git2.qingtingfm.com/zhibo/xms/commit/41239e56ab36cb9be7bb584a015a9829ba930c5c))
+
 ## [3.0.0-beta.119](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.118...v3.0.0-beta.119) (2020-11-06)
 
 
