@@ -422,9 +422,10 @@ export default class Column {
 
   getFormItemInitialListItemValue() {
     if (!this.formItemInitialListItemValue) {
-      this.formItemInitialListItemValue = this.config.getIn(
-        this.config.getIn(['form', 'initialListItemValue'])
-      );
+      this.formItemInitialListItemValue = this.config.getIn([
+        'form',
+        'initialListItemValue',
+      ]);
       if (this.formItemInitialListItemValue?.toJS) {
         this.formItemInitialListItemValue = this.formItemInitialListItemValue.toJS();
       }
