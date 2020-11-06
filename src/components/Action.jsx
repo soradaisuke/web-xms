@@ -78,17 +78,19 @@ function Action({
     if (action.showConfirmModal()) {
       const confirmTitle = action.getConfirmTitle();
       const confirmContent = action.getConfirmContent();
-      Modal.confirm({
-        title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
-        content: isFunction(confirmContent)
-          ? confirmContent(params)
-          : confirmContent,
-        ...action.getConfirmProps(),
-        onOk: onOkInternal,
+      return new Promise((resolve) => {
+        Modal.confirm({
+          title: isFunction(confirmTitle) ? confirmTitle(params) : confirmTitle,
+          content: isFunction(confirmContent)
+            ? confirmContent(params)
+            : confirmContent,
+          ...action.getConfirmProps(),
+          onCancel: resolve(false),
+          onOk: () => resolve(onOkInternal()),
+        });
       });
-    } else {
-      onOkInternal();
     }
+    return onOkInternal();
   }, [action, params, onOk, disabledRecordModal, onFormOk]);
 
   if (invisible) {
@@ -134,7 +136,7 @@ function Action({
         key={action.getTitle()}
         title={action.getTitle()}
         record={record}
-        onOk={onFormOk}
+        onOk={onClick}
       >
         <Button {...buttonProps} />
       </RecordModal>
