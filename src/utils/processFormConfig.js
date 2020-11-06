@@ -1,8 +1,8 @@
-import shortId from 'shortid';
+import crc from 'crc-32';
 
-export default function processFormConfig({ config }) {
+export default function processFormConfig({ config, path }) {
   return {
     ...config,
-    namespace: shortId.generate()
+    namespace: crc.str(path),
   };
 }

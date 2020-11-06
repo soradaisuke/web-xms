@@ -1,5 +1,5 @@
 import { map, get } from 'lodash';
-import shortId from 'shortid';
+import crc from 'crc-32';
 import Table from '../schema/Table';
 import CreateAction from '../actions/CreateAction';
 import EditAction from '../actions/EditAction';
@@ -9,17 +9,17 @@ export default function processListConfig({
   path,
   prefix,
   inline,
-  useFormPage
+  useFormPage,
 }) {
   const { columns = [], actions = [] } = config;
   const newTable = new Table(columns);
 
   return {
     ...config,
-    namespace: shortId.generate(),
+    namespace: crc.str(path),
     table: new Table(
       columns,
-      map(actions, action => {
+      map(actions, (action) => {
         if (action instanceof CreateAction && useFormPage) {
           return action.setLink(
             `${
@@ -39,6 +39,6 @@ export default function processListConfig({
 
         return action;
       })
-    )
+    ),
   };
 }

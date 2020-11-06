@@ -1,12 +1,12 @@
-import shortId from 'shortid';
+import crc from 'crc-32';
 import Table from '../schema/Table';
 
-export default function processSingleConfig({ config }) {
+export default function processSingleConfig({ config, path }) {
   const { columns = [], actions = [] } = config;
 
   return {
     ...config,
-    namespace: shortId.generate(),
-    table: new Table(columns, actions)
+    namespace: crc.str(path),
+    table: new Table(columns, actions),
   };
 }

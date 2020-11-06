@@ -26,6 +26,7 @@
     "@qt/web-common": "^1.14.0",
     "ali-oss": "^6.10.0",
     "classnames": "^2.2.6",
+    "crc-32": "^1.2.0",
     "glamor": "^2.20.40",
     "history": "^4.10.1",
     "js-cookie": "^v3.0.0-rc.0",
