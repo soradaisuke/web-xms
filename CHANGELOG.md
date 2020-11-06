@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.117](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.116...v3.0.0-beta.117) (2020-11-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** formInitialValue不正确 ([f5f083c](https://git2.qingtingfm.com/zhibo/xms/commit/f5f083cbd5c3cf095ee0dfa5768c771af6a315fc))
+* **NoTicket:** 使用crc32替换shortid ([a6c134b](https://git2.qingtingfm.com/zhibo/xms/commit/a6c134b7cf7ff90f889088be265bebbf73dbaca1))
+
 ## [3.0.0-beta.116](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.115...v3.0.0-beta.116) (2020-11-06)
 
 
