@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.118](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.117...v3.0.0-beta.118) (2020-11-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** namespace因改为string ([e163436](https://git2.qingtingfm.com/zhibo/xms/commit/e163436d515ebf0a00c852f046047e18cd660b24))
+
 ## [3.0.0-beta.117](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.116...v3.0.0-beta.117) (2020-11-06)
 
 
