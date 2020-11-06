@@ -154,10 +154,13 @@ function FormItem({
   const initialListItemValue = useMemo(
     () =>
       column.getFormItemInitialListItemValue() ||
-      column.getColumns?.()?.reduce((result, c) => ({
-        ...result,
-        [c.getFormItemName()]: getColumnInitialValue(c, matchParams),
-      })),
+      column.getColumns?.()?.reduce(
+        (result, c) => ({
+          ...result,
+          [c.getFormItemName()]: getColumnInitialValue(c, matchParams),
+        }),
+        {}
+      ),
     [column, matchParams]
   );
   const initialEditValue = useMemo(() => {
