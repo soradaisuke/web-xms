@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.123](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.122...v3.0.0-beta.123) (2020-11-09)
+
+
+### Bug Fixes
+
+* **QTLIVE-2630:** filterPresets配置出错 ([e40d7ad](https://git2.qingtingfm.com/zhibo/xms/commit/e40d7add7b09ba3e8911f43010d533a6634abacb))
+
 ## [3.0.0-beta.122](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.121...v3.0.0-beta.122) (2020-11-06)
 
 
