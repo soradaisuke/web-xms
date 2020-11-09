@@ -9,15 +9,22 @@ const { RangePicker } = DatePicker;
 
 function FilterRangePicker({ value, onChange, presets, ...props }) {
   const onChangeDate = useEventCallback((dates) => {
-    onChange(dates ? [dates[0]?.toISOString(), dates[1]?.toISOString()] : null);
+    onChange(
+      dates
+        ? [
+            dates[0]?.toISOString?.() ?? dates[0],
+            dates[1]?.toISOString?.() ?? dates[1],
+          ]
+        : null
+    );
   });
 
   const renderExtraFooter = useCallback(
     () =>
-      presets?.map(preset => (
+      presets?.map((preset) => (
         <Tag
           color="blue"
-          key={preset.get('value')}
+          key={JSON.stringify(preset.get('value')?.toJS())}
           onClick={() => {
             onChangeDate(preset.get('value').toArray());
           }}
@@ -42,12 +49,12 @@ function FilterRangePicker({ value, onChange, presets, ...props }) {
 FilterRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.arrayOf(PropTypes.string),
-  presets: PropTypes.instanceOf(Immutable.List)
+  presets: PropTypes.instanceOf(Immutable.List),
 };
 
 FilterRangePicker.defaultProps = {
   value: undefined,
-  presets: null
+  presets: null,
 };
 
 export default React.memo(FilterRangePicker);

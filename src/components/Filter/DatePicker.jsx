@@ -7,7 +7,7 @@ import { useEventCallback } from '@qt/react';
 
 function FilterDatePicker({ value, onChange, presets, ...props }) {
   const onChangeDate = useEventCallback((date) => {
-    onChange(date?.toISOString());
+    onChange(date?.toISOString?.() ?? date);
   });
 
   const renderExtraFooter = useCallback(
@@ -15,7 +15,7 @@ function FilterDatePicker({ value, onChange, presets, ...props }) {
       presets?.map((preset) => (
         <Tag
           color="blue"
-          key={preset.get('value')}
+          key={JSON.stringify(preset.get('value'))}
           onClick={() => {
             onChangeDate(preset.get('value'));
           }}
