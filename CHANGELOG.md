@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.124](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.123...v3.0.0-beta.124) (2020-11-09)
+
+
+### Bug Fixes
+
+* **QTLIVE-2629:** Action里面配置的columns不生效 & EditAction设置成global同时是multiple时请求不对 ([37987e5](https://git2.qingtingfm.com/zhibo/xms/commit/37987e5ad92574e19c46d6d421998a4a62fc7f09))
+
 ## [3.0.0-beta.123](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.122...v3.0.0-beta.123) (2020-11-09)
 
 
