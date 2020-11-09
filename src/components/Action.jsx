@@ -142,6 +142,7 @@ function Action({
     const props = action.getColumns()
       ? {
           columns: action.getColumns(),
+          ignoreCheckVisible: true,
           records,
         }
       : {

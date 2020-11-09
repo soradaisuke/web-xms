@@ -20,14 +20,18 @@ export default function useActionConfig({
 
   const { user } = params;
 
+  const shouldHandleEvery = useMemo(() =>
+    !action.isGlobalAction() || action instanceof EditAction || action instanceof DeleteAction
+  , [action])
+
   const filteredRecords = useMemo(
     () =>
-      records && action.isMultipleAction() && !action.isGlobalAction()
+      records && action.isMultipleAction() && shouldHandleEvery
         ? filter(records, (r) =>
             action.isEnable({ ...params, records: null, record: r })
           )
         : null,
-    [action, records, params]
+    [action, records, params, shouldHandleEvery]
   );
 
   const disabled = useMemo(() => {
@@ -89,7 +93,7 @@ export default function useActionConfig({
       if (isFunction(handler)) {
         let promise;
 
-        if (action.isGlobalAction()) {
+        if (action.isGlobalAction() && !shouldHandleEvery) {
           promise = handler({
             ...params,
             ...data,

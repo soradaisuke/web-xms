@@ -51,6 +51,7 @@ function RecordModal({
   records,
   actions,
   className,
+  ignoreCheckVisible,
   ...props
 }) {
   const user = useUser();
@@ -59,6 +60,9 @@ function RecordModal({
   const { formProps } = usePageConfig();
 
   const cols = useMemo(() => {
+    if (ignoreCheckVisible) {
+      return columns;
+    }
     if (record && Object.keys(record).length > 0) {
       return columns.filter((c) => c.canShowInEditFrom({ record, user }));
     }
@@ -66,7 +70,7 @@ function RecordModal({
       return columns;
     }
     return columns.filter((c) => c.canShowInCreateFrom({ user }));
-  }, [columns, record, records, user]);
+  }, [columns, record, records, user, ignoreCheckVisible]);
 
   const isEdit = useMemo(
     () =>
@@ -140,6 +144,7 @@ RecordModal.propTypes = {
   children: PropTypes.node.isRequired,
   onOk: PropTypes.func.isRequired,
   className: PropTypes.string,
+  ignoreCheckVisible: PropTypes.bool,
   columns: PropTypes.instanceOf(Immutable.List),
   actions: PropTypes.instanceOf(Immutable.List),
   title: PropTypes.string,
@@ -148,6 +153,7 @@ RecordModal.propTypes = {
 };
 
 RecordModal.defaultProps = {
+  ignoreCheckVisible: false,
   className: '',
   actions: null,
   title: '',

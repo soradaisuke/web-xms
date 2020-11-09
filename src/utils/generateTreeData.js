@@ -6,6 +6,7 @@ export default function generateTreeData(filters) {
     value,
     key: value,
     title: text,
+    label: text,
     children: generateTreeData(children),
     ...item
   }));
