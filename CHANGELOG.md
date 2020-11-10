@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.125](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.124...v3.0.0-beta.125) (2020-11-10)
+
+
+### Features
+
+* **NoTicket:** 自动筛选 ([b79a34a](https://git2.qingtingfm.com/zhibo/xms/commit/b79a34afe8bfdc6ef987463de9be175fc48f10eb))
+
+
+### Bug Fixes
+
+* **QTLIVE-2628:** valueOptions里的default只影响了展示，没有用到请求里 ([a675de5](https://git2.qingtingfm.com/zhibo/xms/commit/a675de576f4fcf7e59392444293afe51f89fb5f8))
+
 ## [3.0.0-beta.124](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.123...v3.0.0-beta.124) (2020-11-09)
 
 
