@@ -298,6 +298,10 @@ export default class Column {
     return this.config.getIn(['table', 'filterOutside'], true);
   }
 
+  canFilterAuto() {
+    return this.config.getIn(['table', 'filterAuto'], true);
+  }
+
   getFilterFormItemProps() {
     if (!this.filterFormItemProps) {
       this.filterFormItemProps = this.config

@@ -5,16 +5,24 @@ import { TimePicker } from 'antd';
 import { isNumber } from 'lodash';
 import { useEventCallback } from '@qt/react';
 
+export function formatValue(v) {
+  return isNumber(v) ? moment().startOf('day').add(v, 's') : null;
+}
+
+export function normalizeValue(v) {
+  return v.diff(moment().startOf('day'), 's');
+}
+
 function DurationPicker({ value, onChange, ...props }) {
   const onChangeTime = useEventCallback((newValue) => {
-    onChange(newValue.diff(moment().startOf('day'), 's'));
+    onChange(normalizeValue(newValue));
   });
 
   return (
     <TimePicker
       allowClear
       {...props}
-      value={!isNumber(value) ? moment().startOf('day').add(value, 's') : null}
+      value={formatValue(value)}
       onChange={onChangeTime}
     />
   );

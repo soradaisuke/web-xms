@@ -18,6 +18,12 @@ import DateTimeColumn from '../../schema/DateTimeColumn';
 import usePageFilterForm from '../../hooks/usePageFilterForm';
 import { resetChildColumn } from '../../utils/resetChildColumn';
 
+const AUTO_TRIGGERS = {
+  ON_CHANGE: 'on_change',
+  ON_PRESS_ENTER: 'on_press_enter',
+  NONE: 'none',
+};
+
 function FormItem({ column }) {
   const commonFormItemProps = useMemo(
     () => ({
@@ -51,13 +57,63 @@ function FormItem({ column }) {
 
   const form = usePageFilterForm();
 
+  const autoTrigger = useMemo(() => {
+    if (column.canFilterOutside()) {
+      if (column.canFilterExpandable()) {
+        if (column.canFilterMultiple()) {
+          return AUTO_TRIGGERS.ON_CHANGE;
+        }
+        return AUTO_TRIGGERS.ON_CHANGE;
+      }
+      if (
+        column.getFilters(null, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER) ||
+        (column.getValueOptionsSearchRequest() &&
+          column.getUseValueOptionsSearchRequest() !==
+            Column.SEARCH_REQUEST_TYPES.FORM) ||
+        column.getValueOptionsRequest()
+      ) {
+        return AUTO_TRIGGERS.ON_CHANGE;
+      }
+      if (column instanceof DateTimeColumn) {
+        return AUTO_TRIGGERS.ON_CHANGE;
+      }
+      if (column instanceof DurationColumn) {
+        return AUTO_TRIGGERS.ON_CHANGE;
+      }
+      if (column instanceof NumberColumn) {
+        return AUTO_TRIGGERS.ON_PRESS_ENTER;
+      }
+      if (column instanceof StringColumn) {
+        return AUTO_TRIGGERS.ON_PRESS_ENTER;
+      }
+    }
+
+    return AUTO_TRIGGERS.NONE;
+  }, [column]);
+
   const formItemComponentProps = useMemo(
     () => ({
       onChange: () => {
         resetChildColumn({ column, form });
+        if (
+          autoTrigger === AUTO_TRIGGERS.ON_CHANGE &&
+          column.canFilterAuto() &&
+          form
+        ) {
+          form.submit();
+        }
+      },
+      onPressEnter: () => {
+        if (
+          autoTrigger === AUTO_TRIGGERS.ON_PRESS_ENTER &&
+          column.canFilterAuto() &&
+          form
+        ) {
+          form.submit();
+        }
       },
     }),
-    [column, form]
+    [column, form, autoTrigger]
   );
 
   const children = useMemo(() => {

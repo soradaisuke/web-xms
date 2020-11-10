@@ -1,21 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { useEventCallback } from '@qt/react';
 import { TimePicker } from 'antd';
+import { map } from 'lodash';
+import { formatValue, normalizeValue } from './DurationPicker';
 
 const { RangePicker } = TimePicker;
 
 function DurationRangePicker({ value, onChange, ...props }) {
-  const onChangeDate = useEventCallback((_, strings) => {
-    onChange(strings);
+  const onChangeDate = useEventCallback((moments) => {
+    onChange(map(moments, (m) => normalizeValue(m)));
   });
-
+  console.log(
+    value,
+    value ? [formatValue(value[0]), formatValue(value[1])] : null
+  );
   return (
     <RangePicker
       allowClear
       {...props}
-      value={value ? [moment(value[0]), moment(value[1])] : null}
+      value={value ? [formatValue(value[0]), formatValue(value[1])] : null}
       onChange={onChangeDate}
     />
   );
