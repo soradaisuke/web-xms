@@ -1,4 +1,4 @@
-import { includes, isFunction, merge } from 'lodash';
+import { filter, includes, isFunction, map, merge } from 'lodash';
 
 function isNotRefFunction(func) {
   return func && isFunction(func) && !includes(func.toString(), '(_ref');
@@ -148,12 +148,14 @@ export function migrateRoute(route) {
 export function migrateColumn(column) {
   const {
     visibility,
+    valueOptions,
     table: {
       defaultSortOrder,
       fixedSortOrder,
       link,
       filterComponentProps,
       format,
+      filterMultiple,
     } = {},
     form: {
       componentProps,
@@ -304,6 +306,23 @@ export function migrateColumn(column) {
     console.error(
       "Column's config.table.link(record) is deprecated, please use config.table.link({ record })"
     );
+  }
+
+  if (valueOptions?.length > 0) {
+    const defaultOptions = map(
+      filter(valueOptions, { default: true }),
+      ({ value }) => value
+    );
+    if (defaultOptions.length > 0) {
+      console.warn(
+        "Column's valueOption.default is deprecated, please use config.table.filterDefault"
+      );
+      merge(newColumn, {
+        table: {
+          filterDefault: filterMultiple ? defaultOptions : defaultOptions[0],
+        },
+      });
+    }
   }
 
   return newColumn;

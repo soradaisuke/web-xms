@@ -314,7 +314,7 @@ function FormItem({
         />
       );
     } else if (
-      column.getFilters(null, 'disabledInForm') ||
+      column.getFilters(null, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FORM) ||
       (column.getValueOptionsSearchRequest() &&
         column.getUseValueOptionsSearchRequest() !==
           Column.SEARCH_REQUEST_TYPES.FILTER) ||

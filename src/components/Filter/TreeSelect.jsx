@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useEventCallback } from '@qt/react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { find, isNil } from 'lodash';
@@ -6,24 +7,43 @@ import { TreeSelect } from 'antd';
 import generateTreeData from '../../utils/generateTreeData';
 import useColumnValueOptions from '../../hooks/useColumnValueOptions';
 import Column from '../../schema/Column';
+import usePageFilterForm from '../../hooks/usePageFilterForm';
 import './Tree.less';
 
 const FilterTreeSelect = React.forwardRef(
-  ({ column, forForm, initialValueOptions, className, isEdit, onChange, value, ...props }, ref) => {
+  (
+    {
+      column,
+      forForm,
+      initialValueOptions,
+      className,
+      isEdit,
+      onChange,
+      value,
+      ...props
+    },
+    ref
+  ) => {
+    const filterForm = usePageFilterForm();
+
+    const onLoadOptions = useEventCallback((os) => {
+      const option = find(os, ({ default: defaultSelect }) => defaultSelect);
+      if (option && isNil(value) && (!forForm || !isEdit)) {
+        onChange(option.value);
+        if (!forForm) {
+          filterForm?.submit();
+        }
+      }
+    });
+
     const [options, onSearch] = useColumnValueOptions(
       column,
       generateTreeData,
       forForm,
       initialValueOptions,
-      isEdit
+      isEdit,
+      onLoadOptions
     );
-
-    useEffect(() => {
-      const defaultOption = find(options, ({ default: defaultSelect }) => defaultSelect);
-      if (defaultOption && isNil(value)) {
-        onChange(defaultOption.value);
-      }
-    }, [options, value, onChange]);
 
     return (
       <TreeSelect
@@ -53,7 +73,7 @@ FilterTreeSelect.propTypes = {
   className: PropTypes.string,
   forForm: PropTypes.bool,
   // eslint-disable-next-line react/forbid-prop-types
-  initialValueOptions: PropTypes.array
+  initialValueOptions: PropTypes.array,
 };
 
 FilterTreeSelect.defaultProps = {
@@ -61,7 +81,7 @@ FilterTreeSelect.defaultProps = {
   isEdit: false,
   className: '',
   forForm: false,
-  initialValueOptions: null
+  initialValueOptions: null,
 };
 
 export default React.memo(FilterTreeSelect);

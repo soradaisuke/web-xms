@@ -12,65 +12,87 @@ import {
 import Immutable from 'immutable';
 import { migrateColumn } from '../utils/migrate';
 
-function isOptionsDisabled(option, key) {
-  if (key === 'disabledInFilter') {
-    return get(option, 'disabledInFilter') || get(option, 'disableInFilter');
-  }
-  if (key === 'disabledInForm') {
-    return get(option, 'disabledInForm') || get(option, 'disabledInForm');
-  }
-  return false;
-}
-
-function generateValidOptions(options, disableKey) {
-  if (options && options.length > 0) {
-    return map(
-      filter(options, (o) => !disableKey || !isOptionsDisabled(o, disableKey)),
-      (o) => ({
-        ...o,
-        children: generateValidOptions(o.children),
-      })
-    );
-  }
-
-  return options;
-}
-
-function generateFilters(options) {
-  return Immutable.Map({
-    normal: generateValidOptions(options),
-    disabledInFilter: generateValidOptions(options, 'disabledInFilter'),
-    disabledInForm: generateValidOptions(options, 'disabledInForm'),
-  });
-}
-
-function findOption(options, value) {
-  if (!options) {
-    return null;
-  }
-
-  let option;
-
-  forEach(options, (o) => {
-    if (isEqual(o.value, value)) {
-      option = o;
-    }
-    if (!option) {
-      option = findOption(o.children, value);
-    }
-
-    return !option;
-  });
-
-  return option;
-}
-
 export default class Column {
+  static VALUE_OPTIONS_KEYS = {
+    NORMAL: 'normal',
+    DISABLED_IN_FILTER: 'disabledInFilter',
+    DISABLED_IN_FORM: 'disabledInForm',
+    SEARCH: 'search',
+  };
+
   static SEARCH_REQUEST_TYPES = {
     FILTER: 'filter',
     FORM: 'form',
     ALL: 'all',
   };
+
+  static isOptionsDisabled(option, key) {
+    if (key === Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER) {
+      return (
+        get(option, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER) ||
+        get(option, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER)
+      );
+    }
+    if (key === Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FORM) {
+      return (
+        get(option, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FORM) ||
+        get(option, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FORM)
+      );
+    }
+    return false;
+  }
+
+  static generateValidOptions(options, disableKey) {
+    if (options && options.length > 0) {
+      return map(
+        filter(
+          options,
+          (o) => !disableKey || !Column.isOptionsDisabled(o, disableKey)
+        ),
+        (o) => ({
+          ...o,
+          children: Column.generateValidOptions(o.children),
+        })
+      );
+    }
+
+    return options;
+  }
+
+  static generateFilters(options) {
+    return Immutable.Map({
+      normal: Column.generateValidOptions(options),
+      disabledInFilter: Column.generateValidOptions(
+        options,
+        Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER
+      ),
+      disabledInForm: Column.generateValidOptions(
+        options,
+        Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FORM
+      ),
+    });
+  }
+
+  static findOption(options, value) {
+    if (!options) {
+      return null;
+    }
+
+    let option;
+
+    forEach(options, (o) => {
+      if (isEqual(o.value, value)) {
+        option = o;
+      }
+      if (!option) {
+        option = Column.findOption(o.children, value);
+      }
+
+      return !option;
+    });
+
+    return option;
+  }
 
   constructor(config = {}) {
     this.config = Immutable.fromJS(migrateColumn(config));
@@ -200,8 +222,8 @@ export default class Column {
 
   // filter
 
-  getFilters(parentFilteredValue, key = 'normal') {
-    if (this.getParentKey() && key !== 'search') {
+  getFilters(parentFilteredValue, key = Column.VALUE_OPTIONS_KEYS.NORMAL) {
+    if (this.getParentKey() && key !== Column.VALUE_OPTIONS_KEYS.SEARCH) {
       if (isArray(parentFilteredValue)) {
         const filters = filter(
           map(parentFilteredValue, (v) => this.filters.getIn([v, key])),
@@ -222,13 +244,13 @@ export default class Column {
 
   getFilterOption({ value, parentFilterValue }) {
     const filters = this.getFilters(parentFilterValue);
-    return findOption(filters, value);
+    return Column.findOption(filters, value);
   }
 
   resetFilters() {
     const valueOptions = this.getValueOptions();
     if (valueOptions) {
-      this.filters = generateFilters(valueOptions.toJS());
+      this.filters = Column.generateFilters(valueOptions.toJS());
     } else {
       this.filters = Immutable.Map();
     }
@@ -513,7 +535,10 @@ export default class Column {
                   return Promise.resolve(v);
                 }
                 return valueOptionsRequest(v).then((result) => {
-                  this.filters = this.filters.set(v, generateFilters(result));
+                  this.filters = this.filters.set(
+                    v,
+                    Column.generateFilters(result)
+                  );
                 });
               })
             ).then(() => {
@@ -524,7 +549,7 @@ export default class Column {
               (result) => {
                 this.filters = this.filters.set(
                   parentFilteredValue,
-                  generateFilters(result)
+                  Column.generateFilters(result)
                 );
                 this.activeValueOptionsRequests[parentFilteredValue] = null;
               }
@@ -538,7 +563,7 @@ export default class Column {
         this.activeValueOptionsRequests[
           parentFilteredValue
         ] = valueOptionsRequest().then((result) => {
-          this.filters = generateFilters(result);
+          this.filters = Column.generateFilters(result);
           this.activeValueOptionsRequests[parentFilteredValue] = null;
         });
 

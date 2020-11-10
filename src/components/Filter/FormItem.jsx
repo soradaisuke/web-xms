@@ -82,7 +82,7 @@ function FormItem({ column }) {
           );
         }
       } else if (
-        column.getFilters(null, 'disabledInFilter') ||
+        column.getFilters(null, Column.VALUE_OPTIONS_KEYS.DISABLED_IN_FILTER) ||
         (column.getValueOptionsSearchRequest() &&
           column.getUseValueOptionsSearchRequest() !==
             Column.SEARCH_REQUEST_TYPES.FORM) ||
