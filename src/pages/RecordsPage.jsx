@@ -379,18 +379,16 @@ function RecordsPage({ isLoading }) {
             render={(
               _,
               record // eslint-disable-line react/jsx-no-bind
-            ) => (
-              <>
-                {rowActions.map((action) => (
-                  <Action
-                    key={action.getKey()}
-                    action={action}
-                    record={record}
-                    reload={fetch}
-                  />
-                ))}
-              </>
-            )}
+            ) =>
+              rowActions.map((action) => (
+                <Action
+                  key={action.getKey()}
+                  action={action}
+                  record={record}
+                  reload={fetch}
+                />
+              ))
+            }
           />
         ) : null}
       </Table>

@@ -209,9 +209,8 @@ function FormItem({
         column.getFormItemComponentProps()?.onChange?.(...args, form);
       },
       disabled,
-      isEdit,
     }),
-    [column, disabled, extraFormItemComponentProps, form, prefix, isEdit]
+    [column, disabled, extraFormItemComponentProps, form, prefix]
   );
 
   const commonFormItemProps = useMemo(
@@ -323,6 +322,7 @@ function FormItem({
       inner = (
         <TreeSelect
           forForm
+          isEdit={isEdit}
           initialValueOptions={
             initialValueOptions ||
             (record &&
@@ -527,6 +527,7 @@ function FormItem({
     initialListItemValue,
     prefix,
     initialValueOptions,
+    isEdit,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
