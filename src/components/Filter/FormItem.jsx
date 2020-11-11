@@ -103,15 +103,6 @@ function FormItem({ column }) {
           form.submit();
         }
       },
-      onPressEnter: () => {
-        if (
-          autoTrigger === AUTO_TRIGGERS.ON_PRESS_ENTER &&
-          column.canFilterAuto() &&
-          form
-        ) {
-          form.submit();
-        }
-      },
     };
     if (
       autoTrigger === AUTO_TRIGGERS.ON_PRESS_ENTER &&
