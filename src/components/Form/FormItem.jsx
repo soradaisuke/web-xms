@@ -409,6 +409,9 @@ function FormItem({
         const { name } = commonFormItemProps;
         const WrapComponent = idIdentifier ? React.Fragment : Card;
         const WrapItemsComponent = idIdentifier ? Space : React.Fragment;
+        const wrapItemsComponentProps = idIdentifier
+          ? { style: { flexWrap: 'wrap' } }
+          : {};
         const deleteButton = idIdentifier ? (
           <MinusCircleOutlined className="dynamic-delete-in-page" />
         ) : (
@@ -424,7 +427,7 @@ function FormItem({
                     <WrapComponent
                       className={idIdentifier ? 'dynamic-card' : null}
                     >
-                      <WrapItemsComponent style={{ flexWrap: 'wrap' }}>
+                      <WrapItemsComponent {...wrapItemsComponentProps}>
                         {column.getColumns().map((dColumn) => (
                           <FormListItemContext.Provider
                             value={[name, field.name]}
