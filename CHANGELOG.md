@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.126](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.125...v3.0.0-beta.126) (2020-11-11)
+
+
+### Bug Fixes
+
+* **NoTicket:** isEdit手动传入TreeSelect ([39a39ae](https://git2.qingtingfm.com/zhibo/xms/commit/39a39ae7a6cc367908dabe84b9bcf918faf274f5))
+* **NoTicket:** 为action生成唯一Key ([e2aa124](https://git2.qingtingfm.com/zhibo/xms/commit/e2aa12439614d4b900b06cbfd2b10c2f77da4749))
+* **NoTicket:** 优化ref函数判断 ([efd30ca](https://git2.qingtingfm.com/zhibo/xms/commit/efd30ca31bbea89a4dd9419489449029aabd369d))
+* **NoTicket:** 修复onPressEnter warning ([e8aac45](https://git2.qingtingfm.com/zhibo/xms/commit/e8aac454e737d8b4a7272f1916826da50ca839a0))
+
 ## [3.0.0-beta.125](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.124...v3.0.0-beta.125) (2020-11-10)
 
 
