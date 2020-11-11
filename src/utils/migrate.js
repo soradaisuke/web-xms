@@ -1,7 +1,14 @@
 import { filter, includes, isFunction, map, merge } from 'lodash';
 
 function isNotRefFunction(func) {
-  return func && isFunction(func) && !includes(func.toString(), '(_ref');
+  if (func && isFunction(func)) {
+    const str = func.toString();
+    return (
+      (!includes(str, '(_ref') && !includes(str, 'arguments[0]')) ||
+      func.length > 1
+    );
+  }
+  return false;
 }
 
 export function migrateRouteApi(api = {}) {
