@@ -327,9 +327,9 @@ function RecordsPage({ isLoading }) {
       globalActions.size > 0 && (
         <Group title="操作" className="actions">
           {globalActions &&
-            globalActions.map((action, index) => (
+            globalActions.map((action) => (
               <Action
-                key={action.getTitle() || index}
+                key={action.getKey()}
                 action={action}
                 records={action.isMultipleAction() ? selectedRows : null}
                 reload={fetch}
@@ -381,9 +381,9 @@ function RecordsPage({ isLoading }) {
               record // eslint-disable-line react/jsx-no-bind
             ) => (
               <>
-                {rowActions.map((action, index) => (
+                {rowActions.map((action) => (
                   <Action
-                    key={action.getTitle() || index}
+                    key={action.getKey()}
                     action={action}
                     record={record}
                     reload={fetch}

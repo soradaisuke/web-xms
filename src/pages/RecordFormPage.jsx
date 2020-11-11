@@ -151,7 +151,7 @@ function RecordFormPage() {
                   </Popconfirm> */}
                   {renderActions.map((a) => (
                     <ActionComponent
-                      key={a.getTitle()}
+                      key={a.getKey()}
                       disabledRecordModal={
                         a instanceof CreateAction || a instanceof EditAction
                       }

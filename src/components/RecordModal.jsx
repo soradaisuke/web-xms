@@ -126,11 +126,7 @@ function RecordModal({
           <Form.Item {...tailFormItemLayout}>
             <Row type="flex" align="middle">
               {actions.map((a) => (
-                <ActionComponent
-                  key={a.getTitle()}
-                  action={a}
-                  record={record}
-                />
+                <ActionComponent key={a.getKey()} action={a} record={record} />
               ))}
             </Row>
           </Form.Item>

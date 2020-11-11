@@ -74,11 +74,21 @@ function RecordPage({ isLoading, routes: r }) {
                 className={classNames('content-card', inline ? 'inline' : '')}
               >
                 <Tabs activeKey={activeKey} onChange={onChangeTab}>
-                  {map(chunk, ({ reloadOnVisible, component: Com, title = '', tabKey }) => (
-                    <TabPane tab={title} key={tabKey}>
-                      {reloadOnVisible && activeKey !== tabKey ? null : <Com inline />}
-                    </TabPane>
-                  ))}
+                  {map(
+                    chunk,
+                    ({
+                      reloadOnVisible,
+                      component: Com,
+                      title = '',
+                      tabKey,
+                    }) => (
+                      <TabPane tab={title} key={tabKey}>
+                        {reloadOnVisible && activeKey !== tabKey ? null : (
+                          <Com inline />
+                        )}
+                      </TabPane>
+                    )
+                  )}
                 </Tabs>
               </Card>
             );
@@ -110,7 +120,7 @@ function RecordPage({ isLoading, routes: r }) {
       <Descriptions.Item label="操作">
         {actions.map((action) => (
           <Action
-            key={action.getTitle()}
+            key={action.getKey()}
             action={action}
             record={record}
             reload={fetch}

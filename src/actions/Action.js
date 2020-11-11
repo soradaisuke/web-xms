@@ -1,5 +1,6 @@
 import Immutable from 'immutable';
 import { isFunction, isUndefined } from 'lodash';
+import shortId from 'shortid';
 import { migrateAction } from '../utils/migrate';
 import findCascadeColumn from '../utils/findCascadeColumn';
 
@@ -23,6 +24,13 @@ export default class Action {
 
   isGlobalAction() {
     return this.config.get('global');
+  }
+
+  getKey() {
+    if (!this.key) {
+      this.key = shortId.generate();
+    }
+    return this.key;
   }
 
   getTitle() {
