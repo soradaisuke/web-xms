@@ -91,8 +91,8 @@ function FormItem({ column }) {
     return AUTO_TRIGGERS.NONE;
   }, [column]);
 
-  const formItemComponentProps = useMemo(
-    () => ({
+  const formItemComponentProps = useMemo(() => {
+    const props = {
       onChange: () => {
         resetChildColumn({ column, form });
         if (
@@ -112,9 +112,15 @@ function FormItem({ column }) {
           form.submit();
         }
       },
-    }),
-    [column, form, autoTrigger]
-  );
+    };
+    if (
+      autoTrigger === AUTO_TRIGGERS.ON_PRESS_ENTER &&
+      column.canFilterAuto()
+    ) {
+      props.onPressEnter = () => form?.submit();
+    }
+    return props;
+  }, [column, form, autoTrigger]);
 
   const children = useMemo(() => {
     let inner;
