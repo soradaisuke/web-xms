@@ -5,6 +5,7 @@ import { debounce } from 'lodash';
 import useParentFilterValue from './useParentFilterValue';
 import useParentFormValue from './useParentFormValue';
 import Column from '../schema/Column';
+import useForm from './useForm';
 
 export default function useColumnValueOptions(
   column,
@@ -14,6 +15,7 @@ export default function useColumnValueOptions(
   isEdit,
   onLoadOptions
 ) {
+  const form = useForm();
   const parentFilterValue = useParentFilterValue(column);
   const parentFormValue = useParentFormValue(column);
   const parentValue = forForm ? parentFormValue : parentFilterValue;
@@ -77,7 +79,12 @@ export default function useColumnValueOptions(
       const searchRequest = column.getValueOptionsSearchRequest();
 
       if (searchRequest) {
-        const data = await searchRequest({ value: v, parentValue, isEdit });
+        const data = await searchRequest({
+          value: v,
+          parentValue,
+          isEdit,
+          form,
+        });
         setOptions(generateFunc(data));
       }
     }, 400)
