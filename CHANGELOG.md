@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.127](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.126...v3.0.0-beta.127) (2020-11-11)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复onPressEnter warning ([6cdcb11](https://git2.qingtingfm.com/zhibo/xms/commit/6cdcb11d413de2eaf14247493668887e83a185dd))
+* **NoTicket:** 修复style warning ([3510235](https://git2.qingtingfm.com/zhibo/xms/commit/351023571e98772cb3b8db13567f6eebbf26db66))
+
 ## [3.0.0-beta.126](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.125...v3.0.0-beta.126) (2020-11-11)
 
 
