@@ -344,6 +344,7 @@ function RecordsPage({ isLoading }) {
     return (
       <Table
         bordered
+        rowKey={table.getPrimaryKey()}
         {...tableProps}
         components={{
           // header: {
@@ -357,7 +358,6 @@ function RecordsPage({ isLoading }) {
         rowClassName={() => 'editable-row'}
         loading={isLoading}
         dataSource={records}
-        rowKey={table.getPrimaryKey()}
         rowSelection={rowSelection}
         onChange={onTableChange}
         pagination={{
