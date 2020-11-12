@@ -217,6 +217,7 @@ function FormItem({
     () => ({
       normalize,
       valuePropName,
+      preserve: false,
       ...column.getFormItemProps(),
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
