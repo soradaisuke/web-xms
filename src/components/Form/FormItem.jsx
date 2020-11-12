@@ -208,6 +208,10 @@ function FormItem({
         extraFormItemComponentProps?.onChange?.(...args);
         column.getFormItemComponentProps()?.onChange?.(...args, form);
       },
+      onSelect: (...args) => {
+        extraFormItemComponentProps?.onSelect?.(...args);
+        column.getFormItemComponentProps()?.onSelect?.(...args, form);
+      },
       disabled,
     }),
     [column, disabled, extraFormItemComponentProps, form, prefix]
