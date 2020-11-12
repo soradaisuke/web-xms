@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.131](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.130...v3.0.0-beta.131) (2020-11-12)
+
+
+### Features
+
+* **NoTicket:** onSelect传入form ([25a6e0b](https://git2.qingtingfm.com/zhibo/xms/commit/25a6e0b65ac0aec52f45a7089a28de00444a0175))
+
 ## [3.0.0-beta.130](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.129...v3.0.0-beta.130) (2020-11-12)
 
 
