@@ -59,25 +59,23 @@ function RecordModal({
 
   const { formProps } = usePageConfig();
 
+  const isEdit = useMemo(
+    () => record && Object.keys(record).length > 0,
+    [record]
+  );
+
   const cols = useMemo(() => {
     if (ignoreCheckVisible) {
       return columns;
     }
-    if (record && Object.keys(record).length > 0) {
+    if (isEdit) {
       return columns.filter((c) => c.canShowInEditFrom({ record, user }));
     }
     if (records && records.length > 0) {
       return columns;
     }
     return columns.filter((c) => c.canShowInCreateFrom({ user }));
-  }, [columns, record, records, user, ignoreCheckVisible]);
-
-  const isEdit = useMemo(
-    () =>
-      (record && Object.keys(record).length > 0) ||
-      (records && records.length > 0),
-    [record, records]
-  );
+  }, [columns, record, records, user, ignoreCheckVisible, isEdit]);
 
   const defaultTilte = isEdit ? '编辑' : '新建';
 

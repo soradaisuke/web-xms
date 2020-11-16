@@ -143,7 +143,6 @@ function Action({
       ? {
           columns: action.getColumns(),
           ignoreCheckVisible: true,
-          records,
         }
       : {
           columns: table.getColumns(),
@@ -159,6 +158,7 @@ function Action({
         key={action.getTitle()}
         title={action.getTitle()}
         record={record}
+        records={records}
         onOk={onRecordModalClick}
       >
         <Button {...buttonProps} />
