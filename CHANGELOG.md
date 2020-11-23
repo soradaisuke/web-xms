@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.132](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.131...v3.0.0-beta.132) (2020-11-23)
+
+
+### Bug Fixes
+
+* **QTLIVE-2724:** 修改RecordModal判断isEdit逻辑 ([47e27c4](https://git2.qingtingfm.com/zhibo/xms/commit/47e27c4291d43b922e13ac7c7fe1251e933899bc))
+
 ## [3.0.0-beta.131](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.130...v3.0.0-beta.131) (2020-11-12)
 
 
