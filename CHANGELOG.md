@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.133](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.132...v3.0.0-beta.133) (2020-11-25)
+
+
+### Bug Fixes
+
+* **NoTicket:** RecordModal里增加props: checkEditable, checkCreatable ([d094446](https://git2.qingtingfm.com/zhibo/xms/commit/d09444687f26e0c05aeb6bdc25ecb8f9302a88f4))
+
 ## [3.0.0-beta.132](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.131...v3.0.0-beta.132) (2020-11-23)
 
 
