@@ -142,7 +142,6 @@ function Action({
     const props = action.getColumns()
       ? {
           columns: action.getColumns(),
-          ignoreCheckVisible: true,
         }
       : {
           columns: table.getColumns(),
@@ -155,6 +154,8 @@ function Action({
       <RecordModal
         {...action.getModalProps()}
         {...props}
+        checkEditable={action instanceof EditAction}
+        checkCreatable={action instanceof CreateAction}
         key={action.getTitle()}
         title={action.getTitle()}
         record={record}

@@ -51,7 +51,8 @@ function RecordModal({
   records,
   actions,
   className,
-  ignoreCheckVisible,
+  checkEditable,
+  checkCreatable,
   ...props
 }) {
   const user = useUser();
@@ -65,17 +66,14 @@ function RecordModal({
   );
 
   const cols = useMemo(() => {
-    if (ignoreCheckVisible) {
-      return columns;
-    }
-    if (isEdit) {
+    if (checkEditable) {
       return columns.filter((c) => c.canShowInEditFrom({ record, user }));
     }
-    if (records && records.length > 0) {
-      return columns;
+    if (checkCreatable) {
+      return columns.filter((c) => c.canShowInCreateFrom({ user }));
     }
-    return columns.filter((c) => c.canShowInCreateFrom({ user }));
-  }, [columns, record, records, user, ignoreCheckVisible, isEdit]);
+    return columns;
+  }, [columns, user, record, checkEditable, checkCreatable]);
 
   const defaultTilte = isEdit ? '编辑' : '新建';
 
@@ -138,7 +136,8 @@ RecordModal.propTypes = {
   children: PropTypes.node.isRequired,
   onOk: PropTypes.func.isRequired,
   className: PropTypes.string,
-  ignoreCheckVisible: PropTypes.bool,
+  checkEditable: PropTypes.bool,
+  checkCreatable: PropTypes.bool,
   columns: PropTypes.instanceOf(Immutable.List),
   actions: PropTypes.instanceOf(Immutable.List),
   title: PropTypes.string,
@@ -147,7 +146,8 @@ RecordModal.propTypes = {
 };
 
 RecordModal.defaultProps = {
-  ignoreCheckVisible: false,
+  checkEditable: false,
+  checkCreatable: false,
   className: '',
   actions: null,
   title: '',
