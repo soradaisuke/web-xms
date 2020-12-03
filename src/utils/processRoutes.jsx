@@ -1,5 +1,5 @@
-import React from 'react';
-import { startsWith, isFunction, filter, uniqueId, includes } from 'lodash';
+import React, { isValidElement } from 'react';
+import { startsWith, isFunction, filter, uniqueId } from 'lodash';
 import { isElement } from 'react-is';
 import { dynamic } from 'dva';
 import {
@@ -17,12 +17,26 @@ function isDynamicComponent(component) {
     return false;
   }
 
-  const str = String(component);
-  return (
-    includes(str, 'import') ||
-    includes(str, 'Promise') ||
-    includes(str, '.then(')
-  );
+  // component: <TestComponent />
+  if (isValidElement(component)) {
+    return false;
+  }
+
+  try {
+    if (isFunction(component().then)) {
+      return true;
+    }
+  } catch(e) {
+    //
+  }
+
+  // component: TestComponent
+  try {
+    React.createElement(component);
+    return false;
+  } catch (e) {
+    return true;
+  }
 }
 
 function valiadateRoute({ path }, prefix = '/') {
