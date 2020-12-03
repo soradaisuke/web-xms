@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.134](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.133...v3.0.0-beta.134) (2020-12-03)
+
+
+### Bug Fixes
+
+* **NoTicket:** route.component: Component (import Component from '..xxx')写法报错 ([ccffc0d](https://git2.qingtingfm.com/zhibo/xms/commit/ccffc0d53768065ca7956fcd612c8dca7aa17f7c))
+
 ## [3.0.0-beta.133](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.132...v3.0.0-beta.133) (2020-11-25)
 
 
