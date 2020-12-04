@@ -247,7 +247,7 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue,
+      initialValue: isEdit ? initialEditValue : initialValue,
       name: prefix
         ? [last(prefix), column.getFormItemName()]
         : column.getFormItemName(),
@@ -261,6 +261,8 @@ function FormItem({
       rules,
       valuePropName,
       extraCommonFormItemProps,
+      initialEditValue,
+      isEdit,
     ]
   );
 
