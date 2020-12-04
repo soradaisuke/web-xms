@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.135](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.134...v3.0.0-beta.135) (2020-12-04)
+
+
+### Bug Fixes
+
+* **NoTicket:** FormItem有parentKey编辑时不修改直接点保存会报错，form value变成undefined ([bbb4c5c](https://git2.qingtingfm.com/zhibo/xms/commit/bbb4c5cb90fe24335e8a5b41c5b1a9678f0b5749))
+* **QTLIVE-3017:** 动态formItem里嵌套动态formItem时依赖parentValue的valueOptionsRequest没有调用 ([0ecb590](https://git2.qingtingfm.com/zhibo/xms/commit/0ecb590d5d580255f5f6d73d0ac03b86907ee7ef))
+
 ## [3.0.0-beta.134](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.133...v3.0.0-beta.134) (2020-12-03)
 
 
