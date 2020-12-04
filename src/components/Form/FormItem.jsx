@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useContext, useState } from 'react';
+import React, { useMemo, useEffect, useContext, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
 import {
@@ -12,7 +12,19 @@ import {
   Button,
   Space,
 } from 'antd';
-import { get, concat, map, isPlainObject, trim, isFunction } from 'lodash';
+import {
+  get,
+  concat,
+  map,
+  isPlainObject,
+  trim,
+  isFunction,
+  findIndex,
+  isArray,
+  isNumber,
+  last,
+  slice,
+} from 'lodash';
 import { toNumber } from 'lodash/fp';
 import {
   PlusOutlined,
@@ -137,6 +149,15 @@ function FormItem({
 
     return r;
   }, [column, record]);
+  const prePrefix = useFormListItemPrefix();
+
+  const generateFullFormListName = useCallback((currentPrefix, name) => {
+    const result = 
+      isArray(currentPrefix) && findIndex(currentPrefix, v => isNumber(v)) !== -1
+        ? concat(currentPrefix, name)
+        : [currentPrefix, name];
+    return prePrefix ? [...(slice(prePrefix, 0, -1)), ...result] : result;
+  }, [prePrefix]);
 
   const normalize = useMemo(() => {
     if (column instanceof NumberColumn && column.isArray()) {
@@ -228,7 +249,7 @@ function FormItem({
       ...extraCommonFormItemProps,
       initialValue,
       name: prefix
-        ? [prefix[1], column.getFormItemName()]
+        ? [last(prefix), column.getFormItemName()]
         : column.getFormItemName(),
     }),
     [
@@ -422,7 +443,6 @@ function FormItem({
         ) : (
           <DeleteOutlined className="dynamic-delete" />
         );
-
         inner = (
           <Form.List name={name}>
             {(fields, { add, remove }) => (
@@ -435,7 +455,7 @@ function FormItem({
                       <WrapItemsComponent {...wrapItemsComponentProps}>
                         {column.getColumns().map((dColumn) => (
                           <FormListItemContext.Provider
-                            value={[name, field.name]}
+                            value={generateFullFormListName(name, field.name)}
                           >
                             <FormItem
                               isEdit
@@ -446,10 +466,7 @@ function FormItem({
                               commonFormItemProps={{
                                 ...field,
                                 // name: [field.name, dColumn.getFormItemName()],
-                                fieldKey: [
-                                  field.fieldKey,
-                                  dColumn.getFormItemName(),
-                                ],
+                                fieldKey: generateFullFormListName(field.fieldKey, dColumn.getFormItemName())
                               }}
                             />
                           </FormListItemContext.Provider>
@@ -536,6 +553,7 @@ function FormItem({
     prefix,
     initialValueOptions,
     isEdit,
+    generateFullFormListName,
   ]);
 
   return <Form.Item {...formItemProps}>{children}</Form.Item>;
