@@ -420,10 +420,16 @@ export default class Column {
   }
 
   getFormItemName() {
-    return this.config.getIn(
-      ['form', 'formItemProps', 'name'],
-      this.config.getIn(['form', 'key'], this.getKey())
-    );
+    if (!this.formItemName) {
+      this.formItemName = this.config.getIn(
+        ['form', 'formItemProps', 'name'],
+        this.config.getIn(['form', 'key'], this.getKey())
+      );
+      if (this.formItemName.toJS) {
+        this.formItemName = this.formItemName.toJS();
+      }
+    }
+    return this.formItemName;
   }
 
   getFormItemLabel() {
