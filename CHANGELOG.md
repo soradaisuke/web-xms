@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.136](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.135...v3.0.0-beta.136) (2020-12-07)
+
+
+### Bug Fixes
+
+* **NoTicket:** form.key应支持数组 ([b262931](https://git2.qingtingfm.com/zhibo/xms/commit/b2629315224da8adf96edb7c4157dfa49eeb5e61))
+
 ## [3.0.0-beta.135](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.134...v3.0.0-beta.135) (2020-12-04)
 
 
