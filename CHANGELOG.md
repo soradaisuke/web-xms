@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.137](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.136...v3.0.0-beta.137) (2020-12-10)
+
+
+### Bug Fixes
+
+* **QTLIVE-3154:** [xms]用availableWhen依赖的column编辑时初始化错误 ([e88314f](https://git2.qingtingfm.com/zhibo/xms/commit/e88314f2276f386288147237735fb29e639b3038))
+
 ## [3.0.0-beta.136](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.135...v3.0.0-beta.136) (2020-12-07)
 
 
