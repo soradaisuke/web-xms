@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.138](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.137...v3.0.0-beta.138) (2020-12-14)
+
+
+### Bug Fixes
+
+* **NoTicket:** 页面新建动态表单项也用wrapComponent也用Card & 动态表单项添加按钮文案修改 ([5b35330](https://git2.qingtingfm.com/zhibo/xms/commit/5b35330a29cb46493698aef2c9f1c4a7b98da254))
+
 ## [3.0.0-beta.137](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.136...v3.0.0-beta.137) (2020-12-10)
 
 
