@@ -247,7 +247,7 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue: isEdit ? initialEditValue : initialValue,
+      initialValue: isEdit && shouldSetInitialValue ? initialEditValue : initialValue,
       name: prefix
         ? [last(prefix), column.getFormItemName()]
         : column.getFormItemName(),
@@ -263,6 +263,7 @@ function FormItem({
       extraCommonFormItemProps,
       initialEditValue,
       isEdit,
+      shouldSetInitialValue,
     ]
   );
 
@@ -435,8 +436,8 @@ function FormItem({
         );
       } else {
         const { name } = commonFormItemProps;
-        const WrapComponent = idIdentifier ? React.Fragment : Card;
-        const WrapItemsComponent = idIdentifier ? Space : React.Fragment;
+        // eslint-disable-next-line no-undef
+        const WrapItemsComponent = idIdentifier ? Space : div;
         const wrapItemsComponentProps = idIdentifier
           ? { style: { flexWrap: 'wrap' } }
           : {};
@@ -451,9 +452,7 @@ function FormItem({
               <div>
                 {fields.map((field) => (
                   <Form.Item key={field.key}>
-                    <WrapComponent
-                      className={idIdentifier ? 'dynamic-card' : null}
-                    >
+                    <Card className="dynamic-card">
                       <WrapItemsComponent {...wrapItemsComponentProps}>
                         {column.getColumns().map((dColumn) => (
                           <FormListItemContext.Provider
@@ -480,7 +479,7 @@ function FormItem({
                           {deleteButton}
                         </Popconfirm>
                       </WrapItemsComponent>
-                    </WrapComponent>
+                    </Card>
                   </Form.Item>
                 ))}
                 <Form.Item>
@@ -494,7 +493,8 @@ function FormItem({
                       )
                     }
                   >
-                    <PlusOutlined /> 添加
+                    <PlusOutlined />
+                    {`添加${column.getTitle()}`}
                   </Button>
                 </Form.Item>
               </div>

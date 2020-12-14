@@ -114,7 +114,7 @@ export default class Column {
   }
 
   getTitle() {
-    return this.config.get('title');
+    return this.config.get('title', '');
   }
 
   getValueOptions() {
