@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.139](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.138...v3.0.0-beta.139) (2020-12-15)
+
+
+### Bug Fixes
+
+* **NoTicket:** 点新建会报错：div is not defined ([050f80a](https://git2.qingtingfm.com/zhibo/xms/commit/050f80a7fa585594a713c3a8c78f1cf95d5b7c33))
+
 ## [3.0.0-beta.138](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.137...v3.0.0-beta.138) (2020-12-14)
 
 
