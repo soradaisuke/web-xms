@@ -11,6 +11,7 @@ import {
   Popconfirm,
   Button,
   Space,
+  Row
 } from 'antd';
 import {
   get,
@@ -436,8 +437,7 @@ function FormItem({
         );
       } else {
         const { name } = commonFormItemProps;
-        // eslint-disable-next-line no-undef
-        const WrapItemsComponent = idIdentifier ? Space : div;
+        const WrapItemsComponent = idIdentifier ? Space : Row;
         const wrapItemsComponentProps = idIdentifier
           ? { style: { flexWrap: 'wrap' } }
           : {};
