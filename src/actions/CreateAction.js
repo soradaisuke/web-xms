@@ -21,4 +21,8 @@ export default class CreateAction extends Action {
   setLink(link) {
     return new CreateAction(this.config.set('link', link).toJS());
   }
+
+  setTitle(title) {
+    return new CreateAction(this.config.set('title', title).toJS());
+  }
 }

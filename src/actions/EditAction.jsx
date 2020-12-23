@@ -45,6 +45,18 @@ export default class EditAction extends Action {
     return new EditAction(this.config.set('link', link).toJS());
   }
 
+  setTitle(title) {
+    return new EditAction(this.config.set('title', title).toJS());
+  }
+
+  setIcon(icon) {
+    return new EditAction(this.config.set('icon', icon).toJS());
+  }
+
+  setShape(shape) {
+    return new EditAction(this.config.set('shape', shape).toJS());
+  }
+
   // eslint-disable-next-line class-methods-use-this
   needReload() {
     return true;

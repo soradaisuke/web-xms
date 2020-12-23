@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import { Card, Row, Form } from 'antd';
+import { Card, Row, Form, Popconfirm, Button } from 'antd';
 import { router } from 'dva';
 import Immutable from 'immutable';
 import Page from './Page';
@@ -97,14 +97,12 @@ function RecordFormPage() {
   const renderActions = useMemo(() => {
     let result = Immutable.List([
       isEdit
-        ? table.getEditAction()?.setLink(null)
-        : table.getCreateAction()?.setLink(null),
+        ? table.getEditAction()?.setLink(null).setTitle('保存').setIcon(null).setShape(null)
+        : table.getCreateAction()?.setLink(null).setTitle('保存'),
     ]);
     result = result.concat(table.getFormActions());
 
-    return isEdit && table.getDeleteAction()
-      ? result.push(table.getDeleteAction())
-      : result;
+    return result;
   }, [table, isEdit]);
 
   useEffect(() => {
@@ -150,6 +148,15 @@ function RecordFormPage() {
                       重置
                     </Button>
                   </Popconfirm> */}
+                  <Popconfirm
+                    key="取消"
+                    title="确认取消并返回上一页？"
+                    onConfirm={history.goBack}
+                  >
+                    <Button style={{ marginLeft: 0 }}>
+                      取消
+                    </Button>
+                  </Popconfirm>
                   {renderActions.map((a) => (
                     <ActionComponent
                       key={a.getKey()}
