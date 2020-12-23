@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.140](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.139...v3.0.0-beta.140) (2020-12-23)
+
+
+### Features
+
+* **NoTicket:** 表单页按钮去掉删除按钮、新建编辑按钮同一为'保存' ([3f636a9](https://git2.qingtingfm.com/zhibo/xms/commit/3f636a9d9de3cefd79f3279c6ec554ba459451d3))
+
 ## [3.0.0-beta.139](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.138...v3.0.0-beta.139) (2020-12-15)
 
 
