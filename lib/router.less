@@ -42,7 +42,8 @@ body {
     position: relative;
 
     .watermark-wrapper {
-      position: absolute;
+      pointer-events: none;
+      position: fixed;
       left: 0;
       top: 0;
       width: 100%;
@@ -90,6 +91,14 @@ body {
             display: block;
             content: '';
             background-image: url('./assets/ic-logo.png');
+          }
+
+          &.tuboshu-logo::after {
+            .font-medium();
+
+            content: '土拨鼠';
+            font-size: 32px;
+            background-image: none;
           }
         }
       }
