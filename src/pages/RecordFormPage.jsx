@@ -126,7 +126,6 @@ function RecordFormPage() {
               {...formItemLayout}
               scrollToFirstError
               {...formProps}
-              initialValues={record}
               form={form}
             >
               {columns.map((column) => (
