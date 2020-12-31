@@ -13,13 +13,13 @@ function RecordLink({ link, record, buttonProps, children }) {
   const filter = pageData?.filter ?? null;
 
   const url = useMemo(() => {
-    const linkInternal = isFunction(link) ? link({ record, filter }) : link;
+    const linkInternal = isFunction(link) ? link({ record, filter, pageData }) : link;
     if (!startsWith(linkInternal, 'http')) {
       return linkInternal;
     }
 
     return linkInternal;
-  }, [link, record, filter]);
+  }, [link, record, filter, pageData]);
 
   const style = useMemo(() => ({
     userSelect: 'all',
