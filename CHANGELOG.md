@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.142](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.141...v3.0.0-beta.142) (2020-12-31)
+
+
+### Features
+
+* **NoTicket:** table.link里增加参数pageData ([03697f7](https://git2.qingtingfm.com/zhibo/xms/commit/03697f76309c2ac0eb7df73afdbc633284e2cda8))
+
 ## [3.0.0-beta.141](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.140...v3.0.0-beta.141) (2020-12-24)
 
 ## [3.0.0-beta.140](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.139...v3.0.0-beta.140) (2020-12-23)
