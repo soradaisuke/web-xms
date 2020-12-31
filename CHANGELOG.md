@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.143](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.142...v3.0.0-beta.143) (2020-12-31)
+
+
+### Features
+
+* **NoTicket:** RecordLink匹配link以//开头的也在新窗口打开 ([fa57602](https://git2.qingtingfm.com/zhibo/xms/commit/fa57602801a59755e9b994b76546fa88edb75892))
+
 ## [3.0.0-beta.142](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.141...v3.0.0-beta.142) (2020-12-31)
 
 
