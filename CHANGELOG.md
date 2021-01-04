@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.144](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.143...v3.0.0-beta.144) (2021-01-04)
+
+
+### Features
+
+* **QTLIVE-3439:** request支持自定义content-type ([35cdd6b](https://git2.qingtingfm.com/zhibo/xms/commit/35cdd6bfe0208eeff693e2c30e8f1b2581d26af3))
+
 ## [3.0.0-beta.143](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.142...v3.0.0-beta.143) (2020-12-31)
 
 
