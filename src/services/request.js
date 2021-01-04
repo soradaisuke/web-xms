@@ -16,7 +16,9 @@ async function generateRequest(path, options = {}) {
     includes(['POST', 'PUT', 'PATCH'], options.method) &&
     isPlainObject(newOptions.body)
   ) {
-    newOptions.headers['Content-Type'] = 'application/json;charset=utf-8';
+    if (!newOptions.headers['Content-Type']) {
+      newOptions.headers['Content-Type'] = 'application/json;charset=utf-8';
+    }
     newOptions.body = JSON.stringify(newOptions.body);
   }
   newOptions.headers.Accept = 'application/json, text/plain, */*';
