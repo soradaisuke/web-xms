@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { removeUrlProtocol } from '@qt/web-common';
 import { map, isNumber, get, isFunction } from 'lodash';
+import { Tag } from 'antd';
 import LinesEllipsis from '../LinesEllipsis';
 import Column from '../../schema/Column';
 import EditableCell from './EditableCell';
@@ -51,6 +52,9 @@ function renderInTable({ column, value, parentFilterValue }) {
 
   const option = column.getFilterOption({ value, parentFilterValue });
   if (option) {
+    if (option.tagColor) {
+      return <Tag color={option.tagColor}>{option.text}</Tag>;
+    }
     return option.text;
   }
 
