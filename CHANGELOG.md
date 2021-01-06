@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.145](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.144...v3.0.0-beta.145) (2021-01-06)
+
+
+### Features
+
+* **QTLIVE-2981:** valueOptions支持配置tagColor ([711043c](https://git2.qingtingfm.com/zhibo/xms/commit/711043c32397db39df943720721e43290eb97614))
+
 ## [3.0.0-beta.144](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.143...v3.0.0-beta.144) (2021-01-04)
 
 
