@@ -21,6 +21,7 @@ function RecordPage({ isLoading, routes: r }) {
   const {
     component: Component,
     inline,
+    pageProps,
     layout,
     table,
     fetch,
@@ -200,7 +201,7 @@ function RecordPage({ isLoading, routes: r }) {
   }, [columns.size, fetch]);
 
   return (
-    <Page isLoading={isLoading}>
+    <Page {...pageProps} isLoading={isLoading}>
       {Component ? (
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
           <Component />

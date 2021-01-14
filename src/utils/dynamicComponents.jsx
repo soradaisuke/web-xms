@@ -238,6 +238,7 @@ function generateRecordsPage({
   api: { host, path, fixedFilter, defaultBody, defaultFilter },
   namespace,
   table,
+  pageProps = {},
   tableProps = {},
   formProps = {},
   filterFormProps = {},
@@ -412,6 +413,7 @@ function generateRecordsPage({
     const pageConfig = useMemo(
       () => ({
         formProps,
+        pageProps,
         tableProps,
         filterFormProps,
         inline,
@@ -453,6 +455,7 @@ function generateRecordPage({
   namespace,
   api: { path, host } = {},
   table,
+  pageProps = {},
   layout,
   inline,
   formProps = {},
@@ -493,6 +496,7 @@ function generateRecordPage({
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
     const pageConfig = useMemo(
       () => ({
+        pageProps,
         layout,
         formProps,
         descriptionsProps,

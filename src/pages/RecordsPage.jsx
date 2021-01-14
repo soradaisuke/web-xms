@@ -45,6 +45,7 @@ function RecordsPage({ isLoading }) {
     component: Component,
     inline,
     table,
+    pageProps,
     fetch: fetchEffect,
     updatePage,
     tableProps,
@@ -412,7 +413,7 @@ function RecordsPage({ isLoading }) {
   ]);
 
   return (
-    <Page>
+    <Page {...pageProps}>
       {Component ? (
         <Card className={classNames('content-card', inline ? 'inline' : '')}>
           <Component />
