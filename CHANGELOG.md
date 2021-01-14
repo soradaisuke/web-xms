@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.146](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.145...v3.0.0-beta.146) (2021-01-14)
+
+
+### Features
+
+* **QTLIVE-3595:** page页面支持className配置 ([12f1318](https://git2.qingtingfm.com/zhibo/xms/commit/12f13185f45246b2dbef8c117167b0fa34d08470))
+
 ## [3.0.0-beta.145](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.144...v3.0.0-beta.145) (2021-01-06)
 
 
