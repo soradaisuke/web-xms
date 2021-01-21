@@ -355,6 +355,10 @@ export default class Column {
     return immutableInForm;
   }
 
+  canShowInForm({ user, record }) {
+    return this.canShowInCreateFrom({ user }) || this.canShowInEditFrom({ user, record });
+  }
+
   canShowInCreateFrom({ user }) {
     const creatable = this.config.getIn(['form', 'creatable']);
     if (isFunction(creatable)) {

@@ -11,6 +11,7 @@ import FormContext from '../contexts/FormContext';
 import usePageConfig from '../hooks/usePageConfig';
 import FormItem from './Form/FormItem';
 import './RecordModal.less';
+import useFormInitialValues from '../hooks/useFormInitialValues';
 
 const formItemLayout = {
   labelCol: {
@@ -90,6 +91,8 @@ function RecordModal({
     [formProps]
   );
 
+  const initialValues = useFormInitialValues({ record });
+
   return (
     <FormContext.Provider value={form}>
       <ActivatorModal
@@ -104,6 +107,7 @@ function RecordModal({
         <Form
           {...formItemLayout}
           {...formProps}
+          initialValues={initialValues}
           preserve={false}
           onValuesChange={onValuesChange}
           form={form}

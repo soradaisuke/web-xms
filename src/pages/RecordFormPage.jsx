@@ -12,6 +12,7 @@ import EditAction from '../actions/EditAction';
 import DeleteAction from '../actions/DeleteAction';
 import FormItem from '../components/Form/FormItem';
 import usePageData from '../hooks/usePageData';
+import useFormInitialValues from '../hooks/useFormInitialValues';
 import './RecordsPage.less';
 
 const { useParams, useHistory } = router;
@@ -105,6 +106,8 @@ function RecordFormPage() {
     return result;
   }, [table, isEdit]);
 
+  const initialValues = useFormInitialValues({ record });
+
   useEffect(() => {
     reset();
 
@@ -126,6 +129,7 @@ function RecordFormPage() {
               {...formItemLayout}
               scrollToFirstError
               {...formProps}
+              initialValues={initialValues}
               form={form}
             >
               {columns.map((column) => (
