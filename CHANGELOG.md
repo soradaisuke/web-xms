@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.147](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.146...v3.0.0-beta.147) (2021-01-21)
+
+
+### Features
+
+* **NoTicket:** delete支持传body ([b194f21](https://git2.qingtingfm.com/zhibo/xms/commit/b194f21bb874c19d799b834129e09bdb69272c3c))
+* **QTLIVE-3641:** request支持body传数组 ([a4b4b96](https://git2.qingtingfm.com/zhibo/xms/commit/a4b4b962db98c615aaedde2cb3495986141efbf9))
+
+
+### Bug Fixes
+
+* **QTLIVE-3560:** availableWhen在第一次打开弹窗时结果不对 ([389a318](https://git2.qingtingfm.com/zhibo/xms/commit/389a318e0b8d1db746304f8eaeac3b908f50d66b))
+
 ## [3.0.0-beta.146](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.145...v3.0.0-beta.146) (2021-01-14)
 
 
