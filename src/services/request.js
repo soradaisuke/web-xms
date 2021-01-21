@@ -1,4 +1,4 @@
-import { includes, isPlainObject } from 'lodash';
+import { includes, isArray, isPlainObject } from 'lodash';
 import { fetch } from 'dva';
 import { generateUri } from '@qt/web-common';
 
@@ -14,7 +14,7 @@ async function generateRequest(path, options = {}) {
   if (
     options.method &&
     includes(['POST', 'PUT', 'PATCH'], options.method) &&
-    isPlainObject(newOptions.body)
+    (isPlainObject(newOptions.body) || isArray(newOptions.body))
   ) {
     if (!newOptions.headers['Content-Type']) {
       newOptions.headers['Content-Type'] = 'application/json;charset=utf-8';
