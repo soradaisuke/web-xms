@@ -13,7 +13,7 @@ async function generateRequest(path, options = {}) {
   newOptions.headers = newOptions.headers || {};
   if (
     options.method &&
-    includes(['POST', 'PUT', 'PATCH'], options.method) &&
+    includes(['POST', 'PUT', 'PATCH', 'DELETE'], options.method) &&
     (isPlainObject(newOptions.body) || isArray(newOptions.body))
   ) {
     if (!newOptions.headers['Content-Type']) {
