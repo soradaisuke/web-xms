@@ -1,7 +1,23 @@
+import { isProduction, isStaging } from '@qt/env';
 import { filter, includes, isFunction, map, merge } from 'lodash';
+
+function deprecatedError(message) {
+  if (!isStaging && !isProduction) {
+    console.error(message);
+  }
+}
+
+function deprecatedWarn(message) {
+  if (!isStaging && !isProduction) {
+    console.warn(message);
+  }
+}
 
 function isNotRefFunction(func) {
   if (func && isFunction(func)) {
+    if (func.length === 0) {
+      return false;
+    }
     const str = func.toString();
     return (
       (!includes(str, '(_ref') && !includes(str, 'arguments[0]')) ||
@@ -16,14 +32,14 @@ export function migrateRouteApi(api = {}) {
   const newApi = merge({}, api);
 
   if (fetchFixedFilter) {
-    console.error(
+    deprecatedError(
       'route.api.fetchFixedFilter is deprecated, please use route.api.fixedFilter'
     );
     merge(newApi, { fixedFilter: fetchFixedFilter });
   }
 
   if (createDefaultBody) {
-    console.error(
+    deprecatedError(
       'route.api.createDefaultBody is deprecated, please use route.api.defaultBody'
     );
     merge(newApi, { defaultBody: createDefaultBody });
@@ -49,75 +65,75 @@ export function migrateConfig(config) {
   const newConfig = merge({}, config, { api: migrateRouteApi(api) });
 
   if (type === 'group') {
-    console.warn("route.config.type 'group' is deprecated, please use 'table'");
+    deprecatedWarn("route.config.type 'group' is deprecated, please use 'table'");
     merge(newConfig, { type: 'table' });
   }
 
   if (type === 'list') {
-    console.warn("route.config.type 'list' is deprecated, please use 'table'");
+    deprecatedWarn("route.config.type 'list' is deprecated, please use 'table'");
     merge(newConfig, { type: 'table' });
   }
 
   if (type === 'detail') {
-    console.warn(
+    deprecatedWarn(
       "route.config.type 'detail' is deprecated, please use 'descriptions'"
     );
     merge(newConfig, { type: 'descriptions' });
   }
 
   if (schema) {
-    console.warn('route.config.schema is deprecated, please use columns');
+    deprecatedWarn('route.config.schema is deprecated, please use columns');
     merge(newConfig, { columns: schema });
   }
   if (table && type !== 'form') {
-    console.warn('route.config.table is deprecated, please use columns');
+    deprecatedWarn('route.config.table is deprecated, please use columns');
     merge(newConfig, { columns: table });
   }
 
   if (inlineWidgetType) {
-    console.warn(
+    deprecatedWarn(
       'route.config.inlineWidgetType is deprecated, please use route.config.layout'
     );
     merge(newConfig, { layout: inlineWidgetType });
   }
 
   if (formPageProps) {
-    console.error(
+    deprecatedError(
       'route.config.formPageProps is deprecated, please use route.config.formProps'
     );
     merge(newConfig, { formProps: formPageProps });
   }
 
   if (bordered) {
-    console.warn(
+    deprecatedWarn(
       'route.config.bordered is deprecated, please use route.config.descriptionsProps'
     );
     merge(newConfig, { descriptionsProps: { bordered } });
   }
 
   if (defaultPageSize) {
-    console.warn(
+    deprecatedWarn(
       'route.config.defaultPageSize is deprecated, please use route.config.tableProps'
     );
     merge(newConfig, { tableProps: { pagination: { defaultPageSize } } });
   }
 
   if (tableScroll) {
-    console.warn(
+    deprecatedWarn(
       'route.config.tableScroll is deprecated, please use route.config.tableProps'
     );
     merge(newConfig, { tableProps: { tableScroll } });
   }
 
   if (tableComponentProps) {
-    console.warn(
+    deprecatedWarn(
       'route.config.tableComponentProps is deprecated, please use route.config.tableProps'
     );
     merge(newConfig, { tableProps: tableComponentProps });
   }
 
   if (paginationComponentProps) {
-    console.warn(
+    deprecatedWarn(
       'route.config.paginationComponentProps is deprecated, please use route.config.tableProps'
     );
     merge(newConfig, { tableProps: { pagination: paginationComponentProps } });
@@ -135,7 +151,7 @@ export function migrateRoute(route) {
   }
 
   if (component && component.component) {
-    console.warning(
+    deprecatedWarn(
       'route.component.component is deprecated, please use route.component和route.models'
     );
     merge(newRoute, { ...component });
@@ -144,7 +160,7 @@ export function migrateRoute(route) {
   }
 
   if (isNotRefFunction(breadcrumb)) {
-    console.error(
+    deprecatedError(
       'route.breadcrumb(matchParams) is deprecated, please use route.breadcrumb({ matchParams })'
     );
   }
@@ -177,7 +193,7 @@ export function migrateColumn(column) {
   const newColumn = merge({}, column);
 
   if (visibility) {
-    console.error(
+    deprecatedError(
       'visibility is deprecated, please use invisible, creatable or editable'
     );
 
@@ -223,7 +239,7 @@ export function migrateColumn(column) {
   }
 
   if (defaultSortOrder) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.table.defaultSortOrder is deprecated, please use config.table.defaultSortDirection"
     );
     merge(newColumn, {
@@ -233,7 +249,7 @@ export function migrateColumn(column) {
     });
   }
   if (fixedSortOrder) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.table.fixedSortOrder is deprecated, please use config.table.fixedSortDirection"
     );
     merge(newColumn, {
@@ -243,7 +259,7 @@ export function migrateColumn(column) {
     });
   }
   if (componentProps) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.form.componentProps is deprecated, please use config.form.formItemComponentProps"
     );
     merge(newColumn, {
@@ -253,7 +269,7 @@ export function migrateColumn(column) {
     });
   }
   if (generateInitialValue) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.form.generateInitialValue is deprecated, please use config.form.normalizeInitialValue"
     );
     merge(newColumn, {
@@ -263,12 +279,12 @@ export function migrateColumn(column) {
     });
   }
   if (generateSubmitValue) {
-    console.error(
+    deprecatedError(
       "Column's config.form.generateSubmitValue is deprecated, please use Action's config.normalize"
     );
   }
   if (renderInFormItem) {
-    console.error(
+    deprecatedError(
       "Column's config.form.renderInFormItem is deprecated, please use config.form.render"
     );
     merge(newColumn, {
@@ -278,13 +294,13 @@ export function migrateColumn(column) {
     });
   }
   if (radioOptions) {
-    console.error("Column's config.form.radioOptions is deprecated");
+    deprecatedError("Column's config.form.radioOptions is deprecated");
   }
   if (searchPlaceholder) {
-    console.error("Column's config.form.searchPlaceholder is deprecated");
+    deprecatedError("Column's config.form.searchPlaceholder is deprecated");
   }
   if (searchRequest) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.form.searchRequest is deprecated, please use config.valueOptionsSearchRequest"
     );
     merge(newColumn, {
@@ -292,7 +308,7 @@ export function migrateColumn(column) {
     });
   }
   if (filterComponentProps) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.table.filterComponentProps is deprecated, please use config.table.filterFormItemComponentProps"
     );
     merge(newColumn, {
@@ -302,7 +318,7 @@ export function migrateColumn(column) {
     });
   }
   if (format) {
-    console.warn(
+    deprecatedWarn(
       "Column's config.table.format is deprecated, please use config.format"
     );
     merge(newColumn, {
@@ -310,7 +326,7 @@ export function migrateColumn(column) {
     });
   }
   if (isNotRefFunction(link)) {
-    console.error(
+    deprecatedError(
       "Column's config.table.link(record) is deprecated, please use config.table.link({ record })"
     );
   }
@@ -321,7 +337,7 @@ export function migrateColumn(column) {
       ({ value }) => value
     );
     if (defaultOptions.length > 0) {
-      console.warn(
+      deprecatedWarn(
         "Column's valueOption.default is deprecated, please use config.table.filterDefault"
       );
       merge(newColumn, {
@@ -340,12 +356,12 @@ export function migrateAction(action) {
   const newAction = merge({}, action);
 
   if (isNotRefFunction(link)) {
-    console.error(
+    deprecatedError(
       "Action's config.link(record) is deprecated, please use config.link({ record })"
     );
   }
   if (componentProps) {
-    console.warn(
+    deprecatedWarn(
       "Action's config.confirm.componentProps is deprecated, please use config.confirm.confirmProps"
     );
     merge(newAction, {
