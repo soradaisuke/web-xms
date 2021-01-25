@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.148](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.147...v3.0.0-beta.148) (2021-01-25)
+
+
+### Bug Fixes
+
+* **NoTicket:** 迁移提示-有的link无参数也会报错 && 只在开发环境显示迁移提示 ([38d81f5](https://git2.qingtingfm.com/zhibo/xms/commit/38d81f59805ea729d798754527b7e5e955b64f19))
+
 ## [3.0.0-beta.147](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.146...v3.0.0-beta.147) (2021-01-21)
 
 
