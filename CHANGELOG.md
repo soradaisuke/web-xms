@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.151](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.150...v3.0.0-beta.151) (2021-02-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** ActionComponent报错 & draggableTable onDataSourceChange第二个参数错误 ([589090f](https://git2.qingtingfm.com/zhibo/xms/commit/589090fe2f63bac6186b47691f838f13718caf95))
+
 ## [3.0.0-beta.150](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.149...v3.0.0-beta.150) (2021-02-20)
 
 
