@@ -20,6 +20,7 @@ export AudioPlayer from './components/Common/AudioPlayer';
 export InputModal from './components/InputModal';
 export RecordLink from './components/RecordLink';
 export DatePickerWithPresets from './components/Filter/DatePicker';
+export ActionComponent from './components/Action';
 
 // hooks
 export useUser from './hooks/useUser';
