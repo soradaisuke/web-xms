@@ -20,7 +20,7 @@ function Action({
   disabledRecordModal,
 }) {
   const form = useForm();
-  const { table } = usePageConfig();
+  const { table } = usePageConfig() || {};
   const { params, disabled, invisible, onOk } = useActionConfig({
     action,
     record,
@@ -144,8 +144,8 @@ function Action({
           columns: action.getColumns(),
         }
       : {
-          columns: table.getColumns(),
-          actions: table.getFormActions(),
+          columns: table?.getColumns(),
+          actions: table?.getFormActions(),
         };
     // eslint-disable-next-line global-require
     const RecordModal = require('./RecordModal').default;
