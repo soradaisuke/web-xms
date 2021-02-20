@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.150](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.149...v3.0.0-beta.150) (2021-02-20)
+
+
+### Bug Fixes
+
+* **NoTicket:** export ActionComponent作为组件使用 ([8e6d4ca](https://git2.qingtingfm.com/zhibo/xms/commit/8e6d4cadcdbdd72bb2723dc6c2b326ff65a7fc92))
+
 ## [3.0.0-beta.149](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.148...v3.0.0-beta.149) (2021-02-20)
 
 
