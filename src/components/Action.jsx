@@ -20,7 +20,7 @@ function Action({
   disabledRecordModal,
 }) {
   const form = useForm();
-  const { table } = usePageConfig() || {};
+  const { table } = usePageConfig();
   const { params, disabled, invisible, onOk } = useActionConfig({
     action,
     record,
