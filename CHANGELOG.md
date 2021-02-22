@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.152](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.151...v3.0.0-beta.152) (2021-02-22)
+
+
+### Features
+
+* **NoTicket:** DraggableTable的onDataSourceChange第三个参数返回dragIndex & hoverIndex ([f4d4666](https://git2.qingtingfm.com/zhibo/xms/commit/f4d466670faa6134efeb510028667dae14084fb7))
+
 ## [3.0.0-beta.151](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.150...v3.0.0-beta.151) (2021-02-20)
 
 
