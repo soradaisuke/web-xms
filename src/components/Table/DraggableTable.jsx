@@ -51,7 +51,7 @@ function DraggableTable({
       copyDataSource.splice(hoverIndex, 0, dragRow);
       onDataSourceChange(copyDataSource, [
         getKey(dataSource[dragIndex]), getKey(dataSource[hoverIndex]),
-      ]);
+      ], [dragIndex, hoverIndex]);
     },
     [dataSource, onDataSourceChange, getKey]
   );

@@ -105,7 +105,7 @@ export default function useActionConfig({
                 ...params,
                 records: null,
                 record: r,
-                id: get(r, table.getPrimaryKey()),
+                id: get(r, table?.getPrimaryKey()),
                 ...data,
               })
             )
@@ -113,7 +113,7 @@ export default function useActionConfig({
         } else {
           promise = handler({
             ...params,
-            id: get(record, table.getPrimaryKey()),
+            id: get(record, table?.getPrimaryKey()),
             ...data,
           });
         }
