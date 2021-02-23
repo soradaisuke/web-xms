@@ -195,10 +195,8 @@ function RecordPage({ isLoading, routes: r }) {
   }, [layout, routes, renderRouteChunk]);
 
   useEffect(() => {
-    if (columns.size > 0) {
-      fetch();
-    }
-  }, [columns.size, fetch]);
+    fetch();
+  }, [fetch]);
 
   return (
     <Page {...pageProps} isLoading={isLoading}>
