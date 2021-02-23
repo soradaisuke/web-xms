@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.153](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.152...v3.0.0-beta.153) (2021-02-23)
+
+
+### Bug Fixes
+
+* **NoTicket:** RecordPage不配置columns时也获取数据 ([0819a59](https://git2.qingtingfm.com/zhibo/xms/commit/0819a595e2ff72f89d56e76615bc3207d425f75a))
+
 ## [3.0.0-beta.152](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.151...v3.0.0-beta.152) (2021-02-22)
 
 
