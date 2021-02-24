@@ -90,6 +90,7 @@ function EditableCell({ children, record, column, reload }) {
           ref: onFormItemRef,
           onPressEnter: save,
           onBlur: save,
+          allowClear: false
         },
       };
     }
