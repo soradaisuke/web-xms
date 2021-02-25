@@ -49,9 +49,11 @@ function DraggableTable({
       const dragRow = copyDataSource[dragIndex];
       copyDataSource.splice(dragIndex, 1);
       copyDataSource.splice(hoverIndex, 0, dragRow);
-      onDataSourceChange(copyDataSource, [
-        getKey(dataSource[dragIndex]), getKey(dataSource[hoverIndex]),
-      ], [dragIndex, hoverIndex]);
+      onDataSourceChange(
+        copyDataSource,
+        [getKey(dataSource[dragIndex]), getKey(dataSource[hoverIndex])],
+        [dragIndex, hoverIndex]
+      );
     },
     [dataSource, onDataSourceChange, getKey]
   );
@@ -70,12 +72,14 @@ function DraggableTable({
         ...onRow(record, index),
         index: index + prevTotalRows,
         moveRow,
-        showArrowUp: current !== 1 && index === 0,
+        showArrowUp: pagination !== false && current !== 1 && index === 0,
         showArrowDown:
-          index === pageSize - 1 && index !== dataSource.length - 1,
+          pagination !== false &&
+          index === pageSize - 1 &&
+          index !== dataSource.length - 1,
       };
     },
-    [moveRow, onRow, current, pageSize, dataSource.length]
+    [current, pageSize, onRow, moveRow, pagination, dataSource.length]
   );
 
   return (
@@ -101,11 +105,14 @@ DraggableTable.propTypes = {
   onChange: PropTypes.func,
   components: PropTypes.object,
   rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
-  pagination: PropTypes.shape({
-    current: PropTypes.number,
-    pageSize: PropTypes.number,
-    onChange: PropTypes.func,
-  }),
+  pagination: PropTypes.oneOfType([
+    PropTypes.shape({
+      current: PropTypes.number,
+      pageSize: PropTypes.number,
+      onChange: PropTypes.func,
+    }),
+    PropTypes.bool,
+  ]),
 };
 
 DraggableTable.defaultProps = {
