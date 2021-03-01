@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.154](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.153...v3.0.0-beta.154) (2021-03-01)
+
+
+### Bug Fixes
+
+* **NoTicket:** 可拖拽Table配置pagination为false时不展示上下箭头 ([d1d301a](https://git2.qingtingfm.com/zhibo/xms/commit/d1d301aed614ac059d2d581d58b237a6de0670d5))
+* **NoTicket:** antd Input清空时会触发onBlur导致行内编辑在清空时会自动保存 ([2a813d8](https://git2.qingtingfm.com/zhibo/xms/commit/2a813d8aadd4ffba8e21b4f61ae45031e98199d8))
+
+## [3.0.0-beta.154](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.153...v3.0.0-beta.154) (2021-03-01)
+
+
+### Bug Fixes
+
+* **NoTicket:** 可拖拽Table配置pagination为false时不展示上下箭头 ([d1d301a](https://git2.qingtingfm.com/zhibo/xms/commit/d1d301aed614ac059d2d581d58b237a6de0670d5))
+* **NoTicket:** antd Input清空时会触发onBlur导致行内编辑在清空时会自动保存 ([2a813d8](https://git2.qingtingfm.com/zhibo/xms/commit/2a813d8aadd4ffba8e21b4f61ae45031e98199d8))
+
 ## [3.0.0-beta.153](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.152...v3.0.0-beta.153) (2021-02-23)
 
 
