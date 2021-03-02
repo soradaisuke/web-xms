@@ -116,7 +116,9 @@ function FormItem({ column }) {
   const children = useMemo(() => {
     let inner;
     if (column.canFilterOutside()) {
-      if (column.canFilterExpandable()) {
+      if (column.getFilterRender()) {
+        inner = column.getFilterRender();
+      } else if (column.canFilterExpandable()) {
         if (column.canFilterMultiple()) {
           inner = (
             <CheckBox

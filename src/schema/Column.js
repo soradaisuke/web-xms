@@ -222,6 +222,17 @@ export default class Column {
 
   // filter
 
+  getFilterRender() {
+    let filterRender;
+    if (isUndefined(filterRender)) {
+      filterRender = this.config.getIn(['table', 'filterRender'], null);
+      if (filterRender?.toJS) {
+        filterRender = filterRender.toJS();
+      }
+    }
+    return filterRender;
+  }
+
   getFilters(parentFilteredValue, key = Column.VALUE_OPTIONS_KEYS.NORMAL) {
     if (this.getParentKey() && key !== Column.VALUE_OPTIONS_KEYS.SEARCH) {
       if (isArray(parentFilteredValue)) {
