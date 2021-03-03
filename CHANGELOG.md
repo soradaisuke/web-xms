@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.155](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.154...v3.0.0-beta.155) (2021-03-03)
+
+
+### Features
+
+* **NoTicket:** 支持自定义filter form item ([734bcd0](https://git2.qingtingfm.com/zhibo/xms/commit/734bcd020908691ed124df35a39a87ee49ee3a2f))
+
+## [3.0.0-beta.155](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.154...v3.0.0-beta.155) (2021-03-03)
+
+
+### Features
+
+* **NoTicket:** 支持自定义filter form item ([734bcd0](https://git2.qingtingfm.com/zhibo/xms/commit/734bcd020908691ed124df35a39a87ee49ee3a2f))
+
 ## [3.0.0-beta.154](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.153...v3.0.0-beta.154) (2021-03-01)
 
 
