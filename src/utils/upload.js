@@ -5,6 +5,7 @@ import { uploadToAliyun, uploadToUpyun } from '@qt/web-common';
 import OSS from 'ali-oss';
 import request from '../services/request';
 import isTuboshu from './isTuboshu';
+import isYouzi from './isYouzi';
 
 const uploadHost = `//cloud-upload.${
   isProduction ? '' : 'staging.'
@@ -28,7 +29,14 @@ function uploadToTuboshuAliyun(file, { fileName, ssoToken }) {
   return request
     .post(`${uploadHost}/intra/v1/sts_token`, {
       params: {
-        app_id: isProduction ? 'tuboshu' : 'tuboshudev',
+        // eslint-disable-next-line no-nested-ternary
+        app_id: isProduction
+          ? isYouzi
+            ? 'youzi'
+            : 'tuboshu'
+          : isYouzi
+          ? 'youzidev'
+          : 'tuboshudev',
         sso_token: ssoToken,
       },
       body: {
@@ -59,7 +67,7 @@ function uploadToTuboshuAliyun(file, { fileName, ssoToken }) {
 }
 
 export function uploadFile(file, { fileName, ssoToken, platform = 'aliyun' }) {
-  if (isTuboshu) {
+  if (isTuboshu || isYouzi) {
     return uploadToTuboshuAliyun(file, { fileName, ssoToken });
   }
   if (platform === 'upyun') {
@@ -72,7 +80,7 @@ export function uploadImage(
   file,
   { fileName, ssoToken, bucket, upYunSyncPreprocessor, deviceId }
 ) {
-  if (isTuboshu) {
+  if (isTuboshu || isYouzi) {
     return uploadToTuboshuAliyun(file, { fileName, ssoToken });
   }
   return uploadToUpyun(file, {

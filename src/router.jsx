@@ -16,6 +16,7 @@ import './router.less';
 import WelcomePage from './pages/WelcomePage';
 import hasPermission from './utils/hasPermission';
 import isTuboshu from './utils/isTuboshu';
+import isYouzi from './utils/isYouzi';
 
 const { Route, Switch, Router } = router;
 const { Content, Sider, Header } = Layout;
@@ -109,11 +110,17 @@ function ConnectedRouter({ history, app }) {
           <Sider
             className="xms-sider"
             collapsible
-            theme={isTuboshu ? 'light' : 'dark'}
+            theme={isTuboshu || isYouzi ? 'light' : 'dark'}
             collapsed={collapsed}
             onCollapse={onCollapse}
           >
-            <div className={classNames('logo',  isTuboshu ? 'tuboshu-logo' : '')} />
+            {/* eslint-disable-next-line no-nested-ternary */}
+            <div
+              className={classNames(
+                'logo',
+                isTuboshu ? 'tuboshu' : isYouzi ? 'youzi' : ''
+              )}
+            />
             {(!auth || !!user) && <Menu routes={routes} />}
           </Sider>
           <Layout

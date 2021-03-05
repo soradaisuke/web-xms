@@ -6,6 +6,7 @@ import { router, useLocation, useHistory } from 'dva';
 import { Menu } from 'antd';
 import { forEach } from 'lodash';
 import isTuboshu from '../utils/isTuboshu';
+import isYouzi from '../utils/isYouzi';
 
 const { Link, matchPath } = router;
 const { SubMenu } = Menu;
@@ -86,7 +87,7 @@ function NavMenu({ routes }) {
   return (
     <Menu
       className="xms-menu"
-      theme={isTuboshu ? 'light' : 'dark'}
+      theme={isTuboshu || isYouzi ? 'light' : 'dark'}
       mode="inline"
       selectedKeys={selectedKeys}
       defaultOpenKeys={openKeys}
