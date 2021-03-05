@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.160](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.159...v3.0.0-beta.160) (2021-03-05)
+
+
+### Bug Fixes
+
+* **QTLIVE-4161:** 弹窗的form里自己render的formItem component里useEffect在弹窗关闭的时候也会执行 ([01c1178](https://git2.qingtingfm.com/zhibo/xms/commit/01c1178ea8cee7aa78ada978a4eb662fd37d9d9c))
+
 ## [3.0.0-beta.159](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.158...v3.0.0-beta.159) (2021-03-05)
 
 
