@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.156](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.155...v3.0.0-beta.156) (2021-03-05)
+
+
+### Features
+
+* **NoTicket:** 支持柚子 ([11b92ca](https://git2.qingtingfm.com/zhibo/xms/commit/11b92ca45d1685e783605d1b5287a10cdf210418))
+
 ## [3.0.0-beta.155](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.154...v3.0.0-beta.155) (2021-03-03)
 
 
