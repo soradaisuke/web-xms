@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.159](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.158...v3.0.0-beta.159) (2021-03-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** table link返回空的时候不用Link ([fe2aeb0](https://git2.qingtingfm.com/zhibo/xms/commit/fe2aeb0feb31f2c9c2bafbe48f20b65bfdb0004f))
+
+## [3.0.0-beta.159](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.158...v3.0.0-beta.159) (2021-03-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** table link返回空的时候不用Link ([fe2aeb0](https://git2.qingtingfm.com/zhibo/xms/commit/fe2aeb0feb31f2c9c2bafbe48f20b65bfdb0004f))
+
 ## [3.0.0-beta.158](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.157...v3.0.0-beta.158) (2021-03-05)
 
 
