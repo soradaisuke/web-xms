@@ -86,11 +86,6 @@ function RecordModal({
     }
   });
 
-  const onValuesChange = useEventCallback(
-    (...args) => formProps?.onValuesChange?.(...args, form),
-    [formProps]
-  );
-
   const initialValues = useFormInitialValues({ record });
 
   return (
@@ -109,7 +104,6 @@ function RecordModal({
           {...formProps}
           initialValues={initialValues}
           preserve={false}
-          onValuesChange={onValuesChange}
           form={form}
         >
           {cols.map((column, index) => (
