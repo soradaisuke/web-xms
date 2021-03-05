@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.157](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.156...v3.0.0-beta.157) (2021-03-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修改柚子上传app id ([4efba83](https://git2.qingtingfm.com/zhibo/xms/commit/4efba830a7cdbc3647ed30da92f68751f99d0bc3))
+
 ## [3.0.0-beta.156](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.155...v3.0.0-beta.156) (2021-03-05)
 
 
