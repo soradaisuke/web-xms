@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.158](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.157...v3.0.0-beta.158) (2021-03-05)
+
+
+### Bug Fixes
+
+* **NoTicket:** eslint ([741bfe3](https://git2.qingtingfm.com/zhibo/xms/commit/741bfe3d50d882742799261ab2d8c0489dcbf527))
+
 ## [3.0.0-beta.157](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.156...v3.0.0-beta.157) (2021-03-05)
 
 
