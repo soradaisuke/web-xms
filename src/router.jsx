@@ -114,10 +114,10 @@ function ConnectedRouter({ history, app }) {
             collapsed={collapsed}
             onCollapse={onCollapse}
           >
-            {/* eslint-disable-next-line no-nested-ternary */}
             <div
               className={classNames(
                 'logo',
+                // eslint-disable-next-line no-nested-ternary
                 isTuboshu ? 'tuboshu' : isYouzi ? 'youzi' : ''
               )}
             />
