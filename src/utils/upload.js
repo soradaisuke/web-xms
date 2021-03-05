@@ -32,10 +32,10 @@ function uploadToTuboshuAliyun(file, { fileName, ssoToken }) {
         // eslint-disable-next-line no-nested-ternary
         app_id: isProduction
           ? isYouzi
-            ? 'youzi'
+            ? 'youzifm'
             : 'tuboshu'
           : isYouzi
-          ? 'youzidev'
+          ? 'youzifm'
           : 'tuboshudev',
         sso_token: ssoToken,
       },
