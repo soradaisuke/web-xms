@@ -1,5 +1,5 @@
 /* eslint-disable react/no-multi-comp */
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch, dynamic, router } from 'dva';
 import { parse } from 'query-string';
 import {
@@ -185,7 +185,7 @@ function useCreate({ createApiDefaultBody, apiPath, namespace }) {
 function useFetch({ apiPath, namespace }) {
   const dispatch = useDispatch();
 
-  return useEventCallback(
+  return useCallback(
     ({ id } = {}) =>
       dispatch({
         type: `${namespace}/fetch`,
@@ -311,7 +311,7 @@ function generateRecordsPage({
 
     const dispatch = useDispatch();
 
-    const fetch = useEventCallback(
+    const fetch = useCallback(
       // eslint-disable-next-line no-shadow
       ({ page, pagesize, sort, filter = {} }) => {
         if (
