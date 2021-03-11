@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.161](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.160...v3.0.0-beta.161) (2021-03-11)
+
+
+### Bug Fixes
+
+* **QTLIVE-4268:** [qt-web-xms]同一个router下改变id的link跳转页面数据不更新 ([e87cb24](https://git2.qingtingfm.com/zhibo/xms/commit/e87cb24eff857b07a6d1572ba140f86b3a79387f))
+
+## [3.0.0-beta.161](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.160...v3.0.0-beta.161) (2021-03-11)
+
+
+### Bug Fixes
+
+* **QTLIVE-4268:** [qt-web-xms]同一个router下改变id的link跳转页面数据不更新 ([e87cb24](https://git2.qingtingfm.com/zhibo/xms/commit/e87cb24eff857b07a6d1572ba140f86b3a79387f))
+
 ## [3.0.0-beta.160](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.159...v3.0.0-beta.160) (2021-03-05)
 
 
