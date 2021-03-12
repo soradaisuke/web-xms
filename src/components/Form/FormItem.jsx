@@ -273,10 +273,11 @@ function FormItem({
       return {
         noStyle: true,
         shouldUpdate: (prevValues, curValues) => {
+          const fullParentFormItemName = getFullFormItemName({ prefix, column: column.parentColumn });
           if (
             column.parentColumn &&
-            get(prevValues, column.parentColumn.getFormItemName()) !==
-              get(curValues, column.parentColumn.getFormItemName())
+            get(prevValues, fullParentFormItemName) !==
+              get(curValues, fullParentFormItemName)
           ) {
             return true;
           }
@@ -288,7 +289,8 @@ function FormItem({
               } catch (e) {
                 // JSON parse failed
               }
-              return get(prevValues, parsedKey) !== get(curValues, parsedKey);
+              const fullKey = getFullFormItemName({ prefix, name: parsedKey });
+              return get(prevValues, fullKey) !== get(curValues, fullKey);
             });
           }
           return false;
@@ -296,7 +298,7 @@ function FormItem({
       };
     }
     return commonFormItemProps;
-  }, [column, commonFormItemProps]);
+  }, [column, prefix, commonFormItemProps]);
 
   const { idIdentifier } = usePageConfig();
 
@@ -515,7 +517,7 @@ function FormItem({
             } catch (e) {
               // JSON parse failed
             }
-            const curValue = getFieldValue(parsedKey);
+            const curValue = getFieldValue(getFullFormItemName({ prefix, name: parsedKey }));
             if (isFunction(value)) {
               return !value(curValue);
             }
