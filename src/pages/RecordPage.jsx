@@ -195,7 +195,9 @@ function RecordPage({ isLoading, routes: r }) {
   }, [layout, routes, renderRouteChunk]);
 
   useEffect(() => {
-    fetch();
+    if (fetch) {
+      fetch();
+    }
   }, [fetch]);
 
   return (

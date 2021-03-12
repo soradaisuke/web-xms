@@ -503,11 +503,11 @@ function generateRecordPage({
         inline,
         table,
         component,
-        fetch,
         edit,
         remove,
         reset,
         onChangeTab,
+        fetch: path ? fetch : null,
       }),
       [fetch, reset, edit, remove, onChangeTab]
     );
