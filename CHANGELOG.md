@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.162](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.161...v3.0.0-beta.162) (2021-03-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 有的详情页不需要叫api ([d5a08f4](https://git2.qingtingfm.com/zhibo/xms/commit/d5a08f41c24193993b39826e6cc4ac1a33a961f2))
+* **NoTicket:** dynamicForm availableWhen不起作用 ([bad5b02](https://git2.qingtingfm.com/zhibo/xms/commit/bad5b02d730e72cfd6167ae5c4289241b0178cd4))
+
+## [3.0.0-beta.162](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.161...v3.0.0-beta.162) (2021-03-18)
+
+
+### Bug Fixes
+
+* **NoTicket:** 有的详情页不需要叫api ([d5a08f4](https://git2.qingtingfm.com/zhibo/xms/commit/d5a08f41c24193993b39826e6cc4ac1a33a961f2))
+* **NoTicket:** dynamicForm availableWhen不起作用 ([bad5b02](https://git2.qingtingfm.com/zhibo/xms/commit/bad5b02d730e72cfd6167ae5c4289241b0178cd4))
+
 ## [3.0.0-beta.161](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.160...v3.0.0-beta.161) (2021-03-11)
 
 
