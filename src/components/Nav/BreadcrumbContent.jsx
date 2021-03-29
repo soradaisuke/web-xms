@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, isValidElement } from 'react';
 import PropTypes from 'prop-types';
 import { router, useSelector } from 'dva';
 import { isFunction, isString, split, take, join } from 'lodash';
@@ -23,7 +23,7 @@ function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
       bTitle = breadcrumb;
     }
 
-    return pathToText(bTitle) || title;
+    return isValidElement(bTitle) ? bTitle : pathToText(bTitle) || title;
   }, [breadcrumb, title, matchParams, pageData]);
   const to = useMemo(
     () => join(take(split(pathname, '/'), split(path, '/').length), '/'),
