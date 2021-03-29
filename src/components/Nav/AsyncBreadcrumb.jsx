@@ -7,21 +7,21 @@ import { useEventCallback } from '@qt/react';
 
 const { useRouteMatch } = router;
 
-function AsyncBreadcrumb({ request, dependences, defaultTitle, path }) {
+function AsyncBreadcrumb({ getBreadcrumb, dependencies, defaultTitle, path }) {
   const { params: matchParams } = useRouteMatch(path);
-  const [params, setParams] = useState(pick(matchParams, dependences));
+  const [params, setParams] = useState(pick(matchParams, dependencies));
 
   useEffect(() => {
     setParams((prevParams) =>
-      isEqual(prevParams, pick(matchParams, dependences))
+      isEqual(prevParams, pick(matchParams, dependencies))
         ? prevParams
-        : pick(matchParams, dependences)
+        : pick(matchParams, dependencies)
     );
-  }, [dependences, matchParams]);
+  }, [dependencies, matchParams]);
 
   const getTitle = useEventCallback(async () => {
     try {
-      const title = await request(params);
+      const title = await getBreadcrumb(params);
       return title;
     } catch (error) {
       return defaultTitle;
@@ -38,8 +38,8 @@ function AsyncBreadcrumb({ request, dependences, defaultTitle, path }) {
 
 AsyncBreadcrumb.propTypes = {
   path: PropTypes.string.isRequired,
-  request: PropTypes.func.isRequired,
-  dependences: PropTypes.arrayOf(PropTypes.string).isRequired,
+  getBreadcrumb: PropTypes.func.isRequired,
+  dependencies: PropTypes.arrayOf(PropTypes.string).isRequired,
   defaultTitle: PropTypes.string,
 };
 
