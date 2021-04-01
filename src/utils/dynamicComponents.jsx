@@ -11,53 +11,23 @@ import {
   size,
   isBoolean,
   isUndefined,
-  split,
 } from 'lodash';
 import { useEventCallback } from '@qt/react';
 import { generateUri } from '@qt/web-common';
 import Immutable from 'immutable';
 import PageDataContext from '../contexts/PageDataContext';
 import showError from './showError';
-import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import RecordPage from '../pages/RecordPage';
 import RecordFormPage from '../pages/RecordFormPage';
 import PageConfigContext from '../contexts/PageConfigContext';
 import usePageData from '../hooks/usePageData';
-import useUser from '../hooks/useUser';
+import RouterContext from '../contexts/RouterContext';
+import UserContext from '../contexts/UserContext';
+import generateService from './generateService';
+import generateQuery from './generateQuery';
 
 const { withRouter, useLocation, useHistory, useParams } = router;
-
-function generateService({
-  retrieve: fetch,
-  create,
-  update: edit,
-  delete: remove,
-} = {}) {
-  return {
-    fetchAll: ({ path, page, pagesize, filter, order }) =>
-      fetch?.({ path, query: { page, pagesize, filter, order } }) ??
-      request.get(path, {
-        params: {
-          page,
-          pagesize,
-          order,
-          filter: JSON.stringify(filter),
-        },
-      }),
-    fetch: ({ path, id }) =>
-      fetch?.({ path, id }) ?? request.get(`${path}${id ? `/${id}` : ''}`),
-    create: ({ path, body }) =>
-      create?.({ path, body }) ??
-      request.post(`${split(path, '?')[0]}`, { body }),
-    edit: ({ path, id, body }) =>
-      edit?.({ path, id, body }) ??
-      request.put(`${split(path, '?')[0]}${id ? `/${id}` : ''}`, { body }),
-    remove: ({ path, id }) =>
-      remove?.({ path, id }) ??
-      request.remove(`${split(path, '?')[0]}${id ? `/${id}` : ''}`),
-  };
-}
 
 function generateModel({ namespace, service }) {
   const initialState = Immutable.fromJS({
@@ -125,14 +95,6 @@ function generateModel({ namespace, service }) {
       },
     },
   };
-}
-
-function generateQuery({ namespace, inline, query }) {
-  if (inline) {
-    return { [namespace]: encodeURIComponent(JSON.stringify(query)) };
-  }
-
-  return query;
 }
 
 function useApiPath({ path, host }) {
@@ -283,7 +245,7 @@ function generateRecordsPage({
     const sort = useMemo(() => queries.sort || '', [queries.sort]);
     const history = useHistory();
     const matchParams = useParams();
-    const user = useUser();
+    const user = useSelector(state => state.user);
 
     const fetchApiFixedFilter = useMemo(() => {
       if (isFunction(fixedFilter)) {
@@ -440,11 +402,15 @@ function generateRecordsPage({
     );
 
     return (
-      <PageConfigContext.Provider value={pageConfig}>
-        <PageDataContext.Provider value={pageData}>
-          <RecordsPage {...props} isLoading={isLoading} />
-        </PageDataContext.Provider>
-      </PageConfigContext.Provider>
+      <RouterContext.Provider value={router}>
+        <UserContext.Provider value={user}>
+          <PageConfigContext.Provider value={pageConfig}>
+            <PageDataContext.Provider value={pageData}>
+              <RecordsPage {...props} isLoading={isLoading} />
+            </PageDataContext.Provider>
+          </PageConfigContext.Provider>
+        </UserContext.Provider>
+      </RouterContext.Provider>
     );
   }
 
@@ -492,6 +458,7 @@ function generateRecordPage({
     const edit = useEdit({ apiPath, namespace, ignoreId: true });
     const remove = useRemove({ apiPath, namespace });
     const reset = useReset({ namespace });
+    const user = useSelector(state => state.user);
     const storeData = useSelector((state) => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
     const pageConfig = useMemo(
@@ -517,11 +484,15 @@ function generateRecordPage({
     ]);
 
     return (
-      <PageConfigContext.Provider value={pageConfig}>
-        <PageDataContext.Provider value={pageData}>
-          <RecordPage {...props} isLoading={isLoading} inline={inline} />
-        </PageDataContext.Provider>
-      </PageConfigContext.Provider>
+      <RouterContext.Provider value={router}>
+        <UserContext.Provider value={user}>
+          <PageConfigContext.Provider value={pageConfig}>
+            <PageDataContext.Provider value={pageData}>
+              <RecordPage {...props} isLoading={isLoading} inline={inline} />
+            </PageDataContext.Provider>
+          </PageConfigContext.Provider>
+        </UserContext.Provider>
+      </RouterContext.Provider>
     );
   }
 
@@ -556,15 +527,20 @@ function generateRecordFormPage({
       }),
       [create, edit, fetch, remove, reset]
     );
+    const user = useSelector(state => state.user);
     const storeData = useSelector((state) => state[namespace]);
     const storeDataJS = useMemo(() => storeData.toJS(), [storeData]);
 
     return (
-      <PageConfigContext.Provider value={pageConfig}>
-        <PageDataContext.Provider value={storeDataJS}>
-          <RecordFormPage {...props} />
-        </PageDataContext.Provider>
-      </PageConfigContext.Provider>
+      <RouterContext.Provider value={router}>
+        <UserContext.Provider value={user}>
+          <PageConfigContext.Provider value={pageConfig}>
+            <PageDataContext.Provider value={storeDataJS}>
+              <RecordFormPage {...props} />
+            </PageDataContext.Provider>
+          </PageConfigContext.Provider>
+        </UserContext.Provider>
+      </RouterContext.Provider>
     );
   }
 

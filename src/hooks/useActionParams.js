@@ -1,13 +1,12 @@
 import { useMemo } from 'react';
-import { router } from 'dva';
 import useUser from './useUser';
 import usePageData from './usePageData';
-
-const { useParams } = router;
+import useRouter from './useRouter';
 
 export default function useActionParams({ record, records } = {}) {
   const { parentPageData, ...pageData } = usePageData();
   const user = useUser();
+  const { useParams } = useRouter();
   const matchParams = useParams();
 
   return useMemo(

@@ -55,7 +55,7 @@ export default function useActionConfig({
     () =>
       hasPermissionFunc({
         configPermissions: action.getPermissions(),
-        userPermissions: user?.get('permissions'),
+        userPermissions: user?.get?.('permissions'),
       }),
     [user, action]
   );

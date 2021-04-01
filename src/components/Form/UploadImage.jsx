@@ -359,7 +359,7 @@ class UploadImage extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  ssoToken: state.user?.get(TOKEN_KEY) || state.user?.get('sso_token'),
+  ssoToken: state.user?.get?.(TOKEN_KEY) || state.user?.get?.('sso_token'),
 });
 
 export default connect(mapStateToProps)(UploadImage);

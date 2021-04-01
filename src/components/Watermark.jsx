@@ -1,8 +1,8 @@
 import React from 'react';
-import useUser from '../hooks/useUser';
+import { useSelector } from 'dva';
 
 export default function Watermark() {
-  const user = useUser();
+  const user = useSelector(state => state.user);
 
   let watermark = '蜻蜓FM';
   if (user) {

@@ -1,5 +1,6 @@
-import { useSelector } from 'dva';
+import { useContext } from 'react';
+import UserContext from '../contexts/UserContext';
 
 export default function useUser() {
-  return useSelector(state => state.user);
+  return useContext(UserContext);
 }

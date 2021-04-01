@@ -1,14 +1,13 @@
 import { useMemo } from 'react';
-import { router } from 'dva';
 import { set, get, isFunction } from 'lodash';
 import useUser from './useUser';
 import usePageConfig from './usePageConfig';
-
-const { useParams } = router;
+import useRouter from './useRouter';
 
 export default function useFormInitialValues({ record }) {
   const { table, formProps } = usePageConfig();
   const user = useUser();
+  const { useParams } = useRouter();
   const matchParams = useParams();
 
   const columns = useMemo(

@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'antd';
-import { router } from 'dva';
 import { isFunction, startsWith } from 'lodash';
 import usePageData from '../hooks/usePageData';
-
-const { Link } = router;
+import useRouter from '../hooks/useRouter';
 
 function RecordLink({ link, record, buttonProps, children }) {
   const pageData = usePageData();
+  const { Link } = useRouter();
 
   const filter = pageData?.filter ?? null;
 

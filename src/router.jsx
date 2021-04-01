@@ -4,9 +4,8 @@ import classNames from 'classnames';
 import { useEventCallback } from '@qt/react';
 import { filter, find, map } from 'lodash';
 import { Layout, Spin, ConfigProvider, BackTop } from 'antd';
-import { dynamic, router } from 'dva';
+import { dynamic, router, useSelector } from 'dva';
 import zhCN from 'antd/lib/locale-provider/zh_CN';
-import useUser from './hooks/useUser';
 import Menu from './components/Menu';
 import User from './components/User';
 import Breadcrumb from './components/Nav/Breadcrumb';
@@ -38,7 +37,7 @@ function getValidRoutes(routes, user) {
       if (
         !hasPermission({
           configPermissions: route.permissions,
-          userPermissions: user?.get('permissions'),
+          userPermissions: user?.get?.('permissions'),
         })
       ) {
         newRoute = null;
@@ -86,7 +85,7 @@ function renderRoute({
 }
 
 function ConnectedRouter({ history, app }) {
-  const user = useUser();
+  const user = useSelector(state => state.user);
 
   const {
     routes: unCheckRoutes,

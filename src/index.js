@@ -22,6 +22,7 @@ export RecordLink from './components/RecordLink';
 export DatePickerWithPresets from './components/Filter/DatePicker';
 export ActionComponent from './components/Action';
 
+export generateRecordsPage from './pages/utils/generateRecordsPage';
 // hooks
 export useUser from './hooks/useUser';
 export usePageData from './hooks/usePageData';
