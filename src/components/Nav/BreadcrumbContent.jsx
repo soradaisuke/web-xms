@@ -1,9 +1,9 @@
-import React, { useMemo, isValidElement } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { router, useSelector } from 'dva';
-import { isFunction, isString, split, take, join } from 'lodash';
-
+import { isFunction, isString, isObject, split, take, join, has } from 'lodash';
 import pathToText from '../../utils/pathToText';
+import AsyncBreadcrumb from './AsyncBreadcrumb';
 
 const { NavLink, useLocation, useRouteMatch } = router;
 
@@ -21,10 +21,19 @@ function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
       });
     } else if (isString(breadcrumb)) {
       bTitle = breadcrumb;
+    } else if (isObject(breadcrumb) && has(breadcrumb, 'getBreadcrumb')) {
+      const { defaultTitle, ...res } = breadcrumb;
+      return (
+        <AsyncBreadcrumb
+          {...res}
+          path={path}
+          defaultTitle={defaultTitle ?? title}
+        />
+      );
     }
 
-    return isValidElement(bTitle) ? bTitle : pathToText(bTitle) || title;
-  }, [breadcrumb, title, matchParams, pageData]);
+    return pathToText(bTitle) || title;
+  }, [breadcrumb, title, matchParams, pageData, path]);
   const to = useMemo(
     () => join(take(split(pathname, '/'), split(path, '/').length), '/'),
     [pathname, path]
@@ -42,7 +51,15 @@ function BreadcrumbContent({ namespace, hasLink, path, breadcrumb, title }) {
 BreadcrumbContent.propTypes = {
   hasLink: PropTypes.bool.isRequired,
   path: PropTypes.string.isRequired,
-  breadcrumb: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  breadcrumb: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+    PropTypes.shape({
+      getBreadcrumb: PropTypes.func.isRequired,
+      dependencies: PropTypes.arrayOf(PropTypes.string).isRequired,
+      defaultTitle: PropTypes.string,
+    }),
+  ]),
   namespace: PropTypes.string,
   title: PropTypes.string,
 };
