@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { filter } from 'lodash/fp';
 import { router, useLocation, useHistory } from 'dva';
 import { Menu } from 'antd';
-import { forEach } from 'lodash';
+import { forEach, last } from 'lodash';
 import isTuboshu from '../utils/isTuboshu';
 import isYouzi from '../utils/isYouzi';
 
@@ -78,8 +78,7 @@ function NavMenu({ routes }) {
     // eslint-disable-next-line no-shadow
     const openKeys = [];
     findNextKey({ pathname, routes, selectedKeys, openKeys });
-
-    return { selectedKeys, openKeys };
+    return { selectedKeys: [last(selectedKeys)], openKeys };
   }, [pathname, routes]);
 
   if (state?.unmatch) return null;

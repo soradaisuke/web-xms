@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { router } from 'dva';
-import { forEach } from 'lodash';
+import { forEach, filter } from 'lodash';
 import { Breadcrumb } from 'antd';
 import BreadcrumbContent from './BreadcrumbContent';
 
@@ -50,8 +50,9 @@ function addBreadcrumbItem({ pathname, routes, items }) {
   );
 }
 
-function NavBreadcrumb({ routes }) {
+function NavBreadcrumb({ routes: r }) {
   const { pathname } = useLocation();
+  const routes = useMemo(() => filter(r, ({ path }) => path !== '/'), [r]);
   const items = useMemo(() => {
     const array = [];
 

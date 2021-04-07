@@ -18,7 +18,7 @@ import hasPermission from './utils/hasPermission';
 import isTuboshu from './utils/isTuboshu';
 import isYouzi from './utils/isYouzi';
 
-const { Route, Switch, Router } = router;
+const { Route, Switch, Router, Redirect } = router;
 const { Content, Sider, Header } = Layout;
 
 dynamic.setDefaultLoadingComponent(() => (
@@ -142,6 +142,7 @@ function ConnectedRouter({ history, app }) {
                   </Route>
                 )}
                 {map(routes, (route) => renderRoute(route))}
+                <Redirect from="/" to="/" />
               </Switch>
             </Content>
           </Layout>
