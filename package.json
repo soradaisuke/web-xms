@@ -95,7 +95,7 @@
   },
   "peerDependencies": {
     "@ant-design/icons": "^4.2.2",
-    "antd": "^4.5.4",
+    "antd": "^4.15.0",
     "dva": "^2.6.0-beta.20",
     "dva-loading": "^3.0.20",
     "immutable": "^4.0.0-rc.12",
