@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0...v3.1.0) (2021-04-08)
+
+
+### Features
+
+* **QTLIVE-4698:** 管理系统name PropTypes改为node ([cfe74f7](https://git2.qingtingfm.com/zhibo/xms/commit/cfe74f7edcd32f4b3ef1a8009eeb9a1bbad1790f))
+
+
+### Bug Fixes
+
+* **NoTicket:** breadcrumb支持通过配置异步获取title ([9362665](https://git2.qingtingfm.com/zhibo/xms/commit/9362665889f62bc21ccf66a1c9c66aa50a680c71))
+* **NoTicket:** Breamcrumb支持渲染组件，增加异步获取数据展示标题的Breamcrumb组件 ([d291bc5](https://git2.qingtingfm.com/zhibo/xms/commit/d291bc5b7a7977e1c3c040d8388b0c940105ee37))
+* **NoTicket:** variables rename ([084e903](https://git2.qingtingfm.com/zhibo/xms/commit/084e9030aab859eb422acbb9e3bc8aa6f9d73fb5))
+* **QTLIVE-4697:** [xms]自定义首页时点二级菜单里的任意一个menu里的首页也会亮起 ([485ec1d](https://git2.qingtingfm.com/zhibo/xms/commit/485ec1d056d47f0a9e9211b6207f045dec8f4d72))
+* **QTLIVE-4710:** 去掉FormItem里无用的initialValue && initialValue为0时没有正确设置form.initialValues ([e671c7a](https://git2.qingtingfm.com/zhibo/xms/commit/e671c7a8d354f614d509193f9eb2c9b36802c588))
+* **QTLIVE-4711:** [xms]放大面包屑 ([b1e50c0](https://git2.qingtingfm.com/zhibo/xms/commit/b1e50c008e7f0326bb31d6bf2cd44081c8244bc6))
+
 ## [3.0.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.162...v3.0.0) (2021-04-02)
 
 ## [3.0.0-beta.162](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0-beta.161...v3.0.0-beta.162) (2021-03-18)
