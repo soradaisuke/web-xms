@@ -16,7 +16,7 @@ function WelcomePage({ title }) {
 }
 
 WelcomePage.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
 };
 
 export default React.memo(WelcomePage);

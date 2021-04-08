@@ -161,7 +161,7 @@ ConnectedRouter.propTypes = {
     // eslint-disable-next-line react/forbid-prop-types
     routes: PropTypes.array.isRequired,
     config: PropTypes.shape({
-      name: PropTypes.string,
+      name: PropTypes.node,
       api: PropTypes.shape({
         auth: PropTypes.string,
       }),
