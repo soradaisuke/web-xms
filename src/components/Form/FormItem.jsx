@@ -76,7 +76,6 @@ function FormItem({
   formItemComponentProps: extraFormItemComponentProps,
   commonFormItemProps: extraCommonFormItemProps,
   hideLabel,
-  shouldSetInitialValue,
 }) {
   const user = useUser();
   const disabled = useMemo(
@@ -169,10 +168,6 @@ function FormItem({
 
   const matchParams = useParams();
 
-  const initialValue = useMemo(
-    () => getColumnInitialValue(column, matchParams),
-    [column, matchParams]
-  );
   const initialListItemValue = useMemo(
     () =>
       column.getFormItemInitialListItemValue() ||
@@ -185,39 +180,6 @@ function FormItem({
       ),
     [column, matchParams]
   );
-  const initialEditValue = useMemo(() => {
-    if (isEdit) {
-      const curValue = get(record, column.getKey());
-      if (column.getFormItemNormalizeInitialValue()) {
-        return column.getFormItemNormalizeInitialValue()({
-          record,
-          value: curValue,
-          matchParams,
-        });
-      }
-      return curValue;
-    }
-    return undefined;
-  }, [isEdit, record, column, matchParams]);
-
-  useEffect(() => {
-    if (shouldSetInitialValue) {
-      // eslint-disable-next-line no-unused-expressions
-      form?.setFields([
-        {
-          name: column.getFormItemName(),
-          value: isEdit ? initialEditValue : initialValue,
-        },
-      ]);
-    }
-  }, [
-    column,
-    form,
-    isEdit,
-    initialValue,
-    initialEditValue,
-    shouldSetInitialValue,
-  ]);
 
   const formItemComponentProps = useMemo(
     () => ({
@@ -248,7 +210,6 @@ function FormItem({
       label: hideLabel ? '' : column.getFormItemLabel(),
       rules,
       ...extraCommonFormItemProps,
-      initialValue: isEdit && shouldSetInitialValue ? initialEditValue : initialValue,
       name: prefix
         ? [last(prefix), column.getFormItemName()]
         : column.getFormItemName(),
@@ -258,13 +219,9 @@ function FormItem({
       column,
       hideLabel,
       normalize,
-      initialValue,
       rules,
       valuePropName,
       extraCommonFormItemProps,
-      initialEditValue,
-      isEdit,
-      shouldSetInitialValue,
     ]
   );
 
@@ -462,7 +419,6 @@ function FormItem({
                           >
                             <FormItem
                               isEdit
-                              shouldSetInitialValue={false}
                               key={dColumn.getFormItemName()}
                               column={dColumn}
                               record={record}
@@ -573,12 +529,10 @@ FormItem.propTypes = {
   commonFormItemProps: PropTypes.object,
   // eslint-disable-next-line react/forbid-prop-types
   hideLabel: PropTypes.bool,
-  shouldSetInitialValue: PropTypes.bool,
   isEdit: PropTypes.bool,
 };
 
 FormItem.defaultProps = {
-  shouldSetInitialValue: true,
   record: null,
   formItemComponentProps: {},
   commonFormItemProps: {},

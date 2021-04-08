@@ -26,18 +26,7 @@ export default function useFormInitialValues({ record }) {
       }
       const isEdit = !!record;
       return columns?.reduce((iv, column) => {
-        if (isEdit && column.getFormItemNormalizeInitialValue()) {
-          return set(
-            iv,
-            column.getFormItemName(),
-            column.getFormItemNormalizeInitialValue()({
-              record,
-              value: get(record, column.getKey()),
-              matchParams,
-            }),
-          );
-        }
-        if (!isEdit && column.getFormItemInitialValue()) {
+        if (!isEdit) {
           const initialValue = column.getFormItemInitialValue();
           return set(
             iv,
@@ -45,10 +34,19 @@ export default function useFormInitialValues({ record }) {
             isFunction(initialValue) ? initialValue({ matchParams }) : initialValue,
           );
         }
+
+        const editValue = get(record, column.getKey());
+        const normalizeInitialValue = column.getFormItemNormalizeInitialValue();
         return set(
           iv,
           column.getFormItemName(),
-          get(record, column.getKey()),
+          isFunction(normalizeInitialValue)
+            ? normalizeInitialValue({
+              record,
+              value: editValue,
+              matchParams,
+            })
+            : editValue,
         );
       }, {});
     },
