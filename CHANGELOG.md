@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.1](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.0...v3.1.1) (2021-04-08)
+
+
+### Bug Fixes
+
+* **QTLIVE-4712:** peerDependencies里的antd版本要求到4.15.0 ([30b3d56](https://git2.qingtingfm.com/zhibo/xms/commit/30b3d562a84825bdfddb4da3c3c23ede18e0eb1e))
+
 ## [3.1.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.0.0...v3.1.0) (2021-04-08)
 
 
