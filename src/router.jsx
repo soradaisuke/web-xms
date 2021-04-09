@@ -142,7 +142,7 @@ function ConnectedRouter({ history, app }) {
                   </Route>
                 )}
                 {map(routes, (route) => renderRoute(route))}
-                <Redirect from="/" to="/" />
+                {(!auth || user) && <Redirect from="/" to="/" />}
               </Switch>
             </Content>
           </Layout>
