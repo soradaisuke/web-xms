@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.3](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.2...v3.1.3) (2021-04-15)
+
+
+### Bug Fixes
+
+* **NoTicket:** availableWhen依赖的是一个布尔值的false时无法正确更新 ([469e1bc](https://git2.qingtingfm.com/zhibo/xms/commit/469e1bc11f0dbb615a76131b32d5b0a69b72e1b1))
+
 ### [3.1.2](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.1...v3.1.2) (2021-04-12)
 
 
