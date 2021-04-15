@@ -239,7 +239,7 @@ function FormItem({
             return true;
           }
           if (column.getFormItemAvailableWhen().size > 0) {
-            return !!column.getFormItemAvailableWhen().find((_, key) => {
+            return !!column.getFormItemAvailableWhen().findKey((_, key) => {
               let parsedKey = key;
               try {
                 parsedKey = JSON.parse(key);
@@ -466,7 +466,7 @@ function FormItem({
       // eslint-disable-next-line react/prop-types
       return ({ getFieldValue }) => {
         if (
-          column.getFormItemAvailableWhen().find((value, key) => {
+          column.getFormItemAvailableWhen().findKey((value, key) => {
             let parsedKey = key;
             try {
               parsedKey = JSON.parse(key);
