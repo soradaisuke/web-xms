@@ -489,9 +489,9 @@ function FormItem({
         ) {
           return null;
         }
-        const parentValue = getFieldValue(
+        const parentValue = column.parentColumn ? getFieldValue(
           getFullFormItemName({ prefix, column: column.parentColumn })
-        );
+        ) : null;
         return (
           <Form.Item key={JSON.stringify(parentValue)} {...commonFormItemProps}>
             {isFunction(inner) ? inner(renderParams) : inner}
