@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.4](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.3...v3.1.4) (2021-04-21)
+
+
+### Bug Fixes
+
+* **QTDP-1845:** availableWhen依赖的值变了后当前column仍是可见的但值会被错误清空 ([35dc8e4](https://git2.qingtingfm.com/zhibo/xms/commit/35dc8e483cb119c7ba0672382c9a5c8975b9ac8f))
+
 ### [3.1.3](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.2...v3.1.3) (2021-04-15)
 
 
