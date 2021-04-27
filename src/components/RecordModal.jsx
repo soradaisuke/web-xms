@@ -93,7 +93,6 @@ function RecordModal({
       <ActivatorModal
         {...props}
         className={classNames(className, 'xms-modal')}
-        destroyOnClose
         activator={children}
         title={title || defaultTilte}
         onOk={onSubmit}
