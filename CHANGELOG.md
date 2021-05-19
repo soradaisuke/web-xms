@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.7](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.6...v3.1.7) (2021-05-19)
+
+
+### Bug Fixes
+
+* **QTLIVE-4954:** useFormPage先进入一个编辑页再退出进入新建页面时会保留编辑页面数据 ([faf71a1](https://git2.qingtingfm.com/zhibo/xms/commit/faf71a1b039ac351ece4726fb85aefc36eb95511))
+
 ### [3.1.6](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.5...v3.1.6) (2021-05-11)
 
 
