@@ -109,12 +109,16 @@ function RecordFormPage() {
   const initialValues = useFormInitialValues({ record });
 
   useEffect(() => {
-    reset();
 
     if (isEdit) {
       fetchInternal();
     }
+    return () => reset();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <FormContext.Provider value={form}>
