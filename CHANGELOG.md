@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.8](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.7...v3.1.8) (2021-06-11)
+
+
+### Bug Fixes
+
+* **QTLIVE-5436:** filter form有的没有默认placeholder ([a18a14a](https://git2.qingtingfm.com/zhibo/xms/commit/a18a14aa7ebf8f7c6a76610b0031badc835bb07f))
+
 ### [3.1.7](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.6...v3.1.7) (2021-05-19)
 
 
