@@ -346,6 +346,13 @@ export default class Column {
     return this.filterFormItemComponentProps;
   }
 
+  getFilterFormPlaceholder() {
+    return this.config.getIn(
+      ['table', 'filterFormItemComponentProps', 'placeholder'],
+      `请输入${this.getTitle()}`
+    );
+  }
+
   // form
   canEdit({ user, record }) {
     return (

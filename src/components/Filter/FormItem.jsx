@@ -93,6 +93,7 @@ function FormItem({ column }) {
 
   const formItemComponentProps = useMemo(() => {
     const props = {
+      placeholder: column.getFilterFormPlaceholder(),
       onChange: () => {
         resetChildColumn({ column, form });
         if (
