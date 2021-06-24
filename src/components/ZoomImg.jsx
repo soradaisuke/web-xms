@@ -6,7 +6,7 @@ import {
   ColumnWidthOutlined,
   ColumnHeightOutlined,
   RedoOutlined,
-  UndoOutlined
+  UndoOutlined,
 } from '@ant-design/icons';
 import classNames from 'classnames';
 import { Row, Button } from 'antd';
@@ -46,26 +46,26 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
         : thumbnailWidth;
     }
 
-    return (
+    return src ? (
       <img
         alt=""
         className={classNames(imgClassName, 'zoom-img-activator')}
         src={src}
         style={style}
       />
-    );
+    ) : null;
   }, [imgClassName, src, thumbnailWidth]);
 
   const zoomImgClassName = useMemo(
     () =>
       css({
         transform: `rotate(${rotate}deg) scale(${scaleX}, ${scaleY})`,
-        backgroundImage: `url(${src})`
+        backgroundImage: `url(${src})`,
       }).toString(),
     [rotate, scaleX, scaleY, src]
   );
 
-  const onVisibleChange = useEventCallback(visible => {
+  const onVisibleChange = useEventCallback((visible) => {
     if (visible) {
       setRotate(0);
       setScaleX(1);
@@ -119,12 +119,12 @@ function ZoomImg({ src, thumbnailWidth, imgClassName }) {
 ZoomImg.propTypes = {
   src: PropTypes.string.isRequired,
   imgClassName: PropTypes.string,
-  thumbnailWidth: PropTypes.number
+  thumbnailWidth: PropTypes.number,
 };
 
 ZoomImg.defaultProps = {
   imgClassName: '',
-  thumbnailWidth: null
+  thumbnailWidth: null,
 };
 
 export default React.memo(ZoomImg);
