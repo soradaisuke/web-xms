@@ -1,8 +1,17 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [3.1.8](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.7...v3.1.8) (2021-06-11)
+## [3.1.9](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.8...v3.1.9) (2021-06-24)
+
+
+### Bug Fixes
+
+* **NoTicket:** src为空时ZoomImg不渲染img元素 ([8adfc10](https://git2.qingtingfm.com/zhibo/xms/commits/8adfc10727617f90feb8b7fa384faa2bf0cda765))
+
+
+
+## [3.1.8](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.7...v3.1.8) (2021-06-11)
 
 
 ### Bug Fixes
