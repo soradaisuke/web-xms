@@ -1,6 +1,13 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [3.1.10](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.9...v3.1.10) (2021-07-23)
+
+
+### Bug Fixes
+
+* **NoTicket:** 单独使用ActionCompont时报错 & 单独使用ActionCompont时支持columns的初始值 ([483b929](https://git2.qingtingfm.com/zhibo/xms/commit/483b9297d7bf0d09eae75dfd13c9de4369d4a8d8))
 
 ## [3.1.9](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.8...v3.1.9) (2021-06-24)
 
