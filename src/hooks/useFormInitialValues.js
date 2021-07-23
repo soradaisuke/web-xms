@@ -6,14 +6,14 @@ import usePageConfig from './usePageConfig';
 
 const { useParams } = router;
 
-export default function useFormInitialValues({ record }) {
-  const { table, formProps } = usePageConfig();
+export default function useFormInitialValues({ record, columns: c }) {
+  const { table, formProps = {} } = usePageConfig();
   const user = useUser();
   const matchParams = useParams();
 
   const columns = useMemo(
-    () => table.getColumns().filter((column) => column.canShowInForm({ user, record })),
-    [table, user, record]
+    () => c || table.getColumns().filter((column) => column.canShowInForm({ user, record })),
+    [table, user, record, c]
   );
 
   return useMemo(

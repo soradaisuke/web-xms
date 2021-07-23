@@ -86,7 +86,7 @@ function RecordModal({
     }
   });
 
-  const initialValues = useFormInitialValues({ record });
+  const initialValues = useFormInitialValues({ record, columns });
 
   return (
     <FormContext.Provider value={form}>
