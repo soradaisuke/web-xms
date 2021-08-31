@@ -80,13 +80,13 @@ function RecordModal({
 
   const onSubmit = useEventCallback(() => onOk(form), [form, onOk]);
 
+  const initialValues = useFormInitialValues({ record, columns });
+
   const onVisibleChange = useEventCallback((visible) => {
     if (!visible) {
-      form.resetFields();
+      form.setFieldsValue(initialValues);
     }
   });
-
-  const initialValues = useFormInitialValues({ record, columns });
 
   return (
     <FormContext.Provider value={form}>
