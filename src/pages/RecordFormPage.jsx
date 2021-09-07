@@ -81,11 +81,11 @@ function RecordFormPage() {
 
   const fetchInternal = useCallback(() => {
     if (fetch) {
+      form.resetFields();
       setIsLoading(true);
       setError(null);
       fetch({ id })
         .then(() => {
-          form.resetFields();
           setIsLoading(false);
           setError(null);
         })
