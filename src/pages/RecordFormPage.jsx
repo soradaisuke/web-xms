@@ -85,6 +85,7 @@ function RecordFormPage() {
       setError(null);
       fetch({ id })
         .then(() => {
+          form.resetFields();
           setIsLoading(false);
           setError(null);
         })
@@ -93,12 +94,17 @@ function RecordFormPage() {
           setError(e);
         });
     }
-  }, [fetch, id]);
+  }, [fetch, id, form]);
 
   const renderActions = useMemo(() => {
     let result = Immutable.List([
       isEdit
-        ? table.getEditAction()?.setLink(null).setTitle('保存').setIcon(null).setShape(null)
+        ? table
+            .getEditAction()
+            ?.setLink(null)
+            .setTitle('保存')
+            .setIcon(null)
+            .setShape(null)
         : table.getCreateAction()?.setLink(null).setTitle('保存'),
     ]);
     result = result.concat(table.getFormActions());
@@ -109,7 +115,6 @@ function RecordFormPage() {
   const initialValues = useFormInitialValues({ record });
 
   useEffect(() => {
-
     if (isEdit) {
       fetchInternal();
     }
@@ -160,9 +165,7 @@ function RecordFormPage() {
                     title="确认取消并返回上一页？"
                     onConfirm={history.goBack}
                   >
-                    <Button style={{ marginLeft: 0 }}>
-                      取消
-                    </Button>
+                    <Button style={{ marginLeft: 0 }}>取消</Button>
                   </Popconfirm>
                   {renderActions.map((a) => (
                     <ActionComponent
