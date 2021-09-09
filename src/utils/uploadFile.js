@@ -19,6 +19,6 @@ export function wrappedUploadImage(
     ssoToken,
     bucket,
     upYunSyncPreprocessor,
-    deviceId,
+    deviceId
   });
 }
