@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Player from 'react-player';
 import classNames from 'classnames';
 import { Button, Slider, Radio } from 'antd';
-import { formatDuration } from '@qt/web-core';
+import { formatDuration } from '@qt/web-common';
 import { ClickableDiv } from '@qt/react-core';
 import './AudioPlayer.less';
 
@@ -184,8 +184,8 @@ export default class AudioPlayer extends React.PureComponent {
             icon={playing ? 'pause' : 'caret-right'}
           />
           <div className="audio-player-duration">
-            {formatDuration({ seconds: playedSeconds })}/
-            {formatDuration({ seconds: duration })}
+            {formatDuration(playedSeconds * 1000)}/
+            {formatDuration(duration * 1000)}
           </div>
           {showPlaybackRate && (
             <Radio.Group

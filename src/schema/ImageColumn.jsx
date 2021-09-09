@@ -1,6 +1,6 @@
 import React from 'react';
 import { isNumber } from 'lodash';
-import { generateUpYunImageUrl } from '@qt/web-core';
+import { generateUpYunImageUrl } from '@qt/web-common';
 import ZoomImg from '../components/ZoomImg';
 import UploadImage from '../components/FormItems/UploadImage';
 import StringColumn from './StringColumn';

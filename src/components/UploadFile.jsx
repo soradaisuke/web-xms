@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'dva';
-import { makeCancelablePromise } from '@qt/web-core';
+import { makeCancelablePromise } from '@qt/web-common';
 import { Upload, Icon, message, Button } from 'antd';
 import { TOKEN_KEY } from '../constants';
 import { wrappedUploadFile as uploadFile } from '../utils/uploadFile';

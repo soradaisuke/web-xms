@@ -1,7 +1,8 @@
 import Immutable from 'immutable';
 import { parse } from 'query-string';
 import Cookie from 'js-cookie';
-import { generateUri, isProduction } from '@qt/web-core';
+import { generateUri } from '@qt/web-common';
+import { isProduction } from '@qt/env';
 import request from '../services/request';
 import { TOKEN_KEY } from '../constants';
 

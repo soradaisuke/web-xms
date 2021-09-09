@@ -18,7 +18,7 @@ import {
   isUndefined,
   split
 } from 'lodash';
-import { generateUri } from '@qt/web-core';
+import { generateUri } from '@qt/web-common';
 import request from '../services/request';
 import RecordsPage from '../pages/RecordsPage';
 import showError from './showError';

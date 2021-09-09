@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Form, Input } from 'antd';
-import { makeCancelablePromise } from '@qt/web-core';
+import { makeCancelablePromise } from '@qt/web-common';
 import ActivatorModal from './ActivatorModal';
 
 const FormItem = Form.Item;
