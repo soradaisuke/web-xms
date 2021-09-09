@@ -1,8 +1,22 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [3.1.13](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.12...v3.1.13) (2021-09-07)
+# [3.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.13...v3.2.0) (2021-09-09)
+
+
+### Bug Fixes
+
+* **QTLIVE-5527:** 动态表单编辑窗口二次打开无数据 ([07b858b](https://git2.qingtingfm.com/zhibo/xms/commits/07b858b220d4a525cb464f3edf29ca56c1a73231))
+
+
+### Features
+
+* **NoTicket:** 支持qtfm.cn域名 ([24830f3](https://git2.qingtingfm.com/zhibo/xms/commits/24830f3a0d4b046823d8b6eca293849ca4dc6ed0))
+
+
+
+## [3.1.13](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.12...v3.1.13) (2021-09-07)
 
 
 ### Bug Fixes
