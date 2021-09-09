@@ -1,6 +1,15 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+# [2.17.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.16.0...v2.17.0) (2021-09-09)
+
+
+### Features
+
+* **QTPOD-886:** 支持qtfm.cn ([86804b1](https://git2.qingtingfm.com/zhibo/xms/commits/86804b11fc982ea65cf0f974aabb495252836c13))
+
+
 
 ## [2.16.0](https://git2.qingtingfm.com/zhibo/xms/compare/v2.15.0...v2.16.0) (2020-11-03)
 
