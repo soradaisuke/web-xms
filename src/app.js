@@ -38,6 +38,9 @@ export default function xms(config = {}) {
       if (window.location.host.indexOf('qingting.fm') === -1 && login) {
         throw new Error('域名必须是*.qingting.fm');
       }
+      if (window.location.host.indexOf('qtfm.cn') === -1 && login) {
+        throw new Error('域名必须是*.qtfm.cn');
+      }
       app.model(generateUserModel({ auth, login, logout }));
     }
     app.model(audio);

@@ -93,9 +93,12 @@ export default function generateUserModel({ auth, login, logout }) {
         } else if (window.location.host.indexOf('qingtingfm.com') !== -1) {
           Cookie.remove(TOKEN_KEY, { domain: '.qingtingfm.com' });
           Cookie.remove('sso_token', { domain: '.qingtingfm.com' });
-        } else {
+        } else if (window.location.host.indexOf('qingting.fm') !== -1) {
           Cookie.remove(TOKEN_KEY, { domain: '.qingting.fm' });
           Cookie.remove('sso_token', { domain: '.qingting.fm' });
+        } else if (window.location.host.indexOf('qtfm.cn') !== -1) {
+          Cookie.remove(TOKEN_KEY, { domain: '.qtfm.cn' });
+          Cookie.remove('sso_token', { domain: '.qtfm.cn' });
         }
         window.location.replace(window.location.origin);
       },
