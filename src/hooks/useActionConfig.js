@@ -16,13 +16,17 @@ export default function useActionConfig({
   onComplete,
   reload: reloadFunc,
 }) {
-  const params = useActionParams({ record, records });
+  const params = useActionParams({ record, records, action });
 
   const { user } = params;
 
-  const shouldHandleEvery = useMemo(() =>
-    !action.isGlobalAction() || action instanceof EditAction || action instanceof DeleteAction
-  , [action])
+  const shouldHandleEvery = useMemo(
+    () =>
+      !action.isGlobalAction() ||
+      action instanceof EditAction ||
+      action instanceof DeleteAction,
+    [action]
+  );
 
   const filteredRecords = useMemo(
     () =>
