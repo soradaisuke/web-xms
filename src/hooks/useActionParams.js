@@ -22,7 +22,7 @@ export default function useActionParams({ record, records, action } = {}) {
       parentPageData,
     };
 
-    if (action.isFormAction()) {
+    if (action?.isFormAction()) {
       params = { ...params, form };
     }
 
