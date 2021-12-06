@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.1](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.0...v3.3.1) (2021-12-06)
+
+
+### Bug Fixes
+
+* **NoTicket:** 修复RecordsPage调用useActionParams报错 ([ddc6a58](https://git2.qingtingfm.com/zhibo/xms/commits/ddc6a587a7234faf670a82405032ff57bf9d9aa7))
+
+
+
 # [3.3.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.2.0...v3.3.0) (2021-12-06)
 
 
