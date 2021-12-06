@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [3.3.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.2.0...v3.3.0) (2021-12-06)
+
+
+### Features
+
+* **QTLIVE-5822:** [qt-web-xms]form action参数增加form实例 ([3f708b3](https://git2.qingtingfm.com/zhibo/xms/commits/3f708b343aec08c9ca4df2eaecad4822311bc67a))
+
+
+
 # [3.2.0](https://git2.qingtingfm.com/zhibo/xms/compare/v3.1.13...v3.2.0) (2021-09-09)
 
 
