@@ -1,6 +1,13 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [3.3.2](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.1...v3.3.2) (2022-01-19)
+
+
+### Bug Fixes
+
+* **NoTicket:** 默认使用es目录以兼容antd-pro ([2cfafa0](https://git2.qingtingfm.com/zhibo/xms/commit/2cfafa08c2dcb66996ef47458a22c1e26a9b99ae))
 
 ## [3.3.1](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.0...v3.3.1) (2021-12-06)
 
