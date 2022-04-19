@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.5](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.4...v3.3.5) (2022-04-19)
+
+
+### Bug Fixes
+
+* **NoTicket:** antd使用es目录的style以兼容pro组件 ([d9d580d](https://git2.qingtingfm.com/zhibo/xms/commit/d9d580dec3d9dd1df091cc4c9386efd6998fb7ec))
+
 ### [3.3.4](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.3...v3.3.4) (2022-04-19)
 
 
