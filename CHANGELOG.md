@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.3.4](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.3...v3.3.4) (2022-04-19)
+
+
+### Bug Fixes
+
+* **NoTicket:** 按需引用@antd-design/icons ([6ed7f9e](https://git2.qingtingfm.com/zhibo/xms/commit/6ed7f9e3fd4b752ce7a965516ee58336094eb6ea))
+
 ### [3.3.3](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.2...v3.3.3) (2022-04-19)
 
 ### [3.3.2](https://git2.qingtingfm.com/zhibo/xms/compare/v3.3.1...v3.3.2) (2022-01-19)
