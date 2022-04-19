@@ -8,6 +8,7 @@
     "@babel/plugin-proposal-export-default-from",
     "@babel/plugin-proposal-optional-chaining",
     ["import", { "libraryName": "antd", "style": true }, "antd"],
+    ["import", { "libraryName": "@ant-design/icons", "libraryDirectory": "lib/icons", "camel2DashComponentName": false }, "@ant-design/icons"],
     ["import", { "libraryName": "@qt/web-core", "camel2DashComponentName": false }, "@qt/web-core"],
     ["import", { "libraryName": "@qt/react", "camel2DashComponentName": false }, "@qt/react"],
     "lodash",
